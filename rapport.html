@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport d'intégration</title>
+</head>
+<body>
+
+  <h1>Rapport d'intégration — Projet Flask</h1>
+
+  <h2>1. Équipe & Rôles</h2>
+  <table border="1">
+    <tr>
+      <th>Membre</th><th>Groupe</th><th>Rôle</th>
+    </tr>
+    <tr><td>GOUTONDE Bidossessi Conceptia Sharone</td><td>F2</td><td>Développeur Frontend</td></tr>
+    <tr><td>HOUEGBELO Uriel Verghis Olsen</td><td>—</td><td>Tech Lead / Backend</td></tr>
+    <tr><td>LOTSU Emmanuel Richard Kwasi</td><td>B3</td><td>Développeur Backend</td></tr>
+    <tr><td>HOUNNOUKON Agossou Prince</td><td>F4</td><td>Frontend / QA / Rapport</td></tr>
+    <tr><td>YESSOUFOU Scham's-Deen</td><td>F3</td><td>Développeur Fullstack</td></tr>
+    <tr><td>TOCHENALI Paola Eloane</td><td>B2</td><td>Développeur Frontend</td></tr>
+  </table>
+
+  <h2>2. Diagramme de cas d'utilisation</h2>
+  <pre>
+  +-------------------+
+  |     Utilisateur   |
+  +-------------------+
+          |
+    ______|______
+   |      |      |
+   v      v      v
+[S'inscrire] [Se connecter] [Voir profil]
+                               |
+                    ___________|___________
+                   |           |           |
+                   v           v           v
+            [Mes compétences] [Dispo] [Messagerie]
+  </pre>
+
+  <h2>3. Description des fonctionnalités</h2>
+  <ul>
+    <li><strong>S'inscrire (/register)</strong> : création de compte utilisateur</li>
+    <li><strong>Se connecter (/login)</strong> : authentification sécurisée</li>
+    <li><strong>Profil</strong> : affichage et modification des infos personnelles</li>
+    <li><strong>Compétences</strong> : ajout/suppression de compétences</li>
+    <li><strong>Disponibilités</strong> : gestion du calendrier</li>
+    <li><strong>Messagerie</strong> : communication entre membres</li>
+  </ul>
+
+  <h2>4. Technologies utilisées</h2>
+  <ul>
+    <li>Python / Flask</li>
+    <li>SQLAlchemy (base de données)</li>
+    <li>Render (déploiement)</li>
+    <li>GitHub (versioning)</li>
+  </ul>
+
+</body>
+</html>
