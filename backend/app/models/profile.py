@@ -1,0 +1,26 @@
+from app.database import db
+
+class Profile(db.Model):
+    __tablename__ = 'profiles'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    nom = db.Column(db.String(100), nullable=False)
+    prenom = db.Column(db.String(100), nullable=False)
+    filiere = db.Column(db.String(50), nullable=False)
+    niveau = db.Column(db.String(10), nullable=False)
+    bio = db.Column(db.Text)
+    telephone = db.Column(db.String(20))
+    disponible = db.Column(db.Boolean, default=True)
+
+    # Relations pour le J3 et J4 (Gérées par toi et M2)
+    disponibilites = db.relationship('Disponible', backref='profile', cascade="all, delete-orphan")
+    offers = db.relationship('Offer', backref='profile', cascade="all, delete-orphan")
+    demands = db.relationship('Demand', backref='profile', cascade="all, delete-orphan")
+
+class Disponible(db.Model):
+    __tablename__ = 'disponibilites'
+    id = db.Column(db.Integer, primary_key=True)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
+    jour = db.Column(db.String(15), nullable=False)
+    creneau = db.Column(db.String(50), nullable=False)

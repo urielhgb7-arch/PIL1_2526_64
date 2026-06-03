@@ -1,17 +1,33 @@
+# backend/app/__init__.py
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from app.database import db 
 
 def create_app():
-    app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # 1. Création de l'application Flask locale
+    flask_app = Flask(__name__) 
+    
+    # 2. Configurations
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://localhost/mentorlink')
+    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    flask_app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-ifri-key')
 
-    @app.route('/', methods=['GET'])
-    def home():
-        return jsonify({"status": "ok", "message": "Bienvenue sur l'API MentorLink !"})
+    # 3. Initialisations
+    db.init_app(flask_app)
+    jwt = JWTManager(flask_app)
+    CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 
-    @app.route('/api/health', methods=['GET'])
+    # 4. Importation des modèles (On utilise un "from" pour éviter d'écraser la variable)
+    from app import models
+
+    # 5. Enregistrement des routes (sur flask_app !)
+    from app.routes.auth import auth_bp
+    flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')
+
+    @flask_app.route('/api/health', methods=['GET'])
     def health_check():
-        return jsonify({"status": "healthy"}), 200
+        return jsonify({"status": "healthy", "database": "connected"}), 200
 
-    return app
+    return flask_app
