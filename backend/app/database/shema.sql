@@ -27,16 +27,31 @@ CREATE TABLE profiles (
     niveau VARCHAR(10) NOT NULL,  -- L1, L2, L3
     bio TEXT,
     telephone VARCHAR(20),
+    avatar_url TEXT DEFAULT 'https://via.placeholder.com/150',
     disponible BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 3. Table des Disponibilités (Agenda d'étude)
+-- 3. Table des Disponibilités (Approche B : Créneaux de 1h indexés)
 CREATE TABLE disponibilites (
     id SERIAL PRIMARY KEY,
     profile_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-    jour VARCHAR(15) NOT NULL, -- Lundi, Mardi, etc.
-    creneau VARCHAR(50) NOT NULL -- Matin, Après-midi, Soir
+    
+    -- Contrainte pour bloquer uniquement les vrais jours de la semaine
+    jour VARCHAR(15) NOT NULL CHECK (
+        jour IN ('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche')
+    ), 
+    
+    -- Contrainte CHECK pour valider UNIQUEMENT les blocs stricts de 1h à l'IFRI
+    creneau VARCHAR(10) NOT NULL CHECK (
+        creneau IN (
+            '08-09', '09-10', '10-11', '11-12', -- Créneaux de la matinée
+            '12-13', '13-14',                   -- Pause déjeuner / milieu de journée
+            '14-15', '15-16', '16-17', '17-18', -- Créneaux de l'après-midi
+            '18-19', '19-20' ,'20-21'                    -- Créneaux du soir
+        )
+    )
 );
 
 -- 4. Table des Offres de Mentorat (Ce que les Mentors maîtrisent)
