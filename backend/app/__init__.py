@@ -26,6 +26,9 @@ def create_app():
     from app.routes.auth import auth_bp
     flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
+    from app.routes.matching import matching_bp
+    flask_app.register_blueprint(matching_bp, url_prefix='/api')
+    
     @flask_app.route('/api/health', methods=['GET'])
     def health_check():
         return jsonify({"status": "healthy", "database": "connected"}), 200
