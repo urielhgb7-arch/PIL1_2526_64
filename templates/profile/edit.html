@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier mon Profil - IFRI MentorLink</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../css/profile.css">
+</head>
+<body>
+
+<div class="container my-5">
+    
+    <div class="mb-4">
+        <a href="view.html" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Annuler et retourner au profil
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <div class="card info-card p-4 shadow-sm">
+                <h3 class="fw-bold text-primary mb-4 border-bottom pb-2">
+                    <i class="bi bi-pencil-square"></i> Mettre à jour mon profil
+                </h3>
+                
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    
+                    <div class="row align-items-center mb-4 g-3 bg-light p-3 rounded">
+                        <div class="col-auto text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar actuel" class="rounded-circle profile-avatar" style="width: 80px; height: 80px;">
+                        </div>
+                        <div class="col">
+                            <label for="avatar" class="form-label fw-semibold">Photo de profil</label>
+                            <input class="form-control form-control-sm" type="file" id="avatar" name="avatar" accept="image/*">
+                            <div class="form-text">Formats acceptés : JPG, PNG. Max 2Mo.</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Nom & Prénom</label>
+                            <input type="text" class="form-control bg-light" value="DOSSOU Jean" readonly disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Filière & Niveau (Inchangé)</label>
+                            <input type="text" class="form-control bg-light" value="Génie Logiciel (GL) — Licence 3" readonly disabled>
+                        </div>
+                        <div class="form-text mt-1 text-warning">
+                            <i class="bi bi-exclamation-triangle"></i> Pour modifier votre filière ou votre nom, veuillez contacter la scolarité ou l'administration de l'IFRI.
+                        </div>
+                    </div>
+
+                    <h5 class="fw-semibold text-secondary mb-3 mt-4">Coordonnées de contact</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Numéro de Téléphone WhatsApp</label>
+                            <div class="input-group">
+                                <span class="input-group-text">+229</span>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="01XXXXXXXX" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Institutionnel</label>
+                            <input type="email" class="form-control bg-light" id="email" value="jean.dossou@ifri.uac.bj" readonly disabled>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-semibold text-secondary mb-3 mt-4">Préférences & Disponibilités</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="format" class="form-label">Format des sessions</label>
+                            <select class="form-select" id="format" name="format">
+                                <option value="mixte" selected>En ligne & Présentiel (Mixte)</option>
+                                <option value="online">Uniquement en ligne (Meet/Teams)</option>
+                                <option value="presence">Uniquement en présentiel (À l'IFRI)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="availabilities" class="form-label">Vos créneaux libres</label>
+                            <input type="text" class="form-control" id="availabilities" name="availabilities" value="Lundi-Mercredi (17h-20h), Samedi (09h-15h)" placeholder="Ex: Vendredi soir, Week-end...">
+                            <div class="form-text">Indiquez les jours et heures où vous êtes disponible.</div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-semibold text-secondary mb-3 mt-4">Données de Matching (Matières)</h5>
+                    
+                    <div class="mb-3">
+                        <label for="skills" class="form-label fw-medium text-success">
+                            <i class="bi bi-plus-circle"></i> Modifier vos points forts (Séparés par des virgules)
+                        </label>
+                        <textarea class="form-control" id="skills" name="skills" rows="3">Programmation Python, Algorithmique numérique, Bases de données SQL, Architecture des ordinateurs</textarea>
+                        <div class="form-text">Ajoutez ou supprimez les matières dans lesquelles vous excellez pour aider les autres.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="needs" class="form-label fw-medium text-danger">
+                            <i class="bi bi-dash-circle"></i> Modifier vos lacunes / besoins (Séparés par des virgules)
+                        </label>
+                        <textarea class="form-control" id="needs" name="needs" rows="3">Réseaux informatiques Cisco, Statistiques & Probabilités, Anglais technique</textarea>
+                        <div class="form-text">Mettez à jour les cours sur lesquels vous avez besoin qu'un aîné vous coache.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-3">
+                        <a href="view.html" class="btn btn-light px-4">Annuler</a>
+                        <button type="submit" class="btn btn-primary px-5 fw-semibold">
+                            <i class="bi bi-save"></i> Enregistrer les modifications
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
