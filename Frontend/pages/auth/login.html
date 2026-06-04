@@ -10,6 +10,9 @@
     
     <link rel="stylesheet" href="../../css/login.css">
 </head>
+<script src="../../js/api.js"></script>
+
+
 <body>
 
 <div class="container my-5">
@@ -66,5 +69,33 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelector("form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const result = await MentorLinkAPI.auth.login({
+            email: username,
+            password: password
+        });
+
+        localStorage.setItem(
+            "mentorlink_token",
+            result.token
+        );
+
+        alert("Connexion réussie !");
+        
+        // Redirection vers le tableau de bord
+        window.location.href = "../dashboard.html";
+
+    } catch(error) {
+        alert(error.message);
+    }
+});
+</script>
 </body>
 </html>

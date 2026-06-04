@@ -121,5 +121,40 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../js/api.js"></script>
+
+<script>
+document.querySelector("form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm_password").value;
+
+    if (password !== confirmPassword) {
+        alert("Les mots de passe ne correspondent pas.");
+        return;
+    }
+
+   const userData = {
+    nom: document.getElementById("lastname").value,
+    prenom: document.getElementById("firstname").value,
+    email: document.getElementById("email").value,
+    telephone: document.getElementById("phone").value,
+    filiere: document.getElementById("filiere").value,
+    niveau: document.getElementById("level").value,
+    bio: "",
+    password: password
+};
+    try {
+        await MentorLinkAPI.auth.register(userData);
+
+        alert("Inscription réussie !");
+        window.location.href = "login.html";
+
+    } catch(error) {
+        alert(error.message);
+    }
+});
+</script>
 </body>
 </html>
