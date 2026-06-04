@@ -8,7 +8,7 @@
 // Remplace 'ton-app-backend.onrender.com' par la vraie URL générée par Render pour ton Web Service Flask
 const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
     ? 'http://127.0.0.1:5000/api'
-    : 'https://ton-app-backend.onrender.com/api';
+    : 'https://pil1-2526-64.onrender.com';
 
 /**
  * Fonction maîtresse pour exécuter toutes les requêtes fetch du projet.
