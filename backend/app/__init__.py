@@ -3,7 +3,8 @@ import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from app.database import db 
+from app.database import db
+from app.sockets.chat import socketio
 
 def create_app():
     # 1. Création de l'application Flask locale
@@ -21,6 +22,7 @@ def create_app():
 
     # 3. Initialisations
     db.init_app(flask_app)
+    socketio.init_app(flask_app)
     jwt = JWTManager(flask_app)
     CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 
@@ -39,7 +41,7 @@ def create_app():
     
     from app.sockets.polling import polling_bp
     flask_app.register_blueprint(polling_bp, url_prefix='/api')
-    
+
     @flask_app.route('/api/health', methods=['GET'])
     def health_check():
         return jsonify({"status": "healthy", "database": "connected"}), 200
