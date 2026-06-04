@@ -35,3 +35,4 @@ instance/
 # Node (si plus tard vous utilisez npm)
 node_modules/
 
+.env.local
