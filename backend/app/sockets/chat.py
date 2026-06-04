@@ -42,7 +42,7 @@ def on_leave(data):
     conversation_id = data.get('conversation_id')
     leave_room(f"conv_{conversation_id}")
 
-    @socketio.on('notify_match')
+@socketio.on('notify_match')
 def on_match_notification(data):
     mentor_id = data.get('mentor_id')
     mentore_nom = data.get('mentore_nom')
@@ -55,7 +55,7 @@ def on_match_notification(data):
         'matiere': matiere
     }, room=f"user_{mentor_id}")
     
-    @socketio.on('register')
+@socketio.on('register')
 def on_register(data):
     user_id = data.get('user_id')
     join_room(f"user_{user_id}")
