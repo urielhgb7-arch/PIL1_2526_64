@@ -1,0 +1,65 @@
+[33mcommit 189b43c49c33f0497ccd66305c8d7d3d374e19ef[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: 5c7d3c7 20b535b
+Author: lotsurichard2025-ux <lotsurichard2025@gmail.com>
+Date:   Thu Jun 4 23:38:58 2026 +0100
+
+    fix: restauration fichiers supprimes par conflit merge - Dev B
+
+ .gitignore                                         |  75 [32m++[m[31m---[m
+ Frontend/assets/.gitkeep                           |   0
+ Frontend/components/.gitkeep                       |   0
+ Frontend/css/.gitkeep                              |   0
+ Frontend/css/auth.css                              |  53 [31m----[m
+ Frontend/css/dashboard.css                         |  45 [31m---[m
+ Frontend/css/login.css                             |  37 [31m---[m
+ Frontend/css/matching.css                          |  52 [31m----[m
+ Frontend/css/messaging.css                         |  55 [31m----[m
+ Frontend/css/profil.css                            |  65 [31m-----[m
+ Frontend/css/reset.css                             |  34 [31m---[m
+ Frontend/index.html                                |  12 [31m-[m
+ Frontend/js/.gitkeep                               |   0
+ Frontend/js/api.js                                 | 110 [31m-------[m
+ Frontend/pages/.gitkeep                            |   0
+ Frontend/pages/login.html                          |  89 [31m------[m
+ backend/.env.example                               |   0
+ backend/README.md                                  |   1 [32m+[m
+ backend/app/config.py                              |  23 [31m--[m
+ backend/app/config/.gitkeep                        |   0
+ backend/app/database/.gitkeep                      |   0
+ backend/app/database/__init__.py                   |  40 [32m+[m[31m--[m
+ backend/app/middleware/.gitkeep                    |   0
+ backend/app/models/.gitkeep                        |   0
+ backend/app/models/__init__.py                     |   4 [31m-[m
+ backend/app/models/messages.py                     |  22 [31m--[m
+ backend/app/models/profile.py                      |  26 [31m--[m
+ backend/app/models/services.py                     |  15 [31m-[m
+ backend/app/models/user.py                         |  21 [31m--[m
+ backend/app/routes/.gitkeep                        |   0
+ backend/app/routes/auth.py                         |  79 [31m-----[m
+ backend/app/routes/matching.py                     |  52 [31m----[m
+ backend/app/routes/messages.py                     | 119 [31m--------[m
+ backend/app/services/.gitkeep                      |   0
+ backend/app/sockets/.gitkeep                       |   0
+ backend/app/sockets/polling.py                     |  37 [31m---[m
+ backend/app/utils/.gitkeep                         |   0
+ backend/requirements.txt                           |  30 [31m--[m
+ backend/run.py                                     |   6 [31m-[m
+ .../app/database/shema.sql => database/schema.sql  | 318 [32m++++++++++[m[31m-----------[m
+ templates/auth/.gitkeep                            |   0
+ templates/auth/login.html                          |  70 [31m-----[m
+ templates/auth/register.html                       | 125 [31m--------[m
+ templates/auth/reset_password.html                 |  57 [31m----[m
+ templates/base.html                                |   0
+ templates/dashboard/.gitkeep                       |   0
+ templates/dashboard/home.html                      | 166 [31m-----------[m
+ templates/index.html                               |   0
+ templates/mentorat/.gitkeep                        |   0
+ templates/mentorat/create_request.html             |   0
+ templates/mentorat/matching_results.html           | 148 [31m----------[m
+ templates/mentorat/search.html                     |   0
+ templates/messaging/.gitkeep                       |   0
+ templates/messaging/chat.html                      | 133 [31m---------[m
+ templates/profile/.gitkeep                         |   0
+ templates/profile/edit.html                        | 124 [31m--------[m
+ templates/profile/view.html                        |  98 [31m-------[m
+ 57 files changed, 200 insertions(+), 2141 deletions(-)
