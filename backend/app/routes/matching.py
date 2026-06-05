@@ -11,6 +11,7 @@ from app.database import db
 from app.models import User, Profile, Conversation, Notification
 from app.models.services import Matching
 from app.services.matching import calculate_matches
+from app.validators import matiere_exists
 
 matching_bp = Blueprint('matching', __name__)
 
@@ -55,6 +56,10 @@ def request_match(student_id):
 
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
+
+    # vérifier que la matière existe
+    if not matiere_exists(matiere_id):
+        return jsonify({"message": "Matière introuvable"}), 404
 
     # Vérifier que le candidat existe
     candidate = User.query.get(student_id)

@@ -4,21 +4,15 @@ from flask import Blueprint, request, jsonify
 from app.database import db
 from app.models import User, Profile
 from flask_jwt_extended import create_access_token
+from app.validators import validate_json, is_valid_email
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/register', methods=['POST'])
+@validate_json(required_fields=['email', 'password', 'nom', 'prenom', 'filiere', 'niveau'], email_field='email')
 def register():
-    data = request.get_json()
-
-    # Validation des champs obligatoires (cohérent avec schema.sql NOT NULL)
-    required_fields = ['email', 'password', 'nom', 'prenom', 'filiere', 'niveau']
-    if not data or not all(data.get(field) for field in required_fields):
-        return jsonify({
-            "message": "Champs obligatoires manquants",
-            "required": required_fields
-        }), 400
+    data = request.validated_json
 
     # Vérification unicité email
     if User.query.filter_by(email=data['email']).first():
@@ -54,6 +48,9 @@ def login():
     # silent=True : retourne None au lieu de planter si le JSON est invalide
     if not data or not data.get('email') or not data.get('password'):
         return jsonify({"message": "Email et mot de passe requis"}), 400
+
+    if not is_valid_email(data.get('email')):
+        return jsonify({"message": "Email invalide"}), 400
 
     user = User.query.filter_by(email=data['email']).first()
 
