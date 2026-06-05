@@ -1,0 +1,55 @@
+/* Styles pour la messagerie */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Conteneur principal de la messagerie */
+.messaging-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+/* Élément de la liste de discussion */
+.chat-item {
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.chat-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Discussion non lue */
+.chat-unread {
+    background-color: #f0f6ff;
+}
+
+.chat-unread:hover {
+    background-color: #e4efff;
+}
+
+/* Avatar des contacts */
+.chat-avatar {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border: 2px solid #dee2e6;
+}
+
+/* Badge pour les messages non lus */
+.badge-msg-count {
+    background-color: #0d6efd;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.35rem 0.55rem;
+    border-radius: 50px;
+}

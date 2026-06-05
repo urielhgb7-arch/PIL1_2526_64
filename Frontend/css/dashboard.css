@@ -1,0 +1,45 @@
+/* Styles pour le tableau de bord */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Barre de navigation latérale (Sidebar) ou supérieure */
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Cartes de statistiques (Stat Cards) */
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Cartes d'activités et sessions */
+.dashboard-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    background-color: #ffffff;
+}
+
+/* Badge de statut pour les rendez-vous */
+.badge-upcoming {
+    background-color: #e2f0d9;
+    color: #385723;
+    font-weight: 600;
+}
+
+/* Élément de liste de session */
+.session-item {
+    border-left: 4px solid #0d6efd;
+    background-color: #f8f9fa;
+    border-radius: 0 8px 8px 0;
+}
