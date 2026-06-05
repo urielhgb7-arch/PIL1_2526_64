@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify
 from app.database import db
 from app.models import User, Profile
 from flask_jwt_extended import create_access_token
-from app.validators import validate_json, is_valid_email
+from app.validators import validate_json, is_valid_email, is_valid_format_preference
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -25,12 +25,17 @@ def register():
     db.session.commit()
 
     # Création automatique du profil lié (toutes colonnes NOT NULL couvertes)
+    format_preference = data.get('format_preference', 'hybride')
+    if format_preference and not is_valid_format_preference(format_preference):
+        return jsonify({"message": "Format d'apprentissage invalide"}), 400
+
     new_profile = Profile(
         user_id=new_user.id,
         nom=data['nom'],
         prenom=data['prenom'],
         filiere=data['filiere'],
         niveau=data['niveau'],
+        format_preference=format_preference,
         bio=data.get('bio', ''),
         telephone=data.get('telephone', '')
     )

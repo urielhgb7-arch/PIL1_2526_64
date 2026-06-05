@@ -7,9 +7,15 @@ from app.models.services import Matiere
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
+VALID_FORMAT_PREFERENCES = {'presentiel', 'en_ligne', 'hybride'}
+
 
 def is_valid_email(email: str) -> bool:
     return bool(email and EMAIL_RE.match(email))
+
+
+def is_valid_format_preference(value: str) -> bool:
+    return bool(value and value in VALID_FORMAT_PREFERENCES)
 
 
 def require_fields(data: dict, fields: list):

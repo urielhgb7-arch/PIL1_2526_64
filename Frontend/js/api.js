@@ -65,7 +65,9 @@ const API = {
         addCompetence: (data) => fetchAPI('/profile/competences', 'POST', data),
         removeCompetence: (data) => fetchAPI('/profile/competences', 'DELETE', data),
         addDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'POST', data),
-        removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data)
+        removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
+        activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
+        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT')
     },
 
     matching: {

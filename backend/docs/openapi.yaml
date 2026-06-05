@@ -30,7 +30,7 @@ paths:
         '200':
           description: Profile data
     put:
-      summary: Update profile
+      summary: Update profile (including format preference)
       security:
         - bearerAuth: []
   /profile/competences:
@@ -38,6 +38,28 @@ paths:
       summary: Add competence
       security:
         - bearerAuth: []
+  /profile/competences/{matiere_id}/activate:
+    put:
+      summary: Activate competence availability to help
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: matiere_id
+          in: path
+          required: true
+          schema:
+            type: integer
+  /profile/competences/{matiere_id}/deactivate:
+    put:
+      summary: Deactivate competence availability to help
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: matiere_id
+          in: path
+          required: true
+          schema:
+            type: integer
   /matches/suggestions:
     get:
       summary: Get matching suggestions

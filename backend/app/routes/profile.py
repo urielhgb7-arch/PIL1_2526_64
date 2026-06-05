@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from app.database import db
 from app.models import User, Profile, Disponible, ProfilCompetence, ProfilLacune, Matiere
 from app.middleware.auth_guard import token_required
-from app.validators import matiere_exists
+from app.validators import matiere_exists, is_valid_format_preference
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -24,7 +24,8 @@ def get_my_profile(current_user):
         competences_data.append({
             "matiere_id": c.matiere_id,
             "matiere_nom": matiere.nom if matiere else "",
-            "niveau": c.niveau
+            "niveau": c.niveau,
+            "is_available_to_help": c.is_available_to_help
         })
 
     # Lacunes
@@ -50,6 +51,7 @@ def get_my_profile(current_user):
         "prenom": profile.prenom,
         "filiere": profile.filiere,
         "niveau": profile.niveau,
+        "format_preference": profile.format_preference,
         "bio": profile.bio,
         "telephone": profile.telephone,
         "disponible": profile.disponible,
@@ -85,6 +87,11 @@ def update_my_profile(current_user):
         profile.telephone = data['telephone']
     if 'disponible' in data:
         profile.disponible = data['disponible']
+    if 'format_preference' in data:
+        format_preference = data['format_preference']
+        if not is_valid_format_preference(format_preference):
+            return jsonify({"message": "Format d'apprentissage invalide"}), 400
+        profile.format_preference = format_preference
 
     db.session.commit()
     return jsonify({"message": "Profil mis à jour avec succès"}), 200
@@ -149,6 +156,7 @@ def add_competence(current_user):
 
     matiere_id = data.get('matiere_id')
     niveau = data.get('niveau', 'Intermédiaire')
+    is_available_to_help = data.get('is_available_to_help', True)
 
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
@@ -163,7 +171,20 @@ def add_competence(current_user):
     if existing:
         return jsonify({"message": "Compétence déjà ajoutée"}), 400
 
-    comp = ProfilCompetence(profile_id=profile.id, matiere_id=matiere_id, niveau=niveau)
+    if isinstance(is_available_to_help, str):
+        if is_available_to_help.lower() in ('true', 'false'):
+            is_available_to_help = is_available_to_help.lower() == 'true'
+        else:
+            return jsonify({"message": "is_available_to_help doit être true ou false"}), 400
+    else:
+        is_available_to_help = bool(is_available_to_help)
+
+    comp = ProfilCompetence(
+        profile_id=profile.id,
+        matiere_id=matiere_id,
+        niveau=niveau,
+        is_available_to_help=is_available_to_help
+    )
     db.session.add(comp)
     db.session.commit()
     return jsonify({"message": "Compétence ajoutée"}), 201
@@ -186,6 +207,46 @@ def remove_competence(current_user):
     db.session.delete(comp)
     db.session.commit()
     return jsonify({"message": "Compétence supprimée"}), 200
+
+
+# ─── PUT /api/profile/competences/<matiere_id>/activate ──────────────────
+@profile_bp.route('/profile/competences/<int:matiere_id>/activate', methods=['PUT'])
+@token_required
+def activate_competence(current_user, matiere_id):
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    comp = ProfilCompetence.query.filter_by(
+        profile_id=profile.id,
+        matiere_id=matiere_id
+    ).first()
+    if not comp:
+        return jsonify({"message": "Compétence introuvable"}), 404
+
+    comp.is_available_to_help = True
+    db.session.commit()
+    return jsonify({"message": "Compétence activée pour l'aide", "is_available_to_help": comp.is_available_to_help}), 200
+
+
+# ─── PUT /api/profile/competences/<matiere_id>/deactivate ───────────────
+@profile_bp.route('/profile/competences/<int:matiere_id>/deactivate', methods=['PUT'])
+@token_required
+def deactivate_competence(current_user, matiere_id):
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    comp = ProfilCompetence.query.filter_by(
+        profile_id=profile.id,
+        matiere_id=matiere_id
+    ).first()
+    if not comp:
+        return jsonify({"message": "Compétence introuvable"}), 404
+
+    comp.is_available_to_help = False
+    db.session.commit()
+    return jsonify({"message": "Compétence désactivée pour l'aide", "is_available_to_help": comp.is_available_to_help}), 200
 
 
 # ─── GET /api/matieres ─────────────────────────────────────────────────────

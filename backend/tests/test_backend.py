@@ -3,7 +3,7 @@ import pytest
 from app.database import db
 from app.models.user import User
 from app.models.profile import Profile, Disponible
-from app.models.services import Matiere, ProfilCompetence, ProfilLacune, Demand
+from app.models.services import Matiere, ProfilCompetence, ProfilLacune
 from app.models.messages import Conversation, Message, Notification
 
 
@@ -23,13 +23,14 @@ def create_user_direct(email, password, role='student'):
     return user
 
 
-def create_profile(user, nom='Test', prenom='User', filiere='STI2D', niveau='L1'):
+def create_profile(user, nom='Test', prenom='User', filiere='STI2D', niveau='L1', format_preference='hybride'):
     profile = Profile(
         user_id=user.id,
         nom=nom,
         prenom=prenom,
         filiere=filiere,
         niveau=niveau,
+        format_preference=format_preference,
         bio='Bio',
         telephone='0123456789'
     )
@@ -186,6 +187,95 @@ def test_get_matieres_returns_list(client, app):
     noms = [item['nom'] for item in response.json]
     assert 'Maths-Test-API' in noms
     assert 'Physique-Test-API' in noms
+
+
+def test_update_profile_format_preference(client, app):
+    with app.app_context():
+        user = create_user_direct('format@a.com', 'pass')
+        create_profile(user)
+
+    token = login_user(client, 'format@a.com', 'pass').json['token']
+    response = client.put(
+        '/api/profile/me',
+        json={'format_preference': 'en_ligne'},
+        headers={'Authorization': f'Bearer {token}'}
+    )
+    assert response.status_code == 200
+
+    profile_response = client.get('/api/profile/me', headers={'Authorization': f'Bearer {token}'})
+    assert profile_response.status_code == 200
+    assert profile_response.json['format_preference'] == 'en_ligne'
+
+
+def test_competence_availability_control_matches(client, app):
+    with app.app_context():
+        matiere = create_matiere('Python', annee='L3', filiere='STI2D')
+
+        seeker = create_user_direct('avail-seeker@a.com', 'pass')
+        seeker_profile = create_profile(seeker, nom='Seeker', prenom='One', filiere='STI2D', niveau='L3', format_preference='en_ligne')
+        add_lacune(seeker_profile, matiere, priorite='Haute')
+        add_disponibilite(seeker_profile, 'Lundi', '10-11')
+
+        helper = create_user_direct('avail-helper@a.com', 'pass')
+        helper_profile = create_profile(helper, nom='Helper', prenom='Two', filiere='STI2D', niveau='L3', format_preference='en_ligne')
+        helper_id = helper.id
+        matiere_id = matiere.id
+        comp = ProfilCompetence(profile_id=helper_profile.id, matiere_id=matiere_id, niveau='Avancé', is_available_to_help=False)
+        add_disponibilite(helper_profile, 'Lundi', '10-11')
+        db.session.add(comp)
+        db.session.commit()
+
+    seeker_token = login_user(client, 'avail-seeker@a.com', 'pass').json['token']
+    response_before = client.get('/api/matches/suggestions', headers={'Authorization': f'Bearer {seeker_token}'})
+    assert response_before.status_code == 200
+    assert response_before.json['matches'] == []
+
+    helper_token = login_user(client, 'avail-helper@a.com', 'pass').json['token']
+    activate = client.put(f'/api/profile/competences/{matiere_id}/activate', headers={'Authorization': f'Bearer {helper_token}'})
+    assert activate.status_code == 200
+    assert activate.json['is_available_to_help'] is True
+
+    response_after = client.get('/api/matches/suggestions', headers={'Authorization': f'Bearer {seeker_token}'})
+    assert response_after.status_code == 200
+    assert response_after.json['total'] == 1
+    assert response_after.json['matches'][0]['student_id'] == helper_id
+
+
+def test_matching_prefers_same_learning_format(client, app):
+    with app.app_context():
+        matiere = create_matiere('Bases de données', annee='L2', filiere='GL')
+
+        seeker = create_user_direct('format-seeker@a.com', 'pass')
+        seeker_profile = create_profile(seeker, nom='Seeker', prenom='One', filiere='GL', niveau='L2', format_preference='en_ligne')
+        add_lacune(seeker_profile, matiere, priorite='Haute')
+        add_disponibilite(seeker_profile, 'Mardi', '14-15')
+
+        helper_same = create_user_direct('helper-same@a.com', 'pass')
+        helper_same_profile = create_profile(helper_same, nom='Helper', prenom='Same', filiere='GL', niveau='L2', format_preference='en_ligne')
+        helper_same_id = helper_same.id
+        comp_same = ProfilCompetence(profile_id=helper_same_profile.id, matiere_id=matiere.id, niveau='Intermédiaire', is_available_to_help=True)
+        add_disponibilite(helper_same_profile, 'Mardi', '14-15')
+        db.session.add(comp_same)
+
+        helper_diff = create_user_direct('helper-diff@a.com', 'pass')
+        helper_diff_profile = create_profile(helper_diff, nom='Helper', prenom='Diff', filiere='GL', niveau='L2', format_preference='presentiel')
+        helper_diff_id = helper_diff.id
+        comp_diff = ProfilCompetence(profile_id=helper_diff_profile.id, matiere_id=matiere.id, niveau='Intermédiaire', is_available_to_help=True)
+        add_disponibilite(helper_diff_profile, 'Mardi', '14-15')
+        db.session.add(comp_diff)
+        db.session.commit()
+
+    token = login_user(client, 'format-seeker@a.com', 'pass').json['token']
+    response = client.get('/api/matches/suggestions', headers={'Authorization': f'Bearer {token}'})
+    assert response.status_code == 200
+    assert response.json['total'] == 2
+
+    scores = {match['student_id']: match['score'] for match in response.json['matches']}
+    assert scores[helper_same_id] > scores[helper_diff_id]
+    assert any(
+        match['student_id'] == helper_same_id and match['score_detail']['format_preference'] == 10.0
+        for match in response.json['matches']
+    )
 
 
 def test_conversation_creation_and_duplicate(client, app):

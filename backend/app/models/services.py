@@ -42,6 +42,7 @@ class ProfilCompetence(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), primary_key=True)
     matiere_id = db.Column(db.Integer, db.ForeignKey('matieres.id'), primary_key=True)
     niveau = db.Column(db.String(20), default='Intermédiaire')
+    is_available_to_help = db.Column(db.Boolean, default=True, nullable=False)
 
     matiere = db.relationship('Matiere', back_populates='competences')
 

@@ -72,6 +72,7 @@ def _build_explanation(
     shared_slots_count: int,
     same_filiere: bool,
     same_niveau: bool,
+    same_format: bool,
     score: float
 ) -> dict:
     """
@@ -92,10 +93,19 @@ def _build_explanation(
     if same_niveau:
         raisons.append("Même année académique")
 
+    if same_format:
+        raisons.append("Même format d'apprentissage")
+
     return {
         "score_pct": f"{score}%",
         "raisons": raisons
     }
+
+
+def _score_format_bonus(current_format: str, candidate_format: str) -> float:
+    if not current_format or not candidate_format:
+        return 0.0
+    return 10.0 if current_format == candidate_format else 0.0
 
 
 def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
@@ -155,7 +165,8 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
         # ── Compétences du candidat sur les matières cherchées ───────────────
         competences_candidates = ProfilCompetence.query.filter(
             ProfilCompetence.profile_id == candidate.id,
-            ProfilCompetence.matiere_id.in_(matiere_ids_cherchees)
+            ProfilCompetence.matiere_id.in_(matiere_ids_cherchees),
+            ProfilCompetence.is_available_to_help == True
         ).all()
 
         # Filtre : éliminer les candidats sans compétence sur aucune matière cherchée
@@ -204,9 +215,13 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
         same_filiere  = demandeur_profile.filiere == candidate.filiere
         score_filiere = 10 if same_filiere else 0
 
+        # ── BONUS — Même format d'apprentissage (10 pts) ────────────────
+        same_format = demandeur_profile.format_preference == candidate.format_preference
+        score_format = _score_format_bonus(demandeur_profile.format_preference, candidate.format_preference)
+
         # ── SCORE TOTAL ──────────────────────────────────────────────────────
         total_score = round(
-            score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere,
+            min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format),
             2
         )
 
@@ -216,6 +231,7 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
             shared_slots_count=len(shared_slots),
             same_filiere=same_filiere,
             same_niveau=same_niveau,
+            same_format=same_format,
             score=total_score
         )
 
@@ -237,11 +253,12 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
             "explication":     explication,
             # Détail des sous-scores pour debug / transparence
             "score_detail": {
-                "matiere":       score_matiere,
+                "matiere":           score_matiere,
                 "niveau_vs_gravite": score_niveau,
-                "disponibilites": score_dispos,
-                "meme_niveau":   score_niveau_acad,
-                "meme_filiere":  score_filiere
+                "disponibilites":    score_dispos,
+                "meme_niveau":       score_niveau_acad,
+                "meme_filiere":      score_filiere,
+                "format_preference": score_format
             }
         })
 
