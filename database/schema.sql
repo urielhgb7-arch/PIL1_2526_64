@@ -6,6 +6,7 @@
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS conversations CASCADE;
+DROP TABLE IF EXISTS matching CASCADE;
 DROP TABLE IF EXISTS profil_lacunes CASCADE;
 DROP TABLE IF EXISTS profil_competences CASCADE;
 DROP TABLE IF EXISTS disponibilites CASCADE;
@@ -112,7 +113,22 @@ CREATE TABLE demands (
 );
 
 -- ----------------------------------------------------------------------------
--- 7. MESSAGERIE (F2 & B2)
+-- 7. MATCHING (F2 & B2)
+-- ----------------------------------------------------------------------------
+CREATE TABLE matching (
+    id SERIAL PRIMARY KEY,
+    user_one_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_two_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    initiator_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- Qui a initié le match
+    matiere_id INT NOT NULL REFERENCES matieres(id) ON DELETE CASCADE,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+    score FLOAT NOT NULL, -- Score de compatibilité calculé par l'algorithme de matching
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_one_id, user_two_id, matiere_id)
+);
+
+-- ----------------------------------------------------------------------------
+-- 8. MESSAGERIE (F2 & B2)
 -- ----------------------------------------------------------------------------
 CREATE TABLE conversations (
     id SERIAL PRIMARY KEY,
@@ -131,7 +147,7 @@ CREATE TABLE messages (
 );
 
 -- ----------------------------------------------------------------------------
--- 8. EXPÉRIENCE TEMPS RÉEL (Notifications historiques)
+-- 9. EXPÉRIENCE TEMPS RÉEL (Notifications historiques)
 -- ----------------------------------------------------------------------------
 CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,

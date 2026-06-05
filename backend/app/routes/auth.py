@@ -47,8 +47,10 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-
+    
+    data = request.get_json(force=True, silent=True)
+    # force=True : force la lecture même sans Content-Type
+    # silent=True : retourne None au lieu de planter si le JSON est invalide
     if not data or not data.get('email') or not data.get('password'):
         return jsonify({"message": "Email et mot de passe requis"}), 400
 

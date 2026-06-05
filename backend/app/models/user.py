@@ -1,3 +1,4 @@
+# backend/app/models/user.py
 from app.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -8,7 +9,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False) # 'mentor', 'mentore', 'admin'
+    # Cohérent avec schema.sql : CHECK (role IN ('student', 'admin'))
+    role = db.Column(db.String(20), nullable=False, default='student')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relation 1-to-1 avec le Profil
