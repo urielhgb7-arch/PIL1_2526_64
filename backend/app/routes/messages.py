@@ -55,7 +55,7 @@ def mes_conversations():
     for conv in convs:
         # L'autre personne dans la conversation
         autre_id = conv.user_two_id if conv.user_one_id == current_user_id else conv.user_one_id
-        autre = User.query.get(autre_id)
+        autre = db.session.get(User, autre_id)
         autre_profile = Profile.query.filter_by(user_id=autre_id).first()
         result.append({
             "conversation_id": conv.id,
@@ -81,7 +81,7 @@ def envoyer_message(conv_id):
     if not contenu:
         return jsonify({"message": "contenu requis"}), 400
 
-    conv = Conversation.query.get(conv_id)
+    conv = db.session.get(Conversation, conv_id)
     if not conv:
         return jsonify({"message": "Conversation introuvable"}), 404
 
@@ -101,7 +101,7 @@ def envoyer_message(conv_id):
 def lire_messages(conv_id):
     current_user_id = int(get_jwt_identity())
 
-    conv = Conversation.query.get(conv_id)
+    conv = db.session.get(Conversation, conv_id)
     if not conv:
         return jsonify({"message": "Conversation introuvable"}), 404
 

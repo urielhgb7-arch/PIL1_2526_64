@@ -2,8 +2,8 @@ import json
 import pytest
 from app.database import db
 from app.models.user import User
-from app.models.profile import Profile
-from app.models.services import Offer, Demand
+from app.models.profile import Profile, Disponible
+from app.models.services import Matiere, ProfilCompetence, ProfilLacune, Demand
 from app.models.messages import Conversation, Message
 
 
@@ -15,7 +15,7 @@ def login_user(client, email, password):
     return client.post('/api/auth/login', json={'email': email, 'password': password})
 
 
-def create_user_direct(email, password, role='mentore'):
+def create_user_direct(email, password, role='student'):
     user = User(email=email, role=role)
     user.set_password(password)
     db.session.add(user)
@@ -36,6 +36,27 @@ def create_profile(user, nom='Test', prenom='User', filiere='STI2D', niveau='L1'
     db.session.add(profile)
     db.session.commit()
     return profile
+
+
+def create_matiere(nom, annee=None, filiere=None):
+    matiere = Matiere(nom=nom, annee=annee, filiere=filiere)
+    db.session.add(matiere)
+    db.session.commit()
+    return matiere
+
+
+def add_disponibilite(profile, jour, creneau):
+    dispo = Disponible(profile_id=profile.id, jour=jour, creneau=creneau)
+    db.session.add(dispo)
+    db.session.commit()
+    return dispo
+
+
+def add_lacune(profile, matiere, priorite='Moyenne'):
+    lacune = ProfilLacune(profile_id=profile.id, matiere_id=matiere.id, priorite=priorite)
+    db.session.add(lacune)
+    db.session.commit()
+    return lacune
 
 
 def test_health_check(client):
@@ -110,60 +131,48 @@ def test_login_invalid_credentials(client):
 
 
 def test_matching_requires_auth(client):
-    response = client.get('/api/matching')
+    response = client.get('/api/matches/suggestions')
     assert response.status_code == 401
 
 
-def test_matching_forbidden_for_non_mentore(client):
-    payload = {
-        'email': 'noperm@a.com',
-        'password': 'pass321',
-        'nom': 'No',
-        'prenom': 'Perm',
-        'filiere': 'Physique',
-        'niveau': 'L1'
-    }
-    register_user(client, payload)
-    token = login_user(client, payload['email'], payload['password']).json['token']
-
-    response = client.get('/api/matching', headers={'Authorization': f'Bearer {token}'})
-    assert response.status_code == 403
-    assert response.json['message'] == 'Réservé aux mentorés'
-
-
-def test_matching_returns_bad_request_without_demands(client, app):
+def test_matching_returns_no_matches_without_lacunes(client, app):
     with app.app_context():
-        user = create_user_direct('mentore@a.com', 'password', role='mentore')
+        user = create_user_direct('student1@a.com', 'password')
         create_profile(user)
-    login = login_user(client, 'mentore@a.com', 'password')
+    login = login_user(client, 'student1@a.com', 'password')
     token = login.json['token']
-    response = client.get('/api/matching', headers={'Authorization': f'Bearer {token}'})
-    assert response.status_code == 400
-    assert 'Aucune demande enregistrée' in response.json['message']
+    response = client.get('/api/matches/suggestions', headers={'Authorization': f'Bearer {token}'})
+    assert response.status_code == 200
+    assert response.json['matches'] == []
+    assert 'Aucun candidat trouvé' in response.json['message']
 
 
-def test_matching_finds_available_mentors(client, app):
+def test_matching_finds_compatible_students(client, app):
     with app.app_context():
-        mentor = create_user_direct('mentor@a.com', 'password', role='mentor')
-        mentor_profile = create_profile(mentor, nom='Mentor', prenom='One', filiere='Algebre')
-        offer = Offer(profile_id=mentor_profile.id, matiere='Maths', description='Aide sur algèbre')
-        db.session.add(offer)
+        matiere = create_matiere('Maths', annee='L2', filiere='GL')
+
+        seeker = create_user_direct('matching-seeker@a.com', 'password')
+        seeker_profile = create_profile(seeker, nom='Seeker', prenom='One', filiere='GL', niveau='L2')
+        add_lacune(seeker_profile, matiere, priorite='Haute')
+        add_disponibilite(seeker_profile, 'Lundi', '10-11')
+
+        helper = create_user_direct('matching-helper@a.com', 'password')
+        helper_profile = create_profile(helper, nom='Helper', prenom='Two', filiere='GL', niveau='L2')
+        helper_id = helper.id
+        competence = ProfilCompetence(profile_id=helper_profile.id, matiere_id=matiere.id, niveau='Avancé')
+        add_disponibilite(helper_profile, 'Lundi', '10-11')
+        db.session.add(competence)
         db.session.commit()
 
-        mentore = create_user_direct('mentore2@a.com', 'password', role='mentore')
-        mentore_profile = create_profile(mentore, nom='Mento', prenom='Two', filiere='Maths')
-        demand = Demand(profile_id=mentore_profile.id, matiere='Maths', description='Besoin de soutien')
-        db.session.add(demand)
-        db.session.commit()
-
-    login = login_user(client, 'mentore2@a.com', 'password')
+    login = login_user(client, 'matching-seeker@a.com', 'password')
     token = login.json['token']
-    response = client.get('/api/matching', headers={'Authorization': f'Bearer {token}'})
+    response = client.get('/api/matches/suggestions', headers={'Authorization': f'Bearer {token}'})
 
     assert response.status_code == 200
-    assert len(response.json) == 1
-    assert response.json[0]['matiere'] == 'Maths'
-    assert response.json[0]['nom'] == 'Mentor'
+    assert response.json['total'] == 1
+    assert response.json['matches'][0]['student_id'] == helper_id
+    assert response.json['matches'][0]['score'] == 100
+    assert response.json['matches'][0]['matched_subjects'][0]['nom'] == 'Maths'
 
 
 def test_conversation_creation_and_duplicate(client, app):
@@ -265,7 +274,6 @@ def test_send_message_outside_conversation_is_allowed_but_insecure(client, app):
     response = client.post(
         f'/api/conversations/{conv_id}/messages',
         json={'contenu': 'Intrus'},
-        headers={'Authorization': f'Bearer {token}'}
-    )
+        headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == 201
     assert response.json['message'] == 'Message envoyé'

@@ -19,7 +19,7 @@ def get_my_profile(current_user):
     competences = ProfilCompetence.query.filter_by(profile_id=profile.id).all()
     competences_data = []
     for c in competences:
-        matiere = Matiere.query.get(c.matiere_id)
+        matiere = db.session.get(Matiere, c.matiere_id)
         competences_data.append({
             "matiere_id": c.matiere_id,
             "matiere_nom": matiere.nom if matiere else "",
@@ -30,7 +30,7 @@ def get_my_profile(current_user):
     lacunes = ProfilLacune.query.filter_by(profile_id=profile.id).all()
     lacunes_data = []
     for l in lacunes:
-        matiere = Matiere.query.get(l.matiere_id)
+        matiere = db.session.get(Matiere, l.matiere_id)
         lacunes_data.append({
             "matiere_id": l.matiere_id,
             "matiere_nom": matiere.nom if matiere else "",

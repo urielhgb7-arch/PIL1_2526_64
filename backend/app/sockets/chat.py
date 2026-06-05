@@ -44,16 +44,16 @@ def on_leave(data):
 
 @socketio.on('notify_match')
 def on_match_notification(data):
-    mentor_id = data.get('mentor_id')
-    mentore_nom = data.get('mentore_nom')
+    recipient_id = data.get('recipient_id')
+    student_nom = data.get('student_nom')
     matiere = data.get('matiere')
 
-    # Envoyer la notification au mentor dans sa room
+    # Envoyer la notification à l'étudiant destinataire
     emit('match_received', {
-        'message': f"{mentore_nom} veut un mentorat en {matiere}",
-        'mentor_id': mentor_id,
+        'message': f"Nouvelle demande d'aide en {matiere} de la part de {student_nom}",
+        'recipient_id': recipient_id,
         'matiere': matiere
-    }, room=f"user_{mentor_id}")
+    }, room=f"user_{recipient_id}")
     
 @socketio.on('register')
 def on_register(data):

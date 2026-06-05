@@ -62,14 +62,7 @@ def login():
 
     profile_id = user.profile.id if user.profile else None
 
-    # JWT avec rôle 'student' unifié (double casquette Mentor/Mentoré)
-    access_token = create_access_token(
-        identity=str(user.id),
-        additional_claims={
-            'role': 'student',
-            'email': user.email
-        }
-    )
+    access_token = create_access_token(identity=str(user.id))
 
     return jsonify({
         "token": access_token,

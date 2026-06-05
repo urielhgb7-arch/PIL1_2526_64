@@ -18,6 +18,9 @@ class Profile(db.Model):
     disponibilites = db.relationship('Disponible', backref='profile', cascade="all, delete-orphan")
     offers = db.relationship('Offer', backref='profile', cascade="all, delete-orphan")
     demands = db.relationship('Demand', backref='profile', cascade="all, delete-orphan")
+    competences = db.relationship('ProfilCompetence', backref='profile', cascade="all, delete-orphan")
+    lacunes = db.relationship('ProfilLacune', backref='profile', cascade="all, delete-orphan")
+
 class Disponible(db.Model):
     __tablename__ = 'disponibilites'
     id = db.Column(db.Integer, primary_key=True)

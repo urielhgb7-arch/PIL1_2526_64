@@ -4,25 +4,21 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from app.database import db
+from app.config import config
 
 
-def create_app():
+def create_app(config_name=None):
     flask_app = Flask(__name__)
+
+    if config_name is None:
+        config_name = os.getenv('FLASK_CONFIG', 'development')
+
+    flask_app.config.from_object(config.get(config_name, config['development']))
+
     CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 
-    # Fix URL Render : postgres:// → postgresql://
-    db_url = os.getenv('DATABASE_URL', 'postgresql://localhost/mentorlink')
-    if db_url.startswith('postgres://'):
-        db_url = db_url.replace('postgres://', 'postgresql://', 1)
-
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    flask_app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-ifri-key')
-
-    # Extensions
     db.init_app(flask_app)
-    jwt = JWTManager(flask_app)
-    CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
+    JWTManager(flask_app)
 
     # Modèles
     from app import models
