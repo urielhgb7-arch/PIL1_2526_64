@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>PIL1_2526 — Projet Flask</title>
+ <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+ <style>
+   :root {
+     --noir: #0e0e0e;
+     --blanc: #f5f2ec;
+     --accent: #c8a96e;
+     --accent2: #4a7c6f;
+     --gris: #6b6b6b;
+     --gris-clair: #e8e4dc;
+     --card: #ffffff;
+   }
+
+   * { margin: 0; padding: 0; box-sizing: border-box; }
+
+   body {
+     background-color: var(--blanc);
+     color: var(--noir);
+     font-family: 'DM Sans', sans-serif;
+     font-weight: 300;
+     line-height: 1.7;
+   }
+
+   header {
+     background: var(--noir);
+     color: var(--blanc);
+     padding: 80px 40px 60px;
+     text-align: center;
+     position: relative;
+     overflow: hidden;
+   }
+
+   header::before {
+     content: '';
+     position: absolute;
+     top: -60px; left: -60px;
+     width: 300px; height: 300px;
+     border: 1px solid rgba(200,169,110,0.2);
+     border-radius: 50%;
+   }
+
+   header::after {
+     content: '';
+     position: absolute;
+     bottom: -80px; right: -40px;
+     width: 200px; height: 200px;
+     border: 1px solid rgba(200,169,110,0.15);
+     border-radius: 50%;
+   }
+
+   .badge {
+     display: inline-block;
+     font-family: 'DM Mono', monospace;
+     font-size: 11px;
+     letter-spacing: 3px;
+     text-transform: uppercase;
+     color: var(--accent);
+     border: 1px solid var(--accent);
+     padding: 5px 14px;
+     margin-bottom: 24px;
+     border-radius: 2px;
+   }
+
+   header h1 {
+     font-family: 'Playfair Display', serif;
+     font-size: clamp(2rem, 5vw, 3.4rem);
+     font-weight: 700;
+     letter-spacing: -0.5px;
+     margin-bottom: 12px;
+     line-height: 1.15;
+   }
+
+   header h1 span { color: var(--accent); }
+
+   header p {
+     color: rgba(245,242,236,0.55);
+     font-size: 14px;
+     font-family: 'DM Mono', monospace;
+     letter-spacing: 1px;
+   }
+
+   main {
+     max-width: 860px;
+     margin: 0 auto;
+     padding: 60px 24px 100px;
+   }
+
+   .section-title {
+     display: flex;
+     align-items: center;
+     gap: 14px;
+     margin-bottom: 28px;
+     margin-top: 60px;
+   }
+
+   .section-title .num {
+     font-family: 'DM Mono', monospace;
+     font-size: 11px;
+     color: var(--accent);
+     letter-spacing: 2px;
+   }
+
+   .section-title h2 {
+     font-family: 'Playfair Display', serif;
+     font-size: 1.6rem;
+     font-weight: 700;
+     color: var(--noir);
+   }
+
+   .section-title::after {
+     content: '';
+     flex: 1;
+     height: 1px;
+     background: var(--gris-clair);
+   }
+
+   .team-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+     gap: 16px;
+   }
+
+   .member-card {
+     background: var(--card);
+     border: 1px solid var(--gris-clair);
+     border-radius: 8px;
+     padding: 22px 20px;
+     position: relative;
+     transition: transform 0.2s, box-shadow 0.2s;
+   }
+
+   .member-card:hover {
+     transform: translateY(-3px);
+     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+   }
+
+   .member-card .num-badge {
+     position: absolute;
+     top: 14px; right: 14px;
+     font-family: 'DM Mono', monospace;
+     font-size: 10px;
+     color: var(--gris);
+     background: var(--gris-clair);
+     padding: 2px 8px;
+     border-radius: 20px;
+   }
+
+   .member-card .groupe {
+     font-family: 'DM Mono', monospace;
+     font-size: 10px;
+     letter-spacing: 2px;
+     color: var(--accent2);
+     text-transform: uppercase;
+     margin-bottom: 6px;
+   }
+
+   .member-card h3 {
+     font-family: 'Playfair Display', serif;
+     font-size: 1rem;
+     font-weight: 700;
+     color: var(--noir);
+     margin-bottom: 8px;
+     line-height: 1.3;
+   }
+
+   .member-card .role {
+     font-size: 12px;
+     color: var(--gris);
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+
+   .member-card .role::before {
+     content: '';
+     width: 6px; height: 6px;
+     background: var(--accent);
+     border-radius: 50%;
+     flex-shrink: 0;
+   }
+
+   .member-card.lead {
+     border-color: var(--accent);
+     background: #fffdf7;
+   }
+
+   .member-card.lead .groupe { color: var(--accent); }
+
+   .structure-box {
+     background: var(--noir);
+     color: #a8d5c2;
+     font-family: 'DM Mono', monospace;
+     font-size: 13px;
+     line-height: 1.8;
+     padding: 30px;
+     border-radius: 8px;
+     overflow-x: auto;
+   }
+
+   .structure-box .dir { color: #c8a96e; }
+   .structure-box .file { color: #a8d5c2; }
+
+   .planning-list { display: flex; flex-direction: column; gap: 12px; }
+
+   .planning-item {
+     display: flex;
+     align-items: flex-start;
+     gap: 20px;
+     padding: 18px 20px;
+     background: var(--card);
+     border: 1px solid var(--gris-clair);
+     border-radius: 8px;
+     border-left: 3px solid var(--gris-clair);
+   }
+
+   .planning-item.active { border-left-color: var(--accent2); }
+
+   .planning-item .jour {
+     font-family: 'DM Mono', monospace;
+     font-size: 11px;
+     font-weight: 500;
+     color: var(--blanc);
+     background: var(--noir);
+     padding: 4px 10px;
+     border-radius: 4px;
+     flex-shrink: 0;
+     margin-top: 2px;
+   }
+
+   .planning-item .jour.today { background: var(--accent2); }
+
+   .planning-item .info h4 {
+     font-weight: 500;
+     font-size: 14px;
+     margin-bottom: 3px;
+   }
+
+   .planning-item .info p {
+     font-size: 12px;
+     color: var(--gris);
+     font-family: 'DM Mono', monospace;
+   }
+
+   .livrables { display: flex; flex-direction: column; gap: 10px; }
+
+   .livrable-item {
+     display: flex;
+     align-items: center;
+     gap: 14px;
+     padding: 14px 18px;
+     background: var(--card);
+     border: 1px solid var(--gris-clair);
+     border-radius: 6px;
+     font-size: 14px;
+   }
+
+   .check {
+     width: 20px; height: 20px;
+     border-radius: 50%;
+     flex-shrink: 0;
+     display: flex; align-items: center; justify-content: center;
+     font-size: 10px;
+   }
+
+   .check.done { background: var(--accent2); color: white; }
+   .check.todo { background: var(--gris-clair); color: var(--gris); }
+
+   footer {
+     text-align: center;
+     padding: 40px;
+     font-family: 'DM Mono', monospace;
+     font-size: 11px;
+     color: var(--gris);
+     border-top: 1px solid var(--gris-clair);
+     letter-spacing: 1px;
+   }
+
+   footer span { color: var(--accent); }
+ </style>
+</head>
+<body>
+
+ <header>
+   <div class="badge">IFRI — PIL1_2526</div>
+   <h1>Projet <span>Flask</span></h1>
+   <p>Application web · Authentification · Déploiement Render</p>
+ </header>
+
+ <main>
+
+   <div class="section-title">
+     <span class="num">01</span>
+     <h2>Équipe & Rôles</h2>
+   </div>
+
+   <div class="team-grid">
+     <div class="member-card">
+       <span class="num-badge">01</span>
+       <div class="groupe">F2</div>
+       <h3>GOUTONDE Bidossessi Conceptia Sharone</h3>
+       <div class="role">Développeur Frontend</div>
+     </div>
+     <div class="member-card lead">
+       <span class="num-badge">02</span>
+       <div class="groupe">Tech Lead</div>
+       <h3>HOUEGBELO Uriel Verghis Olsen</h3>
+       <div class="role">Tech Lead · Backend</div>
+     </div>
+     <div class="member-card">
+       <span class="num-badge">03</span>
+       <div class="groupe">B3</div>
+       <h3>LOTSU Emmanuel Richard Kwasi</h3>
+       <div class="role">Développeur Backend</div>
+     </div>
+     <div class="member-card">
+       <span class="num-badge">04</span>
+       <div class="groupe">F4</div>
+       <h3>HOUNNOUKON Agossou Prince</h3>
+       <div class="role">Frontend · QA · Rapport</div>
+     </div>
+     <div class="member-card">
+       <span class="num-badge">05</span>
+       <div class="groupe">F3</div>
+       <h3>YESSOUFOU Scham's-Deen</h3>
+       <div class="role">Développeur Fullstack</div>
+     </div>
+     <div class="member-card">
+       <span class="num-badge">06</span>
+       <div class="groupe">B2</div>
+       <h3>TOCHENALI Paola Eloane</h3>
+       <div class="role">Développeur Frontend</div>
+     </div>
+   </div>
+
+   <div class="section-title">
+     <span class="num">02</span>
+     <h2>Structure du projet</h2>
+   </div>
+
+   <div class="structure-box">
+<span class="dir">projet-flask/</span>
+├── <span class="dir">app/</span>
+│   ├── <span class="file">__init__.py</span>
+│   ├── <span class="file">models.py</span>
+│   ├── <span class="dir">routes/</span>
+│   │   ├── <span class="file">auth.py</span>
+│   │   └── <span class="file">profils.py</span>
+│   └── <span class="dir">templates/</span>
+│       ├── <span class="file">base.html</span>
+│       ├── <span class="file">login.html</span>
+│       └── <span class="file">register.html</span>
+├── <span class="dir">docs/</span>
+│   └── <span class="file">postman_collection.json</span>
+├── <span class="file">rapport.html</span>
+├── <span class="file">requirements.txt</span>
+├── <span class="file">render.yaml</span>
+└── <span class="file">README.md</span>
+   </div>
+
+   <div class="section-title">
+     <span class="num">03</span>
+     <h2>Planning</h2>
+   </div>
+
+   <div class="planning-list">
+     <div class="planning-item active">
+       <span class="jour">J1</span>
+       <div class="info">
+         <h4>Structure validée + Flask Hello World + Render configuré</h4>
+         <p>3 juin · 4–5h</p>
+       </div>
+     </div>
+     <div class="planning-item active">
+       <span class="jour today">J2</span>
+       <div class="info">
+         <h4>Base de données + Authentification + Déploiement Render actif</h4>
+         <p>4 juin · Session encadrement 13h–18h · 6h</p>
+       </div>
+     </div>
+     <div class="planning-item">
+       <span class="jour">J3</span>
+       <div class="info">
+         <h4>Backend profils + compétences + disponibilités</h4>
+         <p>5 juin · Travail en autonomie · 6h</p>
+       </div>
+     </div>
+   </div>
+
+   <div class="section-title">
+     <span class="num">04</span>
+     <h2>Livrables</h2>
+   </div>
+
+   <div class="livrables">
+     <div class="livrable-item">
+       <div class="check done">✓</div>
+       Repo cloné par tous les membres
+     </div>
+     <div class="livrable-item">
+       <div class="check done">✓</div>
+       App Flask qui tourne en local
+     </div>
+     <div class="livrable-item">
+       <div class="check done">✓</div>
+       Compte Render créé
+     </div>
+     <div class="livrable-item">
+       <div class="check todo">○</div>
+       /register et /login fonctionnels en production
+     </div>
+     <div class="livrable-item">
+       <div class="check todo">○</div>
+       rapport.html complété et commité
+     </div>
+     <div class="livrable-item">
+       <div class="check todo">○</div>
+       Collection Postman dans /docs
+     </div>
+   </div>
+
+ </main>
+
+ <footer>
+   <p>IFRI · Projet d'intégration · <span>PIL1_2526</span> · Juin 2025</p>
+ </footer>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+/* Styles pour la page des résultats de matching */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Carte de profil de mentor */
+.mentor-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mentor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge du score de matching (Algorithme) */
+.match-score-badge {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.6rem 1rem;
+    border-radius: 50px;
+    border: 2px solid #a5d6a7;
+    display: inline-block;
+}
+
+/* Avatar dans les cartes */
+.mentor-avatar {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border: 3px solid #dee2e6;
+}
+
+/* Badges de compétences */
+.skill-tag {
+    background-color: #f1f3f5;
+    color: #495057;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+    display: inline-block;
+}

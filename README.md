@@ -52,7 +52,11 @@ python -m venv venv
 source venv/bin/activate  # Windows : venv\Scripts\activate
 
 # 3. Installer les dépendances
+<<<<<<< HEAD
+pip install -r requirements.txt.
+=======
 pip install -r requirements.txt
+>>>>>>> 031f9fe4370b1d031dac17a56665eacfc3efb57a
 
 # 4. Lancer l'application
 flask run
