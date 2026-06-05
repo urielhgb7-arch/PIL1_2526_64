@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /**
  * MentorLink — Configuration & Client API Centralisé
  * Rôle : Gérer l'URL du serveur, joindre automatiquement le token JWT, 
@@ -108,7 +108,6 @@ const API = {
 };
 
 // Rendre l'objet API accessible de n'importe où dans les scripts HTML du Frontend
-=======
 /**
  * MentorLink — Configuration & Client API Centralisé
  * Rôle : Gérer l'URL du serveur, joindre automatiquement le token JWT,
@@ -219,10 +218,3 @@ const API = {
     }
 };
 
-<<<<<<< HEAD
-// Accessible globalement depuis tous les scripts HTML
-=======
-// Rendre l'objet API accessible de n'importe où dans les scripts HTML du Frontend
->>>>>>> 031f9fe4370b1d031dac17a56665eacfc3efb57a
->>>>>>> bd38b637f48ac8dfe60bf1063994e3f5db61ac2e
-window.MentorLinkAPI = API;
