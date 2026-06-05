@@ -1,10 +1,12 @@
 # backend/app/__init__.py
 import os
+import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from app.database import db
 from app.config import config
+from app.config.logging_config import setup_logging
 
 
 def create_app(config_name=None):
@@ -14,6 +16,11 @@ def create_app(config_name=None):
         config_name = os.getenv('FLASK_CONFIG', 'development')
 
     flask_app.config.from_object(config.get(config_name, config['development']))
+
+    # Setup logging
+    setup_logging(flask_app)
+    logger = logging.getLogger(__name__)
+    logger.info(f"📋 Configuration: {config_name}")
 
     CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 

@@ -1,5 +1,6 @@
 import re
 from functools import wraps
+from enum import Enum
 from flask import request, jsonify
 from app.database import db
 from app.models.services import Matiere
@@ -7,7 +8,59 @@ from app.models.services import Matiere
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
-VALID_FORMAT_PREFERENCES = {'presentiel', 'en_ligne', 'hybride'}
+# ─── ENUMS VALIDATION ────────────────────────────────────────────────────────
+class FormatPreference(str, Enum):
+    """Format d'apprentissage supportés"""
+    PRESENTIEL = "presentiel"
+    EN_LIGNE = "en_ligne"
+    HYBRIDE = "hybride"
+
+class Niveau(str, Enum):
+    """Niveaux académiques"""
+    L1 = "L1"
+    L2 = "L2"
+    L3 = "L3"
+    M1 = "M1"
+    M2 = "M2"
+
+class NiveauCompetence(str, Enum):
+    """Niveaux de compétence"""
+    DEBUTANT = "Débutant"
+    INTERMEDIAIRE = "Intermédiaire"
+    AVANCE = "Avancé"
+    EXPERT = "Expert"
+
+class PriorityLevel(str, Enum):
+    """Niveaux de priorité pour les lacunes"""
+    BASSE = "Basse"
+    MOYENNE = "Moyenne"
+    HAUTE = "Haute"
+    URGENTE = "Urgente"
+
+class Day(str, Enum):
+    """Jours de la semaine"""
+    LUNDI = "Lundi"
+    MARDI = "Mardi"
+    MERCREDI = "Mercredi"
+    JEUDI = "Jeudi"
+    VENDREDI = "Vendredi"
+    SAMEDI = "Samedi"
+    DIMANCHE = "Dimanche"
+
+class NotificationType(str, Enum):
+    """Types de notifications"""
+    MATCH_SYSTEM = "match_system"
+    MESSAGE = "message"
+    ACCEPTANCE = "acceptance"
+    REJECTION = "rejection"
+    GENERAL = "general"
+
+VALID_FORMAT_PREFERENCES = {e.value for e in FormatPreference}
+VALID_NIVEAUX = {e.value for e in Niveau}
+VALID_COMPETENCE_LEVELS = {e.value for e in NiveauCompetence}
+VALID_PRIORITY_LEVELS = {e.value for e in PriorityLevel}
+VALID_DAYS = {e.value for e in Day}
+VALID_NOTIFICATION_TYPES = {e.value for e in NotificationType}
 
 
 def is_valid_email(email: str) -> bool:
@@ -15,15 +68,43 @@ def is_valid_email(email: str) -> bool:
 
 
 def is_valid_format_preference(value: str) -> bool:
+    """Valide format d'apprentissage"""
     return bool(value and value in VALID_FORMAT_PREFERENCES)
 
 
-def require_fields(data: dict, fields: list):
+def is_valid_niveau(value: str) -> bool:
+    """Valide niveau académique"""
+    return bool(value and value in VALID_NIVEAUX)
+
+
+def is_valid_competence_level(value: str) -> bool:
+    """Valide niveau de compétence"""
+    return bool(value and value in VALID_COMPETENCE_LEVELS)
+
+
+def is_valid_priority_level(value: str) -> bool:
+    """Valide niveau de priorité"""
+    return bool(value and value in VALID_PRIORITY_LEVELS)
+
+
+def is_valid_day(value: str) -> bool:
+    """Valide jour de la semaine"""
+    return bool(value and value in VALID_DAYS)
+
+
+def is_valid_notification_type(value: str) -> bool:
+    """Valide type de notification"""
+    return bool(value and value in VALID_NOTIFICATION_TYPES)
+
+
+def require_fields(data: dict, fields: list) -> list:
+    """Retourne liste des champs manquants"""
     missing = [f for f in fields if not data.get(f)]
     return missing
 
 
 def matiere_exists(matiere_id: int) -> bool:
+    """Vérifie qu'une matière existe"""
     if not matiere_id:
         return False
     return db.session.get(Matiere, matiere_id) is not None

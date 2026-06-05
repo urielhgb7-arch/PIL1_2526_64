@@ -1,10 +1,13 @@
 # backend/app/routes/profile.py
+import logging
 from flask import Blueprint, request, jsonify
+from sqlalchemy.exc import IntegrityError
 from app.database import db
 from app.models import User, Profile, Disponible, ProfilCompetence, ProfilLacune, Matiere
 from app.middleware.auth_guard import token_required
-from app.validators import matiere_exists, is_valid_format_preference
+from app.validators import matiere_exists, is_valid_format_preference, is_valid_day, is_valid_competence_level, is_valid_priority_level
 
+logger = logging.getLogger(__name__)
 profile_bp = Blueprint('profile', __name__)
 
 
