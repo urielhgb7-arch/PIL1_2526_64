@@ -3,7 +3,10 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 # Charge .env.local si on est en dev local, sinon .env (production)
-env_file = '.env.local' if os.path.exists('.env.local') else '.env'
+base_dir = Path(__file__).resolve().parent
+env_file = base_dir / '.env.local'
+if not env_file.exists():
+    env_file = base_dir / '.env'
 load_dotenv(env_file)
 
 from app import create_app
