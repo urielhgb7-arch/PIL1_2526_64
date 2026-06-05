@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: MentorLink API (minimal)
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+      responses:
+        '201':
+          description: Created
+  /auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+      responses:
+        '200':
+          description: Token
+  /profile/me:
+    get:
+      summary: Get current profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile data
+    put:
+      summary: Update profile
+      security:
+        - bearerAuth: []
+  /profile/competences:
+    post:
+      summary: Add competence
+      security:
+        - bearerAuth: []
+  /matches/suggestions:
+    get:
+      summary: Get matching suggestions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: matiere_id
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Suggestions list
+  /matches/{id}/accept:
+    post:
+      summary: Accept match
+      security:
+        - bearerAuth: []
+  /matches/{id}/reject:
+    post:
+      summary: Reject match
+      security:
+        - bearerAuth: []
+  /conversations:
+    post:
+      summary: Create conversation
+      security:
+        - bearerAuth: []
+    get:
+      summary: List conversations
+      security:
+        - bearerAuth: []
+  /conversations/{id}/messages:
+    post:
+      summary: Send message
+      security:
+        - bearerAuth: []
+    get:
+      summary: Get conversation messages
+      security:
+        - bearerAuth: []
+  /notifications:
+    get:
+      summary: Get user notifications
+      security:
+        - bearerAuth: []
+  /notifications/{id}/read:
+    put:
+      summary: Mark notification read
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

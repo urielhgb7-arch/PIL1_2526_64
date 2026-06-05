@@ -36,6 +36,9 @@ def create_app(config_name=None):
     from app.routes.messages import messages_bp
     flask_app.register_blueprint(messages_bp, url_prefix='/api')
 
+    from app.routes.notifications import notifications_bp
+    flask_app.register_blueprint(notifications_bp, url_prefix='/api')
+
     from app.sockets.polling import polling_bp
     flask_app.register_blueprint(polling_bp, url_prefix='/api')
 

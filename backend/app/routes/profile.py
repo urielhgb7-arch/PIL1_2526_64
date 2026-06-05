@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from app.database import db
 from app.models import User, Profile, Disponible, ProfilCompetence, ProfilLacune, Matiere
 from app.middleware.auth_guard import token_required
+from app.validators import matiere_exists
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -104,6 +105,10 @@ def add_disponibilite(current_user):
     if not jour or not creneau:
         return jsonify({"message": "jour et creneau requis"}), 400
 
+    jours_valides = {'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'}
+    if jour not in jours_valides:
+        return jsonify({"message": "jour invalide"}), 400
+
     dispo = Disponible(profile_id=profile.id, jour=jour, creneau=creneau)
     db.session.add(dispo)
     db.session.commit()
@@ -148,6 +153,10 @@ def add_competence(current_user):
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
 
+    # vérifier que la matière existe
+    if not matiere_exists(matiere_id):
+        return jsonify({"message": "Matière introuvable"}), 404
+
     existing = ProfilCompetence.query.filter_by(
         profile_id=profile.id, matiere_id=matiere_id
     ).first()
@@ -177,3 +186,19 @@ def remove_competence(current_user):
     db.session.delete(comp)
     db.session.commit()
     return jsonify({"message": "Compétence supprimée"}), 200
+
+
+# ─── GET /api/matieres ─────────────────────────────────────────────────────
+@profile_bp.route('/matieres', methods=['GET'])
+def get_matieres():
+    matieres = Matiere.query.order_by(Matiere.nom.asc()).all()
+    result = [
+        {
+            "id": m.id,
+            "nom": m.nom,
+            "annee": m.annee,
+            "filiere": m.filiere
+        }
+        for m in matieres
+    ]
+    return jsonify(result), 200

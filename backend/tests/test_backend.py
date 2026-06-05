@@ -4,7 +4,7 @@ from app.database import db
 from app.models.user import User
 from app.models.profile import Profile, Disponible
 from app.models.services import Matiere, ProfilCompetence, ProfilLacune, Demand
-from app.models.messages import Conversation, Message
+from app.models.messages import Conversation, Message, Notification
 
 
 def register_user(client, payload):
@@ -175,6 +175,19 @@ def test_matching_finds_compatible_students(client, app):
     assert response.json['matches'][0]['matched_subjects'][0]['nom'] == 'Maths'
 
 
+def test_get_matieres_returns_list(client, app):
+    with app.app_context():
+        create_matiere('Physique-Test-API', annee='L1', filiere='STI2D')
+        create_matiere('Maths-Test-API', annee='L2', filiere='GL')
+
+    response = client.get('/api/matieres')
+    assert response.status_code == 200
+    assert isinstance(response.json, list)
+    noms = [item['nom'] for item in response.json]
+    assert 'Maths-Test-API' in noms
+    assert 'Physique-Test-API' in noms
+
+
 def test_conversation_creation_and_duplicate(client, app):
     with app.app_context():
         user_a = create_user_direct('a@a.com', 'pass')
@@ -255,6 +268,36 @@ def test_polling_returns_messages(client, app):
     assert response.status_code == 200
     assert response.json['nouveaux_messages'] == 1
     assert response.json['messages'][0]['contenu'] == 'Salut'
+
+
+def test_notifications_can_be_listed_and_marked_read(client, app):
+    with app.app_context():
+        user = create_user_direct('notify@a.com', 'pass')
+        create_profile(user)
+        notification = Notification(
+            user_id=user.id,
+            titre='Match disponible',
+            contenu='Un nouveau match a été trouvé pour votre lacune.',
+            type='info'
+        )
+        db.session.add(notification)
+        db.session.commit()
+        notification_id = notification.id
+
+    token = login_user(client, 'notify@a.com', 'pass').json['token']
+    list_response = client.get('/api/notifications', headers={'Authorization': f'Bearer {token}'})
+    assert list_response.status_code == 200
+    assert isinstance(list_response.json, list)
+    assert list_response.json[0]['id'] == notification_id
+    assert list_response.json[0]['is_read'] is False
+
+    mark_response = client.put(f'/api/notifications/{notification_id}/read', headers={'Authorization': f'Bearer {token}'})
+    assert mark_response.status_code == 200
+    assert mark_response.json['message'] == 'Notification marquée comme lue'
+
+    list_after_response = client.get('/api/notifications?unread_only=true', headers={'Authorization': f'Bearer {token}'})
+    assert list_after_response.status_code == 200
+    assert list_after_response.json == []
 
 
 def test_send_message_outside_conversation_is_allowed_but_insecure(client, app):
