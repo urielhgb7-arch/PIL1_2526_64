@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Grille de Disponibilités</title>
+  <link rel="stylesheet" href="../css/disponibilite.css">
+  <style>
+    .selected {
+      background-color: lightgreen; /* couleur de sélection */
+    }
+  </style>
+</head>
+<body>
+  <h2>Grille de disponibilités</h2>
+
+  <!-- Boutons de sélection -->
+  <div>
+    <button onclick="selectRange(8,12)">08h - 12h</button>
+    <button onclick="selectRange(12,18)">12h - 18h</button>
+    <button onclick="selectRange(18,21)">18h - 21h</button>
+  </div>
+
+  <table class="grille">
+    <thead>
+      <tr>
+        <th>Heure</th>
+        <th>Lundi</th>
+        <th>Mardi</th>
+        <th>Mercredi</th>
+        <th>Jeudi</th>
+        <th>Vendredi</th>
+        <th>Samedi</th>
+        <th>Dimanche</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-hour="8">
+        <td>08h - 09h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="9">
+        <td>09h - 10h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="10">
+        <td>10h - 11h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="11">
+        <td>11h - 12h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="12">
+        <td>12h - 13h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="13">
+        <td>13h - 14h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="14">
+        <td>14h - 15h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="15">
+        <td>15h - 16h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="16">
+        <td>16h - 17h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="17">
+        <td>17h - 18h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="18">
+        <td>18h - 19h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="19">
+        <td>19h - 20h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr data-hour="20">
+        <td>20h - 21h</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button id="enregistrer">Enregistrer mes disponibilités</button>
+
+  <script>
+    function selectRange(start, end) {
+      // Réinitialiser toutes les lignes
+      document.querySelectorAll('.grille tbody tr').forEach(tr => {
+        tr.classList.remove('selected');
+      });
+
+      // Sélectionner les lignes dans la plage
+      document.querySelectorAll('.grille tbody tr').forEach(tr => {
+        const hour = parseInt(tr.getAttribute('data-hour'));
+        if (hour >= start && hour < end) {
+          tr.classList.add('selected');
+        }
+      });
+    }
+  </script>
+  <script src="../js/disponibilite.js"></script>
+
+
+<!-- Boutons de navigation -->
+<div class="navigation">
+  <button id="precedent">Précédent</button>
+  <button id="suivant">Suivant</button>
+</div>
+
+</body>
+</html>

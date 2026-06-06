@@ -1,0 +1,85 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+h2 {
+  margin: 20px 0;
+  color: #2c3e50;
+}
+
+table.grille {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 90%;
+}
+
+table.grille th, table.grille td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  min-width: 80px;
+}
+
+table.grille th {
+  background-color: #34495e;
+  color: white;
+}
+
+table.grille td {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+/* Effet visuel quand une case est sélectionnée */
+table.grille td.selected {
+  background-color: purple;
+  color: white;
+}
+/* Style général des boutons */
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #34495e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2c3e50;
+}
+
+/* Bouton enregistrer distinct */
+#enregistrer {
+  margin-top: 20px;
+  background-color: purple;
+}
+
+#enregistrer:hover {
+  background-color: #6a0dad;
+}
+.navigation {
+  margin-top: 20px;
+}
+
+.navigation button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #34495e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.navigation button:hover {
+  background-color: #2c3e50;
+}
+
