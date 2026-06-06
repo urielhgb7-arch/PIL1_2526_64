@@ -11,6 +11,7 @@ load_dotenv(env_file)
 
 from app import create_app
 from app.database import db
+from app.sockets.chat import socketio
 
 app = create_app()
 
@@ -27,12 +28,12 @@ def init_db_if_needed():
             
             # Si la DB n'existe pas ou est vide, initialise-la
             if not db_path.exists() or db_path.stat().st_size == 0:
-                print("⚠️  Base de données non trouvée. Initialisation en cours...")
-                print("📌 Vous pouvez aussi lancer: python init_db.py")
+                print("Base de données non trouvée. Initialisation en cours...")
+                print("Vous pouvez aussi lancer: python init_db.py")
                 
                 try:
                     db.create_all()
-                    print("✅ Tables créées.")
+                    print("Tables créées.")
                     
                     # Seed des matières
                     from app.models import Matiere
@@ -58,12 +59,12 @@ def init_db_if_needed():
                             db.session.add(Matiere(**mat_data))
                         
                         db.session.commit()
-                        print(f"✅ {len(matieres_data)} matières créées.")
+                        print(f"{len(matieres_data)} matières créées.")
                 
                 except Exception as e:
-                    print(f"❌ Erreur lors de l'initialisation: {e}")
+                    print(f"Erreur lors de l'initialisation: {e}")
 
 if __name__ == '__main__':
     init_db_if_needed()
-    print(f"🚀 Lancement du serveur Flask en mode {os.getenv('FLASK_ENV', 'development')}...")
-    app.run(debug=os.getenv('FLASK_ENV') == 'development')
+    print(f"Lancement du serveur Flask en mode {os.getenv('FLASK_ENV', 'development')}...")
+    socketio.run(app, debug=os.getenv('FLASK_ENV') == 'development', host='0.0.0.0')

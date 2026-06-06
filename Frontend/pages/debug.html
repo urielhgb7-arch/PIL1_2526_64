@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorLink - Page de test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-t45L5bZbpq60Gw7bYfGjP0GynwgBtmNUbdB4yp0e68x5JId3dRvPDSB0QbUSzKp0" crossorigin="anonymous"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-white">MentorLink - Interface de test</h1>
+            <p class="text-slate-400 mt-2">Teste auth, profil, matching, messagerie, notifications, WebSocket et polling.</p>
+        </header>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+            <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700">
+                <h2 class="text-xl font-semibold mb-3">Authentification</h2>
+                <div class="space-y-4">
+                    <form id="loginForm" class="space-y-3">
+                        <h3 class="text-lg font-medium">Connexion</h3>
+                        <input id="loginEmail" type="email" placeholder="Email" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <input id="loginPassword" type="password" placeholder="Mot de passe" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <button class="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500">Se connecter</button>
+                    </form>
+
+                    <form id="registerForm" class="space-y-3">
+                        <h3 class="text-lg font-medium">Inscription</h3>
+                        <input id="registerEmail" type="email" placeholder="Email" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <input id="registerPassword" type="password" placeholder="Mot de passe" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <input id="registerNom" type="text" placeholder="Nom" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <input id="registerPrenom" type="text" placeholder="Prénom" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <input id="registerFiliere" type="text" placeholder="Filière" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <input id="registerNiveau" type="text" placeholder="Niveau (L1, L2, M1...)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
+                        <button class="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500">Créer un compte</button>
+                    </form>
+
+                    <div class="flex gap-3">
+                        <button id="logoutBtn" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Déconnexion</button>
+                        <button id="refreshStatusBtn" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Rafraîchir statut</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700">
+                <h2 class="text-xl font-semibold mb-3">Actions rapides</h2>
+                <div class="space-y-3">
+                    <button id="btnMe" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Profil / Me</button>
+                    <button id="btnMatieres" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Liste des matières</button>
+                    <button id="btnMatches" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Suggestions de matching</button>
+                    <button id="btnConvs" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Mes conversations</button>
+                    <button id="btnNotifs" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Notifications</button>
+                </div>
+            </section>
+        </div>
+
+        <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700 mt-6">
+            <h2 class="text-xl font-semibold mb-3">WebSocket & polling</h2>
+            <div class="grid gap-4 lg:grid-cols-2">
+                <div class="space-y-3">
+                    <button id="socketConnect" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Connecter WebSocket</button>
+                    <button id="socketDisconnect" class="w-full py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Déconnecter</button>
+                    <button id="socketRegister" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">S'enregistrer (user_id)</button>
+                    <button id="socketJoin" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Joindre conversation</button>
+                    <button id="socketSend" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Envoyer message WebSocket</button>
+                    <button id="socketNotify" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Envoyer notification match</button>
+                </div>
+                <div class="space-y-3">
+                    <button id="pollCheck" class="w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-500">Vérifier polling messages</button>
+                    <button id="pollStart" class="w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-500">Démarrer polling</button>
+                    <button id="pollStop" class="w-full py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Arrêter polling</button>
+                    <input id="pollConvId" type="number" placeholder="Conversation ID" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700 mt-6">
+            <h2 class="text-xl font-semibold mb-3">Résultat</h2>
+            <div class="bg-slate-950 rounded-2xl p-4 min-h-[220px] overflow-auto">
+                <pre id="output" class="whitespace-pre-wrap text-slate-200"></pre>
+            </div>
+        </section>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        const socketStatus = { connected: false };
+        let socket = null;
+        let pollingId = null;
+
+        function log(message, data = null) {
+            const time = new Date().toLocaleTimeString();
+            output.textContent = `[${time}] ${message}\n` + (data ? JSON.stringify(data, null, 2) + '\n' : '') + output.textContent;
+        }
+
+        function currentToken() {
+            return localStorage.getItem('mentorlink_token');
+        }
+
+        function currentUserId() {
+            const user = localStorage.getItem('mentorlink_user');
+            return user ? JSON.parse(user).id : null;
+        }
+
+        async function safeCall(fn, label) {
+            try {
+                const result = await fn();
+                log(label, result);
+                return result;
+            } catch (err) {
+                log(label + ' — ERREUR', err.message || err);
+                throw err;
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async event => {
+            event.preventDefault();
+            const data = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+            const result = await safeCall(() => API.auth.login(data), 'Connexion');
+            localStorage.setItem('mentorlink_token', result.token);
+            localStorage.setItem('mentorlink_user', JSON.stringify(result.user));
+            log('Connecté en tant que', result.user);
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async event => {
+            event.preventDefault();
+            const data = {
+                email: document.getElementById('registerEmail').value,
+                password: document.getElementById('registerPassword').value,
+                nom: document.getElementById('registerNom').value,
+                prenom: document.getElementById('registerPrenom').value,
+                filiere: document.getElementById('registerFiliere').value,
+                niveau: document.getElementById('registerNiveau').value
+            };
+            await safeCall(() => API.auth.register(data), 'Inscription');
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('mentorlink_token');
+            localStorage.removeItem('mentorlink_user');
+            log('Déconnexion effectuée');
+        });
+
+        document.getElementById('refreshStatusBtn').addEventListener('click', () => {
+            log('Token présent', currentToken() ? 'oui' : 'non');
+            log('User actuel', JSON.parse(localStorage.getItem('mentorlink_user') || 'null'));
+        });
+
+        document.getElementById('btnMe').addEventListener('click', () => safeCall(() => API.profile.getMe(), 'Profil actuel'));
+        document.getElementById('btnMatieres').addEventListener('click', () => safeCall(() => API.matieres.getAll(), 'Matières'));
+        document.getElementById('btnMatches').addEventListener('click', () => safeCall(() => API.matching.getSuggestions(), 'Suggestions de matching'));
+        document.getElementById('btnConvs').addEventListener('click', () => safeCall(() => API.messages.getConversations(), 'Conversations'));
+        document.getElementById('btnNotifs').addEventListener('click', () => safeCall(() => API.notifications.getAll(), 'Notifications'));
+
+        document.getElementById('socketConnect').addEventListener('click', () => {
+            if (socket && socket.connected) {
+                log('Socket déjà connecté');
+                return;
+            }
+            socket = io('http://127.0.0.1:5000', { transports: ['websocket', 'polling'] });
+            socket.on('connect', () => {
+                socketStatus.connected = true;
+                log('Socket connecté', { id: socket.id });
+            });
+            socket.on('connected', data => log('Event connected', data));
+            socket.on('joined', data => log('Event joined', data));
+            socket.on('new_message', data => log('Event new_message', data));
+            socket.on('match_received', data => log('Event match_received', data));
+            socket.on('registered', data => log('Event registered', data));
+            socket.on('disconnect', () => {
+                socketStatus.connected = false;
+                log('Socket déconnecté');
+            });
+            socket.on('connect_error', err => log('Socket erreur', err.message || err));
+        });
+
+        document.getElementById('socketDisconnect').addEventListener('click', () => {
+            if (socket) {
+                socket.disconnect();
+                log('Socket déconnecté manuellement');
+            }
+        });
+
+        document.getElementById('socketRegister').addEventListener('click', () => {
+            const userId = currentUserId();
+            if (!socket || !socket.connected) {
+                log('Connecte d’abord le socket');
+                return;
+            }
+            socket.emit('register', { user_id: userId });
+            log('Envoi register', { user_id: userId });
+        });
+
+        document.getElementById('socketJoin').addEventListener('click', () => {
+            const convId = parseInt(document.getElementById('pollConvId').value, 10);
+            if (!socket || !socket.connected) return log('Connecte d’abord le socket');
+            socket.emit('join', { conversation_id: convId });
+            log('Envoi join', { conversation_id: convId });
+        });
+
+        document.getElementById('socketSend').addEventListener('click', () => {
+            const convId = parseInt(document.getElementById('pollConvId').value, 10);
+            if (!socket || !socket.connected) return log('Connecte d’abord le socket');
+            const senderId = currentUserId();
+            socket.emit('send_message', { conversation_id: convId, sender_id: senderId, contenu: `Message de test ${new Date().toLocaleTimeString()}` });
+            log('Envoi send_message', { conversation_id: convId, sender_id: senderId });
+        });
+
+        document.getElementById('socketNotify').addEventListener('click', () => {
+            const userId = currentUserId();
+            if (!socket || !socket.connected) return log('Connecte d’abord le socket');
+            socket.emit('notify_match', { recipient_id: userId, student_nom: 'Testeur', matiere: 'Algorithmique' });
+            log('Envoi notify_match', { recipient_id: userId });
+        });
+
+        async function pollingCheck() {
+            const token = currentToken();
+            if (!token) return log('Token requis pour polling');
+            const convId = parseInt(document.getElementById('pollConvId').value, 10);
+            if (!convId) return log('Renseigne un conversation_id pour polling');
+            const response = await fetch(`http://127.0.0.1:5000/api/polling/messages?conversation_id=${convId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await response.json();
+            log('Polling message', data);
+        }
+
+        document.getElementById('pollCheck').addEventListener('click', pollingCheck);
+
+        document.getElementById('pollStart').addEventListener('click', () => {
+            if (pollingId) return log('Polling déjà actif');
+            pollingId = setInterval(pollingCheck, 5000);
+            log('Polling démarré (toutes les 5s)');
+        });
+
+        document.getElementById('pollStop').addEventListener('click', () => {
+            clearInterval(pollingId);
+            pollingId = null;
+            log('Polling arrêté');
+        });
+    </script>
+</body>
+</html>

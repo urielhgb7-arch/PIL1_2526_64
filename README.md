@@ -23,45 +23,107 @@ Plateforme de mentorat académique basée sur un matching intelligent.
 | 6 | **TOCHENALI Paola Eloane** | B2 | Développeur Frontend |
 ## 🗂️ Structure du projet
 
-projet-flask/
-├── app/
-│   ├── __init__.py
-│   ├── models.py
-│   ├── routes/
-│   │   ├── auth.py
-│   │   └── profils.py
-│   └── templates/
-│       ├── base.html
-│       ├── login.html
-│       └── register.html
+PIL1_2526_64/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── database/
+│   │   │   └── __init__.py
+│   │   ├── config/
+│   │   │   ├── __init__.py
+│   │   │   └── logging_config.py
+│   │   ├── middleware/
+│   │   │   └── auth_guard.py
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── sockets/
+│   ├── run.py
+│   └── requirements.txt
+├── Frontend/
+│   ├── index.html
+│   ├── pages/
+│   │   ├── login.html
+│   │   ├── debug.html
+│   ├── js/
+│   │   └── api.js
+│   ├── css/
+│   └── assets/
 ├── docs/
-│   └── postman_collection.json
 ├── rapport.html
-├── requirements.txt
-├── render.yaml
 └── README.md
 
 ## ⚙️ Installation locale
 
-# 1. Cloner le dépôt
+1. Cloner le dépôt
+```bash
 git clone https://github.com/votre-org/projet-flask.git
-cd projet-flask
+cd PIL1_2526_64
+```
 
-# 2. Créer un environnement virtuel
-python -m venv venv
-source venv/bin/activate  # Windows : venv\Scripts\activate
+2. Créer un environnement virtuel
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS / Linux
+source .venv/bin/activate
+```
 
-# 3. Installer les dépendances
-<<<<<<< HEAD
-pip install -r requirements.txt.
-=======
+3. Installer les dépendances backend
+```bash
+cd backend
 pip install -r requirements.txt
->>>>>>> 031f9fe4370b1d031dac17a56665eacfc3efb57a
+```
 
-# 4. Lancer l'application
-flask run
+4. Lancer le backend
+```bash
+python run.py
+```
+Le backend écoute par défaut sur `http://127.0.0.1:5000`.
 
-L'application sera disponible sur http://localhost:5000
+5. Lancer le frontend de test
+```bash
+cd ../Frontend
+python -m http.server 8000
+```
+Ouvrir `http://127.0.0.1:8000/pages/debug.html` dans un navigateur.
+
+## 🧪 Tests en local et sur plusieurs navigateurs
+
+### Page de test
+- Utilise `Frontend/pages/debug.html`.
+- Elle permet de tester :
+  - inscription et connexion
+  - récupération du profil
+  - liste des matières
+  - suggestions de matching
+  - conversations et messages
+  - notifications
+  - WebSocket
+  - polling
+
+### Test WebSocket (3 navigateurs)
+1. Ouvre `http://127.0.0.1:8000/pages/debug.html` dans trois navigateurs différents.
+2. Connecte-toi avec le même compte dans chaque navigateur.
+3. Dans chaque navigateur, clique sur `Connecter WebSocket`.
+4. Clique sur `S'enregistrer (user_id)` pour associer le socket à l'utilisateur.
+5. Renseigne la même `Conversation ID` dans chaque navigateur.
+6. Clique sur `Joindre conversation` dans chaque navigateur.
+7. Dans un navigateur, clique sur `Envoyer message WebSocket`.
+8. Vérifie que les autres navigateurs reçoivent bien l'événement `new_message`.
+
+### Test polling
+1. Ouvre la page de test dans au moins un navigateur.
+2. Clique sur `Démarrer polling`.
+3. Dans un autre onglet ou un autre navigateur, envoie un message ou ajoute du contenu qui devrait être détecté.
+4. Vérifie dans le premier navigateur que les nouvelles données sont récupérées toutes les 5 secondes.
+5. Clique sur `Arrêter polling` pour mettre fin au test.
+
+### Notes importantes
+- Assure-toi que le backend est démarré avant d'ouvrir la page debug.
+- Si `127.0.0.1:5000` ne fonctionne pas, vérifie le port et l'URL dans `Frontend/pages/debug.html`.
+- Le front de test est conçu pour être simple, mais il couvre toutes les fonctionnalités backend actuelles.
 
 ## 🌐 Déploiement (Render)
 

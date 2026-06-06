@@ -20,12 +20,16 @@ def create_app(config_name=None):
     # Setup logging
     setup_logging(flask_app)
     logger = logging.getLogger(__name__)
-    logger.info(f"📋 Configuration: {config_name}")
+    logger.info(f"Configuration: {config_name}")
 
     CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 
     db.init_app(flask_app)
     JWTManager(flask_app)
+
+    # Socket.IO
+    from app.sockets.chat import socketio
+    socketio.init_app(flask_app)
 
     # Modèles
     from app import models

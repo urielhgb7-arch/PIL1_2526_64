@@ -44,4 +44,4 @@ def setup_logging(app):
     logging.getLogger('flask.app').setLevel(logging.INFO)
     logging.getLogger('werkzeug').setLevel(logging.INFO)
     
-    app.logger.info("🚀 Logging configuré")
+    app.logger.info("Logging configuré")
