@@ -9,7 +9,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
 from app.models import User, Profile, Conversation, Notification
-from app.models.services import Matching
+from app.models.services import Matching, ProfilCompetence
 from app.services.matching import calculate_matches
 from app.validators import matiere_exists
 
@@ -62,7 +62,7 @@ def request_match(student_id):
         return jsonify({"message": "Matière introuvable"}), 404
 
     # Vérifier que le candidat existe
-    candidate = User.query.get(student_id)
+    candidate = db.session.get(User, student_id)
     if not candidate:
         return jsonify({"message": "Candidat introuvable"}), 404
 
@@ -89,9 +89,27 @@ def request_match(student_id):
         status='pending'
     )
     db.session.add(new_match)
+    db.session.flush()  # obtenir new_match.id avant commit
+    # Créer une conversation immédiatement pour permettre au candidat
+    # et au mentor d'échanger dès que la demande est envoyée.
+    existing_conv = Conversation.query.filter_by(
+        user_one_id=current_user_id,
+        user_two_id=student_id
+    ).first() or Conversation.query.filter_by(
+        user_one_id=student_id,
+        user_two_id=current_user_id
+    ).first()
+
+    if not existing_conv:
+        conv = Conversation(user_one_id=current_user_id, user_two_id=student_id)
+        db.session.add(conv)
+        db.session.flush()
+        conversation_id = conv.id
+    else:
+        conversation_id = existing_conv.id
 
     # Notifier le candidat (Section 13 du PDF)
-    demandeur = User.query.get(current_user_id)
+    demandeur = db.session.get(User, current_user_id)
     demandeur_profile = Profile.query.filter_by(user_id=current_user_id).first()
     notif = Notification(
         user_id=student_id,
@@ -105,7 +123,8 @@ def request_match(student_id):
     return jsonify({
         "message": "Demande envoyée avec succès",
         "matching_id": new_match.id,
-        "status": "pending"
+        "status": "pending",
+        "conversation_id": conversation_id
     }), 201
 
 
@@ -116,7 +135,7 @@ def request_match(student_id):
 def accept_match(matching_id):
     current_user_id = int(get_jwt_identity())
 
-    match = Matching.query.get(matching_id)
+    match = db.session.get(Matching, matching_id)
     if not match:
         return jsonify({"message": "Matching introuvable"}), 404
 
@@ -150,6 +169,17 @@ def accept_match(matching_id):
     else:
         conversation_id = existing_conv.id
 
+    # --- Geler la disponibilité de l'aidant pour cette matière ---
+    # On marque la compétence correspondante comme non-disponible
+    helper_profile = Profile.query.filter_by(user_id=match.user_two_id).first()
+    if helper_profile:
+        comp = ProfilCompetence.query.filter_by(profile_id=helper_profile.id, matiere_id=match.matiere_id).first()
+        if comp:
+            comp.is_available_to_help = False
+
+        # Optionnel : marquer le profil global comme non-disponible
+        helper_profile.disponible = False
+
     # Notifier le demandeur que sa demande a été acceptée
     accepteur_profile = Profile.query.filter_by(user_id=current_user_id).first()
     notif = Notification(
@@ -175,7 +205,7 @@ def accept_match(matching_id):
 def reject_match(matching_id):
     current_user_id = int(get_jwt_identity())
 
-    match = Matching.query.get(matching_id)
+    match = db.session.get(Matching, matching_id)
     if not match:
         return jsonify({"message": "Matching introuvable"}), 404
 

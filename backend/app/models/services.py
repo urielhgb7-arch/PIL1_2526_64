@@ -1,6 +1,6 @@
 # backend/app/models/services.py
 from app.database import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Matiere(db.Model):
     __tablename__ = 'matieres'
@@ -21,7 +21,7 @@ class Offer(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     matiere_id = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     description = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', back_populates='offers')
 
@@ -32,7 +32,7 @@ class Demand(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     matiere_id = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     description = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', back_populates='demands')
 
@@ -55,10 +55,6 @@ class ProfilLacune(db.Model):
 
     matiere = db.relationship('Matiere', back_populates='lacunes')
 
-    # À AJOUTER dans backend/app/models/services.py
-# (après les classes Offer et Demand existantes)
-
-from datetime import datetime
 
 class Matching(db.Model):
     __tablename__ = 'matching'
@@ -70,7 +66,7 @@ class Matching(db.Model):
     matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     status       = db.Column(db.String(20), nullable=False, default='pending')         # pending/accepted/rejected
     score        = db.Column(db.Float, nullable=False)
-    created_at   = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', foreign_keys=[matiere_id])
 

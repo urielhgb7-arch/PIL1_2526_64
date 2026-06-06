@@ -1,5 +1,5 @@
 from app.database import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Profile(db.Model):
     __tablename__ = 'profiles'
@@ -15,7 +15,7 @@ class Profile(db.Model):
     telephone = db.Column(db.String(20))
     avatar_url = db.Column(db.Text, default='https://via.placeholder.com/150')  # ← AJOUTE ÇA
     disponible = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     disponibilites = db.relationship('Disponible', backref='profile', cascade="all, delete-orphan")
     offers = db.relationship('Offer', backref='profile', cascade="all, delete-orphan")

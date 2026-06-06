@@ -69,7 +69,9 @@ CREATE TABLE disponibilites (
 -- ----------------------------------------------------------------------------
 CREATE TABLE matieres (
     id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) UNIQUE NOT NULL
+    nom VARCHAR(100) UNIQUE NOT NULL,
+    filiere VARCHAR(50),
+    annee VARCHAR(10)
 );
 
 -- ----------------------------------------------------------------------------
@@ -165,17 +167,17 @@ CREATE TABLE notifications (
 -- ============================================================================
 
 -- Injection des matières officielles de l'IFRI
-INSERT INTO matieres (nom) VALUES 
-('Algorithmique'), 
-('Architecture des ordinateurs'), 
-('Base de données (SQL)'), 
-('Programmation Web (HTML/CSS/JS)'), 
-('Réseaux et Télécoms'), 
-('Système d''exploitation Linux'), 
-('Génie Logiciel'),
-('Intelligence Artificielle'), 
-('Cybersécurité'), 
-('Cloud Computing'), 
-('Data Science'), 
-('DevOps'), 
-('Mobile (Android/iOS)');
+INSERT INTO matieres (nom, filiere, annee) VALUES 
+('Algorithmique', 'Informatique', 'L1'), 
+('Architecture des ordinateurs', 'Informatique', 'L1'), 
+('Base de données (SQL)', 'Informatique', 'L2'), 
+('Programmation Web (HTML/CSS/JS)', 'Informatique', 'L2'), 
+('Réseaux et Télécoms', 'Informatique', 'L1'), 
+('Système d''exploitation Linux', 'Informatique', 'L1'), 
+('Génie Logiciel', 'Informatique', 'L3'),
+('Intelligence Artificielle', 'Informatique', 'L3'), 
+('Cybersécurité', 'Informatique', 'M1'), 
+('Cloud Computing', 'Informatique', 'M1'), 
+('Data Science', 'Informatique', 'M2'), 
+('DevOps', 'Informatique', 'M1'), 
+('Mobile (Android/iOS)', 'Informatique', 'L3');

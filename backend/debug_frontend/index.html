@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorLink Backend Test UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>MentorLink Backend Test UI</h1>
+        <p>Interface temporaire isolée pour tester les API backend sans toucher au frontend de production.</p>
+    </header>
+
+    <main>
+        <section class="section card">
+            <h2>Configuration</h2>
+            <div class="field-row">
+                <label for="backendUrl">API backend URL</label>
+                <input id="backendUrl" type="text" value="http://127.0.0.1:5000/api">
+                <button type="button" id="saveBackendUrl">Sauvegarder</button>
+            </div>
+            <div class="field-row">
+                <button type="button" id="loadMatieres">🔄 Charger les matières</button>
+            </div>
+            <div class="status-row">
+                <div><strong>Statut :</strong> <span id="statusText">Déconnecté</span></div>
+                <div><strong>Utilisateur :</strong> <span id="userEmail">-</span></div>
+            </div>
+        </section>
+
+        <section class="section card two-column">
+            <div>
+                <h2>Authentification</h2>
+                <form id="registerForm">
+                    <h3>Inscription</h3>
+                    <div class="field-row"><label for="registerEmail">Email</label><input id="registerEmail" name="email" type="email" required></div>
+                    <div class="field-row"><label for="registerPassword">Mot de passe</label><input id="registerPassword" name="password" type="password" required></div>
+                    <div class="field-row"><label for="registerNom">Nom</label><input id="registerNom" name="nom" type="text"></div>
+                    <div class="field-row"><label for="registerPrenom">Prénom</label><input id="registerPrenom" name="prenom" type="text"></div>
+                    <div class="field-row"><label for="registerFiliere">Filière</label>
+                        <select id="registerFiliere" name="filiere">
+                            <option value="Informatique">Informatique</option>
+                            <option value="Gestion">Gestion</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Réseaux">Réseaux</option>
+                            <option value="Design">Design</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="field-row"><label for="registerNiveau">Année</label>
+                        <select id="registerNiveau" name="niveau">
+                            <option value="L1">L1</option>
+                            <option value="L2">L2</option>
+                            <option value="L3">L3</option>
+                            <option value="M1">M1</option>
+                            <option value="M2">M2</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="field-row"><label for="registerFormat">Format</label>
+                        <select id="registerFormat" name="format_preference">
+                            <option value="hybride">hybride</option>
+                            <option value="presentiel">présentiel</option>
+                            <option value="en_ligne">en ligne</option>
+                        </select>
+                    </div>
+                    <button type="submit">Inscrire</button>
+                </form>
+
+                <form id="loginForm">
+                    <h3>Connexion</h3>
+                    <div class="field-row"><label for="loginEmail">Email</label><input id="loginEmail" name="email" type="email" required></div>
+                    <div class="field-row"><label for="loginPassword">Mot de passe</label><input id="loginPassword" name="password" type="password" required></div>
+                    <button type="submit">Se connecter</button>
+                </form>
+                <button type="button" id="logoutButton" class="secondary">Se déconnecter</button>
+            </div>
+
+            <div>
+                <h2>Profile</h2>
+                <button type="button" id="loadProfile">Charger le profil</button>
+                <pre id="profileData" class="response-box">Aucun profil chargé.</pre>
+
+                <form id="updateProfileForm">
+                    <h3>Mettre à jour le profil</h3>
+                    <div class="field-row"><label for="profileNom">Nom</label><input id="profileNom" name="nom" type="text"></div>
+                    <div class="field-row"><label for="profilePrenom">Prénom</label><input id="profilePrenom" name="prenom" type="text"></div>
+                    <div class="field-row"><label for="profileFiliere">Filière</label>
+                        <select id="profileFiliere" name="filiere">
+                            <option value="Informatique">Informatique</option>
+                            <option value="Gestion">Gestion</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Réseaux">Réseaux</option>
+                            <option value="Design">Design</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="field-row"><label for="profileNiveau">Année</label>
+                        <select id="profileNiveau" name="niveau">
+                            <option value="L1">1ère année</option>
+                            <option value="L2">2ème année</option>
+                            <option value="L3">3ème année</option>
+                            <option value="M1">4ème année</option>
+                            <option value="M2">5ème année</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="field-row"><label for="profileFormat">Format</label>
+                        <select id="profileFormat" name="format_preference">
+                            <option value="hybride">hybride</option>
+                            <option value="presentiel">présentiel</option>
+                            <option value="en_ligne">en ligne</option>
+                        </select>
+                    </div>
+                    <div class="field-row"><label for="profileBio">Bio</label><input id="profileBio" name="bio" type="text"></div>
+                    <div class="field-row"><label for="profileTelephone">Téléphone</label><input id="profileTelephone" name="telephone" type="text"></div>
+                    <div class="field-row checkbox-row"><label for="profileDisponible">Disponible</label><input id="profileDisponible" name="disponible" type="checkbox"></div>
+                    <button type="submit">Envoyer</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="section card two-column">
+            <div>
+                <h2>Compétences</h2>
+                <form id="addCompetenceForm">
+                    <div class="field-row"><label for="competenceMatiere">Matière</label><select id="competenceMatiere" name="matiere_id"></select></div>
+                    <div class="field-row"><label for="competenceNiveau">Niveau</label>
+                        <select id="competenceNiveau" name="niveau">
+                            <option value="Débutant">Débutant</option>
+                            <option value="Intermédiaire" selected>Intermédiaire</option>
+                            <option value="Avancé">Avancé</option>
+                            <option value="Expert">Expert</option>
+                        </select>
+                    </div>
+                    <div class="field-row checkbox-row"><label for="competenceAvailable">Disponible pour aider</label><input id="competenceAvailable" name="is_available_to_help" type="checkbox" checked></div>
+                    <button type="submit">Ajouter compétence</button>
+                </form>
+                <div id="competenceResult" class="response-box">Résultat compétence</div>
+            </div>
+
+            <div>
+                <h2>Faiblesses</h2>
+                <form id="addWeaknessForm">
+                    <div class="field-row"><label for="weaknessMatiere">Matière</label><select id="weaknessMatiere" name="matiere_id"></select></div>
+                    <div class="field-row"><label for="weaknessPriorite">Gravité</label>
+                        <select id="weaknessPriorite" name="priorite">
+                            <option value="Basse">Basse</option>
+                            <option value="Moyenne" selected>Moyenne</option>
+                            <option value="Haute">Haute</option>
+                            <option value="Urgente">Urgente</option>
+                        </select>
+                    </div>
+                    <button type="submit">Ajouter faiblesse</button>
+                </form>
+                <div id="weaknessResult" class="response-box">Résultat faiblesse</div>
+            </div>
+        </section>
+
+        <section class="section card two-column">
+            <div>
+                <h2>Disponibilités</h2>
+                <form id="addAvailabilityForm">
+                    <div class="field-row"><label for="availabilityJour">Jour</label>
+                        <select id="availabilityJour" name="jour">
+                            <option value="Lundi">Lundi</option>
+                            <option value="Mardi">Mardi</option>
+                            <option value="Mercredi">Mercredi</option>
+                            <option value="Jeudi">Jeudi</option>
+                            <option value="Vendredi">Vendredi</option>
+                            <option value="Samedi">Samedi</option>
+                            <option value="Dimanche">Dimanche</option>
+                        </select>
+                    </div>
+                    <div class="field-row"><label for="availabilityCreneau">Créneau</label>
+                        <select id="availabilityCreneau" name="creneau">
+                            <option value="08:00-09:00">08:00-09:00</option>
+                            <option value="09:00-10:00">09:00-10:00</option>
+                            <option value="10:00-11:00">10:00-11:00</option>
+                            <option value="11:00-12:00">11:00-12:00</option>
+                            <option value="12:00-13:00">12:00-13:00</option>
+                            <option value="13:00-14:00">13:00-14:00</option>
+                            <option value="14:00-15:00">14:00-15:00</option>
+                            <option value="15:00-16:00">15:00-16:00</option>
+                            <option value="16:00-17:00">16:00-17:00</option>
+                            <option value="17:00-18:00">17:00-18:00</option>
+                            <option value="18:00-19:00">18:00-19:00</option>
+                            <option value="19:00-20:00">19:00-20:00</option>
+                        </select>
+                    </div>
+                    <button type="submit">Ajouter créneau</button>
+                </form>
+                <div id="availabilityResult" class="response-box">Résultat disponibilité</div>
+            </div>
+
+            <div>
+                <h2>Matching</h2>
+                <button type="button" id="runMatching">Exécuter matching</button>
+                <div id="matchingResults"></div>
+            </div>
+        </section>
+
+        <section class="section card two-column">
+            <div>
+                <h2>Demandes</h2>
+                <div class="field-row"><label for="requestCandidateId">Candidat ID</label><input id="requestCandidateId" type="number"></div>
+                <div class="field-row"><label for="requestMatiere">Matière</label><select id="requestMatiere"></select></div>
+                <button type="button" id="createRequest">Créer demande</button>
+                <button type="button" id="viewSentRequests">Voir demandes envoyées</button>
+                <button type="button" id="viewReceivedRequests">Voir demandes reçues</button>
+                <div id="requestsResult" class="response-box">Résultats demandes</div>
+            </div>
+
+            <div>
+                <h2>Notifications</h2>
+                <div class="field-row">
+                    <button type="button" id="loadNotifications">📬 Charger notifications</button>
+                    <button type="button" id="markAllRead" class="secondary">✓ Marquer tout comme lues</button>
+                </div>
+                <div id="notificationsResult" class="response-box">
+                    <div class="notification-summary">
+                        <span id="notificationCount">0 notifications</span> - 
+                        <span id="unreadCount">0 non lues</span>
+                    </div>
+                    <div id="notificationsList"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section card two-column">
+            <div>
+                <h2>Conversations</h2>
+                <div class="field-row"><label for="conversationId">Conversation ID</label><input id="conversationId" type="number"></div>
+                <button type="button" id="openConversation">Ouvrir conversation</button>
+                <div id="conversationMessages" class="response-box">Messages</div>
+                <form id="sendMessageForm">
+                    <div class="field-row"><label for="messageContent">Message</label><input id="messageContent" name="contenu" type="text"></div>
+                    <button type="submit">Envoyer message</button>
+                </form>
+            </div>
+
+            <div>
+                <h2>Utilitaires</h2>
+                <button type="button" id="loadConversations">Charger conversations</button>
+                <div id="conversationsResult" class="response-box">Aucune conversation.</div>
+                <button type="button" id="viewProfileJson">Afficher profil brut</button>
+            </div>
+        </section>
+
+        <section class="section card">
+            <h2>Inspecteur de requêtes</h2>
+            <div id="requestInspector" class="response-box">Aucune requête envoyée.</div>
+            <h2>Dernière réponse API</h2>
+            <pre id="apiResponse" class="response-box">Aucune réponse.</pre>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
