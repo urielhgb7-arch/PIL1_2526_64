@@ -48,6 +48,9 @@ def create_app(config_name=None):
 
     from app.sockets.polling import polling_bp
     flask_app.register_blueprint(polling_bp, url_prefix='/api')
+    
+    from app.routes.offers import offers_bp
+    flask_app.register_blueprint(offers_bp, url_prefix='/api')
 
     @flask_app.route('/api/health', methods=['GET'])
     def health_check():
