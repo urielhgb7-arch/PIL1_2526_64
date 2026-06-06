@@ -20,7 +20,9 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL', 'sqlite:///:memory:')
+    # Prefer explicit TEST_DATABASE_URL (set via backend/.env.local),
+    # otherwise fallback to DATABASE_URL. Avoid defaulting to SQLite here.
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or os.environ.get('DATABASE_URL') or 'sqlite:///:memory:'
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'test-secret-key')
 
 class ProductionConfig(Config):

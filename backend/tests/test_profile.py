@@ -151,3 +151,44 @@ def test_add_disponibilite(client, app_context):
         headers={'Authorization': f'Bearer {token}'})
     
     assert resp.status_code == 201
+
+
+def test_delete_lacune(client, app_context):
+    """Test suppression d'une lacune"""
+    # Setup
+    user = User(email='user2@test.com', role='student')
+    user.set_password('pass123')
+    db.session.add(user)
+    db.session.commit()
+
+    profile = Profile(user_id=user.id, nom='Test2', prenom='User2',
+                     filiere='INFO', niveau='L1')
+    db.session.add(profile)
+    db.session.commit()
+
+    matiere = Matiere(nom='Algorithmique2', filiere='INFO', annee='L1')
+    db.session.add(matiere)
+    db.session.commit()
+
+    # Login
+    resp_login = client.post('/api/auth/login',
+        json={'email': 'user2@test.com', 'password': 'pass123'})
+    token = resp_login.json['token']
+
+    # Add lacune
+    resp = client.post('/api/profile/lacunes',
+        json={'matiere_id': matiere.id, 'priorite': 'Haute'},
+        headers={'Authorization': f'Bearer {token}'})
+    assert resp.status_code == 201
+
+    # Delete lacune
+    resp_del = client.delete('/api/profile/lacunes',
+        json={'matiere_id': matiere.id},
+        headers={'Authorization': f'Bearer {token}'})
+    assert resp_del.status_code == 200
+
+    # Check profile no longer contains lacunes
+    resp_check = client.get('/api/profile/me', headers={'Authorization': f'Bearer {token}'})
+    assert resp_check.status_code == 200
+    assert isinstance(resp_check.json.get('lacunes'), list)
+    assert all(l['matiere_id'] != matiere.id for l in resp_check.json.get('lacunes', []))

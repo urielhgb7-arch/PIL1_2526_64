@@ -65,6 +65,58 @@ def get_my_profile(current_user):
     }), 200
 
 
+# ─── POST /api/profile/lacunes ─────────────────────────────────────────────
+@profile_bp.route('/profile/lacunes', methods=['POST'])
+@token_required
+def add_lacune(current_user):
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    data = request.get_json()
+    matiere_id = data.get('matiere_id')
+    priorite = data.get('priorite', 'Moyenne')
+
+    if not matiere_id:
+        return jsonify({"message": "matiere_id requis"}), 400
+
+    if not matiere_exists(matiere_id):
+        return jsonify({"message": "Matière introuvable"}), 404
+
+    if not is_valid_priority_level(priorite):
+        return jsonify({"message": "Priorité invalide"}), 400
+
+    existing = ProfilLacune.query.filter_by(profile_id=profile.id, matiere_id=matiere_id).first()
+    if existing:
+        return jsonify({"message": "Lacune déjà ajoutée"}), 400
+
+    lacune = ProfilLacune(profile_id=profile.id, matiere_id=matiere_id, priorite=priorite)
+    db.session.add(lacune)
+    db.session.commit()
+
+    return jsonify({"message": "Lacune ajoutée"}), 201
+
+
+# ─── DELETE /api/profile/lacunes ────────────────────────────────────────────
+@profile_bp.route('/profile/lacunes', methods=['DELETE'])
+@token_required
+def remove_lacune(current_user):
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    data = request.get_json()
+    matiere_id = data.get('matiere_id')
+
+    lacune = ProfilLacune.query.filter_by(profile_id=profile.id, matiere_id=matiere_id).first()
+    if not lacune:
+        return jsonify({"message": "Lacune introuvable"}), 404
+
+    db.session.delete(lacune)
+    db.session.commit()
+    return jsonify({"message": "Lacune supprimée"}), 200
+
+
 # ─── PUT /api/profile/me ────────────────────────────────────────────────────
 @profile_bp.route('/profile/me', methods=['PUT'])
 @token_required

@@ -310,7 +310,7 @@ def test_send_message_requires_content(client, app):
     token = login_user(client, 'messa@a.com', 'pass').json['token']
     response = client.post(f'/api/conversations/{conv_id}/messages', json={}, headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == 400
-    assert response.json['message'] == 'contenu requis'
+    assert response.json['message'] == 'Contenu du message requis'
 
 
 def test_send_and_read_message(client, app):
@@ -377,9 +377,9 @@ def test_notifications_can_be_listed_and_marked_read(client, app):
     token = login_user(client, 'notify@a.com', 'pass').json['token']
     list_response = client.get('/api/notifications', headers={'Authorization': f'Bearer {token}'})
     assert list_response.status_code == 200
-    assert isinstance(list_response.json, list)
-    assert list_response.json[0]['id'] == notification_id
-    assert list_response.json[0]['is_read'] is False
+    assert isinstance(list_response.json['notifications'], list)
+    assert list_response.json['notifications'][0]['id'] == notification_id
+    assert list_response.json['notifications'][0]['is_read'] is False
 
     mark_response = client.put(f'/api/notifications/{notification_id}/read', headers={'Authorization': f'Bearer {token}'})
     assert mark_response.status_code == 200
@@ -387,10 +387,10 @@ def test_notifications_can_be_listed_and_marked_read(client, app):
 
     list_after_response = client.get('/api/notifications?unread_only=true', headers={'Authorization': f'Bearer {token}'})
     assert list_after_response.status_code == 200
-    assert list_after_response.json == []
+    assert list_after_response.json['notifications'] == []
 
 
-def test_send_message_outside_conversation_is_allowed_but_insecure(client, app):
+def test_send_message_outside_conversation_is_denied(client, app):
     with app.app_context():
         user_a = create_user_direct('insec1@a.com', 'pass')
         create_profile(user_a)
@@ -408,5 +408,5 @@ def test_send_message_outside_conversation_is_allowed_but_insecure(client, app):
         f'/api/conversations/{conv_id}/messages',
         json={'contenu': 'Intrus'},
         headers={'Authorization': f'Bearer {token}'})
-    assert response.status_code == 201
-    assert response.json['message'] == 'Message envoyé'
+    assert response.status_code == 403
+    assert response.json['message'] == 'Accès refusé'

@@ -307,7 +307,13 @@ async function acceptMatch(studentId, profileId, matiereId) {
     try {
         const payload = { matiere_id: matiereId, score: 0 };
         const result = await apiFetch(`/matches/${studentId}/request`, { method: 'POST', body: payload });
-        alert('Requête envoyée: ' + result.message);
+        let msg = 'Requête envoyée: ' + result.message;
+        if (result.conversation_id) {
+            msg += ` (conversation_id: ${result.conversation_id})`;
+            // Affiche la conversation id dans l'UI
+            document.getElementById('requestsResult').textContent = JSON.stringify(result, null, 2);
+        }
+        alert(msg);
     } catch (err) {
         displayError(err);
     }
@@ -319,7 +325,7 @@ async function rejectMatch(studentId, profileId, matiereId) {
 
 async function handleCreateRequest() {
     const candidateId = Number(document.getElementById('requestCandidateId').value);
-    const matiereId = Number(document.getElementById('requestMatiereId').value);
+    const matiereId = Number(document.getElementById('requestMatiere').value);
     if (!candidateId || !matiereId) {
         displayInfo('Veuillez saisir un candidate ID et un matiere ID.');
         return;
@@ -327,6 +333,9 @@ async function handleCreateRequest() {
     try {
         const result = await apiFetch(`/matches/${candidateId}/request`, { method: 'POST', body: { matiere_id: matiereId, score: 0 } });
         document.getElementById('requestsResult').textContent = JSON.stringify(result, null, 2);
+        if (result.conversation_id) {
+            displayInfo(`Conversation créée: ${result.conversation_id}`);
+        }
     } catch (err) {
         displayError(err);
     }
