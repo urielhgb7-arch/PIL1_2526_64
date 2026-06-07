@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IFRI MentorLink — Swipe</title>
+  <title>Matchs - IFRI MentorLink</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/matching.css">
   <script src="../js/api.js"></script>
 </head>
@@ -24,8 +25,8 @@
       Dashboard
     </div>
     <div class="nav-item ">
-      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      Swipe
+      <svg viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"/></svg>
+      Matchs
     </div>
     <div class="nav-item">
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -58,9 +59,10 @@
 
   <!-- MAIN -->
   <main class="main">
-    <button class="notification-btn" aria-label="Notifications">
+    <a href="notifications.html" class="notification-btn" aria-label="Notifications">
       <i class="ti ti-bell"></i>
-    </button>
+      <span class="dot" id="siteBellDot"></span>
+    </a>
 
     <!-- CARD -->
     <div class="mentor-card pop-in" id="card">
@@ -97,6 +99,7 @@
     </div>
   </main>
 <script src="../js/matching.js"></script>
+<script src="../js/notifications-badge.js"></script>
   
 </body>
 </html>

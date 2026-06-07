@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-foreground">
+  <!-- Desktop Sidebar -->
+  <div class="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex-col">
+    <div class="p-6 border-b border-border">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+          <span class="text-sm font-bold text-primary">ML</span>
+        </div>
+        <h1 class="text-xl font-bold">
+          <span class="text-primary">IFRI</span> MentorLink
+        </h1>
+      </div>
+    </div>
+    
+    <nav class="flex-1 p-4 space-y-2">
+      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="matching.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
+        </svg>
+        <span>Matchs</span>
+      </a>
+      <a href="messages.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span>Messages</span>
+      </a>
+      <a href="requests.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span>Demandes</span>
+      </a>
+      <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>Paramètres</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-border">
+      <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Déconnexion</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 pb-20 lg:pb-0">
+    <!-- Top Bar -->
+    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">Dashboard</h1>
+        <div class="flex items-center gap-4">
+          <div id="user-name" class="text-sm text-muted"></div>
+                <a href="notifications.html" class="site-bell ml-4" aria-label="Notifications">
+                  <span class="ti ti-bell"></span>
+                  <span class="dot" id="siteBellDot"></span>
+                </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="p-4 lg:p-8 space-y-8">
+      <!-- Metrics Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-card border border-border rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="text-3xl font-bold mb-1">12</div>
+          <div class="text-sm text-muted">Matchs actifs</div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="text-3xl font-bold mb-1">24h</div>
+          <div class="text-sm text-muted">Heures de mentorat</div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+            </div>
+          </div>
+          <div class="text-3xl font-bold mb-1">4.8</div>
+          <div class="text-sm text-muted">Note moyenne</div>
+        </div>
+      </div>
+
+      <!-- Intentions -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Offres de mentorat -->
+        <div class="bg-card border border-border rounded-xl p-6">
+          <h2 class="text-xl font-semibold mb-4">Offres de mentorat disponibles</h2>
+          <div class="space-y-3">
+            <div class="bg-popover border border-border rounded-lg p-4">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-semibold">Aide en Programmation Java</h3>
+                  <p class="text-sm text-muted">Marie Dupont - L3 GL</p>
+                </div>
+                <span class="px-2 py-1 bg-success/10 text-success text-xs rounded-full">Expert</span>
+              </div>
+              <p class="text-sm text-muted mb-3">Disponible pour aider sur POO, collections, et design patterns</p>
+              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                Demander un mentorat
+              </button>
+            </div>
+
+            <div class="bg-popover border border-border rounded-lg p-4">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-semibold">Base de données SQL</h3>
+                  <p class="text-sm text-muted">Jean Martin - M1 RSI</p>
+                </div>
+                <span class="px-2 py-1 bg-success/10 text-success text-xs rounded-full">Expert</span>
+              </div>
+              <p class="text-sm text-muted mb-3">Requêtes avancées, optimisation, et modélisation</p>
+              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                Demander un mentorat
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demandes d'aide -->
+        <div class="bg-card border border-border rounded-xl p-6">
+          <h2 class="text-xl font-semibold mb-4">Demandes d'aide récentes</h2>
+          <div class="space-y-3">
+            <div class="bg-popover border border-border rounded-lg p-4">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-semibold">Aide Algorithmique</h3>
+                  <p class="text-sm text-muted">Sophie Bernard - L2 GL</p>
+                </div>
+                <span class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full">Urgent</span>
+              </div>
+              <p class="text-sm text-muted mb-3">Besoin d'aide sur les arbres binaires et graphes</p>
+              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                Proposer mon aide
+              </button>
+            </div>
+
+            <div class="bg-popover border border-border rounded-lg p-4">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-semibold">Réseaux TCP/IP</h3>
+                  <p class="text-sm text-muted">Lucas Petit - L3 RSI</p>
+                </div>
+                <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">Normal</span>
+              </div>
+              <p class="text-sm text-muted mb-3">Configuration routeurs et protocoles réseau</p>
+              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                Proposer mon aide
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Suggestions -->
+      <div class="bg-gradient-to-br from-primary/10 to-success/10 border border-primary/20 rounded-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          Suggestions IA
+        </h2>
+        <div class="space-y-2" id="ai-suggestions-list">
+          <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <span class="text-sm font-bold">SM</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm"><span class="font-semibold">Sarah Mensah</span> correspond parfaitement à vos compétences en React</p>
+            </div>
+            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
+              Voir profil
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+            <div class="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+              <span class="text-sm font-bold">KD</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm"><span class="font-semibold">Karim Diallo</span> peut vous aider avec l'architecture logicielle</p>
+            </div>
+            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
+              Voir profil
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50">
+    <div class="flex items-center justify-around p-2">
+      <a href="dashboard.html" class="flex flex-col items-center gap-1 p-2 text-primary">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="text-xs">Dashboard</span>
+      </a>
+      <a href="matching.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
+        </svg>
+        <span class="text-xs">Matchs</span>
+      </a>
+      <a href="messages.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span class="text-xs">Messages</span>
+      </a>
+      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="text-xs">Paramètres</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/notifications-badge.js"></script>
+  <script>
+    checkAuth();
+
+    // ── Chargement du profil & affichage du nom ────────────────────────────────
+    async function loadDashboard() {
+      // Nom d'utilisateur
+      try {
+        const data = await API.profile.getMe();
+        const profile = data.profile || data;
+        const fullName = `${profile.prenom || ''} ${profile.nom || ''}`.trim();
+        document.getElementById('user-name').textContent = fullName;
+        saveUserData({ firstName: profile.prenom, lastName: profile.nom, department: profile.filiere, level: profile.niveau });
+      } catch (err) {
+        // Fallback cache local
+        const userData = getUserData();
+        if (userData && userData.firstName) {
+          document.getElementById('user-name').textContent = `${userData.firstName} ${userData.lastName}`;
+        }
+      }
+
+      // ── Suggestions IA (matching) ──────────────────────────────────────────
+      try {
+        const data = await API.matching.getSuggestions({ limit: 3 });
+        const suggestions = data.suggestions || data;
+        if (suggestions && suggestions.length > 0) {
+          const list = document.getElementById('ai-suggestions-list');
+          list.innerHTML = '';
+          const colors = ['bg-primary/20', 'bg-success/20', 'bg-warning/20'];
+          suggestions.slice(0, 3).forEach((u, i) => {
+            const name = `${u.prenom || ''} ${u.nom || ''}`.trim();
+            const initials = name.split(' ').map(n => n[0] || '').join('').toUpperCase();
+            const score = u.score_compatibilite || '';
+            const skills = (u.competences || []).map(c => c.matiere_nom || c).slice(0, 2).join(', ');
+            list.innerHTML += `
+              <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
+                <div class="w-10 h-10 rounded-full ${colors[i % colors.length]} flex items-center justify-center flex-shrink-0">
+                  <span class="text-sm font-bold">${initials}</span>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm">
+                    <span class="font-semibold">${name}</span>
+                    ${score ? `<span class="text-success ml-1">${score}% compatible</span>` : ''}
+                    ${skills ? ` · ${skills}` : ''}
+                  </p>
+                </div>
+                <a href="matching.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
+                  Voir profil
+                </a>
+              </div>`;
+          });
+        }
+      } catch (err) {
+        console.warn('Suggestions API non disponible, conservation des données de démo.', err);
+      }
+
+      // ── Notifications non lues ─────────────────────────────────────────────
+      try {
+        const notifs = await API.notifications.getAll();
+        const unread = (notifs.notifications || notifs).filter(n => !n.lu).length;
+        if (unread > 0) {
+          const msgLink = document.querySelector('a[href="messages.html"]');
+          if (msgLink) {
+            msgLink.insertAdjacentHTML('beforeend',
+              `<span class="ml-1 px-1.5 py-0.5 bg-destructive text-white text-xs rounded-full">${unread}</span>`);
+          }
+        }
+      } catch (err) { /* silencieux */ }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

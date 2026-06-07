@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-foreground">
+  <!-- Top Bar -->
+  <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <h1 class="text-2xl font-bold">Paramètres</h1>
+      <a href="dashboard.html" class="text-muted hover:text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Settings Content -->
+  <div class="max-w-4xl mx-auto p-4 pb-24 lg:pb-8 space-y-6">
+    <!-- Profile Section -->
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Profil</h2>
+        <button onclick="openModal('profile')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+          Modifier
+        </button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="text-sm text-muted">Nom complet</label>
+          <p id="display-name" class="font-medium">Jean Dupont</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-muted">Filière</label>
+            <p id="display-department" class="font-medium">Génie Logiciel</p>
+          </div>
+          <div>
+            <label class="text-sm text-muted">Niveau</label>
+            <p id="display-level" class="font-medium">Licence 3</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Compétences & Faiblesses</h2>
+        <button onclick="openModal('skills')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+          Modifier
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="text-sm text-muted mb-2 block">Compétences</label>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-success/10 text-success rounded-full text-sm">React</span>
+            <span class="px-3 py-1 bg-success/10 text-success rounded-full text-sm">Node.js</span>
+            <span class="px-3 py-1 bg-success/10 text-success rounded-full text-sm">Python</span>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm text-muted mb-2 block">Faiblesses</label>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm">Algorithmique</span>
+            <span class="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm">Mathématiques</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Availability Section -->
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Disponibilité</h2>
+        <button onclick="openModal('availability')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+          Modifier
+        </button>
+      </div>
+      <p class="text-sm text-muted">Vos créneaux de disponibilité pour le mentorat</p>
+    </div>
+
+    <!-- Password Section -->
+    <div class="bg-card border border-border rounded-xl p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Mot de passe</h2>
+        <button onclick="openModal('password')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+          Changer
+        </button>
+      </div>
+      <p class="text-sm text-muted">••••••••</p>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="bg-destructive/10 border border-destructive/20 rounded-xl p-6">
+      <h2 class="text-xl font-semibold text-destructive mb-4">Zone de danger</h2>
+      <button onclick="logout()" class="px-4 py-2 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm">
+        Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="modal-profile" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-card border border-border rounded-xl p-6 max-w-md w-full">
+      <h3 class="text-xl font-semibold mb-4">Modifier le profil</h3>
+      <form class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Prénom</label>
+            <input title="Prénom" type="text" value="Jean" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Nom</label>
+            <input title="Nom" type="text" value="Dupont" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Filière</label>
+          <select title="Filière" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
+            <option>Génie Logiciel (GL)</option>
+            <option>Réseaux et Systèmes d'Information (RSI)</option>
+            <option>Intelligence Artificielle (IA)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Niveau</label>
+          <select title="Niveau" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
+            <option>Licence 1</option>
+            <option>Licence 2</option>
+            <option selected>Licence 3</option>
+            <option>Master 1</option>
+            <option>Master 2</option>
+          </select>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('profile')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
+            Annuler
+          </button>
+          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Skills Modal -->
+  <div id="modal-skills" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-card border border-border rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <h3 class="text-xl font-semibold mb-4">Compétences & Faiblesses</h3>
+      <form class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium mb-3">Compétences</label>
+          <div class="space-y-2">
+            <input title="Compétence" type="text" placeholder="Ex: Programmation orientée objet" value="React" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+            <input title="Compétence" type="text" placeholder="Ex: Base de données SQL" value="Node.js" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+            <input title="Compétence" type="text" placeholder="Ex: Développement web" value="Python" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-3">Faiblesses</label>
+          <div class="space-y-2">
+            <input title="Faiblesse" type="text" placeholder="Ex: Algorithmique avancée" value="Algorithmique" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+            <input title="Faiblesse" type="text" placeholder="Ex: Mathématiques discrètes" value="Mathématiques" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+            <input title="Faiblesse" type="text" placeholder="Ex: Architecture réseau" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('skills')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
+            Annuler
+          </button>
+          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Availability Modal -->
+  <div id="modal-availability" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-card border border-border rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <h3 class="text-xl font-semibold mb-4">Modifier la disponibilité</h3>
+      <form class="space-y-4">
+        <p class="text-sm text-muted">Sélectionnez vos créneaux disponibles</p>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover"></th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Lun</th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Mar</th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Mer</th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Jeu</th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Ven</th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Sam</th>
+                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Dim</th>
+              </tr>
+            </thead>
+            <tbody id="availability-grid-modal"></tbody>
+          </table>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('availability')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
+            Annuler
+          </button>
+          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div id="modal-password" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-card border border-border rounded-xl p-6 max-w-md w-full">
+      <h3 class="text-xl font-semibold mb-4">Changer le mot de passe</h3>
+      <form class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Mot de passe actuel</label>
+          <input title="Mot de passe actuel" type="password" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Nouveau mot de passe</label>
+          <input title="Nouveau mot de passe" type="password" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Confirmer le nouveau mot de passe</label>
+          <input title="Confirmer le nouveau mot de passe" type="password" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('password')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
+            Annuler
+          </button>
+          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Changer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50">
+    <div class="flex items-center justify-around p-2">
+      <a href="dashboard.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="text-xs">Dashboard</span>
+      </a>
+      <a href="matching.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
+        </svg>
+        <span class="text-xs">Matchs</span>
+      </a>
+      <a href="messages.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span class="text-xs">Messages</span>
+      </a>
+      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-primary">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="text-xs">Paramètres</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    checkAuth();
+
+    function openModal(name) {
+      document.getElementById(`modal-${name}`).classList.remove('hidden');
+      if (name === 'availability') {
+        initAvailabilityGrid();
+      }
+    }
+
+    function closeModal(name) {
+      document.getElementById(`modal-${name}`).classList.add('hidden');
+    }
+
+    function initAvailabilityGrid() {
+      const hours = ['8h-9h', '9h-10h', '10h-11h', '11h-12h', '12h-13h', '13h-14h', '14h-15h', '15h-16h', '16h-17h', '17h-18h', '18h-19h', '19h-20h', '20h-21h'];
+      const days = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
+      const grid = document.getElementById('availability-grid-modal');
+      grid.innerHTML = '';
+
+      hours.forEach(hour => {
+        const row = document.createElement('tr');
+        const hourCell = document.createElement('td');
+        hourCell.className = 'p-2 text-xs text-muted border border-border bg-popover font-medium';
+        hourCell.textContent = hour;
+        row.appendChild(hourCell);
+
+        days.forEach(day => {
+          const cell = document.createElement('td');
+          cell.className = 'p-2 border border-border cursor-pointer hover:bg-primary/20 transition-colors';
+          cell.dataset.day = day;
+          cell.dataset.hour = hour;
+          cell.onclick = () => {
+            cell.classList.toggle('bg-primary');
+          };
+          row.appendChild(cell);
+        });
+        grid.appendChild(row);
+      });
+    }
+
+    // ── Chargement du profil depuis l'API ──────────────────────────────────────
+    async function loadProfile() {
+      try {
+        const data = await API.profile.getMe();
+        const profile = data.profile || data;
+        document.getElementById('display-name').textContent =
+          `${profile.prenom || ''} ${profile.nom || ''}`.trim() || 'Profil';
+        document.getElementById('display-department').textContent = profile.filiere || '—';
+        document.getElementById('display-level').textContent = profile.niveau || '—';
+        // Sauvegarder localement pour les autres pages
+        saveUserData({
+          firstName: profile.prenom,
+          lastName: profile.nom,
+          department: profile.filiere,
+          level: profile.niveau
+        });
+      } catch (err) {
+        console.warn('API profil non disponible, utilisation du cache local.', err);
+        // Fallback localStorage
+        const userData = getUserData();
+        if (userData) {
+          if (userData.firstName && userData.lastName)
+            document.getElementById('display-name').textContent = `${userData.firstName} ${userData.lastName}`;
+          if (userData.department)
+            document.getElementById('display-department').textContent = userData.department;
+          if (userData.level)
+            document.getElementById('display-level').textContent = userData.level;
+        }
+      }
+    }
+
+    // ── Sauvegarde du profil ───────────────────────────────────────────────────
+    document.querySelector('#modal-profile form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const inputs = e.target.querySelectorAll('input, select');
+      const payload = {
+        prenom: inputs[0].value,
+        nom: inputs[1].value,
+        filiere: inputs[2].value,
+        niveau: inputs[3].value
+      };
+      try {
+        await API.profile.updateMe(payload);
+        saveUserData({ firstName: payload.prenom, lastName: payload.nom, department: payload.filiere, level: payload.niveau });
+        await loadProfile();
+        closeModal('profile');
+      } catch (err) {
+        alert('Erreur lors de la mise à jour du profil : ' + err.message);
+      }
+    });
+
+    // ── Changement de mot de passe ─────────────────────────────────────────────
+    document.querySelector('#modal-password form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const inputs = e.target.querySelectorAll('input[type="password"]');
+      const currentPwd = inputs[0].value;
+      const newPwd = inputs[1].value;
+      const confirmPwd = inputs[2].value;
+      if (newPwd !== confirmPwd) { alert('Les mots de passe ne correspondent pas.'); return; }
+      if (newPwd.length < 8) { alert('Le mot de passe doit contenir au moins 8 caractères.'); return; }
+      try {
+        await API.auth.changePassword({ ancien_mot_de_passe: currentPwd, nouveau_mot_de_passe: newPwd });
+        alert('Mot de passe modifié avec succès.');
+        closeModal('password');
+        e.target.reset();
+      } catch (err) {
+        alert('Erreur : ' + err.message);
+      }
+    });
+
+    // Lancement
+    loadProfile();
+  </script>
+</body>
+</html>
