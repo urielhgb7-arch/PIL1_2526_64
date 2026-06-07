@@ -146,7 +146,7 @@ function getSelectedDisponibilites() {
     HORAIRES.forEach(h => {
         JOURS.forEach(j => {
             if (selectedSlots[h][j]) {
-                result.push({ jour: j, horaire: h });
+                result.push({ jour: j, creneau: h }); // ← "creneau" au lieu de "horaire"
             }
         });
     });
@@ -186,7 +186,7 @@ document.getElementById('btnTerminer').addEventListener('click', async () => {
     try {
         // Envoi à l'API (nécessite api.js chargé)
         for (const dispo of disponibilites) {
-            await API.profile.addDisponibilite(dispo);
+        await API.profile.addDisponibilite({ jour: dispo.jour, creneau: dispo.creneau });
         }
         window.location.href = 'dashboard.html';
 
