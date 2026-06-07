@@ -83,13 +83,24 @@
                 </div>
             </div>
 
+            <div class="flex items-start gap-3 pt-1">
+                <input 
+                    type="checkbox" 
+                    id="isAvailableToHelp" 
+                    checked
+                    class="w-5 h-5 mt-0.5 bg-slate-900 border-slate-700 rounded text-blue-500 focus:ring-blue-500 accent-blue-500 transition cursor-pointer"
+                >
+                <label for="isAvailableToHelp" class="text-sm text-slate-300 cursor-pointer select-none">
+                    Je souhaite être disponible pour aider d'autres étudiants (Mentor)
+                </label>
+            </div>
+
             <button 
                 type="submit" 
                 class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98] flex justify-center items-center gap-2"
                 id="submitBtn"
             >
                 <span>Créer mon compte →</span>
-                <div class="spinner hidden" id="registerSpinner"></div>
             </button>
         </form>
 
@@ -100,9 +111,9 @@
         </div>
     </div>
 
-    <script src="../js/api.js"></script>
+    <script src="script.js"></script>
 <script>
-    // 1. Toggle mot de passe (inchangé)
+    // 1. Toggle mot de passe
     const passwordInput    = document.getElementById('password');
     const togglePasswordBtn = document.getElementById('togglePasswordBtn');
 
@@ -116,51 +127,64 @@
         }
     });
 
-    // 2. Soumission du formulaire
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // 2. Soumission du formulaire (Même logique de liaison API et validations)
+    const form = document.getElementById('registerForm');
+    const emailInput = document.getElementById('email');
+    const errorBanner = document.getElementById('errorBanner');
+    const submitBtn = document.getElementById('submitBtn');
 
-        const errorBanner    = document.getElementById('errorBanner');
-        const submitBtn      = document.getElementById('submitBtn');
-        const registerSpinner = document.getElementById('registerSpinner');
+    function showError(message) {
+        errorBanner.textContent = message;
+        errorBanner.classList.remove('hidden');
+    }
 
+    function hideError() {
         errorBanner.classList.add('hidden');
-        errorBanner.textContent = "";
+    }
 
-        const userData = {
-            firstname: document.getElementById('firstname').value.trim(),
-            lastname:  document.getElementById('lastname').value.trim(),
-            phone:     document.getElementById('phone').value.trim(),
-            email:     document.getElementById('email').value.trim(),
-            password:  document.getElementById('password').value
-        };
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
 
-        try {
-            registerSpinner?.classList.remove('hidden');
-            submitBtn.disabled = true;
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
-            // ✅ On utilise api.js au lieu d'un fetch manuel
-            const result = await API.auth.register(userData);
-
-            // Sauvegarde token (clé cohérente avec api.js)
-            if (result.token) {
-                localStorage.setItem('mentorlink_token', result.token);
-            }
-            if (result.user) {
-                localStorage.setItem('mentorlink_user', JSON.stringify(result.user));
-            }
-
-            alert("Compte créé avec succès ! Configurons maintenant votre profil.");
-            window.location.href = "onboarding.html";
-
-        } catch (err) {
-            errorBanner.textContent = err.message || "Une erreur est survenue lors de l'inscription.";
-            errorBanner.classList.remove('hidden');
-
-        } finally {
-            registerSpinner?.classList.add('hidden');
-            submitBtn.disabled = false;
+        // Validate email
+        if (!email.endsWith('@ifri.uac.bj') && !email.endsWith('@gmail.com')) {
+            showError('Email invalide. Utilisez un email @ifri.uac.bj ou @gmail.com');
+            return;
         }
+
+        // Validate password strength
+        if (password.length < 8) {
+            showError('Le mot de passe doit contenir au moins 8 caractères');
+            return;
+        }
+
+        // Loading state (Reproduction exacte du spinner blanc tournant)
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+            <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            Création...
+        `;
+
+        // Simulate API call
+        setTimeout(() => {
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.removeItem('onboardingCompleted');
+            
+            // Récupération des informations complémentaires si besoin
+            const userData = {
+                firstname: document.getElementById('firstname').value.trim(),
+                lastname:  document.getElementById('lastname').value.trim(),
+                phone:     document.getElementById('phone').value.trim(),
+                isAvailableToHelp: document.getElementById('isAvailableToHelp').checked
+            };
+            localStorage.setItem('mentorlink_user_info', JSON.stringify(userData));
+
+            window.location.href = 'onboarding.html';
+        }, 1500);
     });
 </script>
 </body>

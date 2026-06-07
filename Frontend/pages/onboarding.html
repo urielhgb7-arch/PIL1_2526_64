@@ -27,570 +27,523 @@
       }
     }
   </script>
+  <style>
+    /* Custom scrollbar pour les zones de matières */
+    .skills-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .skills-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+    }
+    .skills-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+    .skills-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
 </head>
 <body class="bg-background text-foreground min-h-screen">
   <div class="min-h-screen py-12 px-4">
     <div class="max-w-4xl mx-auto">
-      <!-- Progress indicator -->
+      
       <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center flex-1">
-            <div id="step1-indicator" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold">1</div>
-            <div class="flex-1 h-1 mx-2 rounded bg-card" id="progress-bar-1"></div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold tracking-wider text-primary uppercase" id="step-label">Étape 1 sur 3</span>
+            <h2 class="text-xl font-bold" id="step-title">Informations académiques</h2>
           </div>
-          <div class="flex items-center flex-1">
-            <div id="step2-indicator" class="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted">2</div>
-            <div class="flex-1 h-1 mx-2 rounded bg-card" id="progress-bar-2"></div>
-          </div>
-          <div class="flex items-center">
-            <div id="step3-indicator" class="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted">3</div>
-          </div>
+          <span class="text-sm text-muted" id="step-percentage">33%</span>
         </div>
-        <div class="flex justify-between text-sm">
-          <span id="step1-label" class="font-medium">Données académiques</span>
-          <span id="step2-label" class="text-muted">Compétences & Lacunes</span>
-          <span id="step3-label" class="text-muted">Disponibilité</span>
+        <div class="w-full bg-border h-2 rounded-full overflow-hidden">
+          <div id="progress-bar" class="bg-primary h-full transition-all duration-300 w-1/3"></div>
         </div>
       </div>
 
-      <!-- Step 1: Academic Data -->
-      <div id="step1" class="bg-card rounded-xl p-8 border border-border">
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold mb-2">Informations académiques</h2>
-          <p class="text-muted">Complétez votre profil académique</p>
-        </div>
-        <form id="step1-form" class="space-y-5">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-2">Prénom</label>
-              <input type="text" id="firstName" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-2">Nom</label>
-              <input type="text" id="lastName" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">Département</label>
-            <select id="department" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-              <option value="">Sélectionnez votre département</option>
-              <option value="SI">SI</option>
-              <option value="IA">IA</option>
-              <option value="IM">IM</option>
-              <option value="GL">GL</option>
-              <option value="SEoIT">SEoIT</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">Niveau académique</label>
-            <select id="level" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-              <option value="">Sélectionnez votre niveau</option>
-              <option value="L1">L1</option>
-              <option value="L2">L2</option>
-              <option value="L3">L3</option>
-            </select>
-          </div>
-          <button type="submit" class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-            Continuer
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </form>
-      </div>
-
-      <!-- Step 2: Skills & Weaknesses -->
-      <div id="step2" class="hidden bg-card rounded-xl p-8 border border-border">
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold mb-2">Compétences & Lacunes</h2>
-          <p class="text-muted">Sélectionnez vos forces et faiblesses académiques</p>
-        </div>
-        <form id="step2-form" class="space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Strengths -->
-            <div>
-              <h3 class="font-medium mb-4">Mes compétences</h3>
-              <div class="space-y-4" id="strengths-container">
-                <!-- Dropdown L1 -->
-                <div class="border border-border rounded-lg overflow-hidden">
-                  <button type="button" onclick="toggleDropdown('strengths-l1-content', 'strengths-l1-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
-                    <span>Niveau L1</span>
-                    <svg id="strengths-l1-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="strengths-l1-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
-                </div>
-                <!-- Dropdown L2 -->
-                <div class="border border-border rounded-lg overflow-hidden">
-                  <button type="button" onclick="toggleDropdown('strengths-l2-content', 'strengths-l2-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
-                    <span>Niveau L2</span>
-                    <svg id="strengths-l2-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="strengths-l2-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
-                </div>
-                <!-- Dropdown L3 -->
-                <div class="border border-border rounded-lg overflow-hidden">
-                  <button type="button" onclick="toggleDropdown('strengths-l3-content', 'strengths-l3-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
-                    <span>Niveau L3</span>
-                    <svg id="strengths-l3-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="strengths-l3-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
-                </div>
+      <div class="bg-card border border-border rounded-xl p-6 sm:p-10">
+        
+        <div id="step1" class="step-content">
+          <form id="step1-form" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label for="firstName" class="block text-sm font-medium mb-2">Prénom</label>
+                <input type="text" id="firstName" required class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Jean">
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium mb-2">Nom</label>
+                <input type="text" id="lastName" required class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="HOUNDJI">
               </div>
             </div>
 
-            <!-- Weaknesses -->
-            <div>
-              <h3 class="font-medium mb-4">Mes lacunes</h3>
-              <div class="space-y-4" id="weaknesses-container">
-                <!-- Dropdown L1 -->
-                <div class="border border-border rounded-lg overflow-hidden">
-                  <button type="button" onclick="toggleDropdown('weaknesses-l1-content', 'weaknesses-l1-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
-                    <span>Niveau L1</span>
-                    <svg id="weaknesses-l1-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="weaknesses-l1-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
-                </div>
-                <!-- Dropdown L2 -->
-                <div class="border border-border rounded-lg overflow-hidden">
-                  <button type="button" onclick="toggleDropdown('weaknesses-l2-content', 'weaknesses-l2-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
-                    <span>Niveau L2</span>
-                    <svg id="weaknesses-l2-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="weaknesses-l2-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
-                </div>
-                <!-- Dropdown L3 -->
-                <div class="border border-border rounded-lg overflow-hidden">
-                  <button type="button" onclick="toggleDropdown('weaknesses-l3-content', 'weaknesses-l3-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
-                    <span>Niveau L3</span>
-                    <svg id="weaknesses-l3-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="weaknesses-l3-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label for="department" class="block text-sm font-medium mb-2">Filière / Spécialité</label>
+                <select id="department" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground">
+                  <option value="" disabled selected>Sélectionnez votre filière</option>
+                  <option value="SI">SI (Systèmes d'Information)</option>
+                  <option value="GL">GL (Génie Logiciel)</option>
+                  <option value="IM">IM (Internet et Multimédia)</option>
+                  <option value="IA">IA (Intelligence Artificielle)</option>
+                  <option value="SE&IoT">SE&IoT (Systèmes Embarqués & IoT)</option>
+                </select>
+              </div>
+              <div>
+                <label for="level" class="block text-sm font-medium mb-2">Niveau actuel</label>
+                <select id="level" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground">
+                  <option value="" disabled selected>Sélectionnez votre niveau</option>
+                  <option value="L1">Licence 1 (L1)</option>
+                  <option value="L2">Licence 2 (L2)</option>
+                  <option value="L3">Licence 3 (L3)</option>
+                  <option value="M1">Master 1 (M1)</option>
+                  <option value="M2">Master 2 (M2)</option>
+                </select>
               </div>
             </div>
-          </div>
 
-          <div class="flex justify-between mt-8 pt-6 border-t border-border">
-            <button type="button" onclick="previousStep()" class="flex items-center gap-2 px-6 py-3 bg-input border border-border rounded-lg hover:bg-popover transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-              Retour
-            </button>
-            <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-              Continuer
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Step 3: Availability -->
-      <div id="step3" class="hidden bg-card rounded-xl p-8 border border-border">
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold mb-2">Grille de disponibilités</h2>
-          <p class="text-muted">Sélectionnez vos créneaux horaires disponibles (cases d'une heure)</p>
+            <div class="flex justify-end pt-4">
+              <button type="submit" class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors flex items-center gap-2">
+                Suivant <span class="text-lg">→</span>
+              </button>
+            </div>
+          </form>
         </div>
-        <form id="step3-form" class="space-y-6">
-          <!-- Les boutons "sélectionnez les après midi / matinées" ont été retirés d'ici -->
+
+        <div id="step2" class="step-content hidden">
+          <p class="text-sm text-muted mb-6">Sélectionnez les matières que vous maîtrisez (Points forts) et celles où vous avez besoin d'aide (Points faibles) selon votre filière.</p>
           
-          <div class="overflow-x-auto">
-            <table class="w-full border-spacing-1 border-separate">
-              <thead>
-                <tr>
-                  <th class="sticky left-0 bg-card p-2 text-left text-sm font-medium text-muted">Horaires</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Lundi</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Mardi</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Mercredi</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Jeudi</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Vendredi</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Samedi</th>
-                  <th class="p-2 text-sm font-medium min-w-[80px]">Dimanche</th>
-                </tr>
-              </thead>
-              <tbody id="availability-grid"></tbody>
-            </table>
-          </div>
+          <form id="step2-form" class="space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              <div class="flex flex-col">
+                <h3 class="text-md font-semibold text-success mb-3 flex items-center gap-2">
+                  <span>💪</span> Mes Points Forts (Je peux aider sur...)
+                </h3>
+                <div id="strengths-container" class="skills-scrollbar flex-1 min-h-[300px] max-h-[400px] overflow-y-auto bg-input border border-border rounded-xl p-4 space-y-2">
+                  </div>
+              </div>
 
-          <div class="flex justify-between mt-8 pt-6 border-t border-border">
-            <button type="button" onclick="previousStep()" class="flex items-center gap-2 px-6 py-3 bg-input border border-border rounded-lg hover:bg-popover transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-              Retour
-            </button>
-            <button type="submit" id="finish-btn" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-              Terminer la configuration
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-            </button>
-          </div>
-        </form>
+              <div class="flex flex-col">
+                <h3 class="text-md font-semibold text-warning mb-3 flex items-center gap-2">
+                  <span>📚</span> Mes Points Faibles (J'ai besoin d'aide sur...)
+                </h3>
+                <div id="weaknesses-container" class="skills-scrollbar flex-1 min-h-[300px] max-h-[400px] overflow-y-auto bg-input border border-border rounded-xl p-4 space-y-2">
+                  </div>
+              </div>
+
+            </div>
+
+            <div class="flex justify-between pt-4">
+              <button type="button" onclick="goToStep(1)" class="px-6 py-3 bg-transparent hover:bg-white/5 text-muted hover:text-white font-medium rounded-lg transition-colors">
+                ← Retour
+              </button>
+              <button type="submit" class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors flex items-center gap-2">
+                Suivant →
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div id="step3" class="step-content hidden">
+          <p class="text-sm text-muted mb-6">Indiquez les créneaux horaires généraux où vous êtes généralement disponible pour des sessions de mentorat.</p>
+          
+          <form id="step3-form" class="space-y-6">
+            <div class="overflow-x-auto border border-border rounded-xl bg-input">
+              <table class="w-full text-left border-collapse min-w-[500px]">
+                <thead>
+                  <tr class="border-b border-border bg-black/20">
+                    <th class="p-4 text-xs font-semibold uppercase tracking-wider text-muted">Jour</th>
+                    <th class="p-4 text-xs font-semibold uppercase tracking-wider text-muted text-center">Matin (8h - 12h)</th>
+                    <th class="p-4 text-xs font-semibold uppercase tracking-wider text-muted text-center">Après-midi (12h - 18h)</th>
+                    <th class="p-4 text-xs font-semibold uppercase tracking-wider text-muted text-center">Soir (18h - 22h)</th>
+                  </tr>
+                </thead>
+                <tbody id="availability-grid" class="divide-y divide-border/40">
+                  </tbody>
+              </table>
+            </div>
+
+            <div class="flex justify-between pt-4">
+              <button type="button" onclick="goToStep(2)" class="px-6 py-3 bg-transparent hover:bg-white/5 text-muted hover:text-white font-medium rounded-lg transition-colors">
+                ← Retour
+              </button>
+              <button type="submit" id="finish-btn" class="px-6 py-3 bg-success hover:bg-success/90 text-black font-semibold rounded-lg transition-colors flex items-center gap-2">
+                Terminer la configuration ✓
+              </button>
+            </div>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
   <script>
-    let currentStep = 1;
-    const userData = {
-      strengths: [],
-      weaknesses: []
-    };
-    const availability = Array(7).fill(null).map(() => Array(13).fill(false));
-
-    // Dictionnaires de matières classées par niveau
-    const coursesByLevel = {
-      l1: [
+    // Base de données des matières de l'IFRI par filière
+    const coursesByDepartment = {
+      "SI": [
+        "Adressage IPv4 et IPv6", "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows",
+        "Algèbre de Boole et circuits logiques", "Algèbre matricielle et applications avec MATLAB", "Algèbre relationnelle",
+        "Algorithmique", "Analyse", "Architecture et technologie des ordinateurs", "Architecture et topologie des réseaux informatiques",
+        "Architecture du web", "Aspects avancés de l'audit de sécurité", "Aspects avancés des serveurs de monitoring",
+        "Aspects avancés du langage C et structures de données", "Aspects avancés du langage SQL", "Aspects juridiques liés aux systèmes d'information",
+        "Audit de sécurité", "Code linguistique", "Codes correcteurs d'erreur", "Communication managériale et leadership",
+        "Comptabilité", "Concepts orientés objet et modélisation UML", "Conception et modélisation avec MERISE - études de cas",
+        "Conduite", "Cryptographie et algorithmes de chiffrement", "Data recovery process", "Déontologie informatique",
+        "Développement personnel et techniques d'entretien", "Équations différentielles", "Évaluation des risques et politique de sécurité",
+        "Expression en langue anglaise", "Filtrage des accès (par-feux)", "Gestion des échanges avec les utilisateurs", "Gestion des risques",
+        "Histoire de l'informatique", "Initiation à l'administration sous Unix/Linux", "Initiation à l'administration sous Windows",
+        "Initiation à Linux et à la Programmation du shell bash", "Initiation à MySQL et Postgres", "Initiation à la Cryptographie",
+        "Initiation à la sécurité informatique", "Installation des réseaux informatiques", "Intelligence économique",
+        "Introduction aux architectures client serveur", "Introduction aux systèmes d'exploitation pour mobile", "Introduction au langage C",
+        "Introduction au langage SQL", "Laboratoire 1", "Laboratoire 2", "Laboratoire de cryptographie", "Langage C++",
+        "Langage Java JSE", "Langages de programmation web", "Les virus informatiques et les attaques", "Logique et techniques des preuves",
+        "Logique mathématique", "Maintenance informatique", "Mathématiques discrètes", "Méthodologie de rédaction",
+        "Méthodologie et gestion de projets informatiques", "Mini-stage en entreprise", "Mise en œuvre des IDS", "Multimédia",
+        "Norme ISO 1799", "Normes et architectures des réseaux sans fil", "Numération", "Outils de gestion de projet informatique",
+        "Outils de la veille technologique", "Politique de sécurité dans une entreprise", "Pratique de la langue anglaise",
+        "Présentation orale et exposé des faits d'actualités", "Probabilités", "Projet d'applications mobiles",
+        "Projet technologie Web groupe de 2/3 étudiants", "Projets tutorés", "Protocoles (SSL, certificats, VPN)",
+        "Protocoles de routage : RIP, OSPF, BGP", "Protocoles de sécurité", "Rédaction du rapport", "Recherche opérationnelle et applications",
+        "Restriction des accès", "Routage WAN et lien backup", "Sécurisation avancée : autorité de certification, serveur BAS",
+        "Sécurisation de la conception", "Sécurisation des applications client-server", "Sécurisation des codes et bases de données",
+        "Sécurisation des protocoles de routage", "Sécurisation des réseaux sans fil : WEP, WAP, WPS, serveur BAS",
+        "Sécurité des applications mobiles", "Sécurité des systèmes d'information", "Sécurité logicielle", "Sécurité matérielle",
+        "Séminaire : Création d'entreprise au Bénin - retour d'expériences", "Séminaire : XHTML, CSS, Javascript, Ajax, PHP, MySQL",
+        "Séries numériques et séries de fonctions", "Serveur AAA et authentification centralisée", "Serveurs de monitoring",
+        "Stage de fin d'étude en entreprise", "Statistiques inférentielles et applications avec Matlab", "Structures algébriques",
+        "Techniques de rédaction de documents administratifs", "Techniques de recherche d'emploi", "Théorie de l'information",
+        "Théorie des bases de données relationnelles", "Théorie des graphes et applications", "Théorie des nombres",
+        "Théorie des systèmes d'exploitation", "Théorie des systèmes de détection d'intrusion", "Théorie du signal", "Virtualisation"
+      ],
+      "GL": [
         "Adressage IPv4 et IPv6", "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows",
         "Algèbre de Boole et circuits logiques", "Algèbre matricielle et applications avec Matlab", "Algèbre relationnelle",
-        "Algorithmique", "Algorithmique et programmation en C", "Analyse", "Anglais scientifique", "Architecture et technologie des ordinateurs",
-        "Architecture et topologie des réseaux informatiques", "Architecture du Web", "Architecture des systèmes informatiques",
-        "Aspects avancés du langage C et structures de données", "Aspects avancés du langage SQL", "Aspects juridiques liés aux systèmes d'information",
-        "Bases de données relationnelles", "Code linguistique", "Conduite", "Équations différentielles", "Gestion financière des entreprises",
-        "Histoire de l'informatique", "Initiation à l'administration sous Linux/Unix", "Initiation à l'administration sous Windows",
-        "Initiation à MySQL et PostGres", "Installation des réseaux informatiques", "Introduction aux architectures client-serveur",
-        "Introduction aux systèmes d'exploitation pour mobile", "Introduction au langage C", "Introduction au langage SQL",
-        "Laboratoire pour la résolution informatique des problèmes", "Langages de programmation Web", "Logique et techniques de preuves",
-        "Logique mathématique", "Maintenance informatique", "Mathématiques discrètes", "Méthodologie de recherche", "Numération",
-        "Pratique de la langue anglaise", "Probabilités", "Programmation orientée objet en Java", "Programmation web dynamique (PHP et MySQL)",
-        "Projet tutoré", "Recherche opérationnelle et applications", "Réseaux informatiques", "Séries numériques et séries de fonctions",
-        "Soutenance", "Statistiques inférentielles et applications avec Matlab", "Structures de données en C", "Systèmes d'exploitation et programmation multithread",
-        "Techniques de rédaction de documents administratifs", "Techniques de recherche d'emploi", "Techniques de rédaction de mémoire",
+        "Algorithmes numériques", "Algorithmique", "Analyse", "Analyse numérique", "Architecture et technologie des ordinateurs",
+        "Architecture et topologie des réseaux informatiques", "Architecture du Web", "Aspects avancés de Oracle",
+        "Aspects avancés des architectures client/serveur", "Aspects avancés du langage C et structures des données",
+        "Aspects avancés du langage SQL", "Aspects juridiques liés aux systèmes d'information", "Assurance qualité d'un logiciel",
+        "Assurance qualité de logiciel", "Atelier de programmation événementielle en C++", "Atelier de programmation événementielle en Java",
+        "Business plan", "Code de la route", "Code linguistique", "Communication managériale et leadership", "Comptabilité",
+        "Concepts orientés objet et modélisation UML", "Conception et modélisation avec MERISE - études de cas", "Conduite",
+        "Conduite de projets informatiques", "Cycle de développement de logiciel", "Définition de cahiers de charges",
+        "Déontologie informatique", "Développement personnel et techniques d'entretien", "Équations différentielles",
+        "Ergonomie des applications", "Étude de Android", "Expression en langue anglaise", "Gestion des risques", "Histoire de l'informatique",
+        "Infographie et introduction à l'ergonomie", "Ingénierie logicielle", "Initiation à Linux et à la programmation de bash shell",
+        "Initiation à l'administration sous Linux/Unix", "Initiation à l'administration sous Windows", "Initiation à MySQL et PostGres",
+        "Initiation au Latex et modèle de mémoire", "Installation des réseaux informatiques", "Intégration des systèmes hétérogènes",
+        "Intégration et interopérabilité des logiciels", "Intelligence économique", "Interopérabilité des applications et des systèmes d'exploitation",
+        "Introduction aux architectures client-serveur", "Introduction aux systèmes d'exploitation pour mobile", "Introduction au langage C",
+        "Introduction au langage SQL", "Langage C++", "Langage Java Standard Édition", "Langages de programmation Web", "Les outils RAD",
+        "Logique et techniques de preuves", "Logique mathématique", "Maintenance et évolution de logiciel", "Maintenance informatique",
+        "Mathématiques discrètes", "Méthodologie de mise en œuvre des ERP", "Méthodologie de rédaction", "Méthodologie et gestion de projets informatiques",
+        "Mini-stage en entreprise", "Multimédia", "Numération", "Outils de gestion de projets informatiques", "Outils de la veille technologique",
+        "Persistance des données", "Pratique de la langue anglaise", "Préparation à la certification Oracle", "Préparation à la certification SQL Serveur",
+        "Présentation orale et exposé des faits d'actualités", "Probabilités", "Projet d'applications mobiles", "Projet de validation des acquis",
+        "Projet technologie Web groupe de 2/3 étudiants", "Projet tutoré", "Projet tutoré de production de logiciels", "Projets tutorés",
+        "Projets tutorés individuel et de groupe de 2/3 étudiants", "Rédaction et soutenance du mémoire", "Rédaction du rapport de stage",
+        "Recherche opérationnelle et applications", "Sécurité des applications mobiles", "Sécurité des systèmes d'information",
+        "Sécurité logicielle", "Sécurité matérielle", "Séminaire : Bases de données avancées - Oracle, SQLServer",
+        "Séminaire : création d'entreprise au Bénin - retour d'expériences", "Séminaire : XHTML, CSS, Javascript, Ajax, PHP, MySQL",
+        "Séries numériques et séries de fonctions", "Stage en entreprise", "Statistiques inférentielles et Applications avec Matlab",
+        "Structures algébriques", "Structures de données avancées", "Systèmes centralisés", "Systèmes distribués",
+        "Techniques de rédaction de documents administratifs", "Techniques de recherche d'emploi", "Technologie Java Web",
+        "Technologie mobile", "Test de logiciel", "Théorie de la veille technologique", "Théorie des bases de données relationnelles",
+        "Théorie des graphes et applications", "Théorie des nombres", "Théorie des systèmes d'exploitation", "Virtualisation"
+      ],
+      "IM": [
+        "Adressage IPv4 et IPv6", "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows",
+        "Algèbre de Boole et circuits logiques", "Algèbre matricielle et applications avec Matlab", "Algèbre relationnelle",
+        "Algorithmique", "Analyse", "Analyse de l'image", "Architecture et technologie des ordinateurs", "Architecture et topologie des réseaux informatiques",
+        "Architecture du Web", "Aspects avancés de Oracle", "Aspects avancés du langage C et structures des données",
+        "Aspects avancés du langage SQL", "Aspects juridiques liés aux systèmes d'information", "Atelier de programmation événementielle en C++",
+        "Atelier de programmation événementielle en Java", "Bases de données avancées - Oracle, SQLServer", "Bases de données réparties",
+        "Business plan", "Civisme", "Code de la route", "Code linguistique", "Communication managériale et leadership", "Comptabilité",
+        "Concepts orientés objet et modélisation UML", "Conception et modélisation avec MERISE - études de cas", "Conduite",
+        "Conduite de projets informatiques", "Définition de cahiers de charges", "Déontologie informatique", "Développement d'applications e-commerce",
+        "Développement personnel et techniques d'entretien", "Éléments d'un studio de montage", "Équations différentielles",
+        "Ergonomie des interfaces mobiles", "Ergonomie des interfaces web", "Étude de Android", "Expression en langue anglaise", "Flash",
+        "Fondements du multimédia", "Gestion des risques", "Histoire de l'informatique et recherche documentaire", "Indesign",
+        "Initiation à l'administration sous Linux/Unix", "Initiation à l'administration sous Windows", "Initiation à Linux et à la programmation de bash shell",
+        "Initiation à MySQL et Postgres", "Initiation au Latex et modèle de mémoire", "Installation des réseaux informatiques",
+        "Intégration des systèmes hétérogènes", "Intégration web et bases de données", "Intelligence économique",
+        "Introduction aux architectures client-serveur", "Introduction aux systèmes d'exploitation pour mobile", "Introduction au langage C",
+        "Introduction au langage SQL", "La réalité virtuelle", "Langage C++", "Langage Java Standard Édition", "Langages de programmation Web",
+        "Logique et techniques de preuves", "Logique mathématique en informatique", "Maintenance informatique", "Mathématiques discrètes",
+        "Mathématiques pour le multimédia", "Maya / Studio 3D Max", "Méthodologie de rédaction", "Méthodologie et gestion de projets informatiques",
+        "Mini-stage en entreprise", "Mise en place d'un serveur de streaming audio et vidéo", "Montage et publication de vidéo", "Multimédia",
+        "Multimédia et Génie logiciel", "Numération", "Outils de gestion de projets informatiques", "Persistance des données",
+        "Photoshop et Pratique de la photographie", "Physique pour le multimédia", "Podcast et multicast", "Pratique de la langue anglaise",
+        "Présentation orale et exposé des faits d'actualités", "Probabilités", "Projet d'applications mobiles", "Projet technologie Web groupe de 2/3 étudiants",
+        "Projet tutoré", "Projets tutorés individuel et de groupe de 2/3 étudiants", "Rédaction et soutenance du mémoire", "Rédaction du rapport de stage",
+        "Recherche opérationnelle et applications", "Recents développements en multimédia", "Recents outils en Internet et multimédia",
+        "Sécurité des applications e-commerce", "Sécurité des applications mobiles", "Séminaire : création d'entreprise au Bénin - retour d'expériences",
+        "Séminaire : XHTML, CSS, Javascript, Ajax, PHP, MySQL", "Séries numériques et séries de fonctions", "Stage en entreprise",
+        "Statistiques inférentielles et Applications avec Matlab", "Techniques d'animation 2D", "Techniques d'animation 3D",
+        "Techniques de rédaction de documents administratifs", "Techniques de recherche d'emploi", "Technologie Java Web", "Technologie mobile",
         "Théorie des bases de données relationnelles", "Théorie des graphes et applications", "Théorie des systèmes d'exploitation",
-        "Traitement de texte scientifique : Latex et Beamer", "Virtualisation", "Évaluation du stage par l'encadreur"
+        "Théorie et Esthétique de l'image", "Toolbook", "Utilisation de la caméra et ses fonctions", "Virtualisation", "Web 2.0 et web 3.0"
       ],
-      l2: [
-        "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows", "Analyse de l'image",
-        "Analyse numérique", "Aspects avancés des architectures client/serveur", "Assurance qualité d'un logiciel",
-        "Atelier de programmation événementielle en C++", "Atelier de programmation événementielle en Java", "Audit de sécurité",
-        "Bases de données avancées – Oracle, SQLServer", "Bases de données réparties", "Civisme", "Codes correcteurs d'erreur",
-        "Concepts orientés objet et modélisation UML", "Conception et modélisation avec MERISE – études de cas", "Cryptographie et algorithmes de chiffrement",
-        "Déontologie informatique", "Ergonomie des interfaces web", "Évaluation des risques et politique de sécurité", "Expression en langue anglaise",
-        "Filtrage des accès (par-feux)", "Flash", "Fondements du multimédia", "Indesign", "Infographie et introduction à l'ergonomie",
-        "Initiation à Linux et à la programmation bash shell", "Initiation pratique à la maintenance des téléphones portables",
-        "Interopérabilité des applications et des systèmes d'exploitation", "Introduction à la sécurité informatique", "Langage C++",
-        "Langage Java JSE", "Langage Java Standard Édition", "Maintenance et évolution de logiciel", "Mathématiques pour le multimédia",
-        "Méthodologie et gestion de projets informatiques", "Mini-stage en entreprise", "Multimédia", "Multimédia et Génie logiciel",
-        "Normes et architectures des réseaux sans fil", "Outils de gestion de projets informatiques", "Persistance des données",
-        "Photoshop", "Physique pour le multimédia", "Podcast et multicast", "Présentation orale et exposé d’actualités",
-        "Projet de validation des acquis", "Projet technologie Web groupe de 2/3 étudiants", "Projet tutoré de production de logiciels",
-        "Protocoles (SSL, certificats, VPN)", "Protocoles de routage : RIP, OSPF, BGP", "Protocoles de sécurité", "Rédaction du rapport de stage",
-        "Routage WAN et lien backup", "Sécurisation avancée : autorité de certification, serveur BAS", "Sécurisation des réseaux sans fil : WEP, WAP, WPS, serveur BAS",
-        "Sécurité logicielle", "Sécurité matérielle", "Séminaire : Bases de données avancées", "Séminaire : XHTML, CSS, Javascript, Ajax, PHP, MySQL",
-        "Serveur AAA et authentification centralisée", "Serveurs de monitoring", "Structures algébriques", "Structures de données avancées",
-        "Systèmes centralisés", "Systèmes distribués", "Techniques d'animation 2D", "Techniques d'animation 3D", "Techniques de rédaction de mémoire",
-        "Technologie Java Web", "Test de logiciel", "Théorie de l’information", "Théorie des nombres", "Théorie du signal", "Toolbook", "Virtualisation"
+      "IA": [
+        "Administration des réseaux sous Windows/Linux", "Algorithmes d'apprentissage automatique non supervisés",
+        "Algorithmes d'apprentissage automatique supervisés", "Algorithmique", "Algèbre linéaire et applications", "Analyse",
+        "Analyse combinatoire, calcul des probabilités et applications", "Analyse et conception orientée objet",
+        "Anglais pour la communication scientifique", "Anglais technique", "Applications de data analytics", "Applications de l'analyse statistique",
+        "Approche orientée objet", "Architecture et topologie des réseaux informatiques", "Assurance qualité et test de logiciel",
+        "Base de la programmation", "Bases de données pour le big data", "Bases de données relationnelles", "Bases du génie logiciel",
+        "Bases et concepts du Big data", "Bases de l'analyse des données en entreprise", "Collecte et traitement des données",
+        "Communication managériale", "Communication", "Concepts et application de l'intelligence artificielle",
+        "Concepts et applications de l'apprentissage automatique", "Concepts théoriques en statistiques et probabilités en apprentissage automatique",
+        "Conduite de projets informatiques", "Convergence et calcul différentiel", "Data analytics", "Développement d'applications basées sur l'apprentissage automatique",
+        "Développement web", "Déontologie et droit liés aux TIC", "Discipline", "Équations différentielles et calcul intégral",
+        "Force de vente et communication digitale", "Formation sur une certification en science de la donnée", "Gestion des projets",
+        "Hackathon en science de données/Big Data", "Infographie", "Langage C", "Langage de programmation Java et C++",
+        "Logique, arithmétique et ses applications", "Maintenance des appareils électroniques", "Mathématiques appliquées",
+        "Mathématiques fondamentales", "Méthode Agile Scrum", "Outils cloud de collecte et de traitement des données",
+        "Outils cloud pour le scientifique de la données", "Outils de base en informatique", "Outils de rédaction de mémoire",
+        "Outils de résolution de problèmes d'optimisation", "Pré-soutenance", "Probabilité et statistique", "Programmation avancée en Python et R",
+        "Programmation python", "Projet intégrateur", "Rédaction et soutenance de mémoire", "Rédaction de mémoire", "Recherche opérationnelle et applications",
+        "SGBD et langage SQL", "Soutenance", "Stage d'immersion et discipline", "Stage", "Statistiques et probabilités pour le scientifique de la donnée",
+        "Statistiques inférentielles et applications", "Structures algébriques et leurs applications en informatique",
+        "Structure de données et applications avec C/Python", "Suites et séries numériques", "Système d'exploitation et outils de base en informatique",
+        "Techniques d'expression écrite et orale", "Techniques de résolution de problème par la recherche", "Techniques entrepreneuriales",
+        "Technologies web et infographie", "Théorie des bases de données et algèbre relationnelle", "Théorie des graphes et applications",
+        "Traitement automatique du langage naturel", "Unité de découverte ou de spécialité", "Utilisation et administration sous Windows/Linux",
+        "Veille technologique", "Vision par ordinateur"
       ],
-      l3: [
-        "Aspects avancés de Oracle", "Aspects avancés de l’audit de sécurité", "Aspects avancés des serveurs de monitoring",
-        "Assurance qualité de logiciel", "Business plan", "Code de la route", "Commerce électronique", "Communication managériale et leadership",
-        "Comptabilité", "Conduite de projets informatiques", "Data recovery process", "Définition de cahiers de charges",
-        "Développement d’applications e-commerce", "Développement personnel et techniques d’entretien", "Éléments d’un studio de montage",
-        "Ergonomie des applications", "Ergonomie des interfaces mobiles", "Étude de Android", "Gestion des échanges avec les utilisateurs",
-        "Gestion des risques", "Initiation au Latex et modèle de mémoire", "Intégration des systèmes hétérogènes", "Intégration et interopérabilité des logiciels",
-        "Intelligence économique", "Laboratoire 1", "Laboratoire 2", "Laboratoire de cryptographie", "La réalité virtuelle", "Les outils RAD",
-        "Les virus informatiques et les attaques", "Maya / Studio 3D Max", "Méthodologie de mise en œuvre des ERP", "Méthodologie de rédaction",
-        "Mise en œuvre des IDS", "Mise en place d’un serveur de streaming audio et vidéo", "Montage et publication de vidéo", "Norme ISO 1799",
-        "Outils de la veille technologique", "Photoshop", "Politique de sécurité dans une entreprise", "Préparation à la certification CCNA",
-        "Préparation à la certification Mikrotik MTCNA", "Préparation à la certification Oracle", "Préparation à la certification Photoshop",
-        "Préparation à la certification SQL Serveur", "Préparation à la certification Symphony et PHP", "Projet d’applications mobiles",
-        "Projets tutorés individuel et de groupe", "Recents développements en multimédia", "Recents outils en Internet et multimédia",
-        "Rédaction et soutenance du mémoire", "Restriction des accès", "Sécurisation de la conception", "Sécurisation des applications client-server",
-        "Sécurisation des applications mobiles", "Sécurisation des codes et bases de données", "Sécurité des applications e-commerce",
-        "Sécurité des applications mobiles", "Sécurité des systèmes d’information", "Séminaire : création d’entreprise au Bénin",
-        "Stage de fin d’étude en entreprise", "Stage en entreprise", "Technologie mobile", "Théorie des systèmes de détection d’intrusion",
-        "Théorie et Esthétique de l’image", "Utilisation de la caméra et ses fonctions", "Web 2.0 et web 3.0"
+      "SE&IoT": [
+        "Administration d'un réseau de capteurs et Internet des objets", "Administration des réseaux sous Windows/Linux",
+        "Algèbre linéaire et applications", "Algorithmique", "Analyse", "Analyse combinatoire, calcul des probabilités et applications",
+        "Analyse et conception orientée objet", "Anglais pour la communication scientifique", "Anglais technique et discipline",
+        "Approche orientée objet", "Architecture d'un réseau de capteurs et internet des objets", "Architecture des processeurs et microcontrôleurs",
+        "Architecture et intercommunication d'un réseau de capteurs et internet des objets", "Architecture et topologie des réseaux informatiques",
+        "Assurance qualité et test de logiciel", "Automates programmables et asservissement", "Base de données relationnelles",
+        "Base de la programmation", "Base du génie logiciel", "Capteurs et actionneurs", "Communication managériale", "Conduite de projets informatiques",
+        "Convergence et calcul différentiel", "Déontologie et droit liés aux TIC", "Discipline", "Électricité et Électronique", "Électronique numérique",
+        "Force de vente et communication digitale", "Formation sur une certification en systèmes embarqués et internet des objets",
+        "Gestion des projets", "Hackathon en système embarqués et Internet des objets", "Infographie", "Langage de programmation Java et C++",
+        "Langages C", "Langages de description", "Les réseaux industriels ICS et SCADA", "Logique, arithmétique et ses applications",
+        "Maintenance des appareils électroniques", "Mathématiques appliquées", "Mathématiques fondamentales", "Méthode Agile Scrum",
+        "Outils de base en informatique", "Outils de rédaction de mémoire", "Pré-soutenance", "Probabilité et statistique", "Programmation de FPGA",
+        "Programmation python", "Programmation système et réseau", "Programmation système, réseau et temps réel", "Programmation temps réel",
+        "Projet intégrateur", "Rédaction et soutenance de mémoire", "Rédaction de mémoire ou de rapport", "Recherche opérationnelle et applications",
+        "Réseaux de capteurs et IoT", "Réseaux industriels ICS et SCADA", "Réseaux sans fil et protocoles de communication en IoT",
+        "SGBD et langage SQL", "Sécurité dans les réseaux industriels ICS et SCADA", "Soutenance", "Stage", "Stage d'immersion et conduite des apprenants",
+        "Statistiques inférentielles et applications", "Structures algébriques et leurs applications en informatique",
+        "Structure de données et applications avec C/Python", "Suites et séries numériques", "Système d'exploitation et outils de base en informatique",
+        "Systèmes embarqués en entreprise", "Techniques d'expression écrite et orale", "Techniques entrepreneuriales", "Technologies web et infographie",
+        "Théorie des bases de données et algèbre relationnelle", "Théorie des graphes et applications", "Traitement du signal",
+        "Utilisation et administration sous Windows/Linux", "VHDL", "Veille technologique en systèmes embarqués et Internet des objets"
       ]
     };
 
-    const masteryLevels = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
-    const priorityLevels = ['Low', 'Medium', 'High', 'Urgent'];
-    const hours = Array.from({ length: 13 }, (_, i) => `${8 + i}h-${9 + i}h`);
+    let currentStep = 1;
+    let userData = {
+      firstName: '',
+      lastName: '',
+      department: '',
+      level: '',
+      strengths: [],
+      weaknesses: [],
+      availability: {}
+    };
+
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+    const slots = ['matin', 'apresmidi', 'soir'];
 
-    function toggleDropdown(contentId, arrowId) {
-      const content = document.getElementById(contentId);
-      const arrow = document.getElementById(arrowId);
-      content.classList.toggle('hidden');
-      arrow.classList.toggle('rotate-180');
+    // Changement d'étape visuel
+    function goToStep(step) {
+      document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`step${step}`).classList.remove('hidden');
+      currentStep = step;
+      updateProgressIndicators();
     }
 
-    function generateId(course, levelKey, prefix) {
-      return `${prefix}-${levelKey}-${course.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    function updateProgressIndicators() {
+      const progressBar = document.getElementById('progress-bar');
+      const stepLabel = document.getElementById('step-label');
+      const stepTitle = document.getElementById('step-title');
+      const stepPercentage = document.getElementById('step-percentage');
+
+      if (currentStep === 1) {
+        progressBar.style.width = '33%';
+        stepLabel.textContent = 'Étape 1 sur 3';
+        stepTitle.textContent = 'Informations académiques';
+        stepPercentage.textContent = '33%';
+      } else if (currentStep === 2) {
+        progressBar.style.width = '66%';
+        stepLabel.textContent = 'Étape 2 sur 3';
+        stepTitle.textContent = 'Compétences & Besoins';
+        stepPercentage.textContent = '66%';
+      } else if (currentStep === 3) {
+        progressBar.style.width = '100%';
+        stepLabel.textContent = 'Étape 3 sur 3';
+        stepTitle.textContent = 'Vos Disponibilités';
+        stepPercentage.textContent = '100%';
+      }
     }
 
-    function initSkillsLists() {
-      ['l1', 'l2', 'l3'].forEach(levelKey => {
-        const strengthsList = document.getElementById(`strengths-${levelKey}-content`);
-        const weaknessesList = document.getElementById(`weaknesses-${levelKey}-content`);
+    // Remplissage dynamique des matières basé sur la filière choisie
+    function renderDynamicSkills(department) {
+      const strengthsContainer = document.getElementById('strengths-container');
+      const weaknessesContainer = document.getElementById('weaknesses-container');
+      
+      strengthsContainer.innerHTML = '';
+      weaknessesContainer.innerHTML = '';
 
-        coursesByLevel[levelKey].forEach(course => {
-          const strengthId = generateId(course, levelKey, 'strength');
-          const strengthSelectId = generateId(course, levelKey, 'strength-level');
-          const weaknessId = generateId(course, levelKey, 'weakness');
-          const weaknessSelectId = generateId(course, levelKey, 'weakness-level');
+      const courses = coursesByDepartment[department] || [];
 
-          // Élément Compétence
-          const strengthDiv = document.createElement('div');
-          strengthDiv.className = 'space-y-2';
-          strengthDiv.innerHTML = `
-            <button
-              type="button"
-              onclick="toggleSkill('${course.replace(/'/g, "\\'")}', '${levelKey}', 'strength')"
-              id="${strengthId}"
-              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors"
-            >
-              <div class="flex items-center justify-between">
-                <span class="text-sm">${course}</span>
-              </div>
-            </button>
-            <select
-              id="${strengthSelectId}"
-              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              onchange="updateSkillLevel('${course.replace(/'/g, "\\'")}', 'strength', this.value)"
-            >
-              ${masteryLevels.map(level => `<option value="${level}">${level}</option>`).join('')}
-            </select>
-          `;
-          strengthsList.appendChild(strengthDiv);
+      if (courses.length === 0) {
+        strengthsContainer.innerHTML = '<p class="text-sm text-muted">Aucune matière trouvée.</p>';
+        weaknessesContainer.innerHTML = '<p class="text-sm text-muted">Aucune matière trouvée.</p>';
+        return;
+      }
 
-          // Élément Lacune
-          const weaknessDiv = document.createElement('div');
-          weaknessDiv.className = 'space-y-2';
-          weaknessDiv.innerHTML = `
-            <button
-              type="button"
-              onclick="toggleSkill('${course.replace(/'/g, "\\'")}', '${levelKey}', 'weakness')"
-              id="${weaknessId}"
-              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors"
-            >
-              <div class="flex items-center justify-between">
-                <span class="text-sm">${course}</span>
-              </div>
-            </button>
-            <select
-              id="${weaknessSelectId}"
-              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning focus:border-transparent"
-              onchange="updateSkillLevel('${course.replace(/'/g, "\\'")}', 'weakness', this.value)"
-            >
-              ${priorityLevels.map(level => `<option value="${level}">${level}</option>`).join('')}
-            </select>
-          `;
-          weaknessesList.appendChild(weaknessDiv);
+      courses.forEach((course, index) => {
+        // ID uniques pour distinguer forces et faiblesses
+        const strengthId = `str-${index}`;
+        const weaknessId = `weak-${index}`;
+
+        // Template Points Forts
+        const strengthItem = document.createElement('label');
+        strengthItem.className = "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors text-sm border border-transparent select-none";
+        strengthItem.innerHTML = `
+          <input type="checkbox" value="${course}" id="${strengthId}" name="strengths" class="w-4 h-4 rounded border-border bg-input text-primary focus:ring-primary">
+          <span class="text-slate-300">${course}</span>
+        `;
+        strengthsContainer.appendChild(strengthItem);
+
+        // Template Points Faibles
+        const weaknessItem = document.createElement('label');
+        weaknessItem.className = "flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors text-sm border border-transparent select-none";
+        weaknessItem.innerHTML = `
+          <input type="checkbox" value="${course}" id="${weaknessId}" name="weaknesses" class="w-4 h-4 rounded border-border bg-input text-primary focus:ring-primary">
+          <span class="text-slate-300">${course}</span>
+        `;
+        weaknessesContainer.appendChild(weaknessItem);
+
+        // Éviter qu'une matière soit cochée des deux côtés en même temps
+        const strCheckbox = strengthItem.querySelector('input');
+        const weakCheckbox = weaknessItem.querySelector('input');
+
+        strCheckbox.addEventListener('change', () => {
+          if (strCheckbox.checked) {
+            weakCheckbox.checked = false;
+            weaknessItem.classList.remove('opacity-40');
+            strengthItem.classList.add('bg-success/10', 'border-success/20');
+          } else {
+            strengthItem.classList.remove('bg-success/10', 'border-success/20');
+          }
+        });
+
+        weakCheckbox.addEventListener('change', () => {
+          if (weakCheckbox.checked) {
+            strCheckbox.checked = false;
+            strengthItem.classList.remove('opacity-40');
+            weaknessItem.classList.add('bg-warning/10', 'border-warning/20');
+          } else {
+            weaknessItem.classList.remove('bg-warning/10', 'border-warning/20');
+          }
         });
       });
     }
 
-    function toggleSkill(course, levelKey, type) {
-      const btnId = generateId(course, levelKey, type);
-      const levelId = generateId(course, levelKey, `${type}-level`);
-      const oppositeType = type === 'strength' ? 'weakness' : 'strength';
-      const oppositeBtnId = generateId(course, levelKey, oppositeType);
-      const oppositeLevelId = generateId(course, levelKey, `${oppositeType}-level`);
-      
-      const btn = document.getElementById(btnId);
-      const levelSelect = document.getElementById(levelId);
-      const oppositeBtn = document.getElementById(oppositeBtnId);
-      const oppositeLevelSelect = document.getElementById(oppositeLevelId);
-
-      if (type === 'strength') {
-        const index = userData.strengths.findIndex(s => s.course === course);
-        if (index > -1) {
-          userData.strengths.splice(index, 1);
-          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors';
-          btn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
-          levelSelect.classList.add('hidden');
-        } else {
-          const weaknessIndex = userData.weaknesses.findIndex(w => w.course === course);
-          if (weaknessIndex > -1) {
-            userData.weaknesses.splice(weaknessIndex, 1);
-            if(oppositeBtn) {
-              oppositeBtn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors';
-              oppositeBtn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
-            }
-            if(oppositeLevelSelect) oppositeLevelSelect.classList.add('hidden');
-          }
-          
-          userData.strengths.push({ course, mastery: 'Intermediate' });
-          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors';
-          btn.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-sm">${course}</span>
-              <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          `;
-          levelSelect.classList.remove('hidden');
-          levelSelect.value = 'Intermediate';
-        }
-      } else {
-        const index = userData.weaknesses.findIndex(w => w.course === course);
-        if (index > -1) {
-          userData.weaknesses.splice(index, 1);
-          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors';
-          btn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
-          levelSelect.classList.add('hidden');
-        } else {
-          const strengthIndex = userData.strengths.findIndex(s => s.course === course);
-          if (strengthIndex > -1) {
-            userData.strengths.splice(strengthIndex, 1);
-            if(oppositeBtn) {
-              oppositeBtn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors';
-              oppositeBtn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
-            }
-            if(oppositeLevelSelect) oppositeLevelSelect.classList.add('hidden');
-          }
-          
-          userData.weaknesses.push({ course, priority: 'Medium' });
-          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors';
-          btn.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-sm">${course}</span>
-              <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          `;
-          levelSelect.classList.remove('hidden');
-          levelSelect.value = 'Medium';
-        }
-      }
-    }
-
-    function updateSkillLevel(course, type, level) {
-      if (type === 'strength') {
-        const skill = userData.strengths.find(s => s.course === course);
-        if (skill) skill.mastery = level;
-      } else {
-        const weakness = userData.weaknesses.find(w => w.course === course);
-        if (weakness) weakness.priority = level;
-      }
-    }
-
+    // Initialisation de la grille des disponibilités (Étape 3)
     function initAvailabilityGrid() {
       const grid = document.getElementById('availability-grid');
       grid.innerHTML = '';
-      hours.forEach((hour, timeIndex) => {
-        const row = document.createElement('tr');
-        const hourCell = document.createElement('td');
-        hourCell.className = 'sticky left-0 bg-card p-2 text-sm text-muted font-medium';
-        hourCell.textContent = hour;
-        row.appendChild(hourCell);
 
-        days.forEach((day, dayIndex) => {
-          const cell = document.createElement('td');
-          cell.className = 'p-0.5'; // Rapproche les cases sans lignes rigides
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'w-full h-9 rounded-md transition-colors bg-input hover:bg-primary/20';
-          button.onclick = () => toggleTimeSlot(dayIndex, timeIndex, button);
-          cell.appendChild(button);
-          row.appendChild(cell);
+      days.forEach(day => {
+        const row = document.createElement('tr');
+        row.className = "hover:bg-white/[0.01] transition-colors";
+        
+        let slotsHtml = `<td class="p-4 font-medium text-sm text-slate-200">${day}</td>`;
+        
+        slots.forEach(slot => {
+          slotsHtml += `
+            <td class="p-4 text-center">
+              <input type="checkbox" name="avail-${day}-${slot}" data-day="${day}" data-slot="${slot}" class="w-5 h-5 rounded border-border bg-input text-primary focus:ring-primary cursor-pointer accent-primary">
+            </td>
+          `;
         });
+        
+        row.innerHTML = slotsHtml;
         grid.appendChild(row);
       });
     }
 
-    function toggleTimeSlot(dayIndex, timeIndex, button) {
-      availability[dayIndex][timeIndex] = !availability[dayIndex][timeIndex];
-      if (availability[dayIndex][timeIndex]) {
-        button.className = 'w-full h-9 rounded-md transition-colors bg-primary hover:bg-primary/80';
-      } else {
-        button.className = 'w-full h-9 rounded-md transition-colors bg-input hover:bg-primary/20';
-      }
-    }
-
-    function updateProgress() {
-      for (let i = 1; i <= 3; i++) {
-        const indicator = document.getElementById(`step${i}-indicator`);
-        const label = document.getElementById(`step${i}-label`);
-        
-        if (i < currentStep) {
-          indicator.className = 'w-10 h-10 rounded-full bg-success flex items-center justify-center font-semibold text-white';
-          indicator.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
-          label.className = 'text-muted';
-        } else if (i === currentStep) {
-          indicator.className = 'w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold text-white';
-          indicator.textContent = i;
-          label.className = 'font-medium';
-        } else {
-          indicator.className = 'w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted';
-          indicator.textContent = i;
-          label.className = 'text-muted';
-        }
-      }
-
-      document.getElementById('progress-bar-1').className = currentStep >= 2 ? 'flex-1 h-1 mx-2 rounded bg-success' : 'flex-1 h-1 mx-2 rounded bg-card';
-      document.getElementById('progress-bar-2').className = currentStep >= 3 ? 'flex-1 h-1 mx-2 rounded bg-success' : 'flex-1 h-1 mx-2 rounded bg-card';
-
-      for (let i = 1; i <= 3; i++) {
-        document.getElementById(`step${i}`).classList.toggle('hidden', i !== currentStep);
-      }
-    }
-
-    function previousStep() {
-      if (currentStep > 1) {
-        currentStep--;
-        updateProgress();
-      }
-    }
-
+    // Gestion de la soumission de l'Étape 1
     document.getElementById('step1-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      userData.firstName = document.getElementById('firstName').value;
-      userData.lastName = document.getElementById('lastName').value;
+      userData.firstName = document.getElementById('firstName').value.trim();
+      userData.lastName = document.getElementById('lastName').value.trim();
       userData.department = document.getElementById('department').value;
       userData.level = document.getElementById('level').value;
-      currentStep = 2;
-      updateProgress();
+
+      // Générer dynamiquement la liste des matières liée à la filière choisie
+      renderDynamicSkills(userData.department);
+
+      goToStep(2);
     });
 
+    // Gestion de la soumission de l'Étape 2
     document.getElementById('step2-form').addEventListener('submit', (e) => {
       e.preventDefault();
+      
+      userData.strengths = [];
+      userData.weaknesses = [];
+
+      document.querySelectorAll('input[name="strengths"]:checked').forEach(cb => {
+        userData.strengths.push(cb.value);
+      });
+
+      document.querySelectorAll('input[name="weaknesses"]:checked').forEach(cb => {
+        userData.weaknesses.push(cb.value);
+      });
+
       if (userData.strengths.length === 0 && userData.weaknesses.length === 0) {
-        alert('Veuillez sélectionner au moins une compétence ou une lacune');
+        alert('Veuillez sélectionner au moins une compétence (point fort) ou une lacune (point faible) pour continuer.');
         return;
       }
-      currentStep = 3;
-      updateProgress();
+
+      goToStep(3);
     });
 
+    // Gestion de la soumission de l'Étape 3 (Finalisation)
     document.getElementById('step3-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      userData.availability = availability;
       
-      if (typeof saveUserData === 'function') saveUserData(userData);
+      userData.availability = {};
+      days.forEach(day => {
+        userData.availability[day] = [];
+        slots.forEach(slot => {
+          const cb = document.querySelector(`input[data-day="${day}"][data-slot="${slot}"]`);
+          if (cb && cb.checked) {
+            userData.availability[day].push(slot);
+          }
+        });
+      });
+
+      // Sauvegarde complète dans le localStorage
+      localStorage.setItem('mentorlink_user_profile', JSON.stringify(userData));
       localStorage.setItem('onboardingCompleted', 'true');
 
-      const btn = document.getElementById('finish-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>';
+      // État de chargement du bouton final
+      const finishBtn = document.getElementById('finish-btn');
+      finishBtn.disabled = true;
+      finishBtn.innerHTML = '<div class="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin mx-auto"></div>';
 
       setTimeout(() => {
         window.location.href = 'dashboard.html';
-      }, 1000);
+      }, 1200);
     });
 
-    initSkillsLists();
-    initAvailabilityGrid();
-    updateProgress();
+    // Initialisation au chargement de la page
+    window.addEventListener('DOMContentLoaded', () => {
+      initAvailabilityGrid();
+      updateProgressIndicators();
+    });
   </script>
 </body>
 </html>
