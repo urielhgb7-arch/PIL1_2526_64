@@ -50,3 +50,10 @@ def clean_db(app):
     for table in reversed(_db.metadata.sorted_tables):
         _db.session.execute(table.delete())
     _db.session.commit()
+
+@pytest.fixture()
+def socketio_client(app):
+    """Fixture pour tester les événements Socket.IO"""
+    from app.sockets.chat import socketio
+    socketio_test_client = socketio.test_client(app)
+    return socketio_test_client
