@@ -18,6 +18,7 @@
         </div>
 
         <form id="loginForm" class="space-y-6">
+            <div class="error-banner hidden text-red-400 text-sm bg-red-950/50 p-3 rounded-xl border border-red-800" id="errorBanner"></div>
             
             <div>
                 <label for="email" class="block text-sm font-medium text-slate-300 mb-1">Adresse Email de l'IFRI</label>
@@ -57,9 +58,10 @@
 
             <button 
                 type="submit" 
-                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+                id="submitBtn"
+                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98] flex justify-center items-center gap-2"
             >
-                Se connecter
+                <span>Se connecter</span>
             </button>
         </form>
 
@@ -71,54 +73,74 @@
     </div>
 
     <script>
-    // 1. On écoute l'événement "submit" (quand l'utilisateur clique sur le bouton)
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault(); // Empêche la page de se recharger automatiquement
+        // ========================================================
+        // CONFIGURATION DU BACKEND (À adapter avec ton coéquipier)
+        // ========================================================
+        const LOGIN_API_URL = "http://localhost:5000/api/login";
 
-        // 2. Récupération des données saisies par l'utilisateur dans les inputs
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const role = document.getElementById('role').value;
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); 
 
-        // Préparation de l'objet à envoyer au serveur
-        const data = { 
-            email: email, 
-            password: password,
-            role: role
-        };
+            const errorBanner = document.getElementById('errorBanner');
+            const submitBtn = document.getElementById('submitBtn');
 
-        try {
-            // 3. ENVOI DES DONNÉES (Le fetch) au serveur Back-End
-            // Remplacer l'URL ci-dessous par la vraie URL que ton coéquipier Back-End te donnera
-            const response = await fetch('https://ton-api-backend.render.com/api/login', {
-                method: 'POST', // On utilise POST pour envoyer des données de manière sécurisée
-                headers: {
-                    'Content-Type': 'application/json' // On indique qu'on envoie du texte au format JSON
-                },
-                body: JSON.stringify(data) // On transforme l'objet JavaScript en texte JSON
-            });
+            // Réinitialisation de l'affichage de l'erreur
+            errorBanner.classList.add('hidden');
+            errorBanner.textContent = "";
 
-            // 4. RÉCEPTION DE LA RÉPONSE DU SERVEUR
-            const result = await response.json(); // Le serveur répond souvent un message en JSON
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
 
-            if (response.ok) {
-                // Si la connexion réussit (Statut HTTP 200)
-                alert("Connexion réussie !");
-                console.log("Token ou données reçues :", result);
-                
-                // Exemple : Rediriger l'utilisateur vers son tableau de bord (dashboard)
-                // window.location.href = "dashboard.html";
-            } else {
-                // Si le serveur refuse (Ex: mauvais mot de passe, statut 401)
-                alert("Erreur de connexion : " + (result.message || "Identifiants incorrects"));
+            const credentials = { 
+                email: email, 
+                password: password,
+                role: role
+            };
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Vérification...";
+
+                const response = await fetch(LOGIN_API_URL, {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+
+                const result = await response.json(); 
+
+                if (response.ok) {
+                    // 1. Stockage du Token JWT indispensable pour sécuriser la session
+                    if (result.token) {
+                        localStorage.setItem('token', result.token);
+                    }
+                    
+                    // 2. Redirection intelligente d'aiguillage
+                    // Si le profil de l'étudiant n'est pas encore complété (isOnboarded = false)
+                    if (result.user && result.user.isOnboarded === false) {
+                        window.location.href = "onboarding.html";
+                    } else {
+                        // Si le profil est déjà totalement paramétré
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    // Gestion propre de l'affichage de l'erreur sans bloquer le navigateur
+                    errorBanner.textContent = result.message || "Identifiants ou rôle incorrects.";
+                    errorBanner.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                errorBanner.textContent = "Impossible de joindre le serveur. Assurez-vous que le backend est lancé.";
+                errorBanner.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "<span>Se connecter</span>";
             }
-
-        } catch (error) {
-            // Si le serveur est en panne ou que la connexion internet a échoué
-            console.error("Erreur réseau :", error);
-            alert("Impossible de joindre le serveur. Vérifiez votre connexion.");
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

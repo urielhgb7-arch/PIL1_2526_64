@@ -99,7 +99,13 @@
             </p>
         </div>
     </div>
+
     <script>
+        // ========================================================
+        // CONFIGURATION CONFIG BACKEND (À adapter avec ton coéquipier)
+        // ========================================================
+        const REGISTER_API_URL = "http://localhost:5000/api/register";
+
         // ==========================================
         // 1. GESTION DE L'AFFICHAGE DU MOT DE PASSE (L'œil 👁️)
         // ==========================================
@@ -107,10 +113,9 @@
         const togglePasswordBtn = document.getElementById('togglePasswordBtn');
 
         togglePasswordBtn.addEventListener('click', () => {
-            // Si le type est "password", on le passe en "text" (visible), et vice-versa
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                togglePasswordBtn.textContent = '🙈'; // Change l'icône si tu veux
+                togglePasswordBtn.textContent = '🙈';
             } else {
                 passwordInput.type = 'password';
                 togglePasswordBtn.textContent = '👁️';
@@ -121,25 +126,21 @@
         // 2. ENVOI DES DONNÉES D'INSCRIPTION (Le fetch)
         // ==========================================
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Empêche le rechargement de la page
+            e.preventDefault(); 
 
-            // Récupération des éléments d'affichage (Bannière d'erreur et Spinner)
             const errorBanner = document.getElementById('errorBanner');
             const submitBtn = document.getElementById('submitBtn');
             const registerSpinner = document.getElementById('registerSpinner');
 
-            // Réinitialisation des alertes à chaque clic
             errorBanner.classList.add('hidden');
             errorBanner.textContent = "";
 
-            // Récupération des données du formulaire
             const firstname = document.getElementById('firstname').value.trim();
             const lastname = document.getElementById('lastname').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            // Création de l'objet à envoyer au Back-End
             const userData = {
                 firstname: firstname,
                 lastname: lastname,
@@ -149,12 +150,10 @@
             };
 
             try {
-                // Activation du spinner visuel sur le bouton
                 if (registerSpinner) registerSpinner.classList.remove('hidden');
                 submitBtn.disabled = true;
 
-                // Envoi de la requête au serveur (L'URL sera à adapter avec ton coéquipier)
-                const response = await fetch('https://ton-api-backend.render.com/api/register', {
+                const response = await fetch(REGISTER_API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -165,29 +164,31 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Si l'inscription fonctionne (Statut HTTP 201 Created ou 200 OK)
-                    alert("Compte créé avec succès ! Redirection vers la page de connexion...");
+                    // --- SYNCHRONISATION DES FLUX EFFECTUÉE ICI ---
                     
-                    // Redirection automatique vers le login pour qu'il s'authentifie
-                    window.location.href = "login.html";
+                    // 1. Sauvegarde du Token d'authentification renvoyé par le backend
+                    if (result.token) {
+                        localStorage.setItem('token', result.token);
+                    }
+
+                    alert("Compte créé avec succès ! Configurons maintenant votre profil.");
+                    
+                    // 2. Redirection directe vers l'Onboarding (sans passer par la case Login)
+                    window.location.href = "onboarding.html";
                 } else {
-                    // Si le Back-End renvoie une erreur (Ex: Email ou numéro déjà utilisé)
                     errorBanner.textContent = result.message || "Une erreur est survenue lors de l'inscription.";
                     errorBanner.classList.remove('hidden');
                 }
 
             } catch (error) {
-                // Erreur réseau (serveur éteint, pas d'internet...)
                 console.error("Erreur réseau :", error);
-                errorBanner.textContent = "Impossible de joindre le serveur. Réessayez plus tard.";
+                errorBanner.textContent = "Impossible de joindre le serveur. Vérifiez qu'il est bien démarré.";
                 errorBanner.classList.remove('hidden');
             } finally {
-                // Désactivation du spinner dans tous les cas (réussite ou échec)
                 if (registerSpinner) registerSpinner.classList.add('hidden');
                 submitBtn.disabled = false;
             }
         });
     </script>
-
 </body>
 </html>
