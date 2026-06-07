@@ -1,13 +1,15 @@
 
 # backend/app/routes/auth.py
 import logging
+import os
+import secrets
+from datetime import datetime, timedelta, timezone
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 from app.database import db
-from app.models import User, Profile
+from app.models import User, Profile, PasswordResetToken
 from flask_jwt_extended import create_access_token
 from app.validators import validate_json, is_valid_email, is_valid_format_preference, is_valid_niveau
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.middleware.auth_guard import token_required
 
 logger = logging.getLogger(__name__)
@@ -106,6 +108,59 @@ def login():
     except Exception as e:
         logger.error(f"Erreur login: {str(e)[:100]}", exc_info=True)
         return jsonify({"message": "Erreur serveur"}), 500
+
+
+@auth_bp.route('/forgot-password', methods=['POST'])
+@validate_json(required_fields=['email'], email_field='email')
+def forgot_password():
+    data = request.validated_json
+    email = data['email']
+    user = User.query.filter_by(email=email).first()
+    response = {"message": "Si votre email existe, un lien de réinitialisation a été émis."}
+
+    if user:
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+        reset_token = PasswordResetToken(
+            user_id=user.id,
+            token=token,
+            expires_at=expires_at
+        )
+        db.session.add(reset_token)
+        db.session.commit()
+
+        logger.info(f"Réinitialisation de mot de passe demandée pour user_id={user.id} email={email}")
+        if os.getenv('FLASK_ENV') != 'production':
+            response['reset_token'] = token
+
+    return jsonify(response), 200
+
+
+@auth_bp.route('/reset-password', methods=['POST'])
+@validate_json(required_fields=['token', 'new_password'])
+def reset_password():
+    data = request.validated_json
+    token = data['token']
+    new_password = data['new_password']
+
+    if len(new_password) < 6:
+        return jsonify({"message": "Le mot de passe doit faire au moins 6 caractères"}), 400
+
+    reset_token = PasswordResetToken.query.filter_by(token=token, used=False).first()
+    now = datetime.now(timezone.utc)
+    if not reset_token or reset_token.expires_at < now:
+        return jsonify({"message": "Token invalide ou expiré"}), 400
+
+    user = db.session.get(User, reset_token.user_id)
+    if not user:
+        return jsonify({"message": "Token invalide ou expiré"}), 400
+
+    user.set_password(new_password)
+    reset_token.used = True
+    db.session.commit()
+
+    logger.info(f"Mot de passe réinitialisé pour user_id={user.id} email={user.email}")
+    return jsonify({"message": "Mot de passe réinitialisé avec succès"}), 200
 
 
 @auth_bp.route('/change-password', methods=['PUT'])

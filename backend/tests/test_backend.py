@@ -1,8 +1,11 @@
 import json
+import secrets
+from datetime import datetime, timedelta, timezone
 import pytest
 from app.database import db
 from app.models.user import User
 from app.models.profile import Profile, Disponible
+from app.models.password_reset_token import PasswordResetToken
 from app.models.services import Matiere, ProfilCompetence, ProfilLacune
 from app.models.messages import Conversation, Message, Notification
 
@@ -129,6 +132,53 @@ def test_login_invalid_credentials(client):
     response = login_user(client, 'nope@a.com', 'badpass')
     assert response.status_code == 401
     assert response.json['message'] == 'Identifiants invalides'
+
+
+def test_forgot_password_returns_reset_token_in_dev(client, app):
+    with app.app_context():
+        user = create_user_direct('forgot@a.com', 'pass')
+        create_profile(user)
+        user_id = user.id
+
+    response = client.post('/api/auth/forgot-password', json={'email': 'forgot@a.com'})
+    assert response.status_code == 200
+    assert 'message' in response.json
+    assert response.json['message'] == 'Si votre email existe, un lien de réinitialisation a été émis.'
+    assert 'reset_token' in response.json
+    assert response.json['reset_token']
+
+    token = response.json['reset_token']
+    stored = PasswordResetToken.query.filter_by(token=token).first()
+    assert stored is not None
+    assert stored.user_id == user_id
+    assert stored.used is False
+
+
+def test_reset_password_with_valid_token(client, app):
+    with app.app_context():
+        user = create_user_direct('reset@a.com', 'oldpass')
+        create_profile(user)
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+        stored = PasswordResetToken(user_id=user.id, token=token, expires_at=expires_at)
+        db.session.add(stored)
+        db.session.commit()
+
+    response = client.post('/api/auth/reset-password', json={'token': token, 'new_password': 'newpass123'})
+    assert response.status_code == 200
+    assert response.json['message'] == 'Mot de passe réinitialisé avec succès'
+
+    with app.app_context():
+        user = User.query.filter_by(email='reset@a.com').first()
+        assert user.check_password('newpass123')
+        stored = PasswordResetToken.query.filter_by(token=token).first()
+        assert stored.used is True
+
+
+def test_reset_password_with_invalid_token(client):
+    response = client.post('/api/auth/reset-password', json={'token': 'badtoken', 'new_password': 'newpass123'})
+    assert response.status_code == 400
+    assert response.json['message'] == 'Token invalide ou expiré'
 
 
 def test_matching_requires_auth(client):
