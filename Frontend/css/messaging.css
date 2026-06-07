@@ -56,11 +56,13 @@
     font-size: 13.5px;
     font-weight: 400;
     transition: all 0.15s;
+    -webkit-user-select: none;
     user-select: none;
     margin-bottom: 2px;
   }
   .nav-item svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; flex-shrink: 0; }
   .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .nav-item-muted { color: var(--muted2); }
   .nav-item.active {
     background: rgba(124,110,244,0.15);
     color: var(--accent-light);
@@ -109,6 +111,9 @@
     font-size: 13px; font-weight: 700; color: #fff;
     flex-shrink: 0; position: relative;
   }
+  .conv-avatar.avatar-purple { background: #6b5ce7; }
+  .conv-avatar.avatar-blue   { background: #3a7bd5; }
+  .conv-avatar.avatar-green  { background: #2ecc71; }
   .conv-avatar .online {
     width: 10px; height: 10px;
     background: var(--green);

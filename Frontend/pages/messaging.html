@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IFRI MentorLink – Messages</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/Frontend/css/messaging.css">
-<script src="/Frontend/js/api.js"></script>
+<link rel="stylesheet" href="../css/messaging.css">
+<script src="../js/api.js"></script>
 </head>
 <body>
 
@@ -45,7 +45,7 @@
     </div>
   </nav>
   <div class="sidebar-bottom">
-    <div class="nav-item" style="color:var(--muted2)">
+    <div class="nav-item nav-item-muted">
       <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Déconnexion
     </div>
@@ -56,7 +56,7 @@
   <div class="conv-header">Conversations</div>
   <div class="conv-list">
     <div class="conv-item active" onclick="selectConv(this)">
-      <div class="conv-avatar" style="background:#6b5ce7">AD<span class="online"></span></div>
+      <div class="conv-avatar avatar-purple">AD<span class="online"></span></div>
       <div class="conv-info">
         <div class="conv-name">Aïcha D.</div>
         <div class="conv-preview">Parfait! On se retrouve demain ...</div>
@@ -64,7 +64,7 @@
       <div class="conv-meta"><span class="conv-time">14:32</span></div>
     </div>
     <div class="conv-item" onclick="selectConv(this)">
-      <div class="conv-avatar" style="background:#3a7bd5">MK<span class="online"></span></div>
+      <div class="conv-avatar avatar-blue">MK<span class="online"></span></div>
       <div class="conv-info">
         <div class="conv-name">Mohamed K.</div>
         <div class="conv-preview">Tu peux m'expliquer les JO...</div>
@@ -72,7 +72,7 @@
       <div class="conv-meta"><span class="conv-time">12:15</span><span class="conv-badge">2</span></div>
     </div>
     <div class="conv-item" onclick="selectConv(this)">
-      <div class="conv-avatar" style="background:#2ecc71">FB<span class="typing-dot"></span></div>
+      <div class="conv-avatar avatar-green">FB<span class="typing-dot"></span></div>
       <div class="conv-info">
         <div class="conv-name">Fatima B.</div>
         <div class="conv-preview typing">En train d'écrire...</div>
@@ -121,7 +121,7 @@
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
     </div>
     <textarea class="chat-input" id="msgInput" placeholder="Tapez votre message..." rows="1" onkeydown="handleKey(event)"></textarea>
-    <button class="send-btn" onclick="sendMessage()">
+    <button class="send-btn" type="button" aria-label="Envoyer le message" onclick="sendMessage()">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
@@ -132,6 +132,6 @@
   <span class="dot"></span>
 </div>
 
-<script src="/Frontend/js/messaging.js"></script>
+<script src="../js/messaging.js"></script>
 </body>
 </html>

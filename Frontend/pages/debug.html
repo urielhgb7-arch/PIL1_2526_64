@@ -96,24 +96,67 @@
         .comp-tag { display: inline-flex; align-items: center; gap: 6px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 4px 10px; font-size: 12px; margin: 3px; }
         .comp-tag.available { border-color: #065f46; color: #34d399; }
         .comp-tag.unavailable { border-color: #7f1d1d; color: #f87171; }
+
+        .status-title { font-weight: 700; color: #818cf8; }
+        .status-group { display: flex; align-items: center; gap: 6px; }
+        .status-right { margin-left: auto; }
+        .status-label-muted { color: #475569; }
+        .status-dot.off { background: #475569; }
+        .api-base-input { width: 230px; padding: 4px 8px; font-size: 11px; }
+        .grid-gap-half { gap: .5rem; }
+        .gap-8 { gap: 8px; }
+        .text-sm-muted { font-size: 13px; color: #64748b; }
+        .mt-small { margin-top: .75rem; }
+        .mb-small { margin-bottom: 1rem; }
+        .field-inline { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .checkbox-inline { width: auto; margin: 0; }
+        .checkbox-label-inline { margin: 0; cursor: pointer; }
+        .btn-margin-top { margin-top: .75rem; }
+        .hr-thin { border-color: #1f2937; margin: 1rem 0; }
+        .panel-body { margin-top: .5rem; max-height: 180px; overflow-y: auto; font-size: 12px; }
+        .panel-card { margin-top: .75rem; }
+        .text-xs-muted { font-size: 12px; color: #64748b; margin-bottom: 1rem; }
+        .table-scroll { overflow-x: auto; }
+        .table-col-small { width: 70px; }
+        .legend-row { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; }
+        .legend-item.selected { color: #34d399; }
+        .legend-dot-box { width: 14px; height: 14px; border-radius: 3px; background: #0d1117; border: 1px solid #1f2937; }
+        .legend-dot-box.selected { background: #059669; }
+        .legend-actions { margin-left: auto; display: flex; gap: .5rem; }
+        .flex-fill { flex: 1; margin: 0; }
+        .input-flex { flex: 1; }
+        .row-flex { display: flex; gap: .5rem; margin-top: .75rem; }
+        .row-flex-wrap { display: flex; gap: .5rem; flex-wrap: wrap; }
+        .label-small { margin: 0; font-size: 11px; }
+        .text-small { font-size: 13px; }
+        .no-margin { margin: 0; }
+        .poll-status { font-size: 12px; color: #64748b; margin-top: .5rem; }
+        .notif-count { margin-left: auto; font-size: 12px; color: #64748b; }
+        .card-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .75rem; }
+        .card-row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+        .ws-events { font-family: 'Courier New', monospace; font-size: 12px; background: #070810; border-radius: 8px; padding: 1rem; height: 180px; overflow-y: auto; color: #c084fc; }
+        .btn-clear { margin-top: .5rem; }
+        .card-title-small { margin-bottom: .5rem; font-size: 11px; }
+        .raw-method { width: 120px; }
     </style>
 </head>
 <body>
 
 <!-- ── STATUS BAR ── -->
 <div id="statusBar">
-    <div style="font-weight:700; color:#818cf8;">🔗 MentorLink</div>
-    <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
-        <div class="status-dot" id="authDot" style="background:#475569"></div>
-        <span id="authLabel" style="color:#475569">Non connecté</span>
+    <div class="status-title">🔗 MentorLink</div>
+    <div class="status-group status-right">
+        <div class="status-dot off" id="authDot"></div>
+        <span id="authLabel" class="status-label-muted">Non connecté</span>
     </div>
-    <div style="display:flex; align-items:center; gap:6px;">
-        <div class="status-dot" id="wsDot" style="background:#475569"></div>
-        <span id="wsLabel" style="color:#475569">WebSocket off</span>
+    <div class="status-group">
+        <div class="status-dot off" id="wsDot"></div>
+        <span id="wsLabel" class="status-label-muted">WebSocket off</span>
     </div>
-    <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
-        <label style="margin:0; font-size:11px; color:#475569;">Backend</label>
-        <input type="text" id="apiBase" value="http://127.0.0.1:5000/api" style="width:230px; padding:4px 8px; font-size:11px;">
+    <div class="status-group status-right gap-8">
+        <label class="status-label-muted label-small" for="apiBase">Backend</label>
+        <input type="text" id="apiBase" value="http://127.0.0.1:5000/api" class="api-base-input">
     </div>
 </div>
 
@@ -142,7 +185,7 @@
         </div>
         <div class="card">
             <div class="card-title">📝 Inscription</div>
-            <div class="grid-2" style="gap:.5rem">
+            <div class="grid-2 grid-gap-half">
                 <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="email"></div>
                 <div class="field"><label>Mot de passe</label><input id="regPass" type="password" placeholder="••••••••"></div>
                 <div class="field"><label>Nom</label><input id="regNom" type="text" placeholder="HOUNDJI"></div>
@@ -168,8 +211,8 @@
     </div>
     <div class="card">
         <div class="card-title">ℹ️ Session courante</div>
-        <div id="sessionInfo" style="font-size:13px; color:#64748b;">Non connecté</div>
-        <button class="btn btn-danger btn-sm" id="logoutBtn" style="margin-top:.75rem">Se déconnecter</button>
+        <div id="sessionInfo" class="text-sm-muted">Non connecté</div>
+        <button class="btn btn-danger btn-sm btn-margin-top" id="logoutBtn">Se déconnecter</button>
     </div>
 </div>
 
@@ -179,7 +222,7 @@
         <div class="card">
             <div class="card-title">👤 Profil actuel</div>
             <button class="btn btn-ghost btn-full" id="loadProfileBtn">Charger mon profil</button>
-            <div id="profileDisplay" style="margin-top:1rem; font-size:13px;"></div>
+            <div id="profileDisplay" class="text-sm-muted mt-small"></div>
         </div>
         <div class="card">
             <div class="card-title">✏️ Modifier le profil</div>
@@ -210,9 +253,9 @@
             </div>
             <div class="field"><label>Bio</label><textarea title="Bio" id="upBio" rows="2" placeholder="Quelques mots..."></textarea></div>
             <div class="field"><label>Téléphone</label><input title="Téléphone" id="upTel" type="text" placeholder="+229 01XXXXXXXX"></div>
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-                <input type="checkbox" id="upDispo" style="width:auto; margin:0">
-                <label for="upDispo" style="margin:0; cursor:pointer">Disponible pour aider</label>
+            <div class="field-inline">
+                <input type="checkbox" id="upDispo" class="checkbox-inline">
+                <label for="upDispo" class="checkbox-label-inline">Disponible pour aider</label>
             </div>
             <button class="btn btn-primary btn-full" id="updateProfileBtn">Enregistrer les modifications</button>
         </div>
@@ -233,30 +276,30 @@
                     <option value="Expert">Expert</option>
                 </select>
             </div>
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-                <input type="checkbox" id="compAvailable" style="width:auto; margin:0" checked>
-                <label for="compAvailable" style="margin:0; cursor:pointer">Disponible pour aider</label>
+            <div class="field-inline">
+                <input type="checkbox" id="compAvailable" class="checkbox-inline" checked>
+                <label for="compAvailable" class="checkbox-label-inline">Disponible pour aider</label>
             </div>
             <button class="btn btn-success btn-full" id="addCompBtn">Ajouter compétence</button>
         </div>
         <div class="card">
             <div class="card-title">🔧 Gérer mes compétences</div>
             <div class="field"><label>Matière ID</label><input title="Matière ID" id="mgCompMatiereId" type="number" placeholder="ID matière"></div>
-            <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+            <div class="row-flex-wrap">
                 <button class="btn btn-success btn-sm" id="activateCompBtn">✅ Activer</button>
                 <button class="btn btn-warn btn-sm" id="deactivateCompBtn">⏸ Désactiver</button>
                 <button class="btn btn-danger btn-sm" id="removeCompBtn">🗑 Supprimer</button>
             </div>
-            <hr style="border-color:#1f2937; margin:1rem 0">
-            <div class="card-title" style="margin-bottom:.5rem">📋 Liste des matières dispo</div>
+            <hr class="hr-thin">
+            <div class="card-title mb-small">📋 Liste des matières dispo</div>
             <button class="btn btn-ghost btn-sm" id="listMatieresBtn">Charger les matières</button>
-            <div id="matieresListDisplay" style="margin-top:.5rem; max-height:180px; overflow-y:auto; font-size:12px;"></div>
+            <div id="matieresListDisplay" class="panel-body"></div>
         </div>
     </div>
     <div class="card">
         <div class="card-title">📊 Mes compétences actuelles</div>
         <button class="btn btn-ghost btn-sm" id="loadCompsBtn">Actualiser</button>
-        <div id="compsDisplay" style="margin-top:.75rem;"></div>
+        <div id="compsDisplay" class="panel-card"></div>
     </div>
 </div>
 
@@ -285,7 +328,7 @@
     <div class="card">
         <div class="card-title">📋 Mes lacunes actuelles</div>
         <button class="btn btn-ghost btn-sm" id="loadLacsBtn">Actualiser</button>
-        <div id="lacsDisplay" style="margin-top:.75rem;"></div>
+        <div id="lacsDisplay" class="panel-card"></div>
     </div>
 </div>
 
@@ -293,12 +336,12 @@
 <div class="tab-content" id="tab-dispos">
     <div class="card">
         <div class="card-title">📅 Grille de disponibilités — cliquez pour sélectionner</div>
-        <p style="font-size:12px; color:#64748b; margin-bottom:1rem;">Sélectionnez vos créneaux libres. Cliquez sur une case pour la toggler. Chaque case = 1 heure.</p>
-        <div style="overflow-x:auto;">
+        <p class="text-xs-muted">Sélectionnez vos créneaux libres. Cliquez sur une case pour la toggler. Chaque case = 1 heure.</p>
+        <div class="table-scroll">
             <table class="avail-grid" id="availTable">
                 <thead>
                     <tr>
-                        <th style="width:70px">Heure</th>
+                        <th class="table-col-small">Heure</th>
                         <th>Lun</th><th>Mar</th><th>Mer</th>
                         <th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
                     </tr>
@@ -306,14 +349,14 @@
                 <tbody id="availBody"></tbody>
             </table>
         </div>
-        <div style="display:flex; gap:.75rem; margin-top:1rem; flex-wrap:wrap; align-items:center;">
-            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:#64748b;">
-                <div style="width:14px; height:14px; border-radius:3px; background:#0d1117; border:1px solid #1f2937;"></div> Libre
+        <div class="legend-row">
+            <div class="legend-item">
+                <div class="legend-dot-box"></div> Libre
             </div>
-            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:#34d399;">
-                <div style="width:14px; height:14px; border-radius:3px; background:#059669;"></div> Sélectionné
+            <div class="legend-item selected">
+                <div class="legend-dot-box selected"></div> Sélectionné
             </div>
-            <div style="margin-left:auto; display:flex; gap:.5rem;">
+            <div class="legend-actions">
                 <button class="btn btn-ghost btn-sm" id="clearDispoBtn">Tout désélectionner</button>
                 <button class="btn btn-primary btn-sm" id="saveDisposBtn">Enregistrer la sélection</button>
             </div>
@@ -372,7 +415,7 @@
     <div class="card">
         <div class="card-title">📋 Mes disponibilités actuelles</div>
         <button class="btn btn-ghost btn-sm" id="loadDisposBtn">Actualiser</button>
-        <div id="disposDisplay" style="margin-top:.75rem; font-size:13px;"></div>
+        <div id="disposDisplay" class="panel-card"></div>
     </div>
 </div>
 
@@ -396,12 +439,12 @@
         <div class="card">
             <div class="card-title">📥 Demandes reçues (en attente)</div>
             <button class="btn btn-ghost btn-sm" id="loadReceivedBtn">Charger</button>
-            <div id="receivedMatchesDisplay" style="margin-top:.75rem;"></div>
+            <div id="receivedMatchesDisplay" class="panel-card"></div>
         </div>
         <div class="card">
             <div class="card-title">📤 Demandes envoyées</div>
             <button class="btn btn-ghost btn-sm" id="loadSentBtn">Charger</button>
-            <div id="sentMatchesDisplay" style="margin-top:.75rem;"></div>
+            <div id="sentMatchesDisplay" class="panel-card"></div>
         </div>
     </div>
     <div class="card">
@@ -416,7 +459,7 @@
         <div class="card">
             <div class="card-title">💬 Mes conversations</div>
             <button class="btn btn-ghost btn-sm" id="loadConvsBtn">Actualiser</button>
-            <div id="convsDisplay" style="margin-top:.75rem; font-size:13px;"></div>
+            <div id="convsDisplay" class="panel-card text-sm-muted"></div>
         </div>
         <div class="card">
             <div class="card-title">➕ Créer une conversation</div>
@@ -426,35 +469,35 @@
     </div>
     <div class="card">
         <div class="card-title">📨 Conversation active</div>
-        <div style="display:flex; gap:.5rem; margin-bottom:.75rem; align-items:center;">
-            <div class="field" style="flex:1; margin:0;"><input title="ID de la conversation" id="activeConvId" type="number" placeholder="ID de la conversation"></div>
+        <div class="card-row">
+            <div class="field flex-fill"><input title="ID de la conversation" id="activeConvId" type="number" placeholder="ID de la conversation"></div>
             <button class="btn btn-primary btn-sm" id="loadMsgsBtn">Charger</button>
         </div>
         <div id="msgList"></div>
-        <div style="display:flex; gap:.5rem; margin-top:.75rem;">
-            <input title="Votre message" id="msgInput" type="text" placeholder="Votre message..." style="flex:1;">
+        <div class="row-flex">
+            <input title="Votre message" id="msgInput" type="text" placeholder="Votre message..." class="input-flex">
             <button class="btn btn-primary" id="sendMsgBtn">Envoyer</button>
         </div>
     </div>
     <div class="card">
         <div class="card-title">🔄 Polling messages</div>
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+        <div class="row-flex-wrap">
             <button class="btn btn-ghost btn-sm" id="pollOnceBtn">Vérifier maintenant</button>
             <button class="btn btn-success btn-sm" id="pollStartBtn">Démarrer (5s)</button>
             <button class="btn btn-danger btn-sm" id="pollStopBtn">Arrêter</button>
         </div>
-        <div id="pollStatus" style="font-size:12px; color:#64748b; margin-top:.5rem;"></div>
+        <div id="pollStatus" class="poll-status"></div>
     </div>
 </div>
 
 <!-- ═══════════ TAB: NOTIFICATIONS ═══════════ -->
 <div class="tab-content" id="tab-notifs">
     <div class="card">
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:.75rem;">
+        <div class="card-row">
             <button class="btn btn-ghost btn-sm" id="loadNotifsBtn">Charger toutes</button>
             <button class="btn btn-ghost btn-sm" id="loadUnreadBtn">Non lues seulement</button>
             <button class="btn btn-primary btn-sm" id="markAllReadBtn">Tout marquer lues</button>
-            <div id="notifCount" style="margin-left:auto; font-size:12px; color:#64748b;"></div>
+            <div id="notifCount" class="notif-count"></div>
         </div>
         <div id="notifsDisplay"></div>
     </div>
@@ -465,13 +508,13 @@
     <div class="grid-2">
         <div class="card">
             <div class="card-title">⚡ Connexion WebSocket</div>
-            <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.75rem;">
+            <div class="card-row">
                 <button class="btn btn-success btn-sm" id="wsConnectBtn">Connecter</button>
                 <button class="btn btn-danger btn-sm" id="wsDisconnectBtn">Déconnecter</button>
                 <button class="btn btn-primary btn-sm" id="wsRegisterBtn">S'enregistrer</button>
             </div>
             <div class="field"><label>Conversation ID</label><input title="Conversation ID"  id="wsConvId" type="number" placeholder="ID conversation"></div>
-            <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+            <div class="row-flex-wrap">
                 <button class="btn btn-ghost btn-sm" id="wsJoinBtn">Rejoindre room</button>
                 <button class="btn btn-ghost btn-sm" id="wsLeaveBtn">Quitter room</button>
             </div>
@@ -480,8 +523,8 @@
             <div class="card-title">📤 Envoyer via WebSocket</div>
             <div class="field"><label>Message</label><input title="Message" id="wsMsgInput" type="text" placeholder="Contenu du message..."></div>
             <button class="btn btn-primary btn-full btn-sm" id="wsSendMsgBtn">Envoyer message WS</button>
-            <hr style="border-color:#1f2937; margin:.75rem 0">
-            <div class="card-title" style="margin-bottom:.5rem; font-size:11px">Notif match</div>
+            <hr class="hr-thin">
+            <div class="card-title card-title-small">Notif match</div>
             <div class="field"><label>Recipient User ID</label><input title="Recipient User ID" id="wsNotifRecipient" type="number" placeholder="user_id destinataire"></div>
             <div class="field"><label>Matière</label><input title="Matière" id="wsNotifMatiere" type="text" placeholder="Nom de la matière"></div>
             <button class="btn btn-warn btn-full btn-sm" id="wsNotifyBtn">Envoyer notify_match</button>
@@ -489,16 +532,16 @@
     </div>
     <div class="card">
         <div class="card-title">📡 Événements reçus</div>
-        <div id="wsEvents" style="font-family:'Courier New', monospace; font-size:12px; background:#070810; border-radius:8px; padding:1rem; height:180px; overflow-y:auto; color:#c084fc;"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="document.getElementById('wsEvents').innerHTML=''">Effacer</button>
+        <div id="wsEvents" class="ws-events"></div>
+        <button class="btn btn-ghost btn-sm btn-clear" onclick="document.getElementById('wsEvents').innerHTML=''">Effacer</button>
     </div>
 </div>
 
 <!-- ═══════════ TAB: LOGS ═══════════ -->
 <div class="tab-content" id="tab-logs">
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem;">
-            <div class="card-title" style="margin:0">📋 Console de logs</div>
+        <div class="card-row-between">
+            <div class="card-title no-margin">📋 Console de logs</div>
             <button class="btn btn-ghost btn-sm" onclick="document.getElementById('log').innerHTML=''">Effacer</button>
         </div>
         <div id="log"></div>
@@ -506,7 +549,7 @@
     <div class="card">
         <div class="card-title">🔬 Requête brute</div>
         <div class="field"><label>Méthode</label>
-            <select id="rawMethod" style="width:120px">
+            <select id="rawMethod" class="raw-method">
                 <option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option>
             </select>
         </div>
