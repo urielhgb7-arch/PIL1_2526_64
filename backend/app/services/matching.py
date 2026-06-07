@@ -8,7 +8,7 @@
 from app.database import db
 from app.models import (
     User, Profile, Disponible,
-    ProfilCompetence, ProfilLacune, Matiere
+    ProfilCompetence, ProfilLacune, Matiere, Demand
 )
 
 # ── Mapping des niveaux en valeurs numériques ────────────────────────────────
@@ -108,13 +108,14 @@ def _score_format_bonus(current_format: str, candidate_format: str) -> float:
     return 10.0 if current_format == candidate_format else 0.0
 
 
-def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
+def calculate_matches(current_user_id: int, matiere_id: int = None, demand_id: int = None) -> list:
     """
     Fonction principale du moteur de matching.
 
     Paramètres :
         current_user_id : l'utilisateur connecté (le demandeur)
         matiere_id      : filtre optionnel sur une matière précise
+        demand_id       : filtre optionnel sur une demande précise (creneau obligatoire)
 
     Retourne :
         Liste de candidats triés par score décroissant, avec explication.
@@ -133,6 +134,14 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
         return []
 
     # ── 2. Lacunes du demandeur ──────────────────────────────────────────────
+    demand_slot = None
+    if demand_id:
+        demande = db.session.get(Demand, demand_id)
+        if not demande or demande.profile.user_id != current_user_id:
+            return []
+        matiere_id = demande.matiere_id
+        demand_slot = (demande.jour, demande.creneau)
+
     lacunes_query = ProfilLacune.query.filter_by(profile_id=demandeur_profile.id)
 
     # Filtre optionnel sur une matière précise (vient de ?matiere_id=X dans la route)
@@ -149,8 +158,11 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
     matiere_ids_cherchees = set(lacunes_dict.keys())
 
     # ── 3. Créneaux du demandeur ─────────────────────────────────────────────
-    mes_dispos = Disponible.query.filter_by(profile_id=demandeur_profile.id).all()
-    mes_slots  = {(d.jour, d.creneau) for d in mes_dispos}
+    if demand_slot:
+        mes_slots = {demand_slot}
+    else:
+        mes_dispos = Disponible.query.filter_by(profile_id=demandeur_profile.id, is_reserved=False).all()
+        mes_slots  = {(d.jour, d.creneau) for d in mes_dispos}
 
     # ── 4. Candidats potentiels ──────────────────────────────────────────────
     # Filtrage initial : tous les profils sauf le demandeur
@@ -202,10 +214,17 @@ def calculate_matches(current_user_id: int, matiere_id: int = None) -> list:
         score_niveau = round(sum(scores_niveau) / len(scores_niveau), 2) if scores_niveau else 0
 
         # ── CRITÈRE 3 — Disponibilités communes (25 pts) ────────────────────
-        candidate_dispos = Disponible.query.filter_by(profile_id=candidate.id).all()
+        candidate_dispos = Disponible.query.filter_by(profile_id=candidate.id, is_reserved=False).all()
         candidate_slots  = {(d.jour, d.creneau) for d in candidate_dispos}
-        shared_slots     = mes_slots.intersection(candidate_slots)
-        score_dispos     = _score_disponibilites(mes_slots, candidate_slots)
+
+        if demand_slot:
+            if demand_slot not in candidate_slots:
+                continue
+            shared_slots = {demand_slot}
+            score_dispos = 25.0
+        else:
+            shared_slots     = mes_slots.intersection(candidate_slots)
+            score_dispos     = _score_disponibilites(mes_slots, candidate_slots)
 
         # ── CRITÈRE 4 — Même année académique (10 pts) ───────────────────────
         same_niveau  = demandeur_profile.niveau == candidate.niveau

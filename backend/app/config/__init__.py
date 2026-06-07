@@ -17,10 +17,9 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = (
         os.environ.get('DATABASE_URL') or f'sqlite:///{_db_path.as_posix()}'
     )
-class TestingConfig(Config):
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL', 'sqlite:///:memory:')
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'test-secret-key')
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+if not SQLALCHEMY_DATABASE_URI:
+    raise RuntimeError("DATABASE_URL manquant dans .env.local")
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -30,6 +29,5 @@ class ProductionConfig(Config):
 
 config = {
     'development': DevelopmentConfig,
-    'testing': TestingConfig,
     'production': ProductionConfig,
 }

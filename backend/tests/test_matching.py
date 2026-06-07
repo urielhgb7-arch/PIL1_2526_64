@@ -2,7 +2,8 @@
 """Tests pour le matching: création de demande crée une conversation."""
 from app.database import db
 from app.models import User, Profile, Matiere, Conversation
-from app.models.services import ProfilCompetence, Matching
+from app.models.profile import Disponible
+from app.models.services import ProfilCompetence, Matching, Demand
 
 
 def test_request_creates_conversation(client, app_context):
@@ -30,20 +31,28 @@ def test_request_creates_conversation(client, app_context):
     db.session.add(comp)
     db.session.commit()
 
+    # Create demand with jour/creneau
+    demand = Demand(profile_id=seeker_profile.id, matiere_id=matiere.id, jour='Lundi', creneau='14-15', description='Test demand')
+    db.session.add(demand)
+    db.session.commit()
+
+    # Helper availability on same day/time
+    disponible = Disponible(profile_id=helper_profile.id, jour='Lundi', creneau='14-15')
+    db.session.add(disponible)
+    db.session.commit()
+
     # Login as seeker
     resp_login = client.post('/api/auth/login', json={'email': 'seeker@test.com', 'password': 'pass123'})
     token = resp_login.json['token']
 
-    # Send request to helper
-    resp = client.post(f'/api/matches/{helper.id}/request', json={'matiere_id': matiere.id, 'score': 85}, headers={'Authorization': f'Bearer {token}'})
+    # Send request to helper with demand_id
+    resp = client.post(f'/api/matches/{helper.id}/request', json={'demand_id': demand.id, 'score': 85}, headers={'Authorization': f'Bearer {token}'})
     assert resp.status_code == 201
-    assert 'conversation_id' in resp.json
+    assert 'matching_id' in resp.json
 
-    conv_id = resp.json['conversation_id']
-    # Conversation must exist
-    conv = db.session.get(Conversation, conv_id)
-    assert conv is not None
+    matching_id = resp.json['matching_id']
     # Matching must exist and be pending
-    matching = Matching.query.filter_by(user_one_id=seeker.id, user_two_id=helper.id, matiere_id=matiere.id).first()
+    matching = db.session.get(Matching, matching_id)
     assert matching is not None
     assert matching.status == 'pending'
+    assert matching.demand_id == demand.id

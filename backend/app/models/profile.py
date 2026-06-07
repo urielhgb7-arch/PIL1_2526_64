@@ -29,3 +29,4 @@ class Disponible(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     jour = db.Column(db.String(15), nullable=False)
     creneau = db.Column(db.String(50), nullable=False)
+    is_reserved = db.Column(db.Boolean, default=False, nullable=False)

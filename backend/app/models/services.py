@@ -31,6 +31,8 @@ class Demand(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     matiere_id = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
+    jour = db.Column(db.String(15), nullable=False)
+    creneau = db.Column(db.String(10), nullable=False)
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
@@ -63,13 +65,15 @@ class Matching(db.Model):
     user_one_id  = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # demandeur
     user_two_id  = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # candidat
     initiator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # qui a swipé
+    demand_id    = db.Column(db.Integer, db.ForeignKey('demands.id'), nullable=False)
     matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     status       = db.Column(db.String(20), nullable=False, default='pending')         # pending/accepted/rejected
     score        = db.Column(db.Float, nullable=False)
     created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', foreign_keys=[matiere_id])
+    demand = db.relationship('Demand', foreign_keys=[demand_id])
 
     __table_args__ = (
-        db.UniqueConstraint('user_one_id', 'user_two_id', 'matiere_id', name='unique_match'),
+        db.UniqueConstraint('user_one_id', 'user_two_id', 'demand_id', name='unique_match'),
     )

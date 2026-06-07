@@ -44,7 +44,11 @@ def get_my_profile(current_user):
 
     # Disponibilités
     dispos = Disponible.query.filter_by(profile_id=profile.id).all()
-    dispos_data = [{"jour": d.jour, "creneau": d.creneau} for d in dispos]
+    dispos_data = [{
+        "jour": d.jour,
+        "creneau": d.creneau,
+        "is_reserved": d.is_reserved
+    } for d in dispos]
 
     return jsonify({
         "id": profile.id,

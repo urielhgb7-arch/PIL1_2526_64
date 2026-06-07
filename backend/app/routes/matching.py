@@ -9,7 +9,8 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
 from app.models import User, Profile, Conversation, Notification
-from app.models.services import Matching, ProfilCompetence
+from app.models.profile import Disponible
+from app.models.services import Matching, ProfilCompetence, Demand
 from app.services.matching import calculate_matches
 from app.validators import matiere_exists
 
@@ -24,9 +25,17 @@ def get_suggestions():
     current_user_id = int(get_jwt_identity())
 
     # Filtre optionnel sur une matière précise (?matiere_id=1)
+    demand_id = request.args.get('demand_id', type=int)
     matiere_id = request.args.get('matiere_id', type=int)
 
-    resultats = calculate_matches(current_user_id, matiere_id=matiere_id)
+    if demand_id:
+        demand = db.session.get(Demand, demand_id)
+        profile = Profile.query.filter_by(user_id=current_user_id).first()
+        if not demand or not profile or demand.profile_id != profile.id:
+            return jsonify({"message": "Demande introuvable ou non autorisée"}), 404
+        resultats = calculate_matches(current_user_id, demand_id=demand_id)
+    else:
+        resultats = calculate_matches(current_user_id, matiere_id=matiere_id)
 
     if not resultats:
         return jsonify({
@@ -51,26 +60,29 @@ def request_match(student_id):
         return jsonify({"message": "Vous ne pouvez pas vous matcher avec vous-même"}), 400
 
     data = request.get_json(force=True, silent=True) or {}
-    matiere_id = data.get('matiere_id')
-    score      = data.get('score', 0.0)
+    demand_id = data.get('demand_id')
+    score     = data.get('score', 0.0)
 
-    if not matiere_id:
-        return jsonify({"message": "matiere_id requis"}), 400
+    if not demand_id:
+        return jsonify({"message": "demand_id requis"}), 400
 
-    # vérifier que la matière existe
-    if not matiere_exists(matiere_id):
-        return jsonify({"message": "Matière introuvable"}), 404
+    demand = db.session.get(Demand, demand_id)
+    if not demand:
+        return jsonify({"message": "Demande introuvable"}), 404
+    profile = Profile.query.filter_by(user_id=current_user_id).first()
+    if not profile or demand.profile_id != profile.id:
+        return jsonify({"message": "Non autorisé sur cette demande"}), 403
 
     # Vérifier que le candidat existe
     candidate = db.session.get(User, student_id)
     if not candidate:
         return jsonify({"message": "Candidat introuvable"}), 404
 
-    # Vérifier qu'un matching n'existe pas déjà entre ces deux sur cette matière
+    # Vérifier qu'un matching n'existe pas déjà entre ces deux sur cette demande
     existing = Matching.query.filter_by(
         user_one_id=current_user_id,
         user_two_id=student_id,
-        matiere_id=matiere_id
+        demand_id=demand_id
     ).first()
     if existing:
         return jsonify({
@@ -79,35 +91,32 @@ def request_match(student_id):
             "status": existing.status
         }), 200
 
+    # Vérifier que le candidat dispose bien du créneau demandé et qu'il n'est pas réservé
+    candidate_profile = Profile.query.filter_by(user_id=student_id).first()
+    if not candidate_profile:
+        return jsonify({"message": "Profil du candidat introuvable"}), 404
+
+    candidate_slot = Disponible.query.filter_by(
+        profile_id=candidate_profile.id,
+        jour=demand.jour,
+        creneau=demand.creneau,
+        is_reserved=False
+    ).first()
+    if not candidate_slot:
+        return jsonify({"message": "Le candidat n'est pas disponible sur ce créneau"}), 400
+
     # Créer le matching en statut 'pending'
     new_match = Matching(
         user_one_id=current_user_id,
         user_two_id=student_id,
         initiator_id=current_user_id,
-        matiere_id=matiere_id,
+        demand_id=demand_id,
+        matiere_id=demand.matiere_id,
         score=score,
         status='pending'
     )
     db.session.add(new_match)
     db.session.flush()  # obtenir new_match.id avant commit
-    # Créer une conversation immédiatement pour permettre au candidat
-    # et au mentor d'échanger dès que la demande est envoyée.
-    existing_conv = Conversation.query.filter_by(
-        user_one_id=current_user_id,
-        user_two_id=student_id
-    ).first() or Conversation.query.filter_by(
-        user_one_id=student_id,
-        user_two_id=current_user_id
-    ).first()
-
-    if not existing_conv:
-        conv = Conversation(user_one_id=current_user_id, user_two_id=student_id)
-        db.session.add(conv)
-        db.session.flush()
-        conversation_id = conv.id
-    else:
-        conversation_id = existing_conv.id
-
     # Notifier le candidat (Section 13 du PDF)
     demandeur = db.session.get(User, current_user_id)
     demandeur_profile = Profile.query.filter_by(user_id=current_user_id).first()
@@ -123,8 +132,7 @@ def request_match(student_id):
     return jsonify({
         "message": "Demande envoyée avec succès",
         "matching_id": new_match.id,
-        "status": "pending",
-        "conversation_id": conversation_id
+        "status": "pending"
     }), 201
 
 
@@ -169,16 +177,22 @@ def accept_match(matching_id):
     else:
         conversation_id = existing_conv.id
 
-    # --- Geler la disponibilité de l'aidant pour cette matière ---
-    # On marque la compétence correspondante comme non-disponible
+    # --- Réserver le créneau de l'aidant pour cette demande ---
+    demand = db.session.get(Demand, match.demand_id)
+    if not demand:
+        return jsonify({"message": "Demande associée introuvable"}), 404
+
     helper_profile = Profile.query.filter_by(user_id=match.user_two_id).first()
     if helper_profile:
-        comp = ProfilCompetence.query.filter_by(profile_id=helper_profile.id, matiere_id=match.matiere_id).first()
-        if comp:
-            comp.is_available_to_help = False
-
-        # Optionnel : marquer le profil global comme non-disponible
-        helper_profile.disponible = False
+        helper_slot = Disponible.query.filter_by(
+            profile_id=helper_profile.id,
+            jour=demand.jour,
+            creneau=demand.creneau,
+            is_reserved=False
+        ).first()
+        if not helper_slot:
+            return jsonify({"message": "Ce créneau n'est plus disponible"}), 400
+        helper_slot.is_reserved = True
 
     # Notifier le demandeur que sa demande a été acceptée
     accepteur_profile = Profile.query.filter_by(user_id=current_user_id).first()
@@ -258,6 +272,8 @@ def get_received_matches():
                 "prenom":  demandeur_profile.prenom if demandeur_profile else "",
             },
             "matiere_id": m.matiere_id,
+            "jour": m.demand.jour if m.demand else None,
+            "creneau": m.demand.creneau if m.demand else None,
             "score":      m.score,
             "created_at": m.created_at.isoformat()
         })
@@ -287,6 +303,8 @@ def get_sent_matches():
                 "prenom":  candidat_profile.prenom if candidat_profile else "",
             },
             "matiere_id": m.matiere_id,
+            "jour": m.demand.jour if m.demand else None,
+            "creneau": m.demand.creneau if m.demand else None,
             "score":      m.score,
             "status":     m.status,
             "created_at": m.created_at.isoformat()
