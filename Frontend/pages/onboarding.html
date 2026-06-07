@@ -1,444 +1,596 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onboarding - IFRI MentorLink</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Optimisation visuelle des barres de défilement pour la grille et les listes */
-        select::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        select::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-        select::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        
-        /* Désactivation de la sélection de texte lors du glisser-cliquer sur le planning */
-        .no-select{ -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center font-sans px-4 py-8">
-
-    <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-3xl border border-slate-700">
-        
-        <div class="flex items-center justify-between mb-10 max-w-md mx-auto text-xs font-semibold text-slate-400">
-            <div class="flex flex-col items-center gap-2">
-                <div id="step1-badge" class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center border-2 border-blue-500">1</div>
-                <span>Données académiques</span>
-            </div>
-            <div class="flex-1 h-[2px] bg-slate-700 mx-4 -mt-5" id="line1"></div>
-            <div class="flex flex-col items-center gap-2">
-                <div id="step2-badge" class="w-8 h-8 rounded-full bg-slate-900 text-slate-400 flex items-center justify-center border-2 border-slate-700">2</div>
-                <span id="step2-label">Compétences / Lacunes</span>
-            </div>
-            <div class="flex-1 h-[2px] bg-slate-700 mx-4 -mt-5" id="line2"></div>
-            <div class="flex flex-col items-center gap-2">
-                <div id="step3-badge" class="w-8 h-8 rounded-full bg-slate-900 text-slate-400 flex items-center justify-center border-2 border-slate-700">3</div>
-                <span>Disponibilités</span>
-            </div>
+<body class="bg-background text-foreground min-h-screen">
+  <div class="min-h-screen py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Progress indicator -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center flex-1">
+            <div id="step1-indicator" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold">1</div>
+            <div class="flex-1 h-1 mx-2 rounded bg-card" id="progress-bar-1"></div>
+          </div>
+          <div class="flex items-center flex-1">
+            <div id="step2-indicator" class="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted">2</div>
+            <div class="flex-1 h-1 mx-2 rounded bg-card" id="progress-bar-2"></div>
+          </div>
+          <div class="flex items-center">
+            <div id="step3-indicator" class="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted">3</div>
+          </div>
         </div>
+        <div class="flex justify-between text-sm">
+          <span id="step1-label" class="font-medium">Données académiques</span>
+          <span id="step2-label" class="text-muted">Compétences & Lacunes</span>
+          <span id="step3-label" class="text-muted">Disponibilité</span>
+        </div>
+      </div>
 
-        <form id="onboardingForm">
-            
-            <div id="step1" class="space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold">Informations académiques</h2>
-                    <p class="text-slate-400 text-sm mt-1">Renseignez vos informations personnelles et votre rôle</p>
-                </div>
-
-                <div>
-                    <label for="role" class="block text-sm font-medium text-slate-300 mb-1">Se connecter en tant que</label>
-                    <select id="role" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-300 text-sm focus:ring-2 focus:ring-blue-500">
-                        <option value="" disabled selected>Choisissez votre rôle</option>
-                        <option value="mentor">Mentor (Je veux aider)</option>
-                        <option value="mentore">Mentoré / Étudiant (J'ai besoin d'aide)</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Prénom</label>
-                        <input title="Entrez votre prénom" type="text" id="firstname" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-200 text-sm focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Nom</label>
-                        <input title="Entrez votre nom" type="text" id="lastname" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-200 text-sm focus:ring-2 focus:ring-blue-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Niveau académique Actuel</label>
-                    <select title="Sélectionnez votre niveau actuel" id="niveau" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-300 text-sm focus:ring-2 focus:ring-blue-500">
-                        <option value="" disabled selected>Sélectionnez votre niveau actuel</option>
-                        <option value="L1">L1</option>
-                        <option value="L2">L2</option>
-                        <option value="L3">L3</option>
-                        <option value="M1">M1</option>
-                        <option value="M2">M2</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Département / Filière</label>
-                    <select title="Sélectionnez votre filière" id="filiere" required disabled class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-400 text-sm focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
-                        <option value="" disabled selected>Veuillez d'abord choisir un niveau d'étude</option>
-                    </select>
-                </div>
+      <!-- Step 1: Academic Data -->
+      <div id="step1" class="bg-card rounded-xl p-8 border border-border">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-2">Informations académiques</h2>
+          <p class="text-muted">Complétez votre profil académique</p>
+        </div>
+        <form id="step1-form" class="space-y-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Prénom</label>
+              <input type="text" id="firstName" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
-
-            <div id="step2" class="space-y-6 hidden">
-                <div>
-                    <h2 class="text-2xl font-bold" id="step2-title">Profil pédagogique</h2>
-                    <p class="text-slate-400 text-sm mt-1" id="step2-desc">Configurez vos matières cibles.</p>
-                </div>
-
-                <div id="wrapper-competences" class="p-5 bg-slate-900/50 rounded-xl border border-slate-700 space-y-4 hidden">
-                    <label class="block text-sm font-semibold text-blue-400">Mes Compétences (Ce que je maîtrise)</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="changeMatiereNiveau('comp', 'L1')" id="btn-comp-L1" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-blue-600 text-white border border-blue-500 transition">L1</button>
-                        <button type="button" onclick="changeMatiereNiveau('comp', 'L2')" id="btn-comp-L2" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">L2</button>
-                        <button type="button" onclick="changeMatiereNiveau('comp', 'L3')" id="btn-comp-L3" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">L3</button>
-                        <button type="button" onclick="changeMatiereNiveau('comp', 'M1')" id="btn-comp-M1" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">M1</button>
-                        <button type="button" onclick="changeMatiereNiveau('comp', 'M2')" id="btn-comp-M2" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">M2</button>
-                    </div>
-                    <select title="Sélectionnez une compétence" id="competenceSelect" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-200 text-sm focus:ring-2 focus:ring-blue-500"></select>
-                </div>
-
-                <div id="wrapper-lacunes" class="p-5 bg-slate-900/50 rounded-xl border border-slate-700 space-y-4 hidden">
-                    <label class="block text-sm font-semibold text-indigo-400">Mes Lacunes (Matières à travailler)</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="changeMatiereNiveau('lac', 'L1')" id="btn-lac-L1" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white border border-indigo-500 transition">L1</button>
-                        <button type="button" onclick="changeMatiereNiveau('lac', 'L2')" id="btn-lac-L2" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">L2</button>
-                        <button type="button" onclick="changeMatiereNiveau('lac', 'L3')" id="btn-lac-L3" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">L3</button>
-                        <button type="button" onclick="changeMatiereNiveau('lac', 'M1')" id="btn-lac-M1" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">M1</button>
-                        <button type="button" onclick="changeMatiereNiveau('lac', 'M2')" id="btn-lac-M2" class="flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition">M2</button>
-                    </div>
-                    <select title="Sélectionnez une lacune" id="lacuneSelect" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-200 text-sm focus:ring-2 focus:ring-indigo-500"></select>
-                </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Nom</label>
+              <input type="text" id="lastName" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
-
-            <div id="step3" class="space-y-6 hidden">
-                <div>
-                    <h2 class="text-2xl font-bold">Grille de disponibilités</h2>
-                    <p class="text-slate-400 text-sm mt-1">Cliquez sur vos cases horaires libres du Lundi au Dimanche (6H à 22H).</p>
-                </div>
-
-                <div class="overflow-x-auto custom-scrollbar border border-slate-700 rounded-xl bg-slate-900/40 p-1">
-                    <table class="w-full border-collapse text-left text-xs no-select min-w-[650px]">
-                        <thead>
-                            <tr class="border-b border-slate-700 text-slate-400">
-                                <th class="p-3 text-center font-medium border-r border-slate-800 w-[80px]">Heures</th>
-                                <th class="p-3 text-center font-medium">Lun</th>
-                                <th class="p-3 text-center font-medium">Mar</th>
-                                <th class="p-3 text-center font-medium">Mer</th>
-                                <th class="p-3 text-center font-medium">Jeu</th>
-                                <th class="p-3 text-center font-medium">Ven</th>
-                                <th class="p-3 text-center font-medium">Sam</th>
-                                <th class="p-3 text-center font-medium">Dim</th>
-                            </tr>
-                        </thead>
-                        <tbody id="timetable-body" class="divide-y divide-slate-800/60">
-                            </tbody>
-                    </table>
-                </div>
-                
-                <div class="flex items-center gap-6 text-xs text-slate-400 px-1">
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-4 bg-slate-900 border border-slate-700 rounded"></div> <span>Indisponible / Libre</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-4 h-4 bg-emerald-500 rounded"></div> <span class="text-emerald-400 font-medium">Créneau sélectionné</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
-                <button type="button" id="prevBtn" class="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition font-medium text-sm px-4 py-2 rounded-xl border border-transparent hover:border-slate-700 invisible">
-                    ‹ Précédent
-                </button>
-                <div class="flex-1"></div>
-                <button type="button" id="nextBtn" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98] text-sm flex items-center gap-1">
-                    <span>Suivant</span> ›
-                </button>
-            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Département</label>
+            <select id="department" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
+              <option value="">Sélectionnez votre département</option>
+              <option value="SI">SI</option>
+              <option value="IA">IA</option>
+              <option value="IM">IM</option>
+              <option value="GL">GL</option>
+              <option value="SEoIT">SEoIT</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Niveau académique</label>
+            <select id="level" required class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
+              <option value="">Sélectionnez votre niveau</option>
+              <option value="L1">L1</option>
+              <option value="L2">L2</option>
+              <option value="L3">L3</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+            Continuer
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </form>
+      </div>
+
+      <!-- Step 2: Skills & Weaknesses -->
+      <div id="step2" class="hidden bg-card rounded-xl p-8 border border-border">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-2">Compétences & Lacunes</h2>
+          <p class="text-muted">Sélectionnez vos forces et faiblesses académiques</p>
+        </div>
+        <form id="step2-form" class="space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Strengths -->
+            <div>
+              <h3 class="font-medium mb-4">Mes compétences</h3>
+              <div class="space-y-4" id="strengths-container">
+                <!-- Dropdown L1 -->
+                <div class="border border-border rounded-lg overflow-hidden">
+                  <button type="button" onclick="toggleDropdown('strengths-l1-content', 'strengths-l1-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
+                    <span>Niveau L1</span>
+                    <svg id="strengths-l1-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div id="strengths-l1-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
+                </div>
+                <!-- Dropdown L2 -->
+                <div class="border border-border rounded-lg overflow-hidden">
+                  <button type="button" onclick="toggleDropdown('strengths-l2-content', 'strengths-l2-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
+                    <span>Niveau L2</span>
+                    <svg id="strengths-l2-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div id="strengths-l2-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
+                </div>
+                <!-- Dropdown L3 -->
+                <div class="border border-border rounded-lg overflow-hidden">
+                  <button type="button" onclick="toggleDropdown('strengths-l3-content', 'strengths-l3-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
+                    <span>Niveau L3</span>
+                    <svg id="strengths-l3-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div id="strengths-l3-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Weaknesses -->
+            <div>
+              <h3 class="font-medium mb-4">Mes lacunes</h3>
+              <div class="space-y-4" id="weaknesses-container">
+                <!-- Dropdown L1 -->
+                <div class="border border-border rounded-lg overflow-hidden">
+                  <button type="button" onclick="toggleDropdown('weaknesses-l1-content', 'weaknesses-l1-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
+                    <span>Niveau L1</span>
+                    <svg id="weaknesses-l1-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div id="weaknesses-l1-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
+                </div>
+                <!-- Dropdown L2 -->
+                <div class="border border-border rounded-lg overflow-hidden">
+                  <button type="button" onclick="toggleDropdown('weaknesses-l2-content', 'weaknesses-l2-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
+                    <span>Niveau L2</span>
+                    <svg id="weaknesses-l2-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div id="weaknesses-l2-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
+                </div>
+                <!-- Dropdown L3 -->
+                <div class="border border-border rounded-lg overflow-hidden">
+                  <button type="button" onclick="toggleDropdown('weaknesses-l3-content', 'weaknesses-l3-arrow')" class="w-full flex items-center justify-between px-4 py-3 bg-input font-medium text-left hover:bg-popover transition-colors">
+                    <span>Niveau L3</span>
+                    <svg id="weaknesses-l3-arrow" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div id="weaknesses-l3-content" class="hidden p-4 bg-card border-t border-border space-y-3 max-h-80 overflow-y-auto"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-8 pt-6 border-t border-border">
+            <button type="button" onclick="previousStep()" class="flex items-center gap-2 px-6 py-3 bg-input border border-border rounded-lg hover:bg-popover transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Retour
+            </button>
+            <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+              Continuer
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 3: Availability -->
+      <div id="step3" class="hidden bg-card rounded-xl p-8 border border-border">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-2">Grille de disponibilités</h2>
+          <p class="text-muted">Sélectionnez vos créneaux horaires disponibles (cases d'une heure)</p>
+        </div>
+        <form id="step3-form" class="space-y-6">
+          <!-- Les boutons "sélectionnez les après midi / matinées" ont été retirés d'ici -->
+          
+          <div class="overflow-x-auto">
+            <table class="w-full border-spacing-1 border-separate">
+              <thead>
+                <tr>
+                  <th class="sticky left-0 bg-card p-2 text-left text-sm font-medium text-muted">Horaires</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Lundi</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Mardi</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Mercredi</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Jeudi</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Vendredi</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Samedi</th>
+                  <th class="p-2 text-sm font-medium min-w-[80px]">Dimanche</th>
+                </tr>
+              </thead>
+              <tbody id="availability-grid"></tbody>
+            </table>
+          </div>
+
+          <div class="flex justify-between mt-8 pt-6 border-t border-border">
+            <button type="button" onclick="previousStep()" class="flex items-center gap-2 px-6 py-3 bg-input border border-border rounded-lg hover:bg-popover transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Retour
+            </button>
+            <button type="submit" id="finish-btn" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+              Terminer la configuration
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // ========================================================
-        // CONFIGURATION DU CONFIG BACKEND (À adapter avec ton coéquipier)
-        // ========================================================
-        const BACKEND_URL = "http://localhost:5000/api/onboarding";
+  <script src="script.js"></script>
+  <script>
+    let currentStep = 1;
+    const userData = {
+      strengths: [],
+      weaknesses: []
+    };
+    const availability = Array(7).fill(null).map(() => Array(13).fill(false));
 
-        // --- BDD MATIÈRES IFRI ---
-        const matieresBDD = {
-            L1: [
-                "Adressage IPv4 et IPv6", "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows",
-                "Algèbre de Boole et circuits logiques", "Algèbre matricielle et applications avec Matlab", "Algèbre relationnelle",
-                "Algorithmique", "Analyse", "Architecture et technologie des ordinateurs", "Architecture et topologie des réseaux informatiques",
-                "Architecture du Web", "Aspects avancés du langage C et structures de données", "Aspects avancés du langage SQL",
-                "Aspects juridiques liés aux systèmes d'information", "Code linguistique", "Conduite", "Équations différentielles",
-                "Histoire de l'informatique", "Initiation à l'administration sous Linux/Unix", "Initiation à l'administration sous Windows",
-                "Initiation à MySQL et PostGres", "Installation des réseaux informatiques", "Introduction aux architectures client-serveur",
-                "Introduction aux systèmes d'exploitation pour mobile", "Introduction au langage C", "Introduction au langage SQL",
-                "Langages de programmation Web", "Logique et techniques de preuves", "Logique mathématique", "Maintenance informatique",
-                "Mathématiques discrètes", "Numération", "Pratique de la langue anglaise", "Probabilités", "Projet tutoré",
-                "Recherche opérationnelle et applications", "Séries numériques et séries de fonctions", "Statistiques inférentielles et applications avec Matlab",
-                "Techniques de rédaction de documents administratifs", "Techniques de recherche d'emploi", "Théorie des bases de données relationnelles",
-                "Théorie des graphes et applications", "Théorie des systèmes d'exploitation", "Virtualisation"
-            ],
-            L2: [
-                "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows", "Analyse numérique",
-                "Aspects avancés des architectures client/serveur", "Assurance qualité d'un logiciel", "Atelier de programmation événementielle en C++",
-                "Atelier de programmation événementielle en Java", "Audit de sécurité", "Bases de données avancées – Oracle, SQLServer",
-                "Bases de données réparties", "Civisme", "Codes correcteurs d'erreur", "Concepts orientés objet et modélisation UML",
-                "Conception et modélisation avec MERISE – études de cas", "Cryptographie et algorithmes de chiffrement", "Déontologie informatique",
-                "Ergonomie des interfaces web", "Évaluation des risques et politique de sécurité", "Expression en langue anglaise",
-                "Filtrage des accès (par-feux)", "Flash", "Gestion financière des entreprises", "Indesign", "Infographie et introduction à l'ergonomie",
-                "Initiation à Linux et à la programmation bash shell", "Initiation pratique à la maintenance des téléphones portables",
-                "Interopérabilité des applications et des systèmes d'exploitation", "Introduction à la sécurité informatique", "Langage C++",
-                "Langage Java JSE", "Langage Java Standard Édition", "Maintenance et évolution de logiciel", "Méthodologie et gestion de projets informatiques",
-                "Mini-stage en entreprise", "Multimédia", "Normes et architectures des réseaux sans fil", "Outils de gestion de projets informatiques",
-                "Persistance des données", "Photoshop", "Podcast et multicast", "Présentation orale et exposé d’actualités", "Projet de validation des acquis",
-                "Projet technologie Web groupe de 2/3 étudiants", "Projet tutoré de production de logiciels", "Protocoles (SSL, certificats, VPN)",
-                "Protocoles de routage : RIP, OSPF, BGP", "Protocoles de sécurité", "Rédaction du rapport de stage", "Routage WAN et lien backup",
-                "Sécurisation avancée : autorité de certification, serveur BAS", "Sécurisation des réseaux sans fil : WEP, WAP, WPS",
-                "Sécurité logicielle", "Sécurité matérielle", "Séminaire : Bases de données avancées", "Séminaire : XHTML, CSS, Javascript, Ajax, PHP, MySQL",
-                "Serveur AAA et authentification centralisée", "Serveurs de monitoring", "Structures algébriques", "Structures de données avancées",
-                "Systèmes centralisés", "Systèmes distribués", "Techniques de rédaction de mémoire", "Technologie Java Web", "Test de logiciel",
-                "Théorie de l’information", "Théorie des nombres", "Théorie du signal", "Toolbook", "Virtualisation"
-            ],
-            L3: [
-                "Analyse de l’image", "Aspects avancés de Oracle", "Aspects avancés de l’audit de sécurité", "Aspects avancés des serveurs de monitoring",
-                "Assurance qualité de logiciel", "Business plan", "Code de la route", "Commerce électronique", "Communication managériale et leadership",
-                "Comptabilité", "Conduite de projets informatiques", "Data recovery process", "Définition de cahiers de charges",
-                "Développement d’applications e-commerce", "Développement personnel et techniques d’entretien", "Éléments d’un studio de montage",
-                "Ergonomie des applications", "Ergonomie des interfaces mobiles", "Étude de Android", "Gestion des échanges avec les utilisateurs",
-                "Gestion des risques", "Initiation au Latex et modèle de mémoire", "Intégration des systèmes hétérogènes", "Intégration et interopérabilité des logiciels",
-                "Intelligence économique", "Laboratoire 1", "Laboratoire 2", "Laboratoire de cryptographie", "Les outils RAD", "Les virus informatiques et les attaques",
-                "Maya / Studio 3D Max", "Méthodologie de mise en œuvre des ERP", "Méthodologie de rédaction", "Mise en œuvre des IDS",
-                "Mise en place d’un serveur de streaming audio et vidéo", "Montage et publication de vidéo", "Multimédia et Génie logiciel",
-                "Norme ISO 1799", "Outils de la veille technologique", "Photoshop", "Politique de sécurité dans une entreprise", "Préparation à la certification CCNA",
-                "Préparation à la certification Mikrotik MTCNA", "Préparation à la certification Oracle", "Préparation à la certification Photoshop",
-                "Préparation à la certification SQL Serveur", "Préparation à la certification Symphony et PHP", "Projet d’applications mobiles",
-                "Projets tutorés individuel et de groupe", "Réalité virtuelle", "Recents développements en multimédia", "Recents outils en Internet et multimédia",
-                "Rédaction et soutenance du mémoire", "Restriction des accès", "Sécurisation de la conception", "Sécurisation des applications client-server",
-                "Sécurisation des applications mobiles", "Sécurisation des codes et bases de données", "Sécurité des applications e-commerce",
-                "Sécurité des applications mobiles", "Sécurité des systèmes d’information", "Séminaire : création d’entreprise au Bénin",
-                "Stage de fin d’étude en entreprise", "Stage en entreprise", "Technologie mobile", "Théorie des systèmes de détection d’intrusion",
-                "Théorie et Esthétique de l’image", "Utilisation de la caméra et ses fonctions", "Web 2.0 et web 3.0"
-            ],
-            M1: ["Tronc Commun Master - Recherche Opérationnelle Évoluée", "Architectures Distribuées et Cloud Computing", "Sécurité Réseaux Avancée"],
-            M2: ["Management des SI & Audit", "Projet de Fin d'Études", "Génie Logiciel Avancé et DevOps"]
-        };
+    // Dictionnaires de matières classées par niveau
+    const coursesByLevel = {
+      l1: [
+        "Adressage IPv4 et IPv6", "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows",
+        "Algèbre de Boole et circuits logiques", "Algèbre matricielle et applications avec Matlab", "Algèbre relationnelle",
+        "Algorithmique", "Algorithmique et programmation en C", "Analyse", "Anglais scientifique", "Architecture et technologie des ordinateurs",
+        "Architecture et topologie des réseaux informatiques", "Architecture du Web", "Architecture des systèmes informatiques",
+        "Aspects avancés du langage C et structures de données", "Aspects avancés du langage SQL", "Aspects juridiques liés aux systèmes d'information",
+        "Bases de données relationnelles", "Code linguistique", "Conduite", "Équations différentielles", "Gestion financière des entreprises",
+        "Histoire de l'informatique", "Initiation à l'administration sous Linux/Unix", "Initiation à l'administration sous Windows",
+        "Initiation à MySQL et PostGres", "Installation des réseaux informatiques", "Introduction aux architectures client-serveur",
+        "Introduction aux systèmes d'exploitation pour mobile", "Introduction au langage C", "Introduction au langage SQL",
+        "Laboratoire pour la résolution informatique des problèmes", "Langages de programmation Web", "Logique et techniques de preuves",
+        "Logique mathématique", "Maintenance informatique", "Mathématiques discrètes", "Méthodologie de recherche", "Numération",
+        "Pratique de la langue anglaise", "Probabilités", "Programmation orientée objet en Java", "Programmation web dynamique (PHP et MySQL)",
+        "Projet tutoré", "Recherche opérationnelle et applications", "Réseaux informatiques", "Séries numériques et séries de fonctions",
+        "Soutenance", "Statistiques inférentielles et applications avec Matlab", "Structures de données en C", "Systèmes d'exploitation et programmation multithread",
+        "Techniques de rédaction de documents administratifs", "Techniques de recherche d'emploi", "Techniques de rédaction de mémoire",
+        "Théorie des bases de données relationnelles", "Théorie des graphes et applications", "Théorie des systèmes d'exploitation",
+        "Traitement de texte scientifique : Latex et Beamer", "Virtualisation", "Évaluation du stage par l'encadreur"
+      ],
+      l2: [
+        "Administration des réseaux TCP/IP sous Linux/Unix", "Administration des réseaux TCP/IP sous Windows", "Analyse de l'image",
+        "Analyse numérique", "Aspects avancés des architectures client/serveur", "Assurance qualité d'un logiciel",
+        "Atelier de programmation événementielle en C++", "Atelier de programmation événementielle en Java", "Audit de sécurité",
+        "Bases de données avancées – Oracle, SQLServer", "Bases de données réparties", "Civisme", "Codes correcteurs d'erreur",
+        "Concepts orientés objet et modélisation UML", "Conception et modélisation avec MERISE – études de cas", "Cryptographie et algorithmes de chiffrement",
+        "Déontologie informatique", "Ergonomie des interfaces web", "Évaluation des risques et politique de sécurité", "Expression en langue anglaise",
+        "Filtrage des accès (par-feux)", "Flash", "Fondements du multimédia", "Indesign", "Infographie et introduction à l'ergonomie",
+        "Initiation à Linux et à la programmation bash shell", "Initiation pratique à la maintenance des téléphones portables",
+        "Interopérabilité des applications et des systèmes d'exploitation", "Introduction à la sécurité informatique", "Langage C++",
+        "Langage Java JSE", "Langage Java Standard Édition", "Maintenance et évolution de logiciel", "Mathématiques pour le multimédia",
+        "Méthodologie et gestion de projets informatiques", "Mini-stage en entreprise", "Multimédia", "Multimédia et Génie logiciel",
+        "Normes et architectures des réseaux sans fil", "Outils de gestion de projets informatiques", "Persistance des données",
+        "Photoshop", "Physique pour le multimédia", "Podcast et multicast", "Présentation orale et exposé d’actualités",
+        "Projet de validation des acquis", "Projet technologie Web groupe de 2/3 étudiants", "Projet tutoré de production de logiciels",
+        "Protocoles (SSL, certificats, VPN)", "Protocoles de routage : RIP, OSPF, BGP", "Protocoles de sécurité", "Rédaction du rapport de stage",
+        "Routage WAN et lien backup", "Sécurisation avancée : autorité de certification, serveur BAS", "Sécurisation des réseaux sans fil : WEP, WAP, WPS, serveur BAS",
+        "Sécurité logicielle", "Sécurité matérielle", "Séminaire : Bases de données avancées", "Séminaire : XHTML, CSS, Javascript, Ajax, PHP, MySQL",
+        "Serveur AAA et authentification centralisée", "Serveurs de monitoring", "Structures algébriques", "Structures de données avancées",
+        "Systèmes centralisés", "Systèmes distribués", "Techniques d'animation 2D", "Techniques d'animation 3D", "Techniques de rédaction de mémoire",
+        "Technologie Java Web", "Test de logiciel", "Théorie de l’information", "Théorie des nombres", "Théorie du signal", "Toolbook", "Virtualisation"
+      ],
+      l3: [
+        "Aspects avancés de Oracle", "Aspects avancés de l’audit de sécurité", "Aspects avancés des serveurs de monitoring",
+        "Assurance qualité de logiciel", "Business plan", "Code de la route", "Commerce électronique", "Communication managériale et leadership",
+        "Comptabilité", "Conduite de projets informatiques", "Data recovery process", "Définition de cahiers de charges",
+        "Développement d’applications e-commerce", "Développement personnel et techniques d’entretien", "Éléments d’un studio de montage",
+        "Ergonomie des applications", "Ergonomie des interfaces mobiles", "Étude de Android", "Gestion des échanges avec les utilisateurs",
+        "Gestion des risques", "Initiation au Latex et modèle de mémoire", "Intégration des systèmes hétérogènes", "Intégration et interopérabilité des logiciels",
+        "Intelligence économique", "Laboratoire 1", "Laboratoire 2", "Laboratoire de cryptographie", "La réalité virtuelle", "Les outils RAD",
+        "Les virus informatiques et les attaques", "Maya / Studio 3D Max", "Méthodologie de mise en œuvre des ERP", "Méthodologie de rédaction",
+        "Mise en œuvre des IDS", "Mise en place d’un serveur de streaming audio et vidéo", "Montage et publication de vidéo", "Norme ISO 1799",
+        "Outils de la veille technologique", "Photoshop", "Politique de sécurité dans une entreprise", "Préparation à la certification CCNA",
+        "Préparation à la certification Mikrotik MTCNA", "Préparation à la certification Oracle", "Préparation à la certification Photoshop",
+        "Préparation à la certification SQL Serveur", "Préparation à la certification Symphony et PHP", "Projet d’applications mobiles",
+        "Projets tutorés individuel et de groupe", "Recents développements en multimédia", "Recents outils en Internet et multimédia",
+        "Rédaction et soutenance du mémoire", "Restriction des accès", "Sécurisation de la conception", "Sécurisation des applications client-server",
+        "Sécurisation des applications mobiles", "Sécurisation des codes et bases de données", "Sécurité des applications e-commerce",
+        "Sécurité des applications mobiles", "Sécurité des systèmes d’information", "Séminaire : création d’entreprise au Bénin",
+        "Stage de fin d’étude en entreprise", "Stage en entreprise", "Technologie mobile", "Théorie des systèmes de détection d’intrusion",
+        "Théorie et Esthétique de l’image", "Utilisation de la caméra et ses fonctions", "Web 2.0 et web 3.0"
+      ]
+    };
 
-        // --- GÉNÉRATION DE LA GRILLE DES DISPONIBILITÉS ---
-        const timetableBody = document.getElementById('timetable-body');
-        const jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+    const masteryLevels = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+    const priorityLevels = ['Low', 'Medium', 'High', 'Urgent'];
+    const hours = Array.from({ length: 13 }, (_, i) => `${8 + i}h-${9 + i}h`);
+    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-        for (let heure = 6; heure <= 21; heure++) {
-            const row = document.createElement('tr');
-            row.className = "hover:bg-slate-800/20 transition-colors";
-            
-            const hourCell = document.createElement('td');
-            hourCell.className = "p-2.5 font-semibold text-slate-400 text-center border-r border-slate-800 bg-slate-900/20";
-            hourCell.textContent = `${String(heure).padStart(2, '0')}h - ${String(heure + 1).padStart(2, '0')}h`;
-            row.appendChild(hourCell);
+    function toggleDropdown(contentId, arrowId) {
+      const content = document.getElementById(contentId);
+      const arrow = document.getElementById(arrowId);
+      content.classList.toggle('hidden');
+      arrow.classList.toggle('rotate-180');
+    }
 
-            jours.forEach(jour => {
-                const dayCell = document.createElement('td');
-                dayCell.className = "p-1 text-center";
-                
-                const box = document.createElement('div');
-                box.className = "py-3 bg-slate-900 border border-slate-700/60 rounded-lg cursor-pointer hover:border-slate-500 transition active:scale-95 m-[2px]";
-                box.dataset.jour = jour;
-                box.dataset.heure = `${heure}h-${heure+1}h`;
+    function generateId(course, levelKey, prefix) {
+      return `${prefix}-${levelKey}-${course.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    }
 
-                box.addEventListener('click', () => {
-                    if (box.classList.contains('bg-emerald-500')) {
-                        box.classList.remove('bg-emerald-500', 'border-emerald-400');
-                        box.classList.add('bg-slate-900', 'border-slate-700/60');
-                    } else {
-                        box.classList.remove('bg-slate-900', 'border-slate-700/60');
-                        box.classList.add('bg-emerald-500', 'border-emerald-400');
-                    }
-                });
+    function initSkillsLists() {
+      ['l1', 'l2', 'l3'].forEach(levelKey => {
+        const strengthsList = document.getElementById(`strengths-${levelKey}-content`);
+        const weaknessesList = document.getElementById(`weaknesses-${levelKey}-content`);
 
-                dayCell.appendChild(box);
-                row.appendChild(dayCell);
-            });
-            timetableBody.appendChild(row);
-        }
+        coursesByLevel[levelKey].forEach(course => {
+          const strengthId = generateId(course, levelKey, 'strength');
+          const strengthSelectId = generateId(course, levelKey, 'strength-level');
+          const weaknessId = generateId(course, levelKey, 'weakness');
+          const weaknessSelectId = generateId(course, levelKey, 'weakness-level');
 
-        // --- FILTRAGE ET OPTIONS DES ONGLETS MATIÈRES ---
-        function changeMatiereNiveau(type, niveau) {
-            const selectId = type === 'comp' ? 'competenceSelect' : 'lacuneSelect';
-            const selectEl = document.getElementById(selectId);
-            
-            ['L1', 'L2', 'L3', 'M1', 'M2'].forEach(n => {
-                const btn = document.getElementById(`btn-${type}-${n}`);
-                if (btn) {
-                    btn.className = n === niveau
-                        ? `flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg ${type === 'comp' ? 'bg-blue-600 border-blue-500' : 'bg-indigo-600 border-indigo-500'} text-white transition`
-                        : "flex-1 min-w-[55px] py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 transition";
-                }
-            });
+          // Élément Compétence
+          const strengthDiv = document.createElement('div');
+          strengthDiv.className = 'space-y-2';
+          strengthDiv.innerHTML = `
+            <button
+              type="button"
+              onclick="toggleSkill('${course.replace(/'/g, "\\'")}', '${levelKey}', 'strength')"
+              id="${strengthId}"
+              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm">${course}</span>
+              </div>
+            </button>
+            <select
+              id="${strengthSelectId}"
+              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              onchange="updateSkillLevel('${course.replace(/'/g, "\\'")}', 'strength', this.value)"
+            >
+              ${masteryLevels.map(level => `<option value="${level}">${level}</option>`).join('')}
+            </select>
+          `;
+          strengthsList.appendChild(strengthDiv);
 
-            selectEl.innerHTML = `<option value="" disabled selected>Sélectionnez une matière (${niveau})</option>`;
-            matieresBDD[niveau].forEach(matiere => {
-                const opt = document.createElement('option');
-                opt.value = `${niveau}_${matiere}`;
-                opt.textContent = matiere;
-                selectEl.appendChild(opt);
-            });
-        }
-
-        // Initialisation des matières par défaut
-        changeMatiereNiveau('comp', 'L1');
-        changeMatiereNiveau('lac', 'L1');
-
-        // Gestion de l'affichage dynamique des filières
-        const roleSelect = document.getElementById('role');
-        const niveauSelect = document.getElementById('niveau');
-        const filiereSelect = document.getElementById('filiere');
-        const filieresLicence = ["SI", "IA", "IM", "GL", "SEoIT"];
-        const filieresMaster = ["SIRI", "GL"];
-
-        niveauSelect.addEventListener('change', function() {
-            const nv = this.value;
-            filiereSelect.innerHTML = '<option value="" disabled selected>Sélectionnez votre filière</option>';
-            filiereSelect.disabled = false;
-            filiereSelect.className = "w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl outline-none text-slate-200 text-sm focus:ring-2 focus:ring-blue-500";
-            
-            const list = ["L1", "L2", "L3"].includes(nv) ? filieresLicence : filieresMaster;
-            list.forEach(f => {
-                const op = document.createElement('option'); op.value = f; op.textContent = f; filiereSelect.appendChild(op);
-            });
+          // Élément Lacune
+          const weaknessDiv = document.createElement('div');
+          weaknessDiv.className = 'space-y-2';
+          weaknessDiv.innerHTML = `
+            <button
+              type="button"
+              onclick="toggleSkill('${course.replace(/'/g, "\\'")}', '${levelKey}', 'weakness')"
+              id="${weaknessId}"
+              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm">${course}</span>
+              </div>
+            </button>
+            <select
+              id="${weaknessSelectId}"
+              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning focus:border-transparent"
+              onchange="updateSkillLevel('${course.replace(/'/g, "\\'")}', 'weakness', this.value)"
+            >
+              ${priorityLevels.map(level => `<option value="${level}">${level}</option>`).join('')}
+            </select>
+          `;
+          weaknessesList.appendChild(weaknessDiv);
         });
+      });
+    }
 
-        // --- GESTION DU MULTI-ÉTAPE & LOGIQUE SÉQUENTIELLE ---
-        let currentStep = 1;
-        const step1 = document.getElementById('step1'); const step2 = document.getElementById('step2'); const step3 = document.getElementById('step3');
-        const prevBtn = document.getElementById('prevBtn'); const nextBtn = document.getElementById('nextBtn');
-        const b2 = document.getElementById('step2-badge'); const b3 = document.getElementById('step3-badge');
-        const l1 = document.getElementById('line1'); const l2 = document.getElementById('line2');
-        const step2Label = document.getElementById('step2-label');
-        const wrapperCompetences = document.getElementById('wrapper-competences');
-        const wrapperLacunes = document.getElementById('wrapper-lacunes');
-        const step2Title = document.getElementById('step2-title'); const step2Desc = document.getElementById('step2-desc');
+    function toggleSkill(course, levelKey, type) {
+      const btnId = generateId(course, levelKey, type);
+      const levelId = generateId(course, levelKey, `${type}-level`);
+      const oppositeType = type === 'strength' ? 'weakness' : 'strength';
+      const oppositeBtnId = generateId(course, levelKey, oppositeType);
+      const oppositeLevelId = generateId(course, levelKey, `${oppositeType}-level`);
+      
+      const btn = document.getElementById(btnId);
+      const levelSelect = document.getElementById(levelId);
+      const oppositeBtn = document.getElementById(oppositeBtnId);
+      const oppositeLevelSelect = document.getElementById(oppositeLevelId);
 
-        function updateFormUI() {
-            if (roleSelect.value === 'mentor') {
-                wrapperCompetences.classList.remove('hidden'); wrapperLacunes.classList.add('hidden');
-                step2Title.textContent = "Mes Compétences";
-                step2Desc.textContent = "Sélectionnez les matières que vous maîtrisez pour accompagner vos filleuls.";
-                step2Label.textContent = "Compétences";
-            } else {
-                wrapperCompetences.classList.add('hidden'); wrapperLacunes.classList.remove('hidden');
-                step2Title.textContent = "Mes Lacunes";
-                step2Desc.textContent = "Sélectionnez les matières sur lesquelles vous souhaitez être aidé.";
-                step2Label.textContent = "Lacunes";
+      if (type === 'strength') {
+        const index = userData.strengths.findIndex(s => s.course === course);
+        if (index > -1) {
+          userData.strengths.splice(index, 1);
+          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors';
+          btn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
+          levelSelect.classList.add('hidden');
+        } else {
+          const weaknessIndex = userData.weaknesses.findIndex(w => w.course === course);
+          if (weaknessIndex > -1) {
+            userData.weaknesses.splice(weaknessIndex, 1);
+            if(oppositeBtn) {
+              oppositeBtn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors';
+              oppositeBtn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
             }
-
-            step1.classList.toggle('hidden', currentStep !== 1);
-            step2.classList.toggle('hidden', currentStep !== 2);
-            step3.classList.toggle('hidden', currentStep !== 3);
-            
-            if (currentStep === 1) prevBtn.classList.add('invisible'); else prevBtn.classList.remove('invisible');
-            nextBtn.innerHTML = currentStep === 3 ? "<span>Terminer et Enregistrer</span>" : "<span>Suivant</span> ›";
-
-            // Design des steppers
-            if (currentStep >= 2) {
-                b2.className = "w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center border-2 border-blue-500";
-                l1.classList.replace('bg-slate-700', 'bg-blue-500');
-            } else {
-                b2.className = "w-8 h-8 rounded-full bg-slate-900 text-slate-400 flex items-center justify-center border-2 border-slate-700";
-                l1.classList.replace('bg-blue-500', 'bg-slate-700');
-            }
-            if (currentStep === 3) {
-                b3.className = "w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center border-2 border-blue-500";
-                l2.classList.replace('bg-slate-700', 'bg-blue-500');
-            } else {
-                b3.className = "w-8 h-8 rounded-full bg-slate-900 text-slate-400 flex items-center justify-center border-2 border-slate-700";
-                l2.classList.replace('bg-blue-500', 'bg-slate-700');
-            }
+            if(oppositeLevelSelect) oppositeLevelSelect.classList.add('hidden');
+          }
+          
+          userData.strengths.push({ course, mastery: 'Intermediate' });
+          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors';
+          btn.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="text-sm">${course}</span>
+              <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          `;
+          levelSelect.classList.remove('hidden');
+          levelSelect.value = 'Intermediate';
         }
-
-        // ========================================================
-        // INTERACTION BOUTONS ET ENVOI REQUÊTE HTTP (LIAISON BACKEND)
-        // ========================================================
-        nextBtn.addEventListener('click', async () => {
-            if (currentStep < 3) {
-                if (currentStep === 1 && (!roleSelect.value || !niveauSelect.value || !filiereSelect.value || !document.getElementById('firstname').value)) {
-                    alert("Veuillez remplir toutes les informations académiques ainsi que votre rôle."); return;
-                }
-                if (currentStep === 2) {
-                    if (roleSelect.value === 'mentor' && !document.getElementById('competenceSelect').value) {
-                        alert("Veuillez choisir une matière dans vos compétences."); return;
-                    }
-                    if (roleSelect.value === 'mentore' && !document.getElementById('lacuneSelect').value) {
-                        alert("Veuillez renseigner une matière cible pour vos difficultés."); return;
-                    }
-                }
-                currentStep++; updateFormUI();
-            } else {
-                // --- PROCESSUS DE SOUMISSION DU FORMULAIRE COMPLET ---
-                
-                // 1. Récupération des blocs horaires sélectionnés dans l'UI
-                const dispoSelectionnees = [];
-                document.querySelectorAll('#timetable-body .bg-emerald-500').forEach(box => {
-                    dispoSelectionnees.push({
-                        jour: box.dataset.jour,
-                        creneau: box.dataset.heure
-                    });
-                });
-
-                // 2. Assemblage du modèle d'objet de données (JSON Payload)
-                const payloadFinal = {
-                    role: roleSelect.value,
-                    firstname: document.getElementById('firstname').value.trim(),
-                    lastname: document.getElementById('lastname').value.trim(),
-                    niveau: niveauSelect.value,
-                    filiere: fIliereSelect = filiereSelect.value,
-                    competence: roleSelect.value === 'mentor' ? document.getElementById('competenceSelect').value : null,
-                    lacune: roleSelect.value === 'mentore' ? document.getElementById('lacuneSelect').value : null,
-                    disponibilites: dispoSelectionnees 
-                };
-
-                // 3. Extraction du Jeton d'Authentification (JWT) du navigateur
-                const token = localStorage.getItem('token'); 
-
-                try {
-                    nextBtn.disabled = true;
-                    nextBtn.textContent = "Envoi en cours...";
-
-                    // 4. Appel Ajax synchrone vers l'API Node/Express ou Python de ton binôme
-                    const response = await fetch(BACKEND_URL, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` // Protection et identification du profil utilisateur
-                        },
-                        body: JSON.stringify(payloadFinal)
-                    });
-
-                    // 5. Lecture et vérification du statut HTTP de réponse
-                    if (response.ok) {
-                        alert("Félicitations, votre profil de configuration a été enregistré !");
-                        window.location.href = "dashboard.html"; // Redirection vers le tableau de bord principal
-                    } else {
-                        const errorData = await response.json();
-                        alert("Erreur Serveur : " + (errorData.message || "Impossible de mettre à jour le profil d'onboarding."));
-                    }
-                } catch (error) {
-                    console.error("Échec de la communication réseau :", error);
-                    alert("Impossible d'atteindre le serveur. Vérifiez que votre backend est bien allumé.");
-                } finally {
-                    nextBtn.disabled = false;
-                    nextBtn.innerHTML = "<span>Terminer et Enregistrer</span>";
-                }
+      } else {
+        const index = userData.weaknesses.findIndex(w => w.course === course);
+        if (index > -1) {
+          userData.weaknesses.splice(index, 1);
+          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors';
+          btn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
+          levelSelect.classList.add('hidden');
+        } else {
+          const strengthIndex = userData.strengths.findIndex(s => s.course === course);
+          if (strengthIndex > -1) {
+            userData.strengths.splice(strengthIndex, 1);
+            if(oppositeBtn) {
+              oppositeBtn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors';
+              oppositeBtn.innerHTML = `<div class="flex items-center justify-between"><span class="text-sm">${course}</span></div>`;
             }
-        });
+            if(oppositeLevelSelect) oppositeLevelSelect.classList.add('hidden');
+          }
+          
+          userData.weaknesses.push({ course, priority: 'Medium' });
+          btn.className = 'w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors';
+          btn.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="text-sm">${course}</span>
+              <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          `;
+          levelSelect.classList.remove('hidden');
+          levelSelect.value = 'Medium';
+        }
+      }
+    }
 
-        prevBtn.addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateFormUI(); } });
-    </script>
+    function updateSkillLevel(course, type, level) {
+      if (type === 'strength') {
+        const skill = userData.strengths.find(s => s.course === course);
+        if (skill) skill.mastery = level;
+      } else {
+        const weakness = userData.weaknesses.find(w => w.course === course);
+        if (weakness) weakness.priority = level;
+      }
+    }
+
+    function initAvailabilityGrid() {
+      const grid = document.getElementById('availability-grid');
+      grid.innerHTML = '';
+      hours.forEach((hour, timeIndex) => {
+        const row = document.createElement('tr');
+        const hourCell = document.createElement('td');
+        hourCell.className = 'sticky left-0 bg-card p-2 text-sm text-muted font-medium';
+        hourCell.textContent = hour;
+        row.appendChild(hourCell);
+
+        days.forEach((day, dayIndex) => {
+          const cell = document.createElement('td');
+          cell.className = 'p-0.5'; // Rapproche les cases sans lignes rigides
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'w-full h-9 rounded-md transition-colors bg-input hover:bg-primary/20';
+          button.onclick = () => toggleTimeSlot(dayIndex, timeIndex, button);
+          cell.appendChild(button);
+          row.appendChild(cell);
+        });
+        grid.appendChild(row);
+      });
+    }
+
+    function toggleTimeSlot(dayIndex, timeIndex, button) {
+      availability[dayIndex][timeIndex] = !availability[dayIndex][timeIndex];
+      if (availability[dayIndex][timeIndex]) {
+        button.className = 'w-full h-9 rounded-md transition-colors bg-primary hover:bg-primary/80';
+      } else {
+        button.className = 'w-full h-9 rounded-md transition-colors bg-input hover:bg-primary/20';
+      }
+    }
+
+    function updateProgress() {
+      for (let i = 1; i <= 3; i++) {
+        const indicator = document.getElementById(`step${i}-indicator`);
+        const label = document.getElementById(`step${i}-label`);
+        
+        if (i < currentStep) {
+          indicator.className = 'w-10 h-10 rounded-full bg-success flex items-center justify-center font-semibold text-white';
+          indicator.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+          label.className = 'text-muted';
+        } else if (i === currentStep) {
+          indicator.className = 'w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold text-white';
+          indicator.textContent = i;
+          label.className = 'font-medium';
+        } else {
+          indicator.className = 'w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted';
+          indicator.textContent = i;
+          label.className = 'text-muted';
+        }
+      }
+
+      document.getElementById('progress-bar-1').className = currentStep >= 2 ? 'flex-1 h-1 mx-2 rounded bg-success' : 'flex-1 h-1 mx-2 rounded bg-card';
+      document.getElementById('progress-bar-2').className = currentStep >= 3 ? 'flex-1 h-1 mx-2 rounded bg-success' : 'flex-1 h-1 mx-2 rounded bg-card';
+
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`step${i}`).classList.toggle('hidden', i !== currentStep);
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateProgress();
+      }
+    }
+
+    document.getElementById('step1-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      userData.firstName = document.getElementById('firstName').value;
+      userData.lastName = document.getElementById('lastName').value;
+      userData.department = document.getElementById('department').value;
+      userData.level = document.getElementById('level').value;
+      currentStep = 2;
+      updateProgress();
+    });
+
+    document.getElementById('step2-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (userData.strengths.length === 0 && userData.weaknesses.length === 0) {
+        alert('Veuillez sélectionner au moins une compétence ou une lacune');
+        return;
+      }
+      currentStep = 3;
+      updateProgress();
+    });
+
+    document.getElementById('step3-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      userData.availability = availability;
+      
+      if (typeof saveUserData === 'function') saveUserData(userData);
+      localStorage.setItem('onboardingCompleted', 'true');
+
+      const btn = document.getElementById('finish-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>';
+
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1000);
+    });
+
+    initSkillsLists();
+    initAvailabilityGrid();
+    updateProgress();
+  </script>
 </body>
 </html>
