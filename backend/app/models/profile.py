@@ -1,3 +1,4 @@
+from flask import jsonify
 from app.database import db
 from datetime import datetime, timezone
 

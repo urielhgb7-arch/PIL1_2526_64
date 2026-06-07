@@ -9,6 +9,12 @@ from app.validators import matiere_exists, is_valid_format_preference, is_valid_
 
 logger = logging.getLogger(__name__)
 profile_bp = Blueprint('profile', __name__)
+CRENEAUX_VALIDES = [
+       '08-09', '09-10', '10-11', '11-12',
+            '12-13', '13-14',                   
+            '14-15', '15-16', '16-17', '17-18', 
+            '18-19', '19-20', '20-21' ,'21-22'   
+]
 
 
 # ─── GET /api/profile/me ────────────────────────────────────────────────────
@@ -186,6 +192,8 @@ def add_disponibilite(current_user):
     jours_valides = {'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'}
     if jour not in jours_valides:
         return jsonify({"message": "jour invalide"}), 400
+    if creneau not in CRENEAUX_VALIDES:
+        return jsonify({"message": "Créneau invalide"}), 400
 
     dispo = Disponible(profile_id=profile.id, jour=jour, creneau=creneau)
     db.session.add(dispo)
