@@ -799,8 +799,8 @@ function buildAvailGrid() {
             const btn = document.createElement('button');
             btn.className = 'avail-cell';
             btn.dataset.jour = jour;
-            btn.dataset.creneau = `${h}h-${h+1}h`;
-            btn.title = `${jour} ${h}h–${h+1}h`;
+            btn.dataset.creneau = `${String(h).padStart(2,'0')}-${String(h+1).padStart(2,'0')}`;
+            btn.title = `${jour} ${String(h).padStart(2,'0')}h–${String(h+1).padStart(2,'0')}h`;
             btn.addEventListener('click', () => btn.classList.toggle('selected'));
             td.appendChild(btn);
             tr.appendChild(td);
