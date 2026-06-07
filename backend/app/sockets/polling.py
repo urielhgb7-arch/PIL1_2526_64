@@ -46,11 +46,11 @@ def check_nouveaux_messages():
     if last_message_id > 0:
         # Mode incrémental : uniquement les messages plus récents que le dernier connu
         query = query.filter(Message.id > last_message_id)
+        nouveaux = query.order_by(Message.date_envoi.asc()).all()
     else:
         # Première requête : les 20 derniers (pour initialiser le client)
-        query = query.order_by(Message.date_envoi.desc()).limit(20)
-
-    nouveaux = query.order_by(Message.date_envoi.asc()).all()
+        nouveaux = query.order_by(Message.date_envoi.desc()).limit(20).all()
+        nouveaux = list(reversed(nouveaux))  # Inverse pour avoir l'ordre croissant
 
     result = [{
         "message_id":      m.id,
