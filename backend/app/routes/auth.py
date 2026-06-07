@@ -7,6 +7,8 @@ from app.database import db
 from app.models import User, Profile
 from flask_jwt_extended import create_access_token
 from app.validators import validate_json, is_valid_email, is_valid_format_preference, is_valid_niveau
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.middleware.auth_guard import token_required
 
 logger = logging.getLogger(__name__)
 auth_bp = Blueprint('auth', __name__)
@@ -105,3 +107,25 @@ def login():
         logger.error(f"Erreur login: {str(e)[:100]}", exc_info=True)
         return jsonify({"message": "Erreur serveur"}), 500
 
+
+@auth_bp.route('/change-password', methods=['PUT'])
+@token_required
+def change_password(current_user):
+    data = request.get_json(force=True, silent=True) or {}
+    
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+    
+    if not old_password or not new_password:
+        return jsonify({"message": "Ancien et nouveau mot de passe requis"}), 400
+    
+    if not current_user.check_password(old_password):
+        return jsonify({"message": "Ancien mot de passe incorrect"}), 401
+    
+    if len(new_password) < 6:
+        return jsonify({"message": "Le mot de passe doit faire au moins 6 caractères"}), 400
+    
+    current_user.set_password(new_password)
+    db.session.commit()
+    
+    return jsonify({"message": "Mot de passe modifié avec succès"}), 200
