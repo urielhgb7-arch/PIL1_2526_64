@@ -7,6 +7,12 @@ from app.models.services import ProfilCompetence, ProfilLacune
 from tests.conftest import client, app_context
 
 
+def test_profile_blueprint_registered(app):
+    rules = [rule.rule for rule in app.url_map.iter_rules() if '/api/profile' in rule.rule]
+    assert '/api/profile/me' in rules
+    assert '/api/profile/lacunes' in rules
+
+
 def test_get_my_profile(client, app_context):
     """Test récupération profil utilisateur"""
     # Setup
