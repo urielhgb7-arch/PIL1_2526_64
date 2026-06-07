@@ -75,6 +75,18 @@ def add_lacune(current_user):
 
     data = request.get_json()
     matiere_id = data.get('matiere_id')
+
+
+    # 🆕 CHECK CROISÉ : la matière est-elle déjà une compétence ?
+    competence_existante = ProfilCompetence.query.filter_by(
+        profile_id=profile.id,
+        matiere_id=matiere_id
+    ).first()
+    if competence_existante:
+        return jsonify({
+            "message": "Cette matière est déjà dans tes compétences. Supprime-la d'abord avant de l'ajouter en lacune."
+        }), 400
+    
     priorite = data.get('priorite', 'Moyenne')
 
     if not matiere_id:
@@ -208,8 +220,18 @@ def remove_disponibilite(current_user):
 def add_competence(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     data = request.get_json()
-
     matiere_id = data.get('matiere_id')
+
+    # 🆕 CHECK CROISÉ : la matière est-elle déjà une lacune ?
+    lacune_existante = ProfilLacune.query.filter_by(
+        profile_id=profile.id,
+        matiere_id=matiere_id
+    ).first()
+    if lacune_existante:
+        return jsonify({
+            "message": "Cette matière est déjà dans tes lacunes. Supprime-la d'abord avant de l'ajouter en compétence."
+        }), 400
+    
     niveau = data.get('niveau', 'Intermédiaire')
     is_available_to_help = data.get('is_available_to_help', True)
 

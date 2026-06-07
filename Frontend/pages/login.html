@@ -18,6 +18,7 @@
         </div>
 
         <form id="loginForm" class="space-y-6">
+            <div class="error-banner hidden text-red-400 text-sm bg-red-950/50 p-3 rounded-xl border border-red-800" id="errorBanner"></div>
             
             <div>
                 <label for="email" class="block text-sm font-medium text-slate-300 mb-1">Adresse Email de l'IFRI</label>
@@ -57,32 +58,88 @@
 
             <button 
                 type="submit" 
-                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+                id="submitBtn"
+                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98] flex justify-center items-center gap-2"
             >
-                Se connecter
+                <span>Se connecter</span>
             </button>
         </form>
 
         <div class="mt-8 pt-6 border-t border-slate-700/50 text-center text-sm text-slate-400">
             <p>Nouveau sur MentorLink ? 
-                <a href="#" class="text-blue-400 hover:underline font-medium ml-1">Créer un compte</a>
+                <a href="register.html" class="text-blue-400 hover:underline font-medium ml-1">Créer un compte</a>
             </p>
         </div>
     </div>
 
     <script>
+        // ========================================================
+        // CONFIGURATION DU BACKEND (À adapter avec ton coéquipier)
+        // ========================================================
+        const LOGIN_API_URL = "http://localhost:5000/api/login";
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
+            e.preventDefault(); 
+
+            const errorBanner = document.getElementById('errorBanner');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Réinitialisation de l'affichage de l'erreur
+            errorBanner.classList.add('hidden');
+            errorBanner.textContent = "";
+
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const role = document.getElementById('role').value;
 
-            console.log("Tentative de connexion :", { email, role });
-            
-            // C'est ici que le développeur Front-End (F2/F3) insérera le fetch() vers l'API de ton Back-End.
-            // Exemple futur : 
-            // const response = await fetch('https://ton-api-backend.render.com/api/login', { ... });
+            const credentials = { 
+                email: email, 
+                password: password,
+                role: role
+            };
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Vérification...";
+
+                const response = await fetch(LOGIN_API_URL, {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+
+                const result = await response.json(); 
+
+                if (response.ok) {
+                    // 1. Stockage du Token JWT indispensable pour sécuriser la session
+                    if (result.token) {
+                        localStorage.setItem('token', result.token);
+                    }
+                    
+                    // 2. Redirection intelligente d'aiguillage
+                    // Si le profil de l'étudiant n'est pas encore complété (isOnboarded = false)
+                    if (result.user && result.user.isOnboarded === false) {
+                        window.location.href = "onboarding.html";
+                    } else {
+                        // Si le profil est déjà totalement paramétré
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    // Gestion propre de l'affichage de l'erreur sans bloquer le navigateur
+                    errorBanner.textContent = result.message || "Identifiants ou rôle incorrects.";
+                    errorBanner.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                errorBanner.textContent = "Impossible de joindre le serveur. Assurez-vous que le backend est lancé.";
+                errorBanner.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "<span>Se connecter</span>";
+            }
         });
     </script>
 </body>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - IFRI MentorLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center font-sans px-4 py-8">
+
+    <div class="bg-slate-800 p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-700">
+        
+        <div class="mb-4">
+            <a href="../index.html" class="text-xs text-slate-400 hover:text-blue-400 transition">← Retour à l'accueil</a>
+        </div>
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+                Rejoignez MentorLink
+            </h1>
+            <p class="text-slate-400 text-sm mt-2">Développez vos compétences grâce au mentorat peer-to-peer de l'IFRI.</p>
+        </div>
+
+        <form id="registerForm" autocomplete="off" class="space-y-5">
+            <div class="error-banner hidden text-red-400 text-sm bg-red-950/50 p-3 rounded-xl border border-red-800" id="errorBanner"></div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="firstname" class="block text-sm font-medium text-slate-300 mb-1">Prénom</label>
+                    <input 
+                        type="text" 
+                        id="firstname" 
+                        placeholder="Jean" 
+                        required
+                        class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-slate-200 placeholder-slate-500 text-sm"
+                    >
+                </div>
+                <div>
+                    <label for="lastname" class="block text-sm font-medium text-slate-300 mb-1">Nom</label>
+                    <input 
+                        type="text" 
+                        id="lastname" 
+                        placeholder="HOUNDJI" 
+                        required
+                        class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-slate-200 placeholder-slate-500 text-sm"
+                    >
+                </div>
+            </div>
+
+            <div>
+                <label for="phone" class="block text-sm font-medium text-slate-300 mb-1">Numéro de Téléphone (Unique)</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    placeholder="+229 01XXXXXXXX" 
+                    required
+                    class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-slate-200 placeholder-slate-500 text-sm"
+                >
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-slate-300 mb-1">Adresse E-mail</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="etudiant@ifri.uac.bj" 
+                    required
+                    class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-slate-200 placeholder-slate-500 text-sm"
+                >
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-slate-300 mb-1">Mot de passe</label>
+                <div class="relative flex items-center">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="••••••••" 
+                        required
+                        class="w-full px-4 py-3 pr-12 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-slate-200 placeholder-slate-500 text-sm"
+                    >
+                    <button type="button" class="absolute right-4 text-slate-400 hover:text-slate-200" id="togglePasswordBtn">👁️</button>
+                </div>
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-lg shadow-blue-500/20 active:scale-[0.98] flex justify-center items-center gap-2"
+                id="submitBtn"
+            >
+                <span>Créer mon compte →</span>
+                <div class="spinner hidden" id="registerSpinner"></div>
+            </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-slate-700/50 text-center text-sm text-slate-400">
+            <p>Vous avez déjà un compte ? 
+                <a href="login.html" class="text-blue-400 hover:underline font-medium ml-1">Se connecter</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================
+        // CONFIGURATION CONFIG BACKEND (À adapter avec ton coéquipier)
+        // ========================================================
+        const REGISTER_API_URL = "http://localhost:5000/api/register";
+
+        // ==========================================
+        // 1. GESTION DE L'AFFICHAGE DU MOT DE PASSE (L'œil 👁️)
+        // ==========================================
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+
+        togglePasswordBtn.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                togglePasswordBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                togglePasswordBtn.textContent = '👁️';
+            }
+        });
+
+        // ==========================================
+        // 2. ENVOI DES DONNÉES D'INSCRIPTION (Le fetch)
+        // ==========================================
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            const errorBanner = document.getElementById('errorBanner');
+            const submitBtn = document.getElementById('submitBtn');
+            const registerSpinner = document.getElementById('registerSpinner');
+
+            errorBanner.classList.add('hidden');
+            errorBanner.textContent = "";
+
+            const firstname = document.getElementById('firstname').value.trim();
+            const lastname = document.getElementById('lastname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            const userData = {
+                firstname: firstname,
+                lastname: lastname,
+                phone: phone,
+                email: email,
+                password: password
+            };
+
+            try {
+                if (registerSpinner) registerSpinner.classList.remove('hidden');
+                submitBtn.disabled = true;
+
+                const response = await fetch(REGISTER_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // --- SYNCHRONISATION DES FLUX EFFECTUÉE ICI ---
+                    
+                    // 1. Sauvegarde du Token d'authentification renvoyé par le backend
+                    if (result.token) {
+                        localStorage.setItem('token', result.token);
+                    }
+
+                    alert("Compte créé avec succès ! Configurons maintenant votre profil.");
+                    
+                    // 2. Redirection directe vers l'Onboarding (sans passer par la case Login)
+                    window.location.href = "onboarding.html";
+                } else {
+                    errorBanner.textContent = result.message || "Une erreur est survenue lors de l'inscription.";
+                    errorBanner.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                errorBanner.textContent = "Impossible de joindre le serveur. Vérifiez qu'il est bien démarré.";
+                errorBanner.classList.remove('hidden');
+            } finally {
+                if (registerSpinner) registerSpinner.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

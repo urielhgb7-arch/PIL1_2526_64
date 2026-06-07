@@ -13,11 +13,10 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    # En dev : SQLite local (ignorer DATABASE_URL)
-    # En prod : utiliser DATABASE_URL via ProductionConfig
-    _db_path = Path(__file__).parent.parent / 'instance' / 'dev.db'
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{_db_path.as_posix()}'
-
+    _db_path = Path(__file__).resolve().parents[2] / 'instance' / 'dev.db'
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get('DATABASE_URL') or f'sqlite:///{_db_path.as_posix()}'
+    )
 class TestingConfig(Config):
     TESTING = True
     # Prefer explicit TEST_DATABASE_URL (set via backend/.env.local),

@@ -9,10 +9,10 @@ DROP TABLE IF EXISTS conversations CASCADE;
 DROP TABLE IF EXISTS matching CASCADE;
 DROP TABLE IF EXISTS profil_lacunes CASCADE;
 DROP TABLE IF EXISTS profil_competences CASCADE;
-DROP TABLE IF EXISTS disponibilites CASCADE;
 DROP TABLE IF EXISTS offers CASCADE;
 DROP TABLE IF EXISTS demands CASCADE;
 DROP TABLE IF EXISTS matieres CASCADE;
+DROP TABLE IF EXISTS disponibilites CASCADE;
 DROP TABLE IF EXISTS profiles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
@@ -36,15 +36,15 @@ CREATE TABLE profiles (
     user_id INT UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
-    filiere VARCHAR(50) NOT NULL, -- ex: GL (Génie Logiciel), RSI, etc.
-    niveau VARCHAR(10) NOT NULL,  -- ex: L1, L2, L3, M1, M2
+    filiere VARCHAR(50) NOT NULL CHECK (filiere IN ('GL', 'SIRI', 'IM')),
+    niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3', 'M1', 'M2')),
+    format_preference VARCHAR(20) NOT NULL DEFAULT 'hybride' CHECK (format_preference IN ('presentiel', 'en_ligne', 'hybride')),
     bio TEXT,
     telephone VARCHAR(20),
     avatar_url TEXT DEFAULT 'https://via.placeholder.com/150',
     disponible BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 -- ----------------------------------------------------------------------------
 -- 3. DISPONIBILITÉS (Agenda d'étude indexé par bloc d'une heure)
 -- ----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ CREATE TABLE disponibilites (
             '08-09', '09-10', '10-11', '11-12', -- Matinée
             '12-13', '13-14',                   -- Pause déjeuner
             '14-15', '15-16', '16-17', '17-18', -- Après-midi
-            '18-19', '19-20', '20-21'           -- Soirée
+            '18-19', '19-20', '20-21' ,'21-22'         -- Soirée
         )
     )
 );
@@ -69,11 +69,10 @@ CREATE TABLE disponibilites (
 -- ----------------------------------------------------------------------------
 CREATE TABLE matieres (
     id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) UNIQUE NOT NULL,
-    filiere VARCHAR(50),
-    annee VARCHAR(10)
+    nom VARCHAR(100) NOT NULL,
+    filiere VARCHAR(50) NOT NULL CHECK (filiere IN ('GL', 'SIRI', 'IM')),
+    annee VARCHAR(10) NOT NULL CHECK (annee IN ('L1', 'L2', 'L3', 'M1', 'M2'))
 );
-
 -- ----------------------------------------------------------------------------
 -- 5. PROFILING & CRITÈRES DE MATCHING (Compétences vs Lacunes)
 -- ----------------------------------------------------------------------------
@@ -82,6 +81,7 @@ CREATE TABLE profil_competences (
     profile_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
     matiere_id INT NOT NULL REFERENCES matieres(id) ON DELETE CASCADE,
     niveau VARCHAR(20) DEFAULT 'Intermédiaire' CHECK (niveau IN ('Débutant', 'Intermédiaire', 'Avancé', 'Expert')),
+    is_available_to_help BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (profile_id, matiere_id)
 );
 
@@ -162,22 +162,91 @@ CREATE TABLE notifications (
 );
 
 
--- ============================================================================
--- INITIALISATION DES DONNÉES (Pour les tests de l'équipe Backend & Frontend)
--- ============================================================================
 
 -- Injection des matières officielles de l'IFRI
-INSERT INTO matieres (nom, filiere, annee) VALUES 
-('Algorithmique', 'Informatique', 'L1'), 
-('Architecture des ordinateurs', 'Informatique', 'L1'), 
-('Base de données (SQL)', 'Informatique', 'L2'), 
-('Programmation Web (HTML/CSS/JS)', 'Informatique', 'L2'), 
-('Réseaux et Télécoms', 'Informatique', 'L1'), 
-('Système d''exploitation Linux', 'Informatique', 'L1'), 
-('Génie Logiciel', 'Informatique', 'L3'),
-('Intelligence Artificielle', 'Informatique', 'L3'), 
-('Cybersécurité', 'Informatique', 'M1'), 
-('Cloud Computing', 'Informatique', 'M1'), 
-('Data Science', 'Informatique', 'M2'), 
-('DevOps', 'Informatique', 'M1'), 
-('Mobile (Android/iOS)', 'Informatique', 'L3');
+-- ============================================================
+-- FILIÈRE : GL (Génie Logiciel)
+-- ============================================================
+INSERT INTO matieres (nom, filiere, annee) VALUES
+
+-- L1
+('Algorithmique',                        'GL', 'L1'),
+('Introduction au langage C',            'GL', 'L1'),
+('Architecture des ordinateurs',         'GL', 'L1'),
+('Systèmes d''exploitation (Linux)',     'GL', 'L1'),
+('Réseaux informatiques',                'GL', 'L1'),
+('Introduction au langage SQL',          'GL', 'L1'),
+('Théorie des bases de données',         'GL', 'L1'),
+
+-- L2
+('Programmation orientée objet (C++)',   'GL', 'L2'),
+('Bases de données avancées (Oracle)',   'GL', 'L2'),
+('Programmation Web (HTML/CSS/JS/PHP)',  'GL', 'L2'),
+('Génie logiciel et tests logiciels',    'GL', 'L2'),
+('Langage Java',                         'GL', 'L2'),
+('Structures de données avancées',       'GL', 'L2'),
+('Sécurité logicielle',                  'GL', 'L2'),
+
+-- L3
+('Développement mobile (Android)',       'GL', 'L3'),
+('Ingénierie logicielle',                'GL', 'L3'),
+('Sécurité des systèmes d''information','GL', 'L3'),
+('Bases de données Oracle avancées',     'GL', 'L3'),
+('Gestion de projets informatiques',     'GL', 'L3');
+
+
+-- ============================================================
+-- FILIÈRE : SIRI (Systèmes d'Information et Réseaux)
+-- ============================================================
+INSERT INTO matieres (nom, filiere, annee) VALUES
+
+-- L1
+('Algorithmique et programmation C',     'SIRI', 'L1'),
+('Architecture des systèmes',            'SIRI', 'L1'),
+('Bases de données relationnelles',      'SIRI', 'L1'),
+('Réseaux informatiques',                'SIRI', 'L1'),
+('Programmation orientée objet (Java)',  'SIRI', 'L1'),
+('Systèmes d''exploitation multithread', 'SIRI', 'L1'),
+
+-- L2
+('Programmation web dynamique (PHP)',    'SIRI', 'L2'),
+('Administration réseaux TCP/IP',        'SIRI', 'L2'),
+('Virtualisation',                       'SIRI', 'L2'),
+('Routage et commutation',               'SIRI', 'L2'),
+('Sécurité des réseaux',                 'SIRI', 'L2'),
+
+-- L3
+('Systèmes de détection d''intrusion',   'SIRI', 'L3'),
+('Sécurisation des bases de données',    'SIRI', 'L3'),
+('Préparation certification CCNA',       'SIRI', 'L3'),
+('Préparation certification Mikrotik',   'SIRI', 'L3'),
+('Gestion de projets informatiques',     'SIRI', 'L3');
+
+
+-- ============================================================
+-- FILIÈRE : IM (Internet et Multimédia)
+-- ============================================================
+INSERT INTO matieres (nom, filiere, annee) VALUES
+
+-- L1
+('Algorithmique',                        'IM', 'L1'),
+('Introduction au langage C',            'IM', 'L1'),
+('Architecture Web',                     'IM', 'L1'),
+('Introduction au langage SQL',          'IM', 'L1'),
+('Réseaux informatiques',                'IM', 'L1'),
+
+-- L2
+('Programmation Web (XHTML/CSS/JS/PHP)', 'IM', 'L2'),
+('Animation 2D et 3D',                   'IM', 'L2'),
+('Maya / Studio 3D Max',                 'IM', 'L2'),
+('Ergonomie des interfaces web',         'IM', 'L2'),
+('Java Web',                             'IM', 'L2'),
+('Bases de données avancées',            'IM', 'L2'),
+
+-- L3
+('Développement e-commerce',             'IM', 'L3'),
+('Développement mobile (Android)',       'IM', 'L3'),
+('Montage et publication vidéo',         'IM', 'L3'),
+('Réalité virtuelle',                    'IM', 'L3'),
+('Préparation certification Photoshop',  'IM', 'L3'),
+('Gestion de projets informatiques',     'IM', 'L3');

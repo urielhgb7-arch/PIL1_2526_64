@@ -3,246 +3,1185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MentorLink - Page de test</title>
+    <title>MentorLink — Test UI Complet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-t45L5bZbpq60Gw7bYfGjP0GynwgBtmNUbdB4yp0e68x5JId3dRvPDSB0QbUSzKp0" crossorigin="anonymous"></script>
+    <style>
+        :root { --accent: #6366f1; --success: #10b981; --warn: #f59e0b; --danger: #ef4444; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0b0f; color: #e2e8f0; }
+
+        /* ── TABS ── */
+        .tab-bar { display: flex; gap: 2px; border-bottom: 1px solid #1e293b; background: #0d1117; padding: 0 1rem; overflow-x: auto; }
+        .tab { padding: 10px 18px; font-size: 13px; font-weight: 500; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; }
+        .tab:hover { color: #94a3b8; }
+        .tab.active { color: #818cf8; border-bottom-color: #818cf8; }
+
+        .tab-content { display: none; padding: 1.5rem; }
+        .tab-content.active { display: block; }
+
+        /* ── CARDS ── */
+        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+        .card-title { font-size: 13px; font-weight: 600; color: #6366f1; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+
+        /* ── INPUTS ── */
+        input, select, textarea { width: 100%; padding: 8px 12px; background: #0d1117; border: 1px solid #1f2937; border-radius: 8px; color: #e2e8f0; font-size: 13px; outline: none; transition: border .15s; }
+        input:focus, select:focus, textarea:focus { border-color: #6366f1; }
+        select option { background: #0d1117; }
+        label { display: block; font-size: 12px; color: #64748b; margin-bottom: 4px; font-weight: 500; }
+        .field { margin-bottom: 10px; }
+
+        /* ── BUTTONS ── */
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all .15s; }
+        .btn-primary { background: #6366f1; color: white; }
+        .btn-primary:hover { background: #4f46e5; }
+        .btn-success { background: #059669; color: white; }
+        .btn-success:hover { background: #047857; }
+        .btn-warn { background: #d97706; color: white; }
+        .btn-warn:hover { background: #b45309; }
+        .btn-danger { background: #dc2626; color: white; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-ghost { background: #1e293b; color: #94a3b8; }
+        .btn-ghost:hover { background: #273549; }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        .btn-full { width: 100%; justify-content: center; }
+
+        /* ── GRID ── */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; }
+        @media(max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+        /* ── STATUS BADGES ── */
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-green { background: #065f46; color: #6ee7b7; }
+        .badge-yellow { background: #78350f; color: #fcd34d; }
+        .badge-red { background: #7f1d1d; color: #fca5a5; }
+        .badge-blue { background: #1e3a5f; color: #93c5fd; }
+
+        /* ── LOG ── */
+        #log { background: #070810; border: 1px solid #1e293b; border-radius: 10px; padding: 1rem; font-family: 'Courier New', monospace; font-size: 12px; height: 220px; overflow-y: auto; }
+        .log-ok { color: #34d399; }
+        .log-err { color: #f87171; }
+        .log-info { color: #93c5fd; }
+        .log-ws { color: #c084fc; }
+
+        /* ── AVAILABILITY GRID ── */
+        .avail-grid { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .avail-grid th { padding: 6px 4px; text-align: center; color: #64748b; font-weight: 600; font-size: 11px; }
+        .avail-grid td.hour-label { padding: 5px 8px; color: #64748b; font-size: 11px; font-weight: 500; white-space: nowrap; border-right: 1px solid #1f2937; }
+        .avail-cell { width: 100%; height: 28px; border-radius: 4px; background: #0d1117; border: 1px solid #1f2937; cursor: pointer; transition: background .1s; }
+        .avail-cell.selected { background: #059669; border-color: #10b981; }
+        .avail-cell:hover:not(.selected) { background: #1e293b; }
+
+        /* ── MATCH CARDS ── */
+        .match-card { background: #0d1117; border: 1px solid #1f2937; border-radius: 10px; padding: 1rem; margin-bottom: .75rem; }
+        .score-ring { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #1e293b; font-weight: 700; font-size: 14px; }
+
+        /* ── CONV / MSG ── */
+        .msg-bubble { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 70%; margin: 4px 0; }
+        .msg-me { background: #312e81; align-self: flex-end; }
+        .msg-other { background: #1e293b; align-self: flex-start; }
+        #msgList { display: flex; flex-direction: column; height: 220px; overflow-y: auto; padding: .5rem; background: #0d1117; border-radius: 8px; border: 1px solid #1f2937; }
+
+        /* ── STATUS BAR ── */
+        #statusBar { position: sticky; top: 0; z-index: 50; background: #0d1117; border-bottom: 1px solid #1f2937; padding: 8px 1.5rem; display: flex; align-items: center; gap: 12px; font-size: 12px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-on { background: #34d399; }
+        .dot-off { background: #475569; }
+
+        /* ── NOTIF ITEM ── */
+        .notif-item { padding: .75rem; border: 1px solid #1f2937; border-radius: 8px; margin-bottom: .5rem; background: #0d1117; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .notif-item.unread { border-color: #312e81; background: #0d0f1f; }
+
+        /* ── COMPETENCE TAG ── */
+        .comp-tag { display: inline-flex; align-items: center; gap: 6px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 4px 10px; font-size: 12px; margin: 3px; }
+        .comp-tag.available { border-color: #065f46; color: #34d399; }
+        .comp-tag.unavailable { border-color: #7f1d1d; color: #f87171; }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 py-6">
-        <header class="mb-6">
-            <h1 class="text-3xl font-bold text-white">MentorLink - Interface de test</h1>
-            <p class="text-slate-400 mt-2">Teste auth, profil, matching, messagerie, notifications, WebSocket et polling.</p>
-        </header>
+<body>
 
-        <div class="grid gap-6 lg:grid-cols-2">
-            <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700">
-                <h2 class="text-xl font-semibold mb-3">Authentification</h2>
-                <div class="space-y-4">
-                    <form id="loginForm" class="space-y-3">
-                        <h3 class="text-lg font-medium">Connexion</h3>
-                        <input id="loginEmail" type="email" placeholder="Email" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <input id="loginPassword" type="password" placeholder="Mot de passe" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <button class="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500">Se connecter</button>
-                    </form>
-
-                    <form id="registerForm" class="space-y-3">
-                        <h3 class="text-lg font-medium">Inscription</h3>
-                        <input id="registerEmail" type="email" placeholder="Email" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <input id="registerPassword" type="password" placeholder="Mot de passe" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <input id="registerNom" type="text" placeholder="Nom" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <input id="registerPrenom" type="text" placeholder="Prénom" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <input id="registerFiliere" type="text" placeholder="Filière" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <input id="registerNiveau" type="text" placeholder="Niveau (L1, L2, M1...)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700" required>
-                        <button class="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500">Créer un compte</button>
-                    </form>
-
-                    <div class="flex gap-3">
-                        <button id="logoutBtn" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Déconnexion</button>
-                        <button id="refreshStatusBtn" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Rafraîchir statut</button>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700">
-                <h2 class="text-xl font-semibold mb-3">Actions rapides</h2>
-                <div class="space-y-3">
-                    <button id="btnMe" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Profil / Me</button>
-                    <button id="btnMatieres" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Liste des matières</button>
-                    <button id="btnMatches" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Suggestions de matching</button>
-                    <button id="btnConvs" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Mes conversations</button>
-                    <button id="btnNotifs" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Notifications</button>
-                </div>
-            </section>
-        </div>
-
-        <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700 mt-6">
-            <h2 class="text-xl font-semibold mb-3">WebSocket & polling</h2>
-            <div class="grid gap-4 lg:grid-cols-2">
-                <div class="space-y-3">
-                    <button id="socketConnect" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Connecter WebSocket</button>
-                    <button id="socketDisconnect" class="w-full py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Déconnecter</button>
-                    <button id="socketRegister" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">S'enregistrer (user_id)</button>
-                    <button id="socketJoin" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Joindre conversation</button>
-                    <button id="socketSend" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Envoyer message WebSocket</button>
-                    <button id="socketNotify" class="w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500">Envoyer notification match</button>
-                </div>
-                <div class="space-y-3">
-                    <button id="pollCheck" class="w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-500">Vérifier polling messages</button>
-                    <button id="pollStart" class="w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-500">Démarrer polling</button>
-                    <button id="pollStop" class="w-full py-2 rounded-xl bg-slate-700 hover:bg-slate-600">Arrêter polling</button>
-                    <input id="pollConvId" type="number" placeholder="Conversation ID" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700">
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-slate-800 rounded-2xl p-5 shadow-lg border border-slate-700 mt-6">
-            <h2 class="text-xl font-semibold mb-3">Résultat</h2>
-            <div class="bg-slate-950 rounded-2xl p-4 min-h-[220px] overflow-auto">
-                <pre id="output" class="whitespace-pre-wrap text-slate-200"></pre>
-            </div>
-        </section>
+<!-- ── STATUS BAR ── -->
+<div id="statusBar">
+    <div style="font-weight:700; color:#818cf8;">🔗 MentorLink</div>
+    <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+        <div class="status-dot" id="authDot" style="background:#475569"></div>
+        <span id="authLabel" style="color:#475569">Non connecté</span>
     </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+        <div class="status-dot" id="wsDot" style="background:#475569"></div>
+        <span id="wsLabel" style="color:#475569">WebSocket off</span>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+        <label style="margin:0; font-size:11px; color:#475569;">Backend</label>
+        <input type="text" id="apiBase" value="http://127.0.0.1:5000/api" style="width:230px; padding:4px 8px; font-size:11px;">
+    </div>
+</div>
 
-    <script src="../js/api.js"></script>
-    <script>
-        const output = document.getElementById('output');
-        const socketStatus = { connected: false };
-        let socket = null;
-        let pollingId = null;
+<!-- ── TAB BAR ── -->
+<div class="tab-bar">
+    <div class="tab active" data-tab="auth">🔐 Auth</div>
+    <div class="tab" data-tab="profil">👤 Profil</div>
+    <div class="tab" data-tab="competences">🎓 Compétences</div>
+    <div class="tab" data-tab="lacunes">📚 Lacunes</div>
+    <div class="tab" data-tab="dispos">📅 Disponibilités</div>
+    <div class="tab" data-tab="matching">🤝 Matching</div>
+    <div class="tab" data-tab="messages">💬 Messages</div>
+    <div class="tab" data-tab="notifs">🔔 Notifications</div>
+    <div class="tab" data-tab="websocket">⚡ WebSocket</div>
+    <div class="tab" data-tab="logs">📋 Logs</div>
+</div>
 
-        function log(message, data = null) {
-            const time = new Date().toLocaleTimeString();
-            output.textContent = `[${time}] ${message}\n` + (data ? JSON.stringify(data, null, 2) + '\n' : '') + output.textContent;
+<!-- ═══════════ TAB: AUTH ═══════════ -->
+<div class="tab-content active" id="tab-auth">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">🔐 Connexion</div>
+            <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="user@ifri.uac.bj"></div>
+            <div class="field"><label>Mot de passe</label><input id="loginPassword" type="password" placeholder="••••••••"></div>
+            <button class="btn btn-primary btn-full" id="loginBtn">Se connecter</button>
+        </div>
+        <div class="card">
+            <div class="card-title">📝 Inscription</div>
+            <div class="grid-2" style="gap:.5rem">
+                <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="email"></div>
+                <div class="field"><label>Mot de passe</label><input id="regPass" type="password" placeholder="••••••••"></div>
+                <div class="field"><label>Nom</label><input id="regNom" type="text" placeholder="HOUNDJI"></div>
+                <div class="field"><label>Prénom</label><input id="regPrenom" type="text" placeholder="Jean"></div>
+                <div class="field">
+                    <label>Filière</label>
+                    <select title="Filière" id="regFiliere">
+                        <option value="GL">GL</option><option value="SI">SI</option>
+                        <option value="IA">IA</option><option value="IM">IM</option>
+                        <option value="SIRI">SIRI</option><option value="SEoIT">SEoIT</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Niveau</label>
+                    <select title="Niveau" id="regNiveau">
+                        <option value="L1">L1</option><option value="L2">L2</option>
+                        <option value="L3">L3</option><option value="M1">M1</option><option value="M2">M2</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-success btn-full" id="regBtn">Créer le compte</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">ℹ️ Session courante</div>
+        <div id="sessionInfo" style="font-size:13px; color:#64748b;">Non connecté</div>
+        <button class="btn btn-danger btn-sm" id="logoutBtn" style="margin-top:.75rem">Se déconnecter</button>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: PROFIL ═══════════ -->
+<div class="tab-content" id="tab-profil">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">👤 Profil actuel</div>
+            <button class="btn btn-ghost btn-full" id="loadProfileBtn">Charger mon profil</button>
+            <div id="profileDisplay" style="margin-top:1rem; font-size:13px;"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">✏️ Modifier le profil</div>
+            <div class="field"><label>Nom</label><input title="Nom" id="upNom" type="text" placeholder="Nom"></div>
+            <div class="field"><label>Prénom</label><input title="Prénom" id="upPrenom" type="text" placeholder="Prénom"></div>
+            <div class="field"><label>Filière</label>
+                <select title="Filière" id="upFiliere">
+                    <option value="">-- inchangé --</option>
+                    <option value="GL">GL</option><option value="SI">SI</option>
+                    <option value="IA">IA</option><option value="IM">IM</option>
+                    <option value="SIRI">SIRI</option><option value="SEoIT">SEoIT</option>
+                </select>
+            </div>
+            <div class="field"><label>Niveau</label>
+                <select title="Niveau" id="upNiveau">
+                    <option value="">-- inchangé --</option>
+                    <option value="L1">L1</option><option value="L2">L2</option>
+                    <option value="L3">L3</option><option value="M1">M1</option><option value="M2">M2</option>
+                </select>
+            </div>
+            <div class="field"><label>Format préférence</label>
+                <select title="Format préférence" id="upFormat">
+                    <option value="">-- inchangé --</option>
+                    <option value="presentiel">Présentiel</option>
+                    <option value="en_ligne">En ligne</option>
+                    <option value="hybride">Hybride</option>
+                </select>
+            </div>
+            <div class="field"><label>Bio</label><textarea title="Bio" id="upBio" rows="2" placeholder="Quelques mots..."></textarea></div>
+            <div class="field"><label>Téléphone</label><input title="Téléphone" id="upTel" type="text" placeholder="+229 01XXXXXXXX"></div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <input type="checkbox" id="upDispo" style="width:auto; margin:0">
+                <label for="upDispo" style="margin:0; cursor:pointer">Disponible pour aider</label>
+            </div>
+            <button class="btn btn-primary btn-full" id="updateProfileBtn">Enregistrer les modifications</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: COMPÉTENCES ═══════════ -->
+<div class="tab-content" id="tab-competences">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">➕ Ajouter une compétence</div>
+            <div class="field"><label>Matière (ID)</label><input title="Matière (ID)" id="compMatiereId" type="number" placeholder="ID de la matière (voir Logs/Matières)"></div>
+            <div class="field"><label>Niveau de maîtrise</label>
+                <select title="Niveau de maîtrise" id="compNiveau">
+                    <option value="Débutant">Débutant</option>
+                    <option value="Intermédiaire" selected>Intermédiaire</option>
+                    <option value="Avancé">Avancé</option>
+                    <option value="Expert">Expert</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <input type="checkbox" id="compAvailable" style="width:auto; margin:0" checked>
+                <label for="compAvailable" style="margin:0; cursor:pointer">Disponible pour aider</label>
+            </div>
+            <button class="btn btn-success btn-full" id="addCompBtn">Ajouter compétence</button>
+        </div>
+        <div class="card">
+            <div class="card-title">🔧 Gérer mes compétences</div>
+            <div class="field"><label>Matière ID</label><input title="Matière ID" id="mgCompMatiereId" type="number" placeholder="ID matière"></div>
+            <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+                <button class="btn btn-success btn-sm" id="activateCompBtn">✅ Activer</button>
+                <button class="btn btn-warn btn-sm" id="deactivateCompBtn">⏸ Désactiver</button>
+                <button class="btn btn-danger btn-sm" id="removeCompBtn">🗑 Supprimer</button>
+            </div>
+            <hr style="border-color:#1f2937; margin:1rem 0">
+            <div class="card-title" style="margin-bottom:.5rem">📋 Liste des matières dispo</div>
+            <button class="btn btn-ghost btn-sm" id="listMatieresBtn">Charger les matières</button>
+            <div id="matieresListDisplay" style="margin-top:.5rem; max-height:180px; overflow-y:auto; font-size:12px;"></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">📊 Mes compétences actuelles</div>
+        <button class="btn btn-ghost btn-sm" id="loadCompsBtn">Actualiser</button>
+        <div id="compsDisplay" style="margin-top:.75rem;"></div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: LACUNES ═══════════ -->
+<div class="tab-content" id="tab-lacunes">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">📚 Ajouter une lacune</div>
+            <div class="field"><label>Matière ID</label><input title="Matière ID" id="lacMatiereId" type="number" placeholder="ID de la matière"></div>
+            <div class="field"><label>Priorité / Gravité</label>
+                <select title="Priorité / Gravité" id="lacPriorite">
+                    <option value="Basse">Basse — légère difficulté</option>
+                    <option value="Moyenne" selected>Moyenne — besoin d'aide</option>
+                    <option value="Haute">Haute — grande lacune</option>
+                    <option value="Urgente">Urgente — bloquant</option>
+                </select>
+            </div>
+            <button class="btn btn-warn btn-full" id="addLacBtn">Ajouter lacune</button>
+        </div>
+        <div class="card">
+            <div class="card-title">🗑 Supprimer une lacune</div>
+            <div class="field"><label>Matière ID</label><input title="Matière ID" id="rmLacMatiereId" type="number" placeholder="ID matière à retirer"></div>
+            <button class="btn btn-danger btn-full" id="removeLacBtn">Supprimer lacune</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">📋 Mes lacunes actuelles</div>
+        <button class="btn btn-ghost btn-sm" id="loadLacsBtn">Actualiser</button>
+        <div id="lacsDisplay" style="margin-top:.75rem;"></div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: DISPONIBILITÉS ═══════════ -->
+<div class="tab-content" id="tab-dispos">
+    <div class="card">
+        <div class="card-title">📅 Grille de disponibilités — cliquez pour sélectionner</div>
+        <p style="font-size:12px; color:#64748b; margin-bottom:1rem;">Sélectionnez vos créneaux libres. Cliquez sur une case pour la toggler. Chaque case = 1 heure.</p>
+        <div style="overflow-x:auto;">
+            <table class="avail-grid" id="availTable">
+                <thead>
+                    <tr>
+                        <th style="width:70px">Heure</th>
+                        <th>Lun</th><th>Mar</th><th>Mer</th>
+                        <th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
+                    </tr>
+                </thead>
+                <tbody id="availBody"></tbody>
+            </table>
+        </div>
+        <div style="display:flex; gap:.75rem; margin-top:1rem; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:#64748b;">
+                <div style="width:14px; height:14px; border-radius:3px; background:#0d1117; border:1px solid #1f2937;"></div> Libre
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:#34d399;">
+                <div style="width:14px; height:14px; border-radius:3px; background:#059669;"></div> Sélectionné
+            </div>
+            <div style="margin-left:auto; display:flex; gap:.5rem;">
+                <button class="btn btn-ghost btn-sm" id="clearDispoBtn">Tout désélectionner</button>
+                <button class="btn btn-primary btn-sm" id="saveDisposBtn">Enregistrer la sélection</button>
+            </div>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">➕ Ajouter un créneau manuel</div>
+            <div class="field"><label>Jour</label>
+                <select title="Jour" id="dispoJour">
+                    <option value="Lundi">Lundi</option><option value="Mardi">Mardi</option>
+                    <option value="Mercredi">Mercredi</option><option value="Jeudi">Jeudi</option>
+                    <option value="Vendredi">Vendredi</option><option value="Samedi">Samedi</option>
+                    <option value="Dimanche">Dimanche</option>
+                </select>
+            </div>
+            <div class="field"><label>Créneau</label>
+                <select title="Créneau" id="dispoCreneau">
+                    <option value="6h-7h">06h–07h</option><option value="7h-8h">07h–08h</option>
+                    <option value="8h-9h">08h–09h</option><option value="9h-10h">09h–10h</option>
+                    <option value="10h-11h">10h–11h</option><option value="11h-12h">11h–12h</option>
+                    <option value="12h-13h">12h–13h</option><option value="13h-14h">13h–14h</option>
+                    <option value="14h-15h">14h–15h</option><option value="15h-16h">15h–16h</option>
+                    <option value="16h-17h">16h–17h</option><option value="17h-18h">17h–18h</option>
+                    <option value="18h-19h">18h–19h</option><option value="19h-20h">19h–20h</option>
+                    <option value="20h-21h">20h–21h</option><option value="21h-22h">21h–22h</option>
+                </select>
+            </div>
+            <button class="btn btn-success btn-full" id="addDispoBtn">Ajouter ce créneau</button>
+        </div>
+        <div class="card">
+            <div class="card-title">🗑 Supprimer un créneau</div>
+            <div class="field"><label>Jour</label>
+                <select title="Jour" id="rmDispoJour">
+                    <option value="Lundi">Lundi</option><option value="Mardi">Mardi</option>
+                    <option value="Mercredi">Mercredi</option><option value="Jeudi">Jeudi</option>
+                    <option value="Vendredi">Vendredi</option><option value="Samedi">Samedi</option>
+                    <option value="Dimanche">Dimanche</option>
+                </select>
+            </div>
+            <div class="field"><label>Créneau</label>
+                <select title="Créneau" id="rmDispoCreneau">
+                    <option value="6h-7h">06h–07h</option><option value="7h-8h">07h–08h</option>
+                    <option value="8h-9h">08h–09h</option><option value="9h-10h">09h–10h</option>
+                    <option value="10h-11h">10h–11h</option><option value="11h-12h">11h–12h</option>
+                    <option value="12h-13h">12h–13h</option><option value="13h-14h">13h–14h</option>
+                    <option value="14h-15h">14h–15h</option><option value="15h-16h">15h–16h</option>
+                    <option value="16h-17h">16h–17h</option><option value="17h-18h">17h–18h</option>
+                    <option value="18h-19h">18h–19h</option><option value="19h-20h">19h–20h</option>
+                    <option value="20h-21h">20h–21h</option><option value="21h-22h">21h–22h</option>
+                </select>
+            </div>
+            <button class="btn btn-danger btn-full" id="removeDispoBtn">Supprimer ce créneau</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">📋 Mes disponibilités actuelles</div>
+        <button class="btn btn-ghost btn-sm" id="loadDisposBtn">Actualiser</button>
+        <div id="disposDisplay" style="margin-top:.75rem; font-size:13px;"></div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: MATCHING ═══════════ -->
+<div class="tab-content" id="tab-matching">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">🎯 Suggestions de matching</div>
+            <div class="field"><label>Filtrer par matière ID (optionnel)</label><input title="Filtrer par matière ID (optionnel)" id="matchMatiereFilter" type="number" placeholder="Laisser vide = toutes"></div>
+            <button class="btn btn-primary btn-full" id="getSuggestionsBtn">Lancer le matching</button>
+        </div>
+        <div class="card">
+            <div class="card-title">📤 Envoyer une demande</div>
+            <div class="field"><label>ID de l'étudiant cible</label><input title="ID de l'étudiant cible" id="reqStudentId" type="number" placeholder="student_id du candidat"></div>
+            <div class="field"><label>Matière ID</label><input title="Matière ID"   id="reqMatiereId" type="number" placeholder="matiere_id"></div>
+            <div class="field"><label>Score estimé (%)</label><input title="Score estimé (%)" id="reqScore" type="number" placeholder="75" value="75"></div>
+            <button class="btn btn-success btn-full" id="sendMatchReqBtn">Envoyer la demande</button>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">📥 Demandes reçues (en attente)</div>
+            <button class="btn btn-ghost btn-sm" id="loadReceivedBtn">Charger</button>
+            <div id="receivedMatchesDisplay" style="margin-top:.75rem;"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">📤 Demandes envoyées</div>
+            <button class="btn btn-ghost btn-sm" id="loadSentBtn">Charger</button>
+            <div id="sentMatchesDisplay" style="margin-top:.75rem;"></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">🤝 Résultats de matching</div>
+        <div id="matchingResults"></div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: MESSAGES ═══════════ -->
+<div class="tab-content" id="tab-messages">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">💬 Mes conversations</div>
+            <button class="btn btn-ghost btn-sm" id="loadConvsBtn">Actualiser</button>
+            <div id="convsDisplay" style="margin-top:.75rem; font-size:13px;"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">➕ Créer une conversation</div>
+            <div class="field"><label>User ID de l'autre personne</label><input title="User ID de l'autre personne" id="newConvUserId" type="number" placeholder="user_id"></div>
+            <button class="btn btn-success btn-full" id="createConvBtn">Créer / Ouvrir conversation</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">📨 Conversation active</div>
+        <div style="display:flex; gap:.5rem; margin-bottom:.75rem; align-items:center;">
+            <div class="field" style="flex:1; margin:0;"><input title="ID de la conversation" id="activeConvId" type="number" placeholder="ID de la conversation"></div>
+            <button class="btn btn-primary btn-sm" id="loadMsgsBtn">Charger</button>
+        </div>
+        <div id="msgList"></div>
+        <div style="display:flex; gap:.5rem; margin-top:.75rem;">
+            <input title="Votre message" id="msgInput" type="text" placeholder="Votre message..." style="flex:1;">
+            <button class="btn btn-primary" id="sendMsgBtn">Envoyer</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">🔄 Polling messages</div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" id="pollOnceBtn">Vérifier maintenant</button>
+            <button class="btn btn-success btn-sm" id="pollStartBtn">Démarrer (5s)</button>
+            <button class="btn btn-danger btn-sm" id="pollStopBtn">Arrêter</button>
+        </div>
+        <div id="pollStatus" style="font-size:12px; color:#64748b; margin-top:.5rem;"></div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: NOTIFICATIONS ═══════════ -->
+<div class="tab-content" id="tab-notifs">
+    <div class="card">
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:.75rem;">
+            <button class="btn btn-ghost btn-sm" id="loadNotifsBtn">Charger toutes</button>
+            <button class="btn btn-ghost btn-sm" id="loadUnreadBtn">Non lues seulement</button>
+            <button class="btn btn-primary btn-sm" id="markAllReadBtn">Tout marquer lues</button>
+            <div id="notifCount" style="margin-left:auto; font-size:12px; color:#64748b;"></div>
+        </div>
+        <div id="notifsDisplay"></div>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: WEBSOCKET ═══════════ -->
+<div class="tab-content" id="tab-websocket">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">⚡ Connexion WebSocket</div>
+            <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.75rem;">
+                <button class="btn btn-success btn-sm" id="wsConnectBtn">Connecter</button>
+                <button class="btn btn-danger btn-sm" id="wsDisconnectBtn">Déconnecter</button>
+                <button class="btn btn-primary btn-sm" id="wsRegisterBtn">S'enregistrer</button>
+            </div>
+            <div class="field"><label>Conversation ID</label><input title="Conversation ID"  id="wsConvId" type="number" placeholder="ID conversation"></div>
+            <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+                <button class="btn btn-ghost btn-sm" id="wsJoinBtn">Rejoindre room</button>
+                <button class="btn btn-ghost btn-sm" id="wsLeaveBtn">Quitter room</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">📤 Envoyer via WebSocket</div>
+            <div class="field"><label>Message</label><input title="Message" id="wsMsgInput" type="text" placeholder="Contenu du message..."></div>
+            <button class="btn btn-primary btn-full btn-sm" id="wsSendMsgBtn">Envoyer message WS</button>
+            <hr style="border-color:#1f2937; margin:.75rem 0">
+            <div class="card-title" style="margin-bottom:.5rem; font-size:11px">Notif match</div>
+            <div class="field"><label>Recipient User ID</label><input title="Recipient User ID" id="wsNotifRecipient" type="number" placeholder="user_id destinataire"></div>
+            <div class="field"><label>Matière</label><input title="Matière" id="wsNotifMatiere" type="text" placeholder="Nom de la matière"></div>
+            <button class="btn btn-warn btn-full btn-sm" id="wsNotifyBtn">Envoyer notify_match</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">📡 Événements reçus</div>
+        <div id="wsEvents" style="font-family:'Courier New', monospace; font-size:12px; background:#070810; border-radius:8px; padding:1rem; height:180px; overflow-y:auto; color:#c084fc;"></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="document.getElementById('wsEvents').innerHTML=''">Effacer</button>
+    </div>
+</div>
+
+<!-- ═══════════ TAB: LOGS ═══════════ -->
+<div class="tab-content" id="tab-logs">
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem;">
+            <div class="card-title" style="margin:0">📋 Console de logs</div>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('log').innerHTML=''">Effacer</button>
+        </div>
+        <div id="log"></div>
+    </div>
+    <div class="card">
+        <div class="card-title">🔬 Requête brute</div>
+        <div class="field"><label>Méthode</label>
+            <select id="rawMethod" style="width:120px">
+                <option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option>
+            </select>
+        </div>
+        <div class="field"><label>Endpoint (relatif à /api)</label><input id="rawEndpoint" type="text" placeholder="/profile/me"></div>
+        <div class="field"><label>Body JSON (POST/PUT)</label><textarea id="rawBody" rows="4" placeholder='{"key": "value"}'></textarea></div>
+        <button class="btn btn-primary btn-sm" id="rawSendBtn">Envoyer</button>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  ÉTAT GLOBAL
+// ═══════════════════════════════════════════════════
+let token = localStorage.getItem('ml_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('ml_user') || 'null');
+let socket = null;
+let pollingInterval = null;
+
+const JOURS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const HOURS = Array.from({length:16}, (_,i) => i+6); // 6h → 21h
+
+// ═══════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════
+function base() { return document.getElementById('apiBase').value.replace(/\/$/, ''); }
+
+function log(msg, type='info', data=null) {
+    const el = document.getElementById('log');
+    const t = new Date().toLocaleTimeString('fr-FR');
+    const cls = type==='ok'?'log-ok':type==='err'?'log-err':type==='ws'?'log-ws':'log-info';
+    let text = `[${t}] ${msg}`;
+    if(data) text += '\n' + JSON.stringify(data, null, 2);
+    const line = document.createElement('div');
+    line.className = cls;
+    line.textContent = text;
+    el.insertBefore(line, el.firstChild);
+}
+
+async function api(endpoint, method='GET', body=null) {
+    const url = base() + endpoint;
+    const headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
+    if(token) headers['Authorization'] = 'Bearer ' + token;
+    const opts = {method, headers};
+    if(body && (method==='POST'||method==='PUT')) opts.body = JSON.stringify(body);
+    try {
+        const r = await fetch(url, opts);
+        const data = await r.json().catch(() => ({}));
+        if(!r.ok) {
+            log(`❌ ${method} ${endpoint} → HTTP ${r.status}`, 'err', data);
+            return null;
         }
+        log(`✅ ${method} ${endpoint}`, 'ok', data);
+        return data;
+    } catch(e) {
+        log(`🔴 Réseau: ${e.message}`, 'err');
+        return null;
+    }
+}
 
-        function currentToken() {
-            return localStorage.getItem('mentorlink_token');
-        }
+function updateStatusBar() {
+    const dot = document.getElementById('authDot');
+    const label = document.getElementById('authLabel');
+    if(token && currentUser) {
+        dot.style.background = '#34d399';
+        label.style.color = '#34d399';
+        label.textContent = currentUser.email || 'Connecté';
+    } else {
+        dot.style.background = '#475569';
+        label.style.color = '#475569';
+        label.textContent = 'Non connecté';
+    }
+    document.getElementById('sessionInfo').innerHTML = token
+        ? `<div style="color:#34d399">✅ Connecté</div><pre style="color:#64748b; font-size:11px; margin-top:.5rem">${JSON.stringify(currentUser, null, 2)}</pre>`
+        : '<span style="color:#64748b">Non connecté</span>';
+}
 
-        function currentUserId() {
-            const user = localStorage.getItem('mentorlink_user');
-            return user ? JSON.parse(user).id : null;
-        }
+// ═══════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+});
 
-        async function safeCall(fn, label) {
-            try {
-                const result = await fn();
-                log(label, result);
-                return result;
-            } catch (err) {
-                log(label + ' — ERREUR', err.message || err);
-                throw err;
-            }
-        }
+// ═══════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════
+document.getElementById('loginBtn').addEventListener('click', async () => {
+    const d = await api('/auth/login', 'POST', {
+        email: document.getElementById('loginEmail').value,
+        password: document.getElementById('loginPassword').value
+    });
+    if(d && d.token) {
+        token = d.token; currentUser = d.user;
+        localStorage.setItem('ml_token', token);
+        localStorage.setItem('ml_user', JSON.stringify(currentUser));
+        updateStatusBar();
+        log('🎉 Connexion réussie !', 'ok');
+    }
+});
 
-        document.getElementById('loginForm').addEventListener('submit', async event => {
-            event.preventDefault();
-            const data = {
-                email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPassword').value
-            };
-            const result = await safeCall(() => API.auth.login(data), 'Connexion');
-            localStorage.setItem('mentorlink_token', result.token);
-            localStorage.setItem('mentorlink_user', JSON.stringify(result.user));
-            log('Connecté en tant que', result.user);
+document.getElementById('regBtn').addEventListener('click', async () => {
+    await api('/auth/register', 'POST', {
+        email: document.getElementById('regEmail').value,
+        password: document.getElementById('regPass').value,
+        nom: document.getElementById('regNom').value,
+        prenom: document.getElementById('regPrenom').value,
+        filiere: document.getElementById('regFiliere').value,
+        niveau: document.getElementById('regNiveau').value
+    });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    token = null; currentUser = null;
+    localStorage.removeItem('ml_token');
+    localStorage.removeItem('ml_user');
+    updateStatusBar();
+    log('👋 Déconnexion', 'info');
+});
+
+// ═══════════════════════════════════════════════════
+//  PROFIL
+// ═══════════════════════════════════════════════════
+async function renderProfile(data) {
+    if(!data) return;
+    document.getElementById('profileDisplay').innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:.5rem; font-size:13px;">
+            <div><span style="color:#64748b">Nom:</span> <strong>${data.nom} ${data.prenom}</strong></div>
+            <div><span style="color:#64748b">Email:</span> ${data.email||'—'}</div>
+            <div><span style="color:#64748b">Filière:</span> <span class="badge badge-blue">${data.filiere}</span></div>
+            <div><span style="color:#64748b">Niveau:</span> <span class="badge badge-blue">${data.niveau}</span></div>
+            <div><span style="color:#64748b">Format:</span> ${data.format_preference||'—'}</div>
+            <div><span style="color:#64748b">Dispo:</span> <span class="badge ${data.disponible?'badge-green':'badge-red'}">${data.disponible?'Oui':'Non'}</span></div>
+            <div style="grid-column:1/-1"><span style="color:#64748b">Bio:</span> ${data.bio||'—'}</div>
+            <div><span style="color:#64748b">Tél:</span> ${data.telephone||'—'}</div>
+            <div><span style="color:#64748b">Profile ID:</span> ${data.id}</div>
+        </div>`;
+    // Pre-fill update form
+    document.getElementById('upNom').value = data.nom || '';
+    document.getElementById('upPrenom').value = data.prenom || '';
+    document.getElementById('upBio').value = data.bio || '';
+    document.getElementById('upTel').value = data.telephone || '';
+    document.getElementById('upDispo').checked = !!data.disponible;
+}
+
+document.getElementById('loadProfileBtn').addEventListener('click', async () => {
+    const d = await api('/profile/me');
+    renderProfile(d);
+});
+
+document.getElementById('updateProfileBtn').addEventListener('click', async () => {
+    const payload = {};
+    const nom = document.getElementById('upNom').value.trim();
+    const prenom = document.getElementById('upPrenom').value.trim();
+    const filiere = document.getElementById('upFiliere').value;
+    const niveau = document.getElementById('upNiveau').value;
+    const format = document.getElementById('upFormat').value;
+    const bio = document.getElementById('upBio').value.trim();
+    const tel = document.getElementById('upTel').value.trim();
+    if(nom) payload.nom = nom;
+    if(prenom) payload.prenom = prenom;
+    if(filiere) payload.filiere = filiere;
+    if(niveau) payload.niveau = niveau;
+    if(format) payload.format_preference = format;
+    if(bio) payload.bio = bio;
+    if(tel) payload.telephone = tel;
+    payload.disponible = document.getElementById('upDispo').checked;
+    await api('/profile/me', 'PUT', payload);
+});
+
+// ═══════════════════════════════════════════════════
+//  COMPÉTENCES
+// ═══════════════════════════════════════════════════
+document.getElementById('addCompBtn').addEventListener('click', async () => {
+    await api('/profile/competences', 'POST', {
+        matiere_id: Number(document.getElementById('compMatiereId').value),
+        niveau: document.getElementById('compNiveau').value,
+        is_available_to_help: document.getElementById('compAvailable').checked
+    });
+    loadComps();
+});
+
+document.getElementById('activateCompBtn').addEventListener('click', async () => {
+    const id = document.getElementById('mgCompMatiereId').value;
+    if(!id) return log('Saisir un ID matière', 'err');
+    await api(`/profile/competences/${id}/activate`, 'PUT');
+    loadComps();
+});
+
+document.getElementById('deactivateCompBtn').addEventListener('click', async () => {
+    const id = document.getElementById('mgCompMatiereId').value;
+    if(!id) return log('Saisir un ID matière', 'err');
+    await api(`/profile/competences/${id}/deactivate`, 'PUT');
+    loadComps();
+});
+
+document.getElementById('removeCompBtn').addEventListener('click', async () => {
+    const id = document.getElementById('mgCompMatiereId').value;
+    if(!id) return log('Saisir un ID matière', 'err');
+    await api('/profile/competences', 'DELETE', {matiere_id: Number(id)});
+    loadComps();
+});
+
+document.getElementById('listMatieresBtn').addEventListener('click', async () => {
+    const d = await api('/matieres');
+    if(!d) return;
+    const el = document.getElementById('matieresListDisplay');
+    el.innerHTML = d.map(m =>
+        `<div style="padding:4px 0; border-bottom:1px solid #1f2937; display:flex; justify-content:space-between;">
+            <span><strong style="color:#818cf8">#${m.id}</strong> ${m.nom}</span>
+            <span style="color:#64748b">${m.filiere||''} ${m.annee||''}</span>
+        </div>`
+    ).join('');
+});
+
+async function loadComps() {
+    const d = await api('/profile/me');
+    if(!d) return;
+    const el = document.getElementById('compsDisplay');
+    if(!d.competences || !d.competences.length) {
+        el.innerHTML = '<span style="color:#64748b; font-size:13px">Aucune compétence enregistrée</span>';
+        return;
+    }
+    el.innerHTML = d.competences.map(c =>
+        `<span class="comp-tag ${c.is_available_to_help?'available':'unavailable'}">
+            <strong>#${c.matiere_id}</strong> ${c.matiere_nom}
+            <span style="color:#64748b; font-size:11px">${c.niveau}</span>
+            <span>${c.is_available_to_help?'✅':'⏸'}</span>
+        </span>`
+    ).join('');
+}
+document.getElementById('loadCompsBtn').addEventListener('click', loadComps);
+
+// ═══════════════════════════════════════════════════
+//  LACUNES
+// ═══════════════════════════════════════════════════
+document.getElementById('addLacBtn').addEventListener('click', async () => {
+    await api('/profile/lacunes', 'POST', {
+        matiere_id: Number(document.getElementById('lacMatiereId').value),
+        priorite: document.getElementById('lacPriorite').value
+    });
+    loadLacs();
+});
+
+document.getElementById('removeLacBtn').addEventListener('click', async () => {
+    await api('/profile/lacunes', 'DELETE', {
+        matiere_id: Number(document.getElementById('rmLacMatiereId').value)
+    });
+    loadLacs();
+});
+
+async function loadLacs() {
+    const d = await api('/profile/me');
+    if(!d) return;
+    const el = document.getElementById('lacsDisplay');
+    if(!d.lacunes || !d.lacunes.length) {
+        el.innerHTML = '<span style="color:#64748b; font-size:13px">Aucune lacune enregistrée</span>';
+        return;
+    }
+    const priorityColor = {Basse:'badge-blue', Moyenne:'badge-yellow', Haute:'badge-red', Urgente:'badge-red'};
+    el.innerHTML = d.lacunes.map(l =>
+        `<div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #1f2937;">
+            <strong style="color:#818cf8">#${l.matiere_id}</strong>
+            <span style="font-size:13px">${l.matiere_nom}</span>
+            <span class="badge ${priorityColor[l.priorite]||'badge-blue'}">${l.priorite}</span>
+        </div>`
+    ).join('');
+}
+document.getElementById('loadLacsBtn').addEventListener('click', loadLacs);
+
+// ═══════════════════════════════════════════════════
+//  DISPONIBILITÉS — Grille
+// ═══════════════════════════════════════════════════
+function buildAvailGrid() {
+    const body = document.getElementById('availBody');
+    body.innerHTML = '';
+    HOURS.forEach(h => {
+        const tr = document.createElement('tr');
+        const hTd = document.createElement('td');
+        hTd.className = 'hour-label';
+        hTd.textContent = `${String(h).padStart(2,'0')}h–${String(h+1).padStart(2,'0')}h`;
+        tr.appendChild(hTd);
+        JOURS.forEach(jour => {
+            const td = document.createElement('td');
+            td.style.padding = '2px 3px';
+            const btn = document.createElement('button');
+            btn.className = 'avail-cell';
+            btn.dataset.jour = jour;
+            btn.dataset.creneau = `${h}h-${h+1}h`;
+            btn.title = `${jour} ${h}h–${h+1}h`;
+            btn.addEventListener('click', () => btn.classList.toggle('selected'));
+            td.appendChild(btn);
+            tr.appendChild(td);
         });
+        body.appendChild(tr);
+    });
+}
 
-        document.getElementById('registerForm').addEventListener('submit', async event => {
-            event.preventDefault();
-            const data = {
-                email: document.getElementById('registerEmail').value,
-                password: document.getElementById('registerPassword').value,
-                nom: document.getElementById('registerNom').value,
-                prenom: document.getElementById('registerPrenom').value,
-                filiere: document.getElementById('registerFiliere').value,
-                niveau: document.getElementById('registerNiveau').value
-            };
-            await safeCall(() => API.auth.register(data), 'Inscription');
+document.getElementById('clearDispoBtn').addEventListener('click', () => {
+    document.querySelectorAll('.avail-cell.selected').forEach(c => c.classList.remove('selected'));
+});
+
+document.getElementById('saveDisposBtn').addEventListener('click', async () => {
+    const selected = [...document.querySelectorAll('.avail-cell.selected')];
+    if(!selected.length) return log('Aucun créneau sélectionné', 'err');
+    log(`Envoi de ${selected.length} créneau(x)...`, 'info');
+    let ok = 0;
+    for(const cell of selected) {
+        const r = await api('/profile/disponibilites', 'POST', {
+            jour: cell.dataset.jour,
+            creneau: cell.dataset.creneau
         });
+        if(r) ok++;
+    }
+    log(`✅ ${ok}/${selected.length} créneaux enregistrés`, 'ok');
+    loadDispos();
+});
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('mentorlink_token');
-            localStorage.removeItem('mentorlink_user');
-            log('Déconnexion effectuée');
-        });
+document.getElementById('addDispoBtn').addEventListener('click', async () => {
+    await api('/profile/disponibilites', 'POST', {
+        jour: document.getElementById('dispoJour').value,
+        creneau: document.getElementById('dispoCreneau').value
+    });
+    loadDispos();
+});
 
-        document.getElementById('refreshStatusBtn').addEventListener('click', () => {
-            log('Token présent', currentToken() ? 'oui' : 'non');
-            log('User actuel', JSON.parse(localStorage.getItem('mentorlink_user') || 'null'));
-        });
+document.getElementById('removeDispoBtn').addEventListener('click', async () => {
+    await api('/profile/disponibilites', 'DELETE', {
+        jour: document.getElementById('rmDispoJour').value,
+        creneau: document.getElementById('rmDispoCreneau').value
+    });
+    loadDispos();
+});
 
-        document.getElementById('btnMe').addEventListener('click', () => safeCall(() => API.profile.getMe(), 'Profil actuel'));
-        document.getElementById('btnMatieres').addEventListener('click', () => safeCall(() => API.matieres.getAll(), 'Matières'));
-        document.getElementById('btnMatches').addEventListener('click', () => safeCall(() => API.matching.getSuggestions(), 'Suggestions de matching'));
-        document.getElementById('btnConvs').addEventListener('click', () => safeCall(() => API.messages.getConversations(), 'Conversations'));
-        document.getElementById('btnNotifs').addEventListener('click', () => safeCall(() => API.notifications.getAll(), 'Notifications'));
+async function loadDispos() {
+    const d = await api('/profile/me');
+    if(!d) return;
+    const el = document.getElementById('disposDisplay');
+    if(!d.disponibilites || !d.disponibilites.length) {
+        el.innerHTML = '<span style="color:#64748b">Aucune disponibilité enregistrée</span>';
+        return;
+    }
+    // Highlight grid
+    document.querySelectorAll('.avail-cell').forEach(c => c.classList.remove('selected'));
+    d.disponibilites.forEach(dispo => {
+        const cell = document.querySelector(`.avail-cell[data-jour="${dispo.jour}"][data-creneau="${dispo.creneau}"]`);
+        if(cell) cell.classList.add('selected');
+    });
+    // Group by day
+    const byDay = {};
+    d.disponibilites.forEach(dispo => {
+        if(!byDay[dispo.jour]) byDay[dispo.jour] = [];
+        byDay[dispo.jour].push(dispo.creneau);
+    });
+    el.innerHTML = Object.entries(byDay).map(([jour, creneaux]) =>
+        `<div style="margin-bottom:.5rem;">
+            <strong style="color:#818cf8">${jour}</strong>:
+            ${creneaux.map(c => `<span class="badge badge-green" style="margin-left:4px">${c}</span>`).join('')}
+        </div>`
+    ).join('');
+}
+document.getElementById('loadDisposBtn').addEventListener('click', loadDispos);
 
-        document.getElementById('socketConnect').addEventListener('click', () => {
-            if (socket && socket.connected) {
-                log('Socket déjà connecté');
-                return;
-            }
-            socket = io('http://127.0.0.1:5000', { transports: ['websocket', 'polling'] });
-            socket.on('connect', () => {
-                socketStatus.connected = true;
-                log('Socket connecté', { id: socket.id });
-            });
-            socket.on('connected', data => log('Event connected', data));
-            socket.on('joined', data => log('Event joined', data));
-            socket.on('new_message', data => log('Event new_message', data));
-            socket.on('match_received', data => log('Event match_received', data));
-            socket.on('registered', data => log('Event registered', data));
-            socket.on('disconnect', () => {
-                socketStatus.connected = false;
-                log('Socket déconnecté');
-            });
-            socket.on('connect_error', err => log('Socket erreur', err.message || err));
-        });
+// ═══════════════════════════════════════════════════
+//  MATCHING
+// ═══════════════════════════════════════════════════
+document.getElementById('getSuggestionsBtn').addEventListener('click', async () => {
+    const filter = document.getElementById('matchMatiereFilter').value;
+    const endpoint = filter ? `/matches/suggestions?matiere_id=${filter}` : '/matches/suggestions';
+    const d = await api(endpoint);
+    if(!d) return;
+    const el = document.getElementById('matchingResults');
+    if(!d.matches || !d.matches.length) {
+        el.innerHTML = '<div style="color:#64748b; font-size:13px">Aucun match trouvé. Vérifiez vos lacunes et disponibilités.</div>';
+        return;
+    }
+    el.innerHTML = d.matches.map(m => {
+        const scoreColor = m.score >= 75 ? '#34d399' : m.score >= 50 ? '#fbbf24' : '#f87171';
+        return `<div class="match-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="score-ring" style="color:${scoreColor}; border:2px solid ${scoreColor}">${Math.round(m.score)}%</div>
+                <div>
+                    <strong>${m.prenom} ${m.nom}</strong>
+                    <div style="font-size:12px; color:#64748b">${m.filiere} · ${m.niveau}</div>
+                </div>
+                <div style="margin-left:auto; display:flex; gap:.5rem;">
+                    <button class="btn btn-success btn-sm" onclick="sendMatchRequest(${m.student_id}, ${m.matched_subjects&&m.matched_subjects[0]?m.matched_subjects[0].matiere_id:0}, ${m.score})">Demander</button>
+                </div>
+            </div>
+            <div style="margin-top:.5rem; font-size:12px; color:#64748b">
+                ${m.explication && m.explication.raisons ? m.explication.raisons.join(' • ') : ''}
+            </div>
+            ${m.score_detail ? `<div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem;">
+                ${Object.entries(m.score_detail).map(([k,v]) => `<span class="badge badge-blue">${k}: ${v}</span>`).join('')}
+            </div>` : ''}
+        </div>`;
+    }).join('');
+});
 
-        document.getElementById('socketDisconnect').addEventListener('click', () => {
-            if (socket) {
-                socket.disconnect();
-                log('Socket déconnecté manuellement');
-            }
-        });
+async function sendMatchRequest(studentId, matiereId, score) {
+    document.getElementById('reqStudentId').value = studentId;
+    document.getElementById('reqMatiereId').value = matiereId;
+    document.getElementById('reqScore').value = Math.round(score);
+    await api(`/matches/${studentId}/request`, 'POST', {
+        matiere_id: Number(matiereId), score: Number(score)
+    });
+}
 
-        document.getElementById('socketRegister').addEventListener('click', () => {
-            const userId = currentUserId();
-            if (!socket || !socket.connected) {
-                log('Connecte d’abord le socket');
-                return;
-            }
-            socket.emit('register', { user_id: userId });
-            log('Envoi register', { user_id: userId });
-        });
+document.getElementById('sendMatchReqBtn').addEventListener('click', async () => {
+    await api(`/matches/${document.getElementById('reqStudentId').value}/request`, 'POST', {
+        matiere_id: Number(document.getElementById('reqMatiereId').value),
+        score: Number(document.getElementById('reqScore').value)
+    });
+});
 
-        document.getElementById('socketJoin').addEventListener('click', () => {
-            const convId = parseInt(document.getElementById('pollConvId').value, 10);
-            if (!socket || !socket.connected) return log('Connecte d’abord le socket');
-            socket.emit('join', { conversation_id: convId });
-            log('Envoi join', { conversation_id: convId });
-        });
+document.getElementById('loadReceivedBtn').addEventListener('click', async () => {
+    const d = await api('/matches/received');
+    if(!d) return;
+    const el = document.getElementById('receivedMatchesDisplay');
+    if(!d.length) { el.innerHTML = '<span style="color:#64748b; font-size:13px">Aucune demande reçue</span>'; return; }
+    el.innerHTML = d.map(m =>
+        `<div class="match-card" style="margin-bottom:.5rem;">
+            <div style="font-size:13px"><strong>${m.demandeur?.prenom} ${m.demandeur?.nom}</strong> (user #${m.demandeur?.user_id})</div>
+            <div style="font-size:12px; color:#64748b">Matière #${m.matiere_id} · Score ${m.score}%</div>
+            <div style="display:flex; gap:.5rem; margin-top:.5rem;">
+                <button class="btn btn-success btn-sm" onclick="acceptMatch(${m.matching_id})">✅ Accepter</button>
+                <button class="btn btn-danger btn-sm" onclick="rejectMatch(${m.matching_id})">❌ Refuser</button>
+            </div>
+        </div>`
+    ).join('');
+});
 
-        document.getElementById('socketSend').addEventListener('click', () => {
-            const convId = parseInt(document.getElementById('pollConvId').value, 10);
-            if (!socket || !socket.connected) return log('Connecte d’abord le socket');
-            const senderId = currentUserId();
-            socket.emit('send_message', { conversation_id: convId, sender_id: senderId, contenu: `Message de test ${new Date().toLocaleTimeString()}` });
-            log('Envoi send_message', { conversation_id: convId, sender_id: senderId });
-        });
+document.getElementById('loadSentBtn').addEventListener('click', async () => {
+    const d = await api('/matches/sent');
+    if(!d) return;
+    const el = document.getElementById('sentMatchesDisplay');
+    if(!d.length) { el.innerHTML = '<span style="color:#64748b; font-size:13px">Aucune demande envoyée</span>'; return; }
+    const statusBadge = {pending:'badge-yellow', accepted:'badge-green', rejected:'badge-red'};
+    el.innerHTML = d.map(m =>
+        `<div style="padding:6px 0; border-bottom:1px solid #1f2937; font-size:13px;">
+            <strong>${m.candidat?.prenom} ${m.candidat?.nom}</strong>
+            <span class="badge ${statusBadge[m.status]||'badge-blue'}" style="margin-left:6px">${m.status}</span>
+            <div style="font-size:11px; color:#64748b">Matière #${m.matiere_id} · Score ${m.score}%</div>
+        </div>`
+    ).join('');
+});
 
-        document.getElementById('socketNotify').addEventListener('click', () => {
-            const userId = currentUserId();
-            if (!socket || !socket.connected) return log('Connecte d’abord le socket');
-            socket.emit('notify_match', { recipient_id: userId, student_nom: 'Testeur', matiere: 'Algorithmique' });
-            log('Envoi notify_match', { recipient_id: userId });
-        });
+async function acceptMatch(id) { await api(`/matches/${id}/accept`, 'POST'); }
+async function rejectMatch(id) { await api(`/matches/${id}/reject`, 'POST'); }
 
-        async function pollingCheck() {
-            const token = currentToken();
-            if (!token) return log('Token requis pour polling');
-            const convId = parseInt(document.getElementById('pollConvId').value, 10);
-            if (!convId) return log('Renseigne un conversation_id pour polling');
-            const response = await fetch(`http://127.0.0.1:5000/api/polling/messages?conversation_id=${convId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await response.json();
-            log('Polling message', data);
-        }
+// ═══════════════════════════════════════════════════
+//  MESSAGES
+// ═══════════════════════════════════════════════════
+document.getElementById('loadConvsBtn').addEventListener('click', async () => {
+    const d = await api('/conversations');
+    if(!d) return;
+    const el = document.getElementById('convsDisplay');
+    if(!d.length) { el.innerHTML = '<span style="color:#64748b">Aucune conversation</span>'; return; }
+    el.innerHTML = d.map(c =>
+        `<div style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #1f2937; cursor:pointer;"
+              onclick="document.getElementById('activeConvId').value=${c.conversation_id}">
+            <span class="badge badge-blue">#${c.conversation_id}</span>
+            <span>Avec <strong>${c.avec?.prenom} ${c.avec?.nom}</strong></span>
+            <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="openConv(${c.conversation_id})">Ouvrir</button>
+        </div>`
+    ).join('');
+});
 
-        document.getElementById('pollCheck').addEventListener('click', pollingCheck);
+document.getElementById('createConvBtn').addEventListener('click', async () => {
+    const uid = Number(document.getElementById('newConvUserId').value);
+    const d = await api('/conversations', 'POST', {user_id: uid});
+    if(d && d.conversation_id) {
+        document.getElementById('activeConvId').value = d.conversation_id;
+        openConv(d.conversation_id);
+    }
+});
 
-        document.getElementById('pollStart').addEventListener('click', () => {
-            if (pollingId) return log('Polling déjà actif');
-            pollingId = setInterval(pollingCheck, 5000);
-            log('Polling démarré (toutes les 5s)');
-        });
+async function openConv(convId) {
+    document.getElementById('activeConvId').value = convId;
+    const msgs = await api(`/conversations/${convId}/messages`);
+    const el = document.getElementById('msgList');
+    el.innerHTML = '';
+    if(!msgs || !msgs.length) { el.innerHTML = '<div style="color:#64748b; font-size:13px; text-align:center; padding:1rem">Aucun message</div>'; return; }
+    const myId = currentUser?.id;
+    msgs.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'msg-bubble ' + (m.sender_id === myId ? 'msg-me' : 'msg-other');
+        div.innerHTML = `<div>${m.contenu}</div><div style="font-size:10px; color:#94a3b8; margin-top:2px">${new Date(m.date_envoi).toLocaleTimeString('fr-FR')}</div>`;
+        el.appendChild(div);
+    });
+    el.scrollTop = el.scrollHeight;
+}
 
-        document.getElementById('pollStop').addEventListener('click', () => {
-            clearInterval(pollingId);
-            pollingId = null;
-            log('Polling arrêté');
-        });
-    </script>
+document.getElementById('loadMsgsBtn').addEventListener('click', () => {
+    const id = document.getElementById('activeConvId').value;
+    if(id) openConv(Number(id));
+});
+
+document.getElementById('sendMsgBtn').addEventListener('click', async () => {
+    const convId = document.getElementById('activeConvId').value;
+    const contenu = document.getElementById('msgInput').value.trim();
+    if(!convId || !contenu) return log('ConvID et message requis', 'err');
+    await api(`/conversations/${convId}/messages`, 'POST', {contenu});
+    document.getElementById('msgInput').value = '';
+    openConv(Number(convId));
+});
+
+document.getElementById('msgInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('sendMsgBtn').click();
+});
+
+// Polling
+async function doPoll() {
+    const d = await api('/polling/messages');
+    if(d) document.getElementById('pollStatus').textContent =
+        `${new Date().toLocaleTimeString('fr-FR')} — ${d.nouveaux_messages} nouveau(x) message(s)`;
+}
+document.getElementById('pollOnceBtn').addEventListener('click', doPoll);
+document.getElementById('pollStartBtn').addEventListener('click', () => {
+    if(pollingInterval) return;
+    pollingInterval = setInterval(doPoll, 5000);
+    document.getElementById('pollStatus').textContent = 'Polling actif (5s)...';
+});
+document.getElementById('pollStopBtn').addEventListener('click', () => {
+    clearInterval(pollingInterval); pollingInterval = null;
+    document.getElementById('pollStatus').textContent = 'Polling arrêté';
+});
+
+// ═══════════════════════════════════════════════════
+//  NOTIFICATIONS
+// ═══════════════════════════════════════════════════
+async function loadNotifs(unreadOnly=false) {
+    const ep = unreadOnly ? '/notifications?unread_only=true' : '/notifications';
+    const d = await api(ep);
+    if(!d) return;
+    document.getElementById('notifCount').textContent =
+        `${d.total} notification(s) · ${d.unread_count} non lue(s)`;
+    const el = document.getElementById('notifsDisplay');
+    if(!d.notifications.length) { el.innerHTML = '<div style="color:#64748b; font-size:13px">Aucune notification</div>'; return; }
+    el.innerHTML = d.notifications.map(n =>
+        `<div class="notif-item ${!n.is_read?'unread':''}">
+            <div>
+                <div style="font-size:13px; font-weight:600">${n.titre}</div>
+                <div style="font-size:12px; color:#94a3b8; margin-top:2px">${n.contenu}</div>
+                <div style="font-size:11px; color:#475569; margin-top:4px">
+                    <span class="badge badge-blue">${n.type}</span>
+                    ${new Date(n.created_at).toLocaleString('fr-FR')}
+                    ${n.is_read?'<span class="badge badge-green">Lue</span>':'<span class="badge badge-yellow">Non lue</span>'}
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                ${!n.is_read?`<button class="btn btn-success btn-sm" onclick="markNotifRead(${n.id})">✓ Lu</button>`:''}
+                <button class="btn btn-danger btn-sm" onclick="deleteNotif(${n.id})">🗑</button>
+            </div>
+        </div>`
+    ).join('');
+}
+
+async function markNotifRead(id) { await api(`/notifications/${id}/read`, 'PUT'); loadNotifs(); }
+async function deleteNotif(id) { await api(`/notifications/${id}`, 'DELETE'); loadNotifs(); }
+
+document.getElementById('loadNotifsBtn').addEventListener('click', () => loadNotifs(false));
+document.getElementById('loadUnreadBtn').addEventListener('click', () => loadNotifs(true));
+document.getElementById('markAllReadBtn').addEventListener('click', async () => {
+    await api('/notifications/read-all', 'PUT');
+    loadNotifs();
+});
+
+// ═══════════════════════════════════════════════════
+//  WEBSOCKET
+// ═══════════════════════════════════════════════════
+function wsLog(msg) {
+    const el = document.getElementById('wsEvents');
+    const t = new Date().toLocaleTimeString('fr-FR');
+    el.innerHTML = `[${t}] ${msg}\n` + el.innerHTML;
+    log(msg, 'ws');
+}
+
+function updateWsStatus(on) {
+    const dot = document.getElementById('wsDot');
+    const label = document.getElementById('wsLabel');
+    dot.style.background = on ? '#c084fc' : '#475569';
+    label.style.color = on ? '#c084fc' : '#475569';
+    label.textContent = on ? 'WebSocket actif' : 'WebSocket off';
+}
+
+document.getElementById('wsConnectBtn').addEventListener('click', () => {
+    if(socket && socket.connected) return wsLog('Déjà connecté');
+    const base_url = base().replace('/api', '');
+    socket = io(base_url, {transports: ['websocket', 'polling']});
+    socket.on('connect', () => { wsLog('✅ Connecté · ' + socket.id); updateWsStatus(true); });
+    socket.on('connected', d => wsLog('Event connected: ' + JSON.stringify(d)));
+    socket.on('joined', d => wsLog('Event joined: ' + JSON.stringify(d)));
+    socket.on('new_message', d => wsLog('📨 new_message: ' + JSON.stringify(d)));
+    socket.on('match_received', d => wsLog('🤝 match_received: ' + JSON.stringify(d)));
+    socket.on('registered', d => wsLog('✅ registered: ' + JSON.stringify(d)));
+    socket.on('disconnect', () => { wsLog('❌ Déconnecté'); updateWsStatus(false); });
+    socket.on('connect_error', e => wsLog('🔴 Erreur: ' + e.message));
+});
+
+document.getElementById('wsDisconnectBtn').addEventListener('click', () => {
+    if(socket) { socket.disconnect(); socket = null; }
+});
+
+document.getElementById('wsRegisterBtn').addEventListener('click', () => {
+    if(!socket||!socket.connected) return wsLog('Non connecté');
+    socket.emit('register', {user_id: currentUser?.id});
+    wsLog('→ register user_id=' + currentUser?.id);
+});
+
+document.getElementById('wsJoinBtn').addEventListener('click', () => {
+    const id = document.getElementById('wsConvId').value;
+    if(!socket||!socket.connected) return wsLog('Non connecté');
+    socket.emit('join', {conversation_id: Number(id)});
+    wsLog('→ join conv=' + id);
+});
+
+document.getElementById('wsLeaveBtn').addEventListener('click', () => {
+    const id = document.getElementById('wsConvId').value;
+    if(!socket||!socket.connected) return wsLog('Non connecté');
+    socket.emit('leave', {conversation_id: Number(id)});
+    wsLog('→ leave conv=' + id);
+});
+
+document.getElementById('wsSendMsgBtn').addEventListener('click', () => {
+    const id = document.getElementById('wsConvId').value;
+    const msg = document.getElementById('wsMsgInput').value;
+    if(!socket||!socket.connected) return wsLog('Non connecté');
+    socket.emit('send_message', {
+        conversation_id: Number(id),
+        sender_id: currentUser?.id,
+        contenu: msg
+    });
+    wsLog('→ send_message: ' + msg);
+});
+
+document.getElementById('wsNotifyBtn').addEventListener('click', () => {
+    if(!socket||!socket.connected) return wsLog('Non connecté');
+    socket.emit('notify_match', {
+        recipient_id: Number(document.getElementById('wsNotifRecipient').value),
+        student_nom: currentUser ? `${currentUser.nom||''} ${currentUser.email||''}` : 'TestUser',
+        matiere: document.getElementById('wsNotifMatiere').value
+    });
+    wsLog('→ notify_match');
+});
+
+// ═══════════════════════════════════════════════════
+//  REQUÊTE BRUTE
+// ═══════════════════════════════════════════════════
+document.getElementById('rawSendBtn').addEventListener('click', async () => {
+    const method = document.getElementById('rawMethod').value;
+    const endpoint = document.getElementById('rawEndpoint').value;
+    let body = null;
+    try { body = JSON.parse(document.getElementById('rawBody').value || 'null'); } catch(e) {}
+    await api(endpoint, method, body);
+});
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+buildAvailGrid();
+updateStatusBar();
+if(token) log('Session restaurée depuis localStorage', 'ok');
+
+// Expose globals for inline onclick
+window.sendMatchRequest = sendMatchRequest;
+window.acceptMatch = acceptMatch;
+window.rejectMatch = rejectMatch;
+window.markNotifRead = markNotifRead;
+window.deleteNotif = deleteNotif;
+window.openConv = openConv;
+</script>
 </body>
 </html>
