@@ -72,75 +72,48 @@
         </div>
     </div>
 
-    <script>
-        // ========================================================
-        // CONFIGURATION DU BACKEND (À adapter avec ton coéquipier)
-        // ========================================================
-        const LOGIN_API_URL = "http://localhost:5000/api/login";
+    <script src="../js/api.js"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
+        const errorBanner = document.getElementById('errorBanner');
+        const submitBtn   = document.getElementById('submitBtn');
 
-            const errorBanner = document.getElementById('errorBanner');
-            const submitBtn = document.getElementById('submitBtn');
+        errorBanner.classList.add('hidden');
+        errorBanner.textContent = "";
 
-            // Réinitialisation de l'affichage de l'erreur
-            errorBanner.classList.add('hidden');
-            errorBanner.textContent = "";
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const role     = document.getElementById('role').value;
 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Vérification...";
 
-            const credentials = { 
-                email: email, 
-                password: password,
-                role: role
-            };
+            // ✅ On utilise api.js au lieu d'un fetch manuel
+            const result = await API.auth.login({ email, password, role });
 
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Vérification...";
+            // Sauvegarde token + user (clés cohérentes avec api.js)
+            localStorage.setItem('mentorlink_token', result.token);
+            localStorage.setItem('mentorlink_user', JSON.stringify(result.user));
 
-                const response = await fetch(LOGIN_API_URL, {
-                    method: 'POST', 
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(credentials)
-                });
-
-                const result = await response.json(); 
-
-                if (response.ok) {
-                    // 1. Stockage du Token JWT indispensable pour sécuriser la session
-                    if (result.token) {
-                        localStorage.setItem('token', result.token);
-                    }
-                    
-                    // 2. Redirection intelligente d'aiguillage
-                    // Si le profil de l'étudiant n'est pas encore complété (isOnboarded = false)
-                    if (result.user && result.user.isOnboarded === false) {
-                        window.location.href = "onboarding.html";
-                    } else {
-                        // Si le profil est déjà totalement paramétré
-                        window.location.href = "dashboard.html";
-                    }
-                } else {
-                    // Gestion propre de l'affichage de l'erreur sans bloquer le navigateur
-                    errorBanner.textContent = result.message || "Identifiants ou rôle incorrects.";
-                    errorBanner.classList.remove('hidden');
-                }
-
-            } catch (error) {
-                console.error("Erreur réseau :", error);
-                errorBanner.textContent = "Impossible de joindre le serveur. Assurez-vous que le backend est lancé.";
-                errorBanner.classList.remove('hidden');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = "<span>Se connecter</span>";
+            // Redirection selon onboarding
+            if (result.user?.isOnboarded === false) {
+                window.location.href = "onboarding.html";
+            } else {
+                window.location.href = "dashboard.html";
             }
-        });
-    </script>
+
+        } catch (err) {
+            errorBanner.textContent = err.message || "Identifiants ou rôle incorrects.";
+            errorBanner.classList.remove('hidden');
+
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "<span>Se connecter</span>";
+        }
+    });
+</script>
 </body>
 </html>
