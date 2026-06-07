@@ -97,13 +97,13 @@ CREATE TABLE profil_lacunes (
 -- 6. PUBLICATIONS & SYSTÈME D'ANNONCES PONCTUELLES
 -- ----------------------------------------------------------------------------
 -- Offres explicites formulées par les Mentors
-CREATE TABLE offers (
-    id SERIAL PRIMARY KEY,
-    profile_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-    matiere_id INT NOT NULL REFERENCES matieres(id) ON DELETE CASCADE,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE offers (
+--     id SERIAL PRIMARY KEY,
+--     profile_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+--     matiere_id INT NOT NULL REFERENCES matieres(id) ON DELETE CASCADE,
+--     description TEXT,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+--  );
 
 -- Demandes explicites formulées par les Mentorés
 CREATE TABLE demands (
