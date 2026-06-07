@@ -1,52 +1,232 @@
-/* Styles pour la page des résultats de matching */
-body {
-    background-color: #f4f6f9;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
-/* Carte de profil de mentor */
-.mentor-card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    background-color: #ffffff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.mentor-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0b0d14;
+      color: #e8e9f0;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
 
-/* Badge du score de matching (Algorithme) */
-.match-score-badge {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 0.6rem 1rem;
-    border-radius: 50px;
-    border: 2px solid #a5d6a7;
-    display: inline-block;
-}
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 240px;
+      min-width: 240px;
+      background: #13151e;
+      border-right: 0.5px solid rgba(255,255,255,0.07);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 0 20px;
+    }
 
-/* Avatar dans les cartes */
-.mentor-avatar {
-    width: 75px;
-    height: 75px;
-    object-fit: cover;
-    border: 3px solid #dee2e6;
-}
+    .logo {
+      padding: 0 22px 32px;
+      font-family: 'Sora', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .logo .brand { color: #2bd5a4; }
+    .logo .name  { color: #e8e9f0; }
 
-/* Badges de compétences */
-.skill-tag {
-    background-color: #f1f3f5;
-    color: #495057;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 0.35rem 0.65rem;
-    border-radius: 6px;
-    margin-right: 0.3rem;
-    margin-bottom: 0.3rem;
-    display: inline-block;
-}
+   .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 400;
+    transition: all 0.15s;
+    user-select: none;
+    margin-bottom: 2px;
+  }
+  .nav-item svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .nav-item.active {
+    background: rgba(124,110,244,0.15);
+    color: var(--accent-light);
+    font-weight: 500;
+  }
+  .nav-item.active svg { stroke: var(--accent-light); }
+    .notification-btn {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(232,233,240,0.45);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      position: relative;
+      padding: 32px;
+    }
+
+    /* ── CARD ── */
+    .mentor-card {
+      width: 360px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(155deg, #1e2340 0%, #1a2e28 100%);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      position: relative;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .mentor-card.swipe-left {
+      transform: translateX(-60px) rotate(-6deg);
+      opacity: 0;
+    }
+    .mentor-card.swipe-right {
+      transform: translateX(60px) rotate(6deg);
+      opacity: 0;
+    }
+    .mentor-card.pop-in {
+      animation: popIn 0.3s ease forwards;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.93) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .card-hero {
+      padding: 36px 26px 22px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .match-badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: #2bd5a4;
+      color: #04342c;
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: 'Sora', sans-serif;
+      padding: 5px 13px;
+      border-radius: 20px;
+      letter-spacing: 0.01em;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(43,213,164,0.15);
+      border: 1.5px solid rgba(43,213,164,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #2bd5a4;
+      margin-bottom: 14px;
+    }
+
+    .mentor-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: #f0f1f8;
+      margin-bottom: 4px;
+    }
+
+    .mentor-role {
+      font-size: 13.5px;
+      color: rgba(232,233,240,0.5);
+    }
+
+    .card-body {
+      padding: 18px 26px 28px;
+      border-top: 0.5px solid rgba(255,255,255,0.07);
+    }
+
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 11px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tag::before { content: '●'; font-size: 7px; }
+    .tag.algo  { background: rgba(147,115,233,0.15); color: #b89ff5; }
+    .tag.gl    { background: rgba(43,213,164,0.12);  color: #2bd5a4; }
+    .tag.time  { background: rgba(239,159,39,0.15);  color: #f0b84a; }
+    .tag.info  { background: rgba(56,138,221,0.15);  color: #78b4f0; }
+
+    .about-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(232,233,240,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 9px;
+    }
+
+    .about-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(232,233,240,0.72);
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .btn-action {
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      width: 54px;
+      height: 54px;
+      background: #1a1d2b;
+      border: 0.5px solid rgba(255,255,255,0.1);
+      color: rgba(232,233,240,0.5);
+      font-size: 0; /* icon only */
+    }
+    .btn-action i { font-size: 21px; }
+    .btn-action:hover { transform: scale(1.09); }
+    .btn-action:active { transform: scale(0.95); }
+
+    .btn-action.like {
+      width: 64px;
+      height: 64px;
+      background: #2bd5a4;
+      border-color: transparent;
+      color: #04342c;
+    }
+    .btn-action.like i { color: #04342c; font-size: 24px; }
+  
