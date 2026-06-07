@@ -10,12 +10,12 @@ if not env_file.exists():
 load_dotenv(env_file)
 
 from app import create_app
-from app.database import db
 from app.sockets.chat import socketio
 
 app = create_app()
 
-
 if __name__ == '__main__':
-    print(f"Lancement du serveur Flask en mode {os.getenv('FLASK_ENV', 'development')}...")
-    socketio.run(app, debug=os.getenv('FLASK_ENV') == 'development', host='0.0.0.0')
+    port = int(os.getenv('PORT', 5000))
+    debug = os.getenv('FLASK_ENV') == 'development'
+    print(f"Lancement du serveur Flask en mode {os.getenv('FLASK_ENV', 'development')} sur le port {port}...")
+    socketio.run(app, debug=debug, host='0.0.0.0', port=port)
