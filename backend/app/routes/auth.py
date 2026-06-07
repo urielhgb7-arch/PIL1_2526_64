@@ -148,7 +148,15 @@ def reset_password():
 
     reset_token = PasswordResetToken.query.filter_by(token=token, used=False).first()
     now = datetime.now(timezone.utc)
-    if not reset_token or reset_token.expires_at < now:
+
+    if not reset_token:
+        return jsonify({"message": "Token invalide ou expiré"}), 400
+
+    expires_at = reset_token.expires_at
+    if expires_at is not None and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+    if expires_at < now:
         return jsonify({"message": "Token invalide ou expiré"}), 400
 
     user = db.session.get(User, reset_token.user_id)
