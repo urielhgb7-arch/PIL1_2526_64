@@ -56,7 +56,8 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
 const API = {
     auth: {
         register: (userData) => fetchAPI('/auth/register', 'POST', userData),
-        login: (credentials) => fetchAPI('/auth/login', 'POST', credentials)
+        login: (credentials) => fetchAPI('/auth/login', 'POST', credentials),
+        changePassword: (data) => fetchAPI('/auth/change-password', 'PUT', data)
     },
 
     profile: {
