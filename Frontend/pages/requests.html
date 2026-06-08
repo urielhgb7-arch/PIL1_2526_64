@@ -79,13 +79,19 @@
     <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold">Demandes</h1>
-        <button onclick="openNewDemandModal()"
-          class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          Nouvelle demande
-        </button>
+        <div class="flex items-center gap-3">
+          <a href="notifications.html" class="site-bell" aria-label="Notifications">
+            <span class="ti ti-bell"></span>
+            <span class="dot" id="siteBellDot"></span>
+          </a>
+          <button onclick="openNewDemandModal()"
+            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Nouvelle demande
+          </button>
+        </div>
       </div>
     </div>
 
@@ -578,5 +584,7 @@
     loadReceived();
     loadSent();
   </script>
+  <script src="../js/matieres-loader.js"></script>
+  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>
