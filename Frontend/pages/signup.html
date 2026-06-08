@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+  <div class="min-h-screen flex">
+    <!-- Left side - Illustration -->
+    <div class="hidden lg:flex lg:w-1/2 bg-card border-r border-border items-center justify-center p-12 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-success/5"></div>
+
+      <svg viewBox="0 0 600 600" class="w-full max-w-lg relative z-10">
+        <defs>
+          <linearGradient id="signupLineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7C6FF7" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stop-color="#7C6FF7" stop-opacity="0.8">
+              <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stop-color="#7C6FF7" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+          <linearGradient id="signupLineGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2DD4A0" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stop-color="#2DD4A0" stop-opacity="0.8">
+              <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stop-color="#2DD4A0" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+        </defs>
+        <line x1="150" y1="150" x2="300" y2="300" stroke="url(#signupLineGrad1)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite" />
+        </line>
+        <line x1="300" y1="300" x2="450" y2="200" stroke="url(#signupLineGrad1)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3.5s" repeatCount="indefinite" />
+        </line>
+        <line x1="300" y1="300" x2="400" y2="450" stroke="url(#signupLineGrad2)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="4s" repeatCount="indefinite" />
+        </line>
+        <line x1="150" y1="400" x2="300" y2="300" stroke="url(#signupLineGrad1)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3.2s" repeatCount="indefinite" />
+        </line>
+        <g class="animate-float-1">
+          <circle cx="150" cy="150" r="35" fill="#1F2433" stroke="#7C6FF7" stroke-width="3">
+            <animate attributeName="r" values="35;38;35" dur="4s" repeatCount="indefinite" />
+          </circle>
+          <text x="150" y="158" text-anchor="middle" fill="#fff" font-size="16">GL</text>
+        </g>
+        <g class="animate-float-2">
+          <circle cx="450" cy="200" r="35" fill="#1F2433" stroke="#2DD4A0" stroke-width="3">
+            <animate attributeName="r" values="35;39;35" dur="3.5s" repeatCount="indefinite" />
+          </circle>
+          <text x="450" y="208" text-anchor="middle" fill="#fff" font-size="16">RSI</text>
+        </g>
+        <g class="animate-float-3">
+          <circle cx="150" cy="400" r="35" fill="#1F2433" stroke="#7C6FF7" stroke-width="3">
+            <animate attributeName="r" values="35;37;35" dur="4.2s" repeatCount="indefinite" />
+          </circle>
+          <text x="150" y="408" text-anchor="middle" fill="#fff" font-size="16">M1</text>
+        </g>
+        <g class="animate-float-4">
+          <circle cx="400" cy="450" r="35" fill="#1F2433" stroke="#2DD4A0" stroke-width="3">
+            <animate attributeName="r" values="35;38;35" dur="3.8s" repeatCount="indefinite" />
+          </circle>
+          <text x="400" y="458" text-anchor="middle" fill="#fff" font-size="16">L3</text>
+        </g>
+        <g class="animate-pulse-slow">
+          <circle cx="300" cy="300" r="45" fill="#1F2433" stroke="#7C6FF7" stroke-width="4">
+            <animate attributeName="r" values="45;51;45" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <text x="300" y="310" text-anchor="middle" fill="#7C6FF7" font-size="20" font-weight="600">JOIN</text>
+        </g>
+      </svg>
+
+      <div class="absolute top-8 left-8">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="text-sm font-bold text-primary">ML</span>
+          </div>
+          <h1 class="text-xl font-bold">
+            <span class="text-primary">IFRI</span> MentorLink
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side - Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+      <div class="w-full max-w-md">
+        <div class="bg-card rounded-xl p-8 border border-border">
+          <div class="mb-8">
+            <h1 class="text-2xl font-semibold mb-2">Créer un compte</h1>
+            <p class="text-muted">Rejoignez la communauté IFRI MentorLink</p>
+          </div>
+
+          <!-- Error message -->
+          <div id="error-message" class="hidden mb-6 p-4 bg-destructive/10 border border-destructive rounded-lg">
+            <p class="text-destructive text-sm" id="error-text"></p>
+          </div>
+
+          <!-- Success message -->
+          <div id="success-message" class="hidden mb-6 p-4 bg-success/10 border border-success rounded-lg">
+            <p class="text-success text-sm" id="success-text"></p>
+          </div>
+
+          <form id="signup-form" class="space-y-5">
+            <div>
+              <label for="email" class="block text-sm font-medium mb-2">Email académique</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="votre.email@ifri.uac.bj"
+                class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
+              <div class="relative">
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-12"
+                  required
+                />
+                <button title="Afficher le mot de passe" type="button" onclick="togglePassword('password')"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-white transition-colors">
+                  <svg id="password-icon-hide" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <svg id="password-icon-show" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label for="confirm-password" class="block text-sm font-medium mb-2">Confirmer le mot de passe</label>
+              <div class="relative">
+                <input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-12"
+                  required
+                />
+                <button title="Afficher le mot de passe" type="button" onclick="togglePassword('confirm-password')"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-white transition-colors">
+                  <svg id="confirm-password-icon-hide" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <svg id="confirm-password-icon-show" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Acceptation de l'aide (cochée par défaut) -->
+            <div class="flex items-start gap-3 p-4 bg-success/5 border border-success/20 rounded-lg">
+              <div class="relative flex-shrink-0 mt-0.5">
+                <input
+                  type="checkbox"
+                  id="accept-help"
+                  checked
+                  title="Accepter les conditions d'utilisation"
+                  class="w-4 h-4 rounded border-border bg-input text-success focus:ring-success focus:ring-offset-0 accent-success"
+                />
+              </div>
+              <label for="accept-help" class="text-sm cursor-pointer">
+                <span class="font-medium text-white">J'accepte de recevoir et d'offrir de l'aide</span>
+                <span class="block text-muted mt-0.5">
+                  En cochant cette case, vous acceptez de participer activement à la communauté de mentorat de l'IFRI — tant en tant que mentor qu'en tant qu'apprenant.
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+            >
+              Créer mon compte
+            </button>
+
+            <div class="text-center pt-4 border-t border-border">
+              <p class="text-sm text-muted">
+                Vous avez déjà un compte?
+                <a href="signin.html" class="text-primary font-medium hover:underline">Se connecter</a>
+              </p>
+            </div>
+
+            <div class="text-center">
+              <p class="text-sm text-muted">
+                <a href="index.html" class="text-primary font-medium hover:underline">← Retour à l'accueil</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts : api.js AVANT script.js -->
+  <script src="../js/api.js"></script>
+  <script src="script.js"></script>
+  <script>
+    const form        = document.getElementById('signup-form');
+    const emailInput  = document.getElementById('email');
+    const pwdInput    = document.getElementById('password');
+    const cpwdInput   = document.getElementById('confirm-password');
+    const acceptHelp  = document.getElementById('accept-help');
+    const errorMsg    = document.getElementById('error-message');
+    const errorTxt    = document.getElementById('error-text');
+    const successMsg  = document.getElementById('success-message');
+    const successTxt  = document.getElementById('success-text');
+    const submitBtn   = document.getElementById('submit-btn');
+
+    function showError(msg)   { errorTxt.textContent = msg;   errorMsg.classList.remove('hidden');   successMsg.classList.add('hidden'); }
+    function showSuccess(msg) { successTxt.textContent = msg; successMsg.classList.remove('hidden'); errorMsg.classList.add('hidden'); }
+    function hideMessages()   { errorMsg.classList.add('hidden'); successMsg.classList.add('hidden'); }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitBtn.innerHTML = loading
+        ? `<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Création...`
+        : 'Créer mon compte';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessages();
+
+      const email           = emailInput.value.trim();
+      const password        = pwdInput.value;
+      const confirmPassword = cpwdInput.value;
+      const accepteAide     = acceptHelp.checked;
+
+      // Validations front
+      if (!email.endsWith('@ifri.uac.bj') && !email.endsWith('@gmail.com')) {
+        showError('Email invalide. Utilisez un email @ifri.uac.bj ou @gmail.com');
+        return;
+      }
+      if (password !== confirmPassword) {
+        showError('Les mots de passe ne correspondent pas');
+        return;
+      }
+      if (password.length < 8) {
+        showError('Le mot de passe doit contenir au moins 8 caractères');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // POST /api/auth/register
+        const data = await API.auth.register({
+          email,
+          password,
+          accepte_aide: accepteAide   // booléen envoyé au backend
+        });
+
+        // Persistance locale (compatible avec script.js)
+        if (data.token) {
+          localStorage.setItem('mentorlink_token', data.token);
+        }
+        if (data.user) {
+          localStorage.setItem('mentorlink_user', JSON.stringify(data.user));
+        }
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.removeItem('onboardingCompleted');
+
+        showSuccess('Compte créé avec succès ! Redirection…');
+        setTimeout(() => { window.location.href = 'onboarding.html'; }, 1200);
+
+      } catch (err) {
+        showError(err.message || 'Une erreur est survenue lors de la création du compte');
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
