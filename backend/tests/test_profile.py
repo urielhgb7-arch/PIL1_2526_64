@@ -153,7 +153,7 @@ def test_add_disponibilite(client, app_context):
     
     # Add disponibilité
     resp = client.post('/api/profile/disponibilites',
-        json={'jour': 'Lundi', 'creneau': '10:00-12:00'},
+        json={'jour': 'Lundi', 'creneau': '10-11'},
         headers={'Authorization': f'Bearer {token}'})
     
     assert resp.status_code == 201
