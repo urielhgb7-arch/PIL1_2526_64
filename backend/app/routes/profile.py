@@ -169,6 +169,15 @@ def update_my_profile(current_user):
         if not is_valid_format_preference(format_preference):
             return jsonify({"message": "Format d'apprentissage invalide"}), 400
         profile.format_preference = format_preference
+    # backend/app/routes/profile.py — dans update_my_profile()
+    if 'telephone' in data and data['telephone']:
+        existing = Profile.query.filter(
+            Profile.telephone == data['telephone'],
+            Profile.id != profile.id
+        ).first()
+        if existing:
+            return jsonify({"message": "Ce numéro est déjà utilisé"}), 400
+        profile.telephone = data['telephone']
 
     db.session.commit()
     return jsonify({"message": "Profil mis à jour avec succès"}), 200

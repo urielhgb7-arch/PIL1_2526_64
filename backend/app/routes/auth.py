@@ -36,6 +36,13 @@ def register():
         format_preference = data.get('format_preference', 'hybride')
         if format_preference and not is_valid_format_preference(format_preference):
             return jsonify({"message": "Format d'apprentissage invalide"}), 400
+        
+
+        # backend/app/routes/auth.py — dans register()
+        if data.get('telephone'):
+            existing_tel = Profile.query.filter_by(telephone=data['telephone']).first()
+            if existing_tel:
+                return jsonify({"message": "Ce numéro de téléphone est déjà utilisé"}), 400
 
         # Création user
         new_user = User(email=data['email'], role='student')
