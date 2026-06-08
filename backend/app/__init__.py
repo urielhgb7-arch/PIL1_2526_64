@@ -36,8 +36,12 @@ def create_app(config_name=None):
 
     # Initialize database tables
     with flask_app.app_context():
-        db.create_all()
-        logger.info("Database tables initialized successfully")
+        try:
+            db.create_all()
+            logger.info("Database tables initialized successfully")
+        except Exception as db_error:
+            logger.error(f"Database initialization error: {db_error}", exc_info=True)
+            # Don't fail the app startup, but log the error
 
     # Blueprints
     from app.routes.auth import auth_bp
