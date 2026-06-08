@@ -33,11 +33,17 @@
   <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
     <div class="max-w-4xl mx-auto flex items-center justify-between">
       <h1 class="text-2xl font-bold">Paramètres</h1>
-      <a href="dashboard.html" class="text-muted hover:text-white">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </a>
+      <div class="flex items-center gap-3">
+        <a href="notifications.html" class="site-bell" aria-label="Notifications">
+          <span class="ti ti-bell"></span>
+          <span class="dot" id="siteBellDot"></span>
+        </a>
+        <a href="dashboard.html" class="text-muted hover:text-white" aria-label="Retour au dashboard">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -302,6 +308,8 @@
 
   <script src="script.js"></script>
   <script src="../js/api.js"></script>
+  <script src="../js/matieres-loader.js"></script>
+  <script src="../js/notifications-badge.js"></script>
   <script>
     checkAuth();
 

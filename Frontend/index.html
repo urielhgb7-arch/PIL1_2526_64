@@ -1,83 +1,296 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFRI MentorLink - Plateforme de Mentorat</title>
-    
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/landing.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IFRI MentorLink - Plateforme de Mentorat Académique</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-
-    <div class="landing-container">
-        
-        <header class="landing-header">
-            <div class="logo-text">
-                <span class="text-gradient">IFRI MentorLink</span>
-            </div>
-            <a href="pages/register.html" class="btn btn-secondary btn-sm">S'inscrire</a>
-        </header>
-
-        <section class="hero-section">
-            <h1>L'entraide académique <br><span class="text-gradient">nouvelle génération</span></h1>
-            <p>Connectez-vous avec des pairs experts, partagez vos connaissances et excellez ensemble. La plateforme de mentorat peer-to-peer de l'IFRI.</p>
-            
-            <div class="hero-cta-group">
-                <a href="pages/register.html" class="btn btn-primary">Commencer maintenant →</a>
-                <a href="pages/login.html" class="btn btn-secondary">Se connecter</a>
-            </div>
-        </section>
-
-        <section class="matching-showcase-section">
-            <div class="matching-vector-area">
-                <svg viewBox="0 0 600 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    
-                    <circle cx="300" cy="250" r="45" fill="#12141C" stroke="var(--indigo-primary)" stroke-width="3" class="node-you-circle"/>
-                    <text x="300" y="255" fill="white" font-size="14" font-weight="750" text-anchor="middle">IFRI</text>
-
-                    <g class="animate-bubble-1">
-                        <line x1="300" y1="250" x2="120" y2="150" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                        <line x1="300" y1="250" x2="210" y2="410" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                        
-                        <circle cx="120" cy="150" r="35" fill="#12141C" stroke="var(--mint-success)" stroke-width="2"/>
-                        <text x="120" y="154" fill="white" font-size="12" font-weight="600" text-anchor="middle">GL</text>
-                        
-                        <circle cx="210" cy="410" r="32" fill="#12141C" stroke="var(--indigo-primary)" stroke-width="2"/>
-                        <text x="210" y="414" fill="white" font-size="12" font-weight="600" text-anchor="middle">SI</text>
-                    </g>
-
-                    <g class="animate-bubble-2">
-                        <line x1="300" y1="250" x2="480" y2="150" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                        <line x1="300" y1="250" x2="390" y2="410" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                        
-                        <circle cx="480" cy="150" r="35" fill="#12141C" stroke="var(--amber-warning)" stroke-width="2"/>
-                        <text x="480" y="154" fill="white" font-size="12" font-weight="600" text-anchor="middle">IA</text>
-                        
-                        <circle cx="390" cy="410" r="32" fill="#12141C" stroke="var(--indigo-primary)" stroke-width="2"/>
-                        <text x="390" y="414" fill="white" font-size="11" font-weight="600" text-anchor="middle">SIRI</text>
-                    </g>
-
-                    <g class="animate-bubble-3">
-                        <line x1="300" y1="250" x2="120" y2="350" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                        
-                        <circle cx="120" cy="350" r="35" fill="#12141C" stroke="var(--mint-success)" stroke-width="2"/>
-                        <text x="120" y="354" fill="white" font-size="12" font-weight="600" text-anchor="middle">IM</text>
-                    </g>
-
-                    <g class="animate-bubble-4">
-                        <line x1="300" y1="250" x2="480" y2="350" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                        
-                        <circle cx="480" cy="350" r="35" fill="#12141C" stroke="var(--coral-red)" stroke-width="2"/>
-                        <text x="480" y="354" fill="white" font-size="11" font-weight="600" text-anchor="middle">SE&IoT</text>
-                    </g>
-
-                </svg>
-            </div>
-        </section>
-
+<body class="bg-background text-foreground">
+  <!-- Navigation -->
+  <nav class="border-b border-border bg-card/50 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="text-sm font-bold text-primary">ML</span>
+          </div>
+          <h1 class="text-xl font-bold">
+            <span class="text-primary">IFRI</span> MentorLink
+          </h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="signin.html" class="text-muted hover:text-white transition-colors">Connexion</a>
+          <a href="signup.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">S'inscrire</a>
+        </div>
+      </div>
     </div>
+  </nav>
 
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          L'entraide académique<br />
+          <span class="text-primary">nouvelle génération</span>
+        </h1>
+        <p class="text-xl text-muted max-w-3xl mx-auto mb-10">
+          Connectez-vous avec des pairs experts, partagez vos connaissances et excellez ensemble.
+          La plateforme de mentorat peer-to-peer de l'IFRI.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="signup.html" class="w-full sm:w-auto px-8 py-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center justify-center gap-2 text-lg font-semibold">
+            Commencer maintenant
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <a href="signin.html" class="w-full sm:w-auto px-8 py-4 bg-card border border-border text-white rounded-lg hover:bg-popover transition-colors text-lg font-semibold">
+            Se connecter
+          </a>
+        </div>
+      </div>
+
+      <!-- Network Illustration -->
+      <div class="mt-20 relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
+        <div class="relative rounded-2xl border border-border overflow-hidden bg-card/50 backdrop-blur-sm p-8">
+          <svg viewBox="0 0 800 400" class="w-full h-auto">
+            <defs>
+              <linearGradient id="landingLineGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7C6FF7" stop-opacity="0">
+                  <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="50%" stop-color="#7C6FF7" stop-opacity="0.6">
+                  <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%" stop-color="#7C6FF7" stop-opacity="0">
+                  <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+                </stop>
+              </linearGradient>
+
+              <linearGradient id="landingLineGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#2DD4A0" stop-opacity="0">
+                  <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="50%" stop-color="#2DD4A0" stop-opacity="0.6">
+                  <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%" stop-color="#2DD4A0" stop-opacity="0">
+                  <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+                </stop>
+              </linearGradient>
+            </defs>
+
+            <!-- Connection lines -->
+            <line x1="100" y1="100" x2="400" y2="200" stroke="url(#landingLineGradient1)" stroke-width="2">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite" />
+            </line>
+            <line x1="400" y1="200" x2="700" y2="120" stroke="url(#landingLineGradient1)" stroke-width="2">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.5s" repeatCount="indefinite" />
+            </line>
+            <line x1="400" y1="200" x2="600" y2="320" stroke="url(#landingLineGradient2)" stroke-width="2">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite" />
+            </line>
+            <line x1="100" y1="300" x2="400" y2="200" stroke="url(#landingLineGradient1)" stroke-width="2">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.2s" repeatCount="indefinite" />
+            </line>
+            <line x1="700" y1="320" x2="600" y2="320" stroke="url(#landingLineGradient2)" stroke-width="2">
+              <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.8s" repeatCount="indefinite" />
+            </line>
+
+            <!-- Student nodes -->
+            <g class="animate-float-1">
+              <circle cx="100" cy="100" r="40" fill="#1F2433" stroke="#7C6FF7" stroke-width="3">
+                <animate attributeName="r" values="40;43;40" dur="4s" repeatCount="indefinite" />
+              </circle>
+              <text x="100" y="110" text-anchor="middle" fill="#fff" font-size="18">GL</text>
+            </g>
+
+            <g class="animate-float-2">
+              <circle cx="700" cy="120" r="40" fill="#1F2433" stroke="#2DD4A0" stroke-width="3">
+                <animate attributeName="r" values="40;44;40" dur="3.5s" repeatCount="indefinite" />
+              </circle>
+              <text x="700" y="130" text-anchor="middle" fill="#fff" font-size="18">RSI</text>
+            </g>
+
+            <g class="animate-float-3">
+              <circle cx="100" cy="300" r="40" fill="#1F2433" stroke="#7C6FF7" stroke-width="3">
+                <animate attributeName="r" values="40;42;40" dur="4.2s" repeatCount="indefinite" />
+              </circle>
+              <text x="100" y="310" text-anchor="middle" fill="#fff" font-size="18">M1</text>
+            </g>
+
+            <g class="animate-float-4">
+              <circle cx="600" cy="320" r="40" fill="#1F2433" stroke="#2DD4A0" stroke-width="3">
+                <animate attributeName="r" values="40;43;40" dur="3.8s" repeatCount="indefinite" />
+              </circle>
+              <text x="600" y="330" text-anchor="middle" fill="#fff" font-size="18">L3</text>
+            </g>
+
+            <g class="animate-float-5">
+              <circle cx="700" cy="320" r="40" fill="#1F2433" stroke="#F5A623" stroke-width="3">
+                <animate attributeName="r" values="40;44;40" dur="3.6s" repeatCount="indefinite" />
+              </circle>
+              <text x="700" y="330" text-anchor="middle" fill="#fff" font-size="18">L2</text>
+            </g>
+
+            <!-- Central node -->
+            <g class="animate-pulse-slow">
+              <circle cx="400" cy="200" r="50" fill="#1F2433" stroke="#7C6FF7" stroke-width="4">
+                <animate attributeName="r" values="50;56;50" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <text x="400" y="210" text-anchor="middle" fill="#7C6FF7" font-size="24" font-weight="600">YOU</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-card/30">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="text-4xl lg:text-5xl font-bold mb-2">247+</div>
+          <div class="text-muted">Étudiants actifs</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl lg:text-5xl font-bold mb-2">1,234</div>
+          <div class="text-muted">Matchs réussis</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl lg:text-5xl font-bold mb-2">4.7/5</div>
+          <div class="text-muted">Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl lg:text-4xl font-bold mb-4">Tout ce dont vous avez besoin</h2>
+        <p class="text-xl text-muted max-w-2xl mx-auto">Une plateforme complète pour transformer votre expérience académique</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Matching Intelligent</h3>
+          <p class="text-muted">Algorithme IA qui trouve les mentors parfaits selon vos besoins académiques</p>
+        </div>
+
+        <div class="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Connexion Instantanée</h3>
+          <p class="text-muted">Swipez et connectez-vous avec des pairs compatibles en quelques secondes</p>
+        </div>
+
+        <div class="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Communauté Sécurisée</h3>
+          <p class="text-muted">Plateforme réservée aux étudiants de l'IFRI pour un environnement de confiance</p>
+        </div>
+
+        <div class="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Expertise Partagée</h3>
+          <p class="text-muted">Accédez à l'expérience de vos pairs sur tous les cours de votre filière</p>
+        </div>
+
+        <div class="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Suivi de Progression</h3>
+          <p class="text-muted">Trackez vos heures de mentorat et votre impact dans la communauté</p>
+        </div>
+
+        <div class="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Chat en Temps Réel</h3>
+          <p class="text-muted">Communiquez facilement avec vos mentors via notre système de messagerie intégré</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="bg-gradient-to-br from-primary/20 to-success/20 rounded-2xl p-12 border border-primary/20">
+        <h2 class="text-3xl lg:text-4xl font-bold mb-4">Prêt à démarrer?</h2>
+        <p class="text-xl text-muted mb-8 max-w-2xl mx-auto">
+          Rejoignez des centaines d'étudiants de l'IFRI qui s'entraident déjà sur MentorLink
+        </p>
+        <a href="signup.html" class="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-lg font-semibold">
+          Créer un compte gratuitement
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-border py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto text-center text-muted">
+      <p>&copy; 2026 IFRI MentorLink. Tous droits réservés.</p>
+      <p class="mt-2 text-sm">
+        Plateforme de mentorat académique peer-to-peer pour l'Institut de Formation et de Recherche en Informatique
+      </p>
+    </div>
+  </footer>
+  <script src="js/api.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
