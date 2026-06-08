@@ -69,6 +69,8 @@ function getMatiersByFiliere(filiere = null) {
 }
 
 async function initMatieresLoader() {
+  const authPages = /signin\.html|signup\.html|reset-password\.html/.test(window.location.pathname);
+  if (authPages) return;
   await loadMatieresFromAPI();
 }
 
