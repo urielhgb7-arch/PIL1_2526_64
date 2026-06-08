@@ -23,8 +23,6 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = (
         os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
     )
-    if not SQLALCHEMY_DATABASE_URI:
-        raise RuntimeError("DATABASE_URL manquant dans l'environnement de production")
 
 config = {
     'development': DevelopmentConfig,
