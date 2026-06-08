@@ -34,6 +34,14 @@ def create_app(config_name=None):
     # Modèles
     from app import models
 
+    # Initialize database tables
+    with flask_app.app_context():
+        try:
+            db.create_all()
+            logger.info("Database tables initialized")
+        except Exception as e:
+            logger.warning(f"Could not initialize database tables: {e}")
+
     # Blueprints
     from app.routes.auth import auth_bp
     flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')
