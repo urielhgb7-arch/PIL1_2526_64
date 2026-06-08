@@ -40,7 +40,7 @@ CREATE TABLE profiles (
     niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3', 'M1', 'M2')),
     format_preference VARCHAR(20) NOT NULL DEFAULT 'hybride' CHECK (format_preference IN ('presentiel', 'en_ligne', 'hybride')),
     bio TEXT,
-    telephone VARCHAR(20),
+    telephone VARCHAR(20) UNIQUE NOT NULL,
     avatar_url TEXT DEFAULT 'https://via.placeholder.com/150',
     disponible BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -97,13 +97,13 @@ CREATE TABLE profil_lacunes (
 -- 6. PUBLICATIONS & SYSTÈME D'ANNONCES PONCTUELLES
 -- ----------------------------------------------------------------------------
 -- Offres explicites formulées par les Mentors
--- CREATE TABLE offers (
---     id SERIAL PRIMARY KEY,
---     profile_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
---     matiere_id INT NOT NULL REFERENCES matieres(id) ON DELETE CASCADE,
---     description TEXT,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
---  );
+CREATE TABLE offers (
+    id SERIAL PRIMARY KEY,
+    profile_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    matiere_id INT NOT NULL REFERENCES matieres(id) ON DELETE CASCADE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ );
 
 -- Demandes explicites formulées par les Mentorés
 CREATE TABLE demands (
