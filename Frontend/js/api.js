@@ -6,7 +6,7 @@
 
 const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
     ? 'http://127.0.0.1:5000/api'
-    : 'https://ifri-mentorlink.onrender.com/api'; // ← Remplace par ta vraie URL Render
+    : 'https://ifri-mentorlink.onrender.com'; // ← Remplace par ta vraie URL Render
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${endpoint}`;
