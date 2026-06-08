@@ -244,7 +244,7 @@
 
   <!-- api.js AVANT script.js -->
   <script src="../js/api.js"></script>
-  <script src="script.js"></script>
+  <script src="../js/script.js"></script>
   <script>
     checkAuth();
 
@@ -353,18 +353,24 @@
     });
 
     /* ──────────────────────────────────────────
-       Chargement des matières (API.matieres.getAll)
+       Chargement des matières via matieres-loader
+       récupère toutes les matières puis filtre par filière sélectionnée
     ────────────────────────────────────────── */
     async function loadMatieres() {
       document.getElementById('matieres-loading').classList.remove('hidden');
       document.getElementById('step2-form').classList.add('hidden');
 
       try {
-        const data = await API.matieres.getAll();
-        // L'API retourne soit un tableau direct, soit { matieres: [...] }
-        matieresCache = Array.isArray(data) ? data : (data.matieres || data.data || []);
-      } catch {
-        // Fallback sur liste statique si l'API est indisponible
+        // Utilise le chargeur centralisé
+        await loadMatieresFromAPI();
+        // Filtrer par la filière sélectionnée dans le step1
+        const dept = userData.department || document.getElementById('department').value || '';
+        const mts = getMatiersByFiliere(dept) || [];
+        // Si le filtre retourne vide, fallback sur l'ensemble
+        matieresCache = mts.length > 0 ? mts : (await loadMatieresFromAPI()) || [];
+      } catch (err) {
+        console.warn('Erreur chargement matières via loader, fallback local', err);
+        // fallback statique
         matieresCache = [
           { id: 1, nom: 'Algorithmique' },
           { id: 2, nom: 'Base de données SQL' },
@@ -378,8 +384,48 @@
       }
 
       initSkillsLists();
+      // pré-remplir les sélections existantes depuis le profil si disponible
+      try {
+        if (!window.skipProfilePrefill) {
+          const data = await API.profile.getMe();
+          const profile = data.profile || data;
+          const comps = profile.competences || profile.competences_list || [];
+          const lacs = profile.lacunes || profile.lacunes_list || [];
+          prefillOnboardingSkills(comps, lacs);
+        }
+      } catch (e) { /* silencieux */ }
       document.getElementById('matieres-loading').classList.add('hidden');
       document.getElementById('step2-form').classList.remove('hidden');
+    }
+
+    function prefillOnboardingSkills(comps = [], lacs = []) {
+      try {
+        (comps || []).forEach(c => {
+          const id = c.matiere_id || c.matiere || c.id;
+          const mastery = c.mastery || c.niveau || 'Intermediate';
+          // add to userData.strengths if not present
+          if (!userData.strengths.find(x => x.matiere_id === id)) {
+            userData.strengths.push({ matiere_id: id, mastery });
+            const sid = safeId(id);
+            const btn = document.getElementById(`strength-${sid}`);
+            const lvl = document.getElementById(`strength-level-${sid}`);
+            if (btn) { btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors`; btn.innerHTML = `<div class="flex items-center justify-between"><span>${getMatiereNom(id)}</span><span class="text-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span></div>`; }
+            if (lvl) { lvl.classList.remove('hidden'); lvl.value = mastery; }
+          }
+        });
+        (lacs || []).forEach(l => {
+          const id = l.matiere_id || l.matiere || l.id;
+          const prio = l.priority || l.niveau || 'Medium';
+          if (!userData.weaknesses.find(x => x.matiere_id === id)) {
+            userData.weaknesses.push({ matiere_id: id, priority: prio });
+            const sid = safeId(id);
+            const btn = document.getElementById(`weakness-${sid}`);
+            const lvl = document.getElementById(`weakness-level-${sid}`);
+            if (btn) { btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors`; btn.innerHTML = `<div class="flex items-center justify-between"><span>${getMatiereNom(id)}</span><span class="text-warning"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span></div>`; }
+            if (lvl) { lvl.classList.remove('hidden'); lvl.value = prio; }
+          }
+        });
+      } catch (err) { console.warn('prefillOnboardingSkills error', err); }
     }
 
     /* ──────────────────────────────────────────

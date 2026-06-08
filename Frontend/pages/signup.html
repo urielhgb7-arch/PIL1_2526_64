@@ -146,6 +146,60 @@
               />
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="firstname" class="block text-sm font-medium mb-2">Prénom</label>
+                <input
+                  id="firstname"
+                  type="text"
+                  placeholder="Jean"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label for="lastname" class="block text-sm font-medium mb-2">Nom</label>
+                <input
+                  id="lastname"
+                  type="text"
+                  placeholder="HOUNDJI"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="filiere" class="block text-sm font-medium mb-2">Filière</label>
+                <select
+                  id="filiere"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                >
+                  <option value="">Sélectionnez votre filière</option>
+                  <option value="GL">GL</option>
+                  <option value="RSI">RSI</option>
+                  <option value="Sécurité">Sécurité</option>
+                </select>
+              </div>
+              <div>
+                <label for="niveau" class="block text-sm font-medium mb-2">Niveau</label>
+                <select
+                  id="niveau"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                >
+                  <option value="">Sélectionnez votre niveau</option>
+                  <option value="L1">L1</option>
+                  <option value="L2">L2</option>
+                  <option value="L3">L3</option>
+                  <option value="M1">M1</option>
+                  <option value="M2">M2</option>
+                </select>
+              </div>
+            </div>
+
             <div>
               <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
               <div class="relative">
@@ -239,18 +293,22 @@
 
   <!-- scripts : api.js AVANT script.js -->
   <script src="../js/api.js"></script>
-  <script src="script.js"></script>
+  <script src="../js/script.js"></script>
   <script>
-    const form        = document.getElementById('signup-form');
-    const emailInput  = document.getElementById('email');
-    const pwdInput    = document.getElementById('password');
-    const cpwdInput   = document.getElementById('confirm-password');
-    const acceptHelp  = document.getElementById('accept-help');
-    const errorMsg    = document.getElementById('error-message');
-    const errorTxt    = document.getElementById('error-text');
-    const successMsg  = document.getElementById('success-message');
-    const successTxt  = document.getElementById('success-text');
-    const submitBtn   = document.getElementById('submit-btn');
+    const form         = document.getElementById('signup-form');
+    const emailInput   = document.getElementById('email');
+    const firstnameInput = document.getElementById('firstname');
+    const lastnameInput  = document.getElementById('lastname');
+    const filiereInput   = document.getElementById('filiere');
+    const niveauInput    = document.getElementById('niveau');
+    const pwdInput     = document.getElementById('password');
+    const cpwdInput    = document.getElementById('confirm-password');
+    const acceptHelp   = document.getElementById('accept-help');
+    const errorMsg     = document.getElementById('error-message');
+    const errorTxt     = document.getElementById('error-text');
+    const successMsg   = document.getElementById('success-message');
+    const successTxt   = document.getElementById('success-text');
+    const submitBtn    = document.getElementById('submit-btn');
 
     function showError(msg)   { errorTxt.textContent = msg;   errorMsg.classList.remove('hidden');   successMsg.classList.add('hidden'); }
     function showSuccess(msg) { successTxt.textContent = msg; successMsg.classList.remove('hidden'); errorMsg.classList.add('hidden'); }
@@ -268,6 +326,10 @@
       hideMessages();
 
       const email           = emailInput.value.trim();
+      const firstname       = firstnameInput.value.trim();
+      const lastname        = lastnameInput.value.trim();
+      const filiere         = filiereInput.value;
+      const niveau          = niveauInput.value;
       const password        = pwdInput.value;
       const confirmPassword = cpwdInput.value;
       const accepteAide     = acceptHelp.checked;
@@ -275,6 +337,18 @@
       // Validations front
       if (!email.endsWith('@ifri.uac.bj') && !email.endsWith('@gmail.com')) {
         showError('Email invalide. Utilisez un email @ifri.uac.bj ou @gmail.com');
+        return;
+      }
+      if (!firstname || !lastname) {
+        showError('Prénom et nom sont requis.');
+        return;
+      }
+      if (!filiere) {
+        showError('Veuillez sélectionner votre filière.');
+        return;
+      }
+      if (!niveau) {
+        showError('Veuillez sélectionner votre niveau.');
         return;
       }
       if (password !== confirmPassword) {
@@ -293,6 +367,10 @@
         const data = await API.auth.register({
           email,
           password,
+          nom: lastname,
+          prenom: firstname,
+          filiere,
+          niveau,
           accepte_aide: accepteAide   // booléen envoyé au backend
         });
 
@@ -316,7 +394,5 @@
       }
     });
   </script>
-  <script src="../js/matieres-loader.js"></script>
-  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>

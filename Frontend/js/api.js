@@ -6,7 +6,7 @@
 
 const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
     ? 'http://127.0.0.1:5000/api'
-    : 'https://ifri-mentorlink.onrender.com/api'; // ← Remplace par ta vraie URL Render
+    : 'https://ifri-mentorlink.onrender.com'; // ← Remplace par ta vraie URL Render
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -27,6 +27,14 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         config.body = JSON.stringify(body);
     }
 
+    function getLoginRedirectPath() {
+        const path = window.location.pathname;
+        if (path.includes('/pages/')) {
+            return 'signin.html';
+        }
+        return 'pages/signin.html';
+    }
+
     try {
         const response = await fetch(url, config);
 
@@ -34,8 +42,9 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
             console.warn('Session expirée. Redirection vers login.');
             localStorage.removeItem('mentorlink_token');
             localStorage.removeItem('mentorlink_user');
-            if (!window.location.pathname.includes('login.html')) {
-                window.location.href = '/Frontend/pages/login.html';
+            const isAuthPage = /signin\.html|signup\.html/.test(window.location.pathname);
+            if (!isAuthPage) {
+                window.location.href = getLoginRedirectPath();
             }
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
