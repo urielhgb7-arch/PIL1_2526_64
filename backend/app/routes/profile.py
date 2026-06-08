@@ -1,7 +1,7 @@
 # backend/app/routes/profile.py
 import logging
 from flask import Blueprint, request, jsonify
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 from app.database import db
 from app.models import User, Profile, Disponible, ProfilCompetence, ProfilLacune, Matiere
 from app.middleware.auth_guard import token_required
@@ -341,7 +341,13 @@ def deactivate_competence(current_user, matiere_id):
 # ─── GET /api/matieres ─────────────────────────────────────────────────────
 @profile_bp.route('/matieres', methods=['GET'])
 def get_matieres():
-    matieres = Matiere.query.order_by(Matiere.nom.asc()).all()
+    try:
+        matieres = Matiere.query.order_by(Matiere.nom.asc()).all()
+    except ProgrammingError as e:
+        logger.warning('Matieres table missing or not initialized: %s', e)
+        db.session.rollback()
+        return jsonify([]), 200
+
     result = [
         {
             "id": m.id,

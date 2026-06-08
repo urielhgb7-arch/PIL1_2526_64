@@ -34,6 +34,19 @@ def create_app(config_name=None):
     # Modèles
     from app import models
 
+    #Creation de la base de données si elle n'existe pas
+
+    with flask_app.app_context():
+        try:
+            from sqlalchemy_utils import database_exists, create_database
+            if not database_exists(db.engine.url):
+                create_database(db.engine.url)
+                logger.info("Base de données créée automatiquement !")
+            db.create_all()
+            logger.info("Database tables initialized successfully")
+        except Exception as db_error:
+            logger.error(f"Database initialization error: {db_error}", exc_info=True)
+
     # Blueprints
     from app.routes.auth import auth_bp
     flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')

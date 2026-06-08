@@ -74,18 +74,6 @@
           <p class="text-muted">Complétez votre profil académique</p>
         </div>
         <form id="step1-form" class="space-y-5">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-2" title="Prénom">Prénom</label>
-              <input type="text" id="firstName" required placeholder="Jean"
-                class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-2" title="Nom">Nom</label>
-              <input type="text" id="lastName" required placeholder="HOUNDJI"
-                class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-          </div>
           <div>
             <label class="block text-sm font-medium mb-2" title="Département">Département</label>
             <select id="department" required name="department" title="Département"
@@ -255,7 +243,7 @@
     let matieresCache = [];   // matières chargées depuis l'API
 
     const userData = {
-      firstName: '', lastName: '', department: '', level: '',
+      department: '', level: '',
       strengths: [],    // [{matiere_id, mastery}]
       weaknesses: [],   // [{matiere_id, priority}]
       availability: Array(7).fill(null).map(() => Array(13).fill(false))
@@ -323,18 +311,14 @@
       e.preventDefault();
       hideStepError(1);
 
-      userData.firstName  = document.getElementById('firstName').value.trim();
-      userData.lastName   = document.getElementById('lastName').value.trim();
       userData.department = document.getElementById('department').value;
       userData.level      = document.getElementById('level').value;
 
       setStepLoading('step1-btn', true);
       try {
         await API.profile.updateMe({
-          prenom:     userData.firstName,
-          nom:        userData.lastName,
-          departement: userData.department,
-          niveau:     userData.level
+          filiere: userData.department,
+          niveau:  userData.level
         });
 
         // Persistance locale (script.js compat)
