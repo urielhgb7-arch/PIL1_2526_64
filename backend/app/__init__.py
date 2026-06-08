@@ -22,7 +22,17 @@ def create_app(config_name=None):
     logger = logging.getLogger(__name__)
     logger.info(f"Configuration: {config_name}")
 
-    CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
+    # ── CORS : restreindre aux origines autorisées ──────────────────────────
+    # En production, définir ALLOWED_ORIGINS dans les variables d'environnement
+    # Exemple : ALLOWED_ORIGINS=https://mentorlink.onrender.com,https://ifri.edu.bj
+    allowed_origins_env = os.getenv('ALLOWED_ORIGINS', '')
+    if allowed_origins_env:
+        allowed_origins = [o.strip() for o in allowed_origins_env.split(',') if o.strip()]
+    else:
+        # En développement seulement, autoriser localhost
+        allowed_origins = ['http://localhost:8000', 'http://127.0.0.1:8000', 'http://localhost:5000']
+
+    CORS(flask_app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
 
     db.init_app(flask_app)
     JWTManager(flask_app)

@@ -17,11 +17,18 @@ def lister_notifications():
     try:
         unread_only = request.args.get('unread_only', 'false').lower() == 'true'
 
+        # Pagination : ?page=1&per_page=20
+        page = request.args.get('page', 1, type=int)
+        per_page = min(request.args.get('per_page', 20, type=int), 100)  # max 100
+
         query = Notification.query.filter_by(user_id=current_user_id)
         if unread_only:
             query = query.filter_by(is_read=False)
 
-        notifications = query.order_by(Notification.created_at.desc()).all()
+        pagination = query.order_by(Notification.created_at.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        notifications = pagination.items
 
         result = [
             {
@@ -35,11 +42,14 @@ def lister_notifications():
             for n in notifications
         ]
 
-        unread_count = len([n for n in result if not n['is_read']])
-        logger.info(f"✅ Notifications listées: {len(result)} total, {unread_count} non lues pour user={current_user_id}")
-        
+        unread_count = Notification.query.filter_by(user_id=current_user_id, is_read=False).count()
+        logger.info(f"✅ Notifications listées: {len(result)} sur {pagination.total} pour user={current_user_id}")
+
         return jsonify({
-            "total": len(result),
+            "total": pagination.total,
+            "page": page,
+            "per_page": per_page,
+            "pages": pagination.pages,
             "unread_count": unread_count,
             "notifications": result
         }), 200

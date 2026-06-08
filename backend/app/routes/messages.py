@@ -111,10 +111,14 @@ def envoyer_message(conv_id: int):
     try:
         data = request.get_json(force=True, silent=True) or {}
         contenu = data.get('contenu', '').strip()
-        
+
         if not contenu:
             logger.warning(f"Tentative envoi message vide par user={current_user_id}")
             return jsonify({"message": "Contenu du message requis"}), 400
+
+        # Limite de taille pour éviter les abus (5000 caractères max)
+        if len(contenu) > 5000:
+            return jsonify({"message": "Le message ne peut pas dépasser 5000 caractères"}), 400
 
         conv = db.session.get(Conversation, conv_id)
         if not conv:
@@ -160,19 +164,31 @@ def lire_messages(conv_id: int):
             logger.warning(f"Accès non autorisé à conversation {conv_id} par user={current_user_id}")
             return jsonify({"message": "Accès refusé"}), 403
 
-        messages = Message.query.filter_by(
+        # Pagination : ?page=1&per_page=50
+        page = request.args.get('page', 1, type=int)
+        per_page = min(request.args.get('per_page', 50, type=int), 100)
+
+        pagination = Message.query.filter_by(
             conversation_id=conv_id
-        ).order_by(Message.date_envoi.asc()).all()
+        ).order_by(Message.date_envoi.asc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
         result = [{
             "id": m.id,
             "sender_id": m.sender_id,
             "contenu": m.contenu,
             "date_envoi": m.date_envoi.isoformat()
-        } for m in messages]
+        } for m in pagination.items]
 
-        logger.info(f"✅ {len(result)} messages listés pour conv={conv_id}")
-        return jsonify(result), 200
+        logger.info(f"✅ {len(result)} messages listés pour conv={conv_id} (page {page}/{pagination.pages})")
+        return jsonify({
+            "total": pagination.total,
+            "page": page,
+            "per_page": per_page,
+            "pages": pagination.pages,
+            "messages": result
+        }), 200
         
     except Exception as e:
         logger.error(f"Erreur lecture messages: {str(e)[:100]}", exc_info=True)

@@ -3,6 +3,7 @@
 import logging
 import os
 import secrets
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
@@ -15,14 +16,57 @@ from app.middleware.auth_guard import token_required
 logger = logging.getLogger(__name__)
 auth_bp = Blueprint('auth', __name__)
 
+# ── Constantes de validation ─────────────────────────────────────────────────
+PASSWORD_MIN_LENGTH = 8  # Minimum 8 caractères (était 6, trop faible)
+
+# ── Rate limiting simple en mémoire pour /forgot-password ────────────────────
+# Structure : { ip_address: [timestamp, timestamp, ...] }
+_forgot_password_attempts: dict = defaultdict(list)
+FORGOT_PASSWORD_MAX_ATTEMPTS = 5    # max 5 tentatives
+FORGOT_PASSWORD_WINDOW_SECONDS = 3600  # par heure
+
+
+def _check_forgot_password_rate_limit(ip: str) -> bool:
+    """Retourne True si la limite est dépassée, False sinon."""
+    now = datetime.now(timezone.utc).timestamp()
+    window_start = now - FORGOT_PASSWORD_WINDOW_SECONDS
+
+    # Nettoyer les anciennes tentatives
+    _forgot_password_attempts[ip] = [
+        t for t in _forgot_password_attempts[ip] if t > window_start
+    ]
+
+    if len(_forgot_password_attempts[ip]) >= FORGOT_PASSWORD_MAX_ATTEMPTS:
+        return True  # limite dépassée
+
+    _forgot_password_attempts[ip].append(now)
+    return False  # autorisé
+
+
+def _validate_password_strength(password: str) -> str | None:
+    """Valide la robustesse du mot de passe.
+    Retourne un message d'erreur, ou None si le mot de passe est valide."""
+    if len(password) < PASSWORD_MIN_LENGTH:
+        return f"Le mot de passe doit faire au moins {PASSWORD_MIN_LENGTH} caractères"
+    if not any(c.isdigit() for c in password):
+        return "Le mot de passe doit contenir au moins un chiffre"
+    if not any(c.isalpha() for c in password):
+        return "Le mot de passe doit contenir au moins une lettre"
+    return None
+
 
 @auth_bp.route('/register', methods=['POST'])
 @validate_json(required_fields=['email', 'password', 'nom', 'prenom'], email_field='email')
 def register():
     """Enregistre un nouvel utilisateur (étudiant)"""
     data = request.validated_json
-    
+
     try:
+        # Validation robustesse du mot de passe
+        pwd_error = _validate_password_strength(data['password'])
+        if pwd_error:
+            return jsonify({"message": pwd_error}), 400
+
         # Vérification unicité email
         if User.query.filter_by(email=data['email']).first():
             logger.warning(f"Tentative inscription avec email existant: {data['email'][:10]}***")
@@ -87,6 +131,7 @@ def register():
         logger.error(f"Erreur inscription: {str(e)[:100]}", exc_info=True)
         return jsonify({"message": "Erreur serveur"}), 500
 
+
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """Authentifie un utilisateur et retourne un JWT"""
@@ -119,7 +164,7 @@ def login():
                 "profile_id": profile_id
             }
         }), 200
-        
+
     except Exception as e:
         logger.error(f"Erreur login: {str(e)[:100]}", exc_info=True)
         return jsonify({"message": "Erreur serveur"}), 500
@@ -128,9 +173,22 @@ def login():
 @auth_bp.route('/forgot-password', methods=['POST'])
 @validate_json(required_fields=['email'], email_field='email')
 def forgot_password():
+    """Demande de réinitialisation de mot de passe.
+    - Rate limité à 5 tentatives/heure par IP pour éviter le spam.
+    - Le token N'EST JAMAIS retourné dans la réponse (même en dev).
+      Consultez les logs du serveur en développement.
+    """
+    # Rate limiting par IP
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+    if _check_forgot_password_rate_limit(client_ip):
+        logger.warning(f"Rate limit /forgot-password dépassé pour IP={client_ip}")
+        return jsonify({"message": "Trop de tentatives. Réessayez dans une heure."}), 429
+
     data = request.validated_json
     email = data['email']
     user = User.query.filter_by(email=email).first()
+
+    # Réponse identique qu'il y ait un compte ou non (évite l'énumération d'emails)
     response = {"message": "Si votre email existe, un lien de réinitialisation a été émis."}
 
     if user:
@@ -144,9 +202,15 @@ def forgot_password():
         db.session.add(reset_token)
         db.session.commit()
 
-        logger.info(f"Réinitialisation de mot de passe demandée pour user_id={user.id} email={email}")
+        # En dev : afficher le token dans les logs (jamais dans la réponse HTTP)
         if os.getenv('FLASK_ENV') != 'production':
-            response['reset_token'] = token
+            logger.info(
+                f"[DEV UNIQUEMENT] Token reset pour user_id={user.id} : {token} "
+                f"(expire dans 1h — ne jamais afficher en production)"
+            )
+        else:
+            logger.info(f"Réinitialisation MDP demandée pour user_id={user.id}")
+            # TODO : envoyer le token par email via un service SMTP (ex: SendGrid, Mailgun)
 
     return jsonify(response), 200
 
@@ -158,8 +222,9 @@ def reset_password():
     token = data['token']
     new_password = data['new_password']
 
-    if len(new_password) < 6:
-        return jsonify({"message": "Le mot de passe doit faire au moins 6 caractères"}), 400
+    pwd_error = _validate_password_strength(new_password)
+    if pwd_error:
+        return jsonify({"message": pwd_error}), 400
 
     reset_token = PasswordResetToken.query.filter_by(token=token, used=False).first()
     now = datetime.now(timezone.utc)
@@ -190,20 +255,21 @@ def reset_password():
 @token_required
 def change_password(current_user):
     data = request.get_json(force=True, silent=True) or {}
-    
+
     old_password = data.get('old_password')
     new_password = data.get('new_password')
-    
+
     if not old_password or not new_password:
         return jsonify({"message": "Ancien et nouveau mot de passe requis"}), 400
-    
+
     if not current_user.check_password(old_password):
         return jsonify({"message": "Ancien mot de passe incorrect"}), 401
-    
-    if len(new_password) < 6:
-        return jsonify({"message": "Le mot de passe doit faire au moins 6 caractères"}), 400
-    
+
+    pwd_error = _validate_password_strength(new_password)
+    if pwd_error:
+        return jsonify({"message": pwd_error}), 400
+
     current_user.set_password(new_password)
     db.session.commit()
-    
+
     return jsonify({"message": "Mot de passe modifié avec succès"}), 200

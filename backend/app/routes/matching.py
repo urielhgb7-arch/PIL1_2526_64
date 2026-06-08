@@ -40,12 +40,24 @@ def get_suggestions():
     if not resultats:
         return jsonify({
             "message": "Aucun candidat trouvé. Complétez vos lacunes et disponibilités.",
-            "matches": []
+            "matches": [],
+            "total": 0
         }), 200
 
+    # Pagination manuelle (le calcul se fait en mémoire)
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 20, type=int), 50)
+    total = len(resultats)
+    start = (page - 1) * per_page
+    end = start + per_page
+    page_results = resultats[start:end]
+
     return jsonify({
-        "total": len(resultats),
-        "matches": resultats
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "pages": -(-total // per_page),  # ceil division
+        "matches": page_results
     }), 200
 
 
