@@ -17,7 +17,7 @@ auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/register', methods=['POST'])
-@validate_json(required_fields=['email', 'password', 'nom', 'prenom', 'filiere', 'niveau'], email_field='email')
+@validate_json(required_fields=['email', 'password', 'nom', 'prenom'], email_field='email')
 def register():
     """Enregistre un nouvel utilisateur (étudiant)"""
     data = request.validated_json
@@ -29,39 +29,48 @@ def register():
             return jsonify({"message": "Cet email existe déjà"}), 400
 
         # Validation niveau
-        if not is_valid_niveau(data['niveau']):
-            logger.warning(f"Niveau invalide: {data['niveau']}")
-            return jsonify({"message": f"Niveau invalide. Valeurs acceptées: L1-L3, M1-M2"}), 400
+        if data.get('niveau') and not is_valid_niveau(data['niveau']):
+            return jsonify({"message": "Niveau invalide. Valeurs acceptées: L1-L3, M1-M2"}), 400
 
-        # Création de l'utilisateur — rôle 'student' FIXÉ côté serveur
+        # Validation format
+        format_preference = data.get('format_preference', 'hybride')
+        if format_preference and not is_valid_format_preference(format_preference):
+            return jsonify({"message": "Format d'apprentissage invalide"}), 400
+
+        # Création user
         new_user = User(email=data['email'], role='student')
         new_user.set_password(data['password'])
         db.session.add(new_user)
-        db.session.commit()
+        db.session.flush()  # ← obtient l'id SANS commiter
         logger.info(f"✅ Utilisateur créé: {data['email'][:10]}***")
 
-        # Création du profil
-        format_preference = data.get('format_preference', 'hybride')
-        if format_preference and not is_valid_format_preference(format_preference):
-            logger.warning(f"Format invalide: {format_preference}")
-            return jsonify({"message": "Format d'apprentissage invalide"}), 400
-
+        # Création du profil dans la même transaction
         new_profile = Profile(
             user_id=new_user.id,
             nom=data['nom'],
             prenom=data['prenom'],
-            filiere=data['filiere'],
-            niveau=data['niveau'],
+            filiere=data.get('filiere') or '',
+            niveau=data.get('niveau') or '',
             format_preference=format_preference,
             bio=data.get('bio', ''),
             telephone=data.get('telephone', '')
         )
         db.session.add(new_profile)
-        db.session.commit()
+        db.session.commit()  # ← un seul commit pour les deux
         logger.info(f"✅ Profil créé pour user_id={new_user.id}")
 
-        return jsonify({"message": "Compte créé avec succès ! Connectez-vous."}), 201
-        
+        # Retour du token
+        access_token = create_access_token(identity=str(new_user.id))
+        return jsonify({
+            "message": "Compte créé avec succès !",
+            "token": access_token,
+            "user": {
+                "id": new_user.id,
+                "email": new_user.email,
+                "role": new_user.role
+            }
+        }), 201
+
     except IntegrityError as e:
         db.session.rollback()
         logger.error(f"Erreur intégrité DB: {str(e)[:100]}")
@@ -70,7 +79,6 @@ def register():
         db.session.rollback()
         logger.error(f"Erreur inscription: {str(e)[:100]}", exc_info=True)
         return jsonify({"message": "Erreur serveur"}), 500
-
 
 @auth_bp.route('/login', methods=['POST'])
 def login():

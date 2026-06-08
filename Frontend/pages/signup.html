@@ -169,7 +169,6 @@
               </div>
             </div>
 
-            
             <div>
               <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
               <div class="relative">
@@ -265,18 +264,18 @@
   <script src="../js/api.js"></script>
   <script src="../js/script.js"></script>
   <script>
-    const form         = document.getElementById('signup-form');
-    const emailInput   = document.getElementById('email');
+    const form           = document.getElementById('signup-form');
+    const emailInput     = document.getElementById('email');
     const firstnameInput = document.getElementById('firstname');
     const lastnameInput  = document.getElementById('lastname');
-    const pwdInput     = document.getElementById('password');
-    const cpwdInput    = document.getElementById('confirm-password');
-    const acceptHelp   = document.getElementById('accept-help');
-    const errorMsg     = document.getElementById('error-message');
-    const errorTxt     = document.getElementById('error-text');
-    const successMsg   = document.getElementById('success-message');
-    const successTxt   = document.getElementById('success-text');
-    const submitBtn    = document.getElementById('submit-btn');
+    const pwdInput       = document.getElementById('password');
+    const cpwdInput      = document.getElementById('confirm-password');
+    const acceptHelp     = document.getElementById('accept-help');
+    const errorMsg       = document.getElementById('error-message');
+    const errorTxt       = document.getElementById('error-text');
+    const successMsg     = document.getElementById('success-message');
+    const successTxt     = document.getElementById('success-text');
+    const submitBtn      = document.getElementById('submit-btn');
 
     function showError(msg)   { errorTxt.textContent = msg;   errorMsg.classList.remove('hidden');   successMsg.classList.add('hidden'); }
     function showSuccess(msg) { successTxt.textContent = msg; successMsg.classList.remove('hidden'); errorMsg.classList.add('hidden'); }
@@ -309,7 +308,6 @@
         showError('Prénom et nom sont requis.');
         return;
       }
-      
       if (password !== confirmPassword) {
         showError('Les mots de passe ne correspondent pas');
         return;
@@ -322,16 +320,16 @@
       setLoading(true);
 
       try {
-        // POST /api/auth/register
-        const data = await API.auth.register({
-          email,
-          password,
-          nom: lastname,
-          prenom: firstname,
-          accepte_aide: accepteAide   // booléen envoyé au backend
-        });
+        // POST /api/auth/register — filière et niveau seront renseignés à l'onboarding
+          const data = await API.auth.register({
+            email,
+            password,
+            nom: lastname,
+            prenom: firstname,
+            accepte_aide: accepteAide,
+          });
 
-        // Persistance locale (compatible avec script.js)
+        // Persistance locale
         if (data.token) {
           localStorage.setItem('mentorlink_token', data.token);
         }

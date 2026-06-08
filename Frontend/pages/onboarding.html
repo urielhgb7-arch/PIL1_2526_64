@@ -233,6 +233,8 @@
   <script src="../js/script.js"></script>
   <script>
     checkAuth();
+    console.log('Token:', localStorage.getItem('mentorlink_token'));
+    console.log('User:', localStorage.getItem('mentorlink_user'));
 
     /* ──────────────────────────────────────────
        État local
@@ -247,8 +249,8 @@
       availability: Array(7).fill(null).map(() => Array(13).fill(false))
     };
 
-    const masteryLevels  = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
-    const priorityLevels = ['Low', 'Medium', 'High', 'Urgent'];
+    const masteryLevels  = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert'];
+    const priorityLevels = ['Basse', 'Moyenne', 'Haute', 'Urgente'];
     const hours = Array.from({ length: 13 }, (_, i) => `${8 + i}h-${9 + i}h`);
     const days  = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 
@@ -543,11 +545,11 @@
       try {
         // Envoi des compétences
         for (const s of userData.strengths) {
-          await API.profile.addCompetence({ matiere_id: s.matiere_id, mastery: s.mastery });
+          await API.profile.addCompetence({ matiere_id: s.matiere_id, niveau: s.mastery });
         }
         // Envoi des lacunes
         for (const w of userData.weaknesses) {
-          await API.profile.addLacune({ matiere_id: w.matiere_id, priority: w.priority });
+          await API.profile.addLacune({ matiere_id: w.matiere_id, priorite: w.priority });
         }
 
         // Sauvegarde locale
@@ -626,7 +628,9 @@
       days.forEach((day, di) => {
         hours.forEach((hour, ti) => {
           if (userData.availability[di][ti]) {
-            slots.push({ jour: day, heure: hour });
+            const creneau = hour.replace('h-', '-').padStart(5, '0').replace(/(\d+)-(\d+)h/, (_, a, b) => 
+            a.padStart(2,'0') + '-' + b.padStart(2,'0'));
+            slots.push({ jour: day, creneau });
           }
         });
       });
