@@ -17,9 +17,6 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = (
         os.environ.get('DATABASE_URL') or f'sqlite:///{_db_path.as_posix()}'
     )
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-if not SQLALCHEMY_DATABASE_URI:
-    raise RuntimeError("DATABASE_URL manquant dans .env.local")
 
 class ProductionConfig(Config):
     DEBUG = False

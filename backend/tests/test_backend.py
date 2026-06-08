@@ -2,6 +2,7 @@ import json
 import secrets
 from datetime import datetime, timedelta, timezone
 import pytest
+from flask_jwt_extended import create_access_token
 from app.database import db
 from app.models.user import User
 from app.models.profile import Profile, Disponible
@@ -475,15 +476,14 @@ def test_websocket_register_joins_user_room(socketio_client, app):
         user = create_user_direct('socket_reg@a.com', 'pass')
         create_profile(user)
         user_id = user.id
+        token = create_access_token(identity=str(user_id))
 
-    socketio_client.emit('register', {'user_id': user_id})
+    socketio_client.emit('register', {'token': token})
     
     # Vérifier que l'événement 'registered' est reçu
-    # Avec Flask-SocketIO test_client, les événements sont capturés
     data = socketio_client.get_received()
-    # L'événement 'registered' doit être dans la liste des événements reçus
-    event_names = [e['args'][0] if e['args'] else e.get('name') for e in data]
-    assert 'registered' in event_names or len(data) > 0
+    event_names = [e['name'] for e in data]
+    assert 'registered' in event_names
 
 
 def test_websocket_join_conversation(socketio_client, app):
@@ -497,13 +497,14 @@ def test_websocket_join_conversation(socketio_client, app):
         db.session.add(conv)
         db.session.commit()
         conv_id = conv.id
+        token = create_access_token(identity=str(user_a.id))
 
-    socketio_client.emit('join', {'conversation_id': conv_id})
+    socketio_client.emit('join', {'token': token, 'conversation_id': conv_id})
     
     data = socketio_client.get_received()
     # L'événement 'joined' doit être reçu
-    event_names = [e['args'][0] if e['args'] else e.get('name') for e in data]
-    assert 'joined' in event_names or len(data) > 0
+    event_names = [e['name'] for e in data]
+    assert 'joined' in event_names
 
 
 def test_websocket_send_message_persists_to_db(socketio_client, app):
@@ -518,10 +519,11 @@ def test_websocket_send_message_persists_to_db(socketio_client, app):
         db.session.commit()
         conv_id = conv.id
         sender_id = sender.id
+        token = create_access_token(identity=str(sender_id))
 
     socketio_client.emit('send_message', {
+        'token': token,
         'conversation_id': conv_id,
-        'sender_id': sender_id,
         'contenu': 'Message test WebSocket'
     })
     
@@ -546,13 +548,13 @@ def test_websocket_leave_conversation(socketio_client, app):
         db.session.add(conv)
         db.session.commit()
         conv_id = conv.id
+        token = create_access_token(identity=str(user_a.id))
 
-    socketio_client.emit('join', {'conversation_id': conv_id})
+    socketio_client.emit('join', {'token': token, 'conversation_id': conv_id})
     socketio_client.get_received()  # Clear the buffer
     
-    socketio_client.emit('leave', {'conversation_id': conv_id})
+    socketio_client.emit('leave', {'token': token, 'conversation_id': conv_id})
     # Si le leave est traité correctement, pas d'erreur
-    data = socketio_client.get_received()
     assert socketio_client.is_connected()
 
 
@@ -565,18 +567,17 @@ def test_websocket_notify_match(socketio_client, app):
         create_profile(mentor)
         student_id = student.id
         mentor_id = mentor.id
+        token = create_access_token(identity=str(mentor_id))
 
     # L'étudiant reçoit un match du mentor
     socketio_client.emit('notify_match', {
+        'token': token,
         'recipient_id': student_id,
         'student_nom': 'Student Name',
         'matiere': 'Mathématiques'
     })
     
-    data = socketio_client.get_received()
-    match_events = [e for e in data if e['args'][0] == 'match_received']
-    # L'événement peut ne pas arriver si le recipient n'est pas dans la room
-    # mais on peut vérifier que l'émission ne cause pas d'erreur
+    # On peut vérifier que l'émission ne cause pas d'erreur
     assert socketio_client.is_connected()
 
 
