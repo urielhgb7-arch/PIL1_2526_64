@@ -182,21 +182,19 @@
   <div id="modal-skills" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-card border border-border rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <h3 class="text-xl font-semibold mb-4">Compétences & Faiblesses</h3>
-      <form class="space-y-6">
-        <div>
-          <label class="block text-sm font-medium mb-3">Compétences</label>
-          <div class="space-y-2">
-            <input title="Compétence" type="text" placeholder="Ex: Programmation orientée objet" value="React" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            <input title="Compétence" type="text" placeholder="Ex: Base de données SQL" value="Node.js" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            <input title="Compétence" type="text" placeholder="Ex: Développement web" value="Python" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+      <div id="matieres-loading-modal" class="flex items-center justify-center py-6">
+        <div class="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-3"></div>
+        <span class="text-muted text-sm">Chargement des matières…</span>
+      </div>
+      <form id="modal-skills-form" class="space-y-6 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-sm font-medium mb-3">Compétences</h4>
+            <div id="strengths-list-modal" class="space-y-2"></div>
           </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-3">Faiblesses</label>
-          <div class="space-y-2">
-            <input title="Faiblesse" type="text" placeholder="Ex: Algorithmique avancée" value="Algorithmique" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            <input title="Faiblesse" type="text" placeholder="Ex: Mathématiques discrètes" value="Mathématiques" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-            <input title="Faiblesse" type="text" placeholder="Ex: Architecture réseau" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
+          <div>
+            <h4 class="text-sm font-medium mb-3">Faiblesses</h4>
+            <div id="weaknesses-list-modal" class="space-y-2"></div>
           </div>
         </div>
         <div class="flex gap-2">
@@ -318,6 +316,9 @@
       if (name === 'availability') {
         initAvailabilityGrid();
       }
+      if (name === 'skills') {
+        initSkillsModal();
+      }
     }
 
     function closeModal(name) {
@@ -401,6 +402,188 @@
         alert('Erreur lors de la mise à jour du profil : ' + err.message);
       }
     });
+
+    /* ──────────────────────────────────────────
+       Skills modal: load matieres from API, filter by filiere, render selectable lists
+    ────────────────────────────────────────── */
+    async function initSkillsModal() {
+      // show loader
+      document.getElementById('matieres-loading-modal').classList.remove('hidden');
+      document.getElementById('modal-skills-form').classList.add('hidden');
+
+      // determine filiere from profile display or local cache
+      let filiere = document.getElementById('display-department').textContent || '';
+      const saved = getUserData();
+      if ((!filiere || filiere === '—') && saved && saved.department) filiere = saved.department;
+
+      try {
+        // ensure global loader has data
+        await loadMatieresFromAPI();
+        // filter by filiere
+        const matieres = (filiere && filiere !== '—') ? getMatiersByFiliere(filiere) : window._matieresCache || [];
+        renderSkillsModal(matieres || []);
+        // pré-remplir depuis le profil si disponible
+        try {
+          const data = await API.profile.getMe();
+          const profile = data.profile || data;
+          const comps = profile.competences || profile.competences_list || profile.competences || [];
+          const lacs = profile.lacunes || profile.lacunes_list || profile.lacunes || [];
+          prefillSkillsModal(comps, lacs);
+        } catch (e) {
+          // pas de profil ou erreur, silencieux
+        }
+      } catch (err) {
+        console.warn('Erreur chargement matieres pour modal skills', err);
+        renderSkillsModal([]);
+      } finally {
+        document.getElementById('matieres-loading-modal').classList.add('hidden');
+        document.getElementById('modal-skills-form').classList.remove('hidden');
+      }
+    }
+
+    function prefillSkillsModal(comps = [], lacs = []) {
+      try {
+        // compétences
+        (comps || []).forEach(c => {
+          const id = c.matiere_id || c.matiere || c.id || c.matiere_id;
+          const mastery = c.mastery || c.niveau || c.value || 'Intermediate';
+          const sid = safeId(id);
+          const btn = document.getElementById(`ms-strength-${sid}`);
+          const lvl = document.getElementById(`ms-strength-level-${sid}`);
+          if (btn) {
+            btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors`;
+            if (lvl) { lvl.classList.remove('hidden'); lvl.value = mastery; }
+            modalUser.strengths.push({ matiere_id: id, value: mastery });
+          }
+        });
+        // lacunes
+        (lacs || []).forEach(l => {
+          const id = l.matiere_id || l.matiere || l.id || l.matiere_id;
+          const prio = l.priority || l.niveau || l.value || 'Medium';
+          const sid = safeId(id);
+          const btn = document.getElementById(`ms-weakness-${sid}`);
+          const lvl = document.getElementById(`ms-weakness-level-${sid}`);
+          if (btn) {
+            btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors`;
+            if (lvl) { lvl.classList.remove('hidden'); lvl.value = prio; }
+            modalUser.weaknesses.push({ matiere_id: id, value: prio });
+          }
+        });
+      } catch (err) { console.warn('prefillSkillsModal error', err); }
+    }
+
+    function safeId(str) { return String(str).replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, ''); }
+
+    function renderSkillsModal(matieres) {
+      const sl = document.getElementById('strengths-list-modal');
+      const wl = document.getElementById('weaknesses-list-modal');
+      sl.innerHTML = '';
+      wl.innerHTML = '';
+
+      matieres.forEach(mat => {
+        const id = mat.id; const nom = mat.nom || mat.name || mat.libelle || '';
+        const sid = safeId(id);
+
+        const sd = document.createElement('div');
+        sd.className = 'space-y-2';
+        sd.innerHTML = `
+          <button type="button" onclick="toggleSkillModal(${id},'strength')"
+            id="ms-strength-${sid}"
+            class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors">
+            <div class="flex items-center justify-between"><span>${nom}</span></div>
+          </button>
+          <select id="ms-strength-level-${sid}" class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            <option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Expert</option>
+          </select>`;
+        sl.appendChild(sd);
+        // attach change handler to update modalUser value
+        const sSelect = document.getElementById(`ms-strength-level-${sid}`);
+        if (sSelect) sSelect.addEventListener('change', (ev) => {
+          const entry = modalUser.strengths.find(x => x.matiere_id === id);
+          if (entry) entry.value = ev.target.value;
+        });
+
+        const wd = document.createElement('div');
+        wd.className = 'space-y-2';
+        wd.innerHTML = `
+          <button type="button" onclick="toggleSkillModal(${id},'weakness')"
+            id="ms-weakness-${sid}"
+            class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors">
+            <div class="flex items-center justify-between"><span>${nom}</span></div>
+          </button>
+          <select id="ms-weakness-level-${sid}" class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning">
+            <option>Low</option><option>Medium</option><option>High</option><option>Urgent</option>
+          </select>`;
+        wl.appendChild(wd);
+        const wSelect = document.getElementById(`ms-weakness-level-${sid}`);
+        if (wSelect) wSelect.addEventListener('change', (ev) => {
+          const entry = modalUser.weaknesses.find(x => x.matiere_id === id);
+          if (entry) entry.value = ev.target.value;
+        });
+      });
+    }
+
+    // Track selections in the modal
+    const modalUser = { strengths: [], weaknesses: [] };
+
+    function toggleSkillModal(id, type) {
+      const sid = safeId(id);
+      const btnId = `ms-${type}-${sid}`;
+      const lvlId = `ms-${type}-level-${sid}`;
+      const oppType = type === 'strength' ? 'weakness' : 'strength';
+      const oppBtnId = `ms-${oppType}-${sid}`;
+      const oppLvlId = `ms-${oppType}-level-${sid}`;
+
+      const btn = document.getElementById(btnId);
+      const lvl = document.getElementById(lvlId);
+      const oppBtn = document.getElementById(oppBtnId);
+      const oppLvl = document.getElementById(oppLvlId);
+
+      const arr = type === 'strength' ? modalUser.strengths : modalUser.weaknesses;
+      const oppArr = type === 'strength' ? modalUser.weaknesses : modalUser.strengths;
+      const idx = arr.findIndex(x => x.matiere_id === id);
+      const nom = (document.getElementById(`ms-${type}-${sid}`)?.textContent || '').trim();
+
+      if (idx > -1) {
+        arr.splice(idx,1);
+        btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors`;
+        lvl.classList.add('hidden');
+      } else {
+        // remove opposite
+        const oppIdx = oppArr.findIndex(x => x.matiere_id === id);
+        if (oppIdx > -1) {
+          oppArr.splice(oppIdx,1);
+          if (oppBtn) { oppBtn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors`; }
+          if (oppLvl) oppLvl.classList.add('hidden');
+        }
+        const defaultVal = type === 'strength' ? 'Intermediate' : 'Medium';
+        arr.push({ matiere_id: id, value: defaultVal });
+        btn.className = `w-full text-left px-4 py-3 rounded-lg border ${type==='strength'?'bg-primary/10 border-primary':'bg-warning/10 border-warning'} text-white transition-colors`;
+        lvl.classList.remove('hidden'); lvl.value = defaultVal;
+      }
+    }
+
+    document.getElementById('modal-skills-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        // send strengths
+        for (const s of modalUser.strengths) {
+          await API.profile.addCompetence({ matiere_id: s.matiere_id, mastery: s.value || 'Intermediate' });
+        }
+        // send weaknesses
+        for (const w of modalUser.weaknesses) {
+          await API.profile.addLacune({ matiere_id: w.matiere_id, priority: w.value || 'Medium' });
+        }
+        // close
+        modalUser.strengths = []; modalUser.weaknesses = [];
+        closeModal('skills');
+        // refresh display (optional)
+        loadProfile();
+      } catch (err) {
+        alert('Erreur lors de la sauvegarde des compétences: ' + (err.message || err));
+      }
+    });
+
 
     // ── Changement de mot de passe ─────────────────────────────────────────────
     document.querySelector('#modal-password form').addEventListener('submit', async (e) => {

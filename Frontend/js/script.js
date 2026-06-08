@@ -17,7 +17,8 @@ function logout() {
   localStorage.removeItem('userEmail');
   localStorage.removeItem('userData');
   localStorage.removeItem('onboardingCompleted');
-  window.location.href = 'index.html';
+  const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
+  window.location.href = redirectPath;
 }
 
 // Get user data

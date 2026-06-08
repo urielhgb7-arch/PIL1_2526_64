@@ -27,6 +27,14 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         config.body = JSON.stringify(body);
     }
 
+    function getLoginRedirectPath() {
+        const path = window.location.pathname;
+        if (path.includes('/pages/')) {
+            return 'signin.html';
+        }
+        return 'pages/signin.html';
+    }
+
     try {
         const response = await fetch(url, config);
 
@@ -34,8 +42,9 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
             console.warn('Session expirée. Redirection vers login.');
             localStorage.removeItem('mentorlink_token');
             localStorage.removeItem('mentorlink_user');
-            if (!window.location.pathname.includes('login.html')) {
-                window.location.href = '/Frontend/pages/login.html';
+            const isAuthPage = /signin\.html|signup\.html/.test(window.location.pathname);
+            if (!isAuthPage) {
+                window.location.href = getLoginRedirectPath();
             }
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
