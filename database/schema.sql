@@ -3,6 +3,7 @@
 -- ============================================================================
 
 -- Suppression ordonnée des tables si elles existent (pour les réinitialisations de test)
+DROP TABLE IF EXISTS password_reset_tokens CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS conversations CASCADE;
@@ -161,7 +162,17 @@ CREATE TABLE notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- ----------------------------------------------------------------------------
+-- 10. RÉINITIALISATION DE MOT DE PASSE (Tokens sécurisés)
+-- ----------------------------------------------------------------------------
+CREATE TABLE password_reset_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL
+);
 
 -- Injection des matières officielles de l'IFRI
 -- ============================================================

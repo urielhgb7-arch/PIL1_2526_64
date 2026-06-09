@@ -247,13 +247,7 @@
         document.getElementById('metric-matches').textContent = acceptedCount;
         document.getElementById('metric-hours').textContent = acceptedCount > 0 ? `${acceptedCount * 2}h` : '0h';
 
-        const p = prof.profile || prof;
-        if (p.user_id) {
-          API.feedback.getUser(p.user_id).then(fb => {
-            const note = (fb || {}).note_moyenne;
-            if (note != null) document.getElementById('metric-rating').textContent = note.toFixed(1);
-          }).catch(() => { showToast('Erreur chargement feedback', 'error'); });
-        }
+        document.getElementById('metric-rating').textContent = '—';
       } catch (err) { console.warn('Metrics error', err); showToast('Erreur lors du chargement des métriques', 'error'); }
 
       // ── Offres réelles ────────────────────────────────────────────────────

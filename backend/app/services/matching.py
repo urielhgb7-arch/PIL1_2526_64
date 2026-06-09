@@ -71,17 +71,7 @@ def _get_excluded_user_ids(current_user_id: int) -> tuple:
     return blocked, rejected_set
 
 
-def _get_feedback_bonus(user_id: int) -> float:
-    from app.models.services import Feedback
-    avg = db.session.query(db.func.avg(Feedback.note)).filter(
-        Feedback.to_user_id == user_id
-    ).scalar()
-    if avg is None:
-        return 0.0
-    return round((avg / 5.0) * 5, 2)
-
-
-def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_slots, same_filiere, same_niveau, same_format, score_matiere, score_niveau, score_dispos, score_niveau_acad, score_filiere, score_format, penalty, feedback_bonus, total_score):
+def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_slots, same_filiere, same_niveau, same_format, score_matiere, score_niveau, score_dispos, score_niveau_acad, score_filiere, score_format, penalty, total_score):
     explication = _build_explanation(
         matched_subjects=matched_subjects,
         shared_slots_count=len(shared_slots),
@@ -109,7 +99,6 @@ def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_s
             "meme_filiere":      score_filiere,
             "format_preference": score_format,
             "penalite_rejet":    penalty,
-            "bonus_feedback":    feedback_bonus
         },
         "rejected_before": penalty < 0
     }
@@ -177,9 +166,8 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
         score_format = _score_format_bonus(demandeur_profile.format_preference, candidate.format_preference)
 
         penalty = -5 if candidate.user_id in rejected_ids else 0
-        feedback_bonus = _get_feedback_bonus(candidate.user_id)
 
-        total_score = round(min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty + feedback_bonus), 2)
+        total_score = round(min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty), 2)
 
         matched_subjects = []
         if matiere_obj:
@@ -199,7 +187,7 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
             same_filiere, same_niveau, same_format,
             score_matiere, score_niveau, score_dispos,
             score_niveau_acad, score_filiere, score_format,
-            penalty, feedback_bonus, total_score
+            penalty, total_score
         ))
 
     resultats.sort(key=lambda x: x["score"], reverse=True)
@@ -279,10 +267,9 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
         score_format = _score_format_bonus(demandeur_profile.format_preference, candidate.format_preference)
 
         penalty = -5 if candidate.user_id in rejected_ids else 0
-        feedback_bonus = _get_feedback_bonus(candidate.user_id)
 
         total_score = round(
-            min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty + feedback_bonus),
+            min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty),
             2
         )
 
@@ -295,7 +282,7 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
             same_filiere, same_niveau, same_format,
             score_matiere, score_niveau, score_dispos,
             score_niveau_acad, score_filiere, score_format,
-            penalty, feedback_bonus, total_score
+            penalty, total_score
         ))
 
     resultats.sort(key=lambda x: x["score"], reverse=True)

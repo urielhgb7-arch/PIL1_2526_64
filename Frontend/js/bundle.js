@@ -136,10 +136,6 @@ const API = {
         offerHelp: (id) => fetchAPI(`/demands/${id}/offer-help`, 'POST')
     },
 
-    feedback: {
-        create: (data) => fetchAPI('/feedback', 'POST', data),
-        getUser: (userId) => fetchAPI(`/feedback/${userId}`, 'GET')
-    },
 
     matieres: {
         getAll: () => fetchAPI('/matieres', 'GET')

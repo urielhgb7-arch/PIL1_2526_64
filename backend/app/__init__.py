@@ -107,8 +107,6 @@ def create_app(config_name=None):
     from app.routes.offers import offers_bp
     flask_app.register_blueprint(offers_bp, url_prefix='/api')
 
-    from app.routes.feedback import feedback_bp
-    flask_app.register_blueprint(feedback_bp, url_prefix='/api')
 
     _disposed = False
 

@@ -84,18 +84,3 @@ class Matching(db.Model):
         db.UniqueConstraint('user_one_id', 'user_two_id', 'demand_id', name='unique_match'),
     )
 
-
-class Feedback(db.Model):
-    __tablename__ = 'feedbacks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    from_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    to_user_id   = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    matching_id  = db.Column(db.Integer, db.ForeignKey('matching.id'), nullable=False)
-    note         = db.Column(db.Integer, nullable=False)  # 1-5
-    commentaire  = db.Column(db.Text)
-    created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-
-    __table_args__ = (
-        db.UniqueConstraint('from_user_id', 'matching_id', name='unique_feedback'),
-    )
