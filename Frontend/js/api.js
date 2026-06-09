@@ -43,8 +43,8 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         const response = await fetch(url, config);
 
         if (response.status === 401) {
-            const isPublicPage = /signin\.html|signup\.html|reset-password\.html|index\.html/.test(window.location.pathname);
-            if (isPublicPage) {
+            const pub = /^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            if (pub) {
                 throw new Error('Non authentifié');
             }
             console.warn('Session expirée. Redirection vers login.');
