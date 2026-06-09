@@ -1,13 +1,17 @@
 # backend/app/__init__.py
 import os
 import logging
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from app.database import db
 from app.config import config
 from app.config.logging_config import setup_logging
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+FRONTEND_DIR = os.path.join(BASE_DIR, 'Frontend')
+
 def create_app(config_name=None):
     flask_app = Flask(__name__)
 
@@ -120,5 +124,15 @@ def create_app(config_name=None):
     @flask_app.route('/api/health', methods=['GET'])
     def health_check():
         return jsonify({"status": "healthy", "database": "connected"}), 200
+
+    @flask_app.route('/', defaults={'path': ''})
+    @flask_app.route('/<path:path>')
+    def serve_frontend(path):
+        if path.startswith('api/') or path.startswith('socket.io/'):
+            return jsonify({"error": "Not found"}), 404
+        full_path = os.path.join(FRONTEND_DIR, path)
+        if path and os.path.exists(full_path) and not os.path.isdir(full_path):
+            return send_from_directory(FRONTEND_DIR, path)
+        return send_from_directory(FRONTEND_DIR, 'index.html')
 
     return flask_app
