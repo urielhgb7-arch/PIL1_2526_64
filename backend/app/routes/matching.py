@@ -10,7 +10,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
 from app.models import User, Profile, Conversation, Notification
 from app.models.profile import Disponible
-from app.models.services import Matching, ProfilCompetence, Demand
+from app.models.services import Matching, ProfilCompetence, Demand, Matiere
 from app.services.matching import calculate_matches
 from app.validators import matiere_exists
 
@@ -269,24 +269,28 @@ def get_received_matches():
     current_user_id = int(get_jwt_identity())
 
     matches = Matching.query.filter_by(
-        user_two_id=current_user_id,
-        status='pending'
+        user_two_id=current_user_id
     ).order_by(Matching.created_at.desc()).all()
 
     result = []
     for m in matches:
-        demandeur_profile = Profile.query.filter_by(user_id=m.user_one_id).first()
+        initiator_profile = Profile.query.filter_by(user_id=m.user_one_id).first()
+        matiere_obj = db.session.get(Matiere, m.matiere_id)
         result.append({
             "matching_id": m.id,
-            "demandeur": {
+            "demand_id": m.demand_id,
+            "offer_id": m.offer_id,
+            "initiator": {
                 "user_id": m.user_one_id,
-                "nom":     demandeur_profile.nom if demandeur_profile else "",
-                "prenom":  demandeur_profile.prenom if demandeur_profile else "",
+                "nom":     initiator_profile.nom if initiator_profile else "",
+                "prenom":  initiator_profile.prenom if initiator_profile else "",
             },
             "matiere_id": m.matiere_id,
+            "matiere_nom": matiere_obj.nom if matiere_obj else "",
             "jour": m.demand.jour if m.demand else None,
             "creneau": m.demand.creneau if m.demand else None,
             "score":      m.score,
+            "status":     m.status,
             "created_at": m.created_at.isoformat()
         })
 

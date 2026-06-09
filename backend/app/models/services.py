@@ -70,6 +70,7 @@ class Matching(db.Model):
     user_two_id  = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # candidat
     initiator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # qui a swipé
     demand_id    = db.Column(db.Integer, db.ForeignKey('demands.id'), nullable=False)
+    offer_id     = db.Column(db.Integer, db.ForeignKey('offers.id'), nullable=True)
     matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     status       = db.Column(db.String(20), nullable=False, default='pending')         # pending/accepted/rejected
     score        = db.Column(db.Float, nullable=False)

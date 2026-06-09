@@ -41,6 +41,19 @@ def create_app(config_name=None):
                 create_database(db.engine.url)
                 logger.info("Base de données créée automatiquement !")
             db.create_all()
+            # Migration: ajouter colonnes manquantes
+            try:
+                from sqlalchemy import inspect, text
+                inspector = inspect(db.engine)
+                for col, table in [('offer_id', 'matching')]:
+                    cols = [c['name'] for c in inspector.get_columns(table)]
+                    if col not in cols:
+                        with db.engine.connect() as conn:
+                            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} INTEGER DEFAULT NULL"))
+                            conn.commit()
+                            logger.info(f"Migration: colonne {col} ajoutée à {table}")
+            except Exception as mig_err:
+                logger.warning(f"Migration colonnes ignorée: {mig_err}")
             # Migration: ajouter colonne disponibilites si absente
             try:
                 from sqlalchemy import inspect, text

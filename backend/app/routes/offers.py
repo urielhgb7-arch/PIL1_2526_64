@@ -408,6 +408,7 @@ def respond_to_offer(current_user, offer_id):
         user_two_id=offrant_user_id,
         initiator_id=current_user.id,
         demand_id=demand.id,
+        offer_id=offer.id,
         matiere_id=offer.matiere_id,
         score=0.0,
         status='pending'
