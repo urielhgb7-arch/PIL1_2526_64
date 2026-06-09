@@ -1,4 +1,5 @@
 # backend/app/routes/offers.py
+import re
 import logging
 from datetime import datetime
 from flask import Blueprint, request, jsonify
@@ -7,7 +8,7 @@ from app.database import db
 from app.models import Profile
 from app.models.services import Matching, Offer, Demand, ProfilLacune, ProfilCompetence
 from app.middleware.auth_guard import token_required
-from app.validators import is_valid_format_preference, matiere_exists, is_valid_day, is_valid_creneau
+from app.validators import is_valid_format_preference, matiere_exists, is_valid_day, is_valid_creneau, VALID_DAYS
 
 logger = logging.getLogger(__name__)
 offers_bp = Blueprint('offers', __name__)
@@ -35,6 +36,19 @@ DAY_INDEX_TO_NAME = {
 def _parse_iso_slot(slot_iso):
     if not slot_iso or not isinstance(slot_iso, str):
         return None, None
+
+    # Try "Jour-hH-hH" format (e.g. "Lundi-8h-9h")
+    match = re.match(r'^(\w+)-(\d+)h-(\d+)h$', slot_iso.strip())
+    if match:
+        jour = match.group(1)
+        debut = int(match.group(2))
+        fin = int(match.group(3))
+        if jour not in VALID_DAYS or debut < 0 or fin > 24 or fin - debut != 1:
+            return None, None
+        creneau = f'{debut:02d}-{fin:02d}'
+        return jour, creneau
+
+    # Try ISO datetime format
     try:
         if slot_iso.endswith('Z'):
             slot_iso = slot_iso[:-1] + '+00:00'
