@@ -45,11 +45,12 @@ def create_app(config_name=None):
             try:
                 from sqlalchemy import inspect, text
                 inspector = inspect(db.engine)
-                for col, table in [('offer_id', 'matching'), ('urgence', 'demands')]:
+                col_defs = [('offer_id', 'matching', 'INTEGER'), ('urgence', 'demands', 'VARCHAR(20)')]
+                for col, table, col_type in col_defs:
                     cols = [c['name'] for c in inspector.get_columns(table)]
                     if col not in cols:
                         with db.engine.connect() as conn:
-                            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} INTEGER DEFAULT NULL"))
+                            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} {col_type} DEFAULT NULL"))
                             conn.commit()
                             logger.info(f"Migration: colonne {col} ajoutée à {table}")
             except Exception as mig_err:

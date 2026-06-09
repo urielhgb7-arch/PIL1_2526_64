@@ -450,7 +450,7 @@
             `}
             ${data.status ? `<div><span class="text-muted">Statut</span><p class="font-medium">${data.status}</p></div>` : ''}
           </div>
-          ${!isOffer && !isMyItem ? `
+          ${!isOffer && cacheKey === 'my-demands' ? `
           <a href="matching.html?demand_id=${data.id}" class="mt-4 block w-full text-center py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">Trouver un mentor</a>
           ` : ''}
         </div>
@@ -707,7 +707,10 @@
                 ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
                 ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
               </div>
-              <button onclick="event.stopPropagation(); deleteDemand(${d.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <a href="matching.html?demand_id=${d.id}" onclick="event.stopPropagation()" class="px-2.5 py-1.5 bg-primary/10 text-primary rounded-lg text-xs hover:bg-primary/20 transition-colors font-medium">Trouver un mentor</a>
+                <button onclick="event.stopPropagation(); deleteDemand(${d.id})" class="px-2.5 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+              </div>
             </div>
             ${helpHtml}
           </div>

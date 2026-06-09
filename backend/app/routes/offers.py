@@ -431,43 +431,51 @@ def respond_to_offer(current_user, offer_id):
 @token_required
 def offer_help_on_demand(current_user, demand_id):
     """Un étudiant avec une compétence propose son aide sur une demande"""
-    demand = db.session.get(Demand, demand_id)
-    if not demand:
-        return jsonify({"message": "Demande introuvable"}), 404
+    try:
+        demand = db.session.get(Demand, demand_id)
+        if not demand:
+            return jsonify({"message": "Demande introuvable"}), 404
 
-    profile = Profile.query.filter_by(user_id=current_user.id).first()
-    if not profile:
-        return jsonify({"message": "Profil introuvable"}), 404
+        profile = Profile.query.filter_by(user_id=current_user.id).first()
+        if not profile:
+            return jsonify({"message": "Profil introuvable"}), 404
 
-    competence = ProfilCompetence.query.filter_by(
-        profile_id=profile.id,
-        matiere_id=demand.matiere_id
-    ).first()
-    if not competence:
-        return jsonify({"message": "Vous n'avez pas de compétence sur cette matière"}), 400
+        if demand.profile_id == profile.id:
+            return jsonify({"message": "Vous ne pouvez pas vous aider vous-même"}), 400
 
-    demandeur_profile = Profile.query.get(demand.profile_id)
-    if not demandeur_profile:
-        return jsonify({"message": "Profil du demandeur introuvable"}), 404
+        competence = ProfilCompetence.query.filter_by(
+            profile_id=profile.id,
+            matiere_id=demand.matiere_id
+        ).first()
+        if not competence:
+            return jsonify({"message": "Vous n'avez pas de compétence sur cette matière"}), 400
 
-    existing = Matching.query.filter_by(
-        user_one_id=current_user.id,
-        user_two_id=demandeur_profile.user_id,
-        demand_id=demand_id
-    ).first()
-    if existing:
-        return jsonify({"message": "Aide déjà proposée", "matching_id": existing.id, "status": existing.status}), 200
+        demandeur_profile = Profile.query.get(demand.profile_id)
+        if not demandeur_profile:
+            return jsonify({"message": "Profil du demandeur introuvable"}), 404
 
-    new_match = Matching(
-        user_one_id=current_user.id,
-        user_two_id=demandeur_profile.user_id,
-        initiator_id=current_user.id,
-        demand_id=demand_id,
-        matiere_id=demand.matiere_id,
-        score=0.0,
-        status='pending'
-    )
-    db.session.add(new_match)
-    db.session.commit()
+        existing = Matching.query.filter_by(
+            user_one_id=current_user.id,
+            user_two_id=demandeur_profile.user_id,
+            demand_id=demand_id
+        ).first()
+        if existing:
+            return jsonify({"message": "Aide déjà proposée", "matching_id": existing.id, "status": existing.status}), 200
 
-    return jsonify({"message": "Aide proposée avec succès", "matching_id": new_match.id}), 201
+        new_match = Matching(
+            user_one_id=current_user.id,
+            user_two_id=demandeur_profile.user_id,
+            initiator_id=current_user.id,
+            demand_id=demand_id,
+            matiere_id=demand.matiere_id,
+            score=0.0,
+            status='pending'
+        )
+        db.session.add(new_match)
+        db.session.commit()
+
+        return jsonify({"message": "Aide proposée avec succès", "matching_id": new_match.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Erreur offer_help_on_demand: {e}", exc_info=True)
+        return jsonify({"message": "Erreur lors de la proposition d'aide", "error": str(e)}), 500
