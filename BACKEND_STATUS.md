@@ -2,11 +2,11 @@
 
 **Date**: 2026-06-07  
 **Version**: 1.0 (Matching avec slots obligatoires)  
-**Tests**: ✅ 35/35 passing
+**Tests**:  35/35 passing
 
 ---
 
-## 📋 Vue d'ensemble
+##  Vue d'ensemble
 
 Le backend implémente un **système de matching intelligent** basé sur :
 - Création de **demandes avec créneaux obligatoires** (jour + heure)
@@ -17,7 +17,7 @@ Le backend implémente un **système de matching intelligent** basé sur :
 
 ---
 
-## 🔧 Architecture
+##  Architecture
 
 ### Stack Technique
 - **Framework**: Flask + Flask-JWT-Extended
@@ -29,180 +29,180 @@ Le backend implémente un **système de matching intelligent** basé sur :
 ### Structure des dossiers
 ```
 backend/
-├── app/
-│   ├── routes/
-│   │   ├── auth.py              # Authentification, inscription, réinitialisation mot de passe
-│   │   ├── offers.py            # Offers (non utilisé actuellement) + Demands
-│   │   ├── matching.py          # Moteur de matching et matchs
-│   │   ├── profile.py           # Profils utilisateurs, compétences, lacunes, disponibilités
-│   │   ├── messages.py          # Conversations et messages HTTP
-│   │   └── notifications.py     # Notifications
-│   ├── models/
-│   │   ├── user.py              # User, PasswordResetToken
-│   │   ├── profile.py           # Profile, ProfilCompetence, ProfilLacune, Disponible
-│   │   ├── services.py          # Matiere, Offer, Demand, Matching, ProfilCompetence, ProfilLacune
-│   │   └── messages.py          # Conversation, Message, Notification
-│   ├── services/
-│   │   ├── matching.py          # Moteur de calcul des scores de matching
-│   │   └── email_service.py     # Envoi d'emails (SMTP Gmail)
-│   ├── sockets/
-│   │   └── chat.py              # WebSocket pour messages en temps réel
-│   ├── middleware/
-│   │   └── auth_guard.py        # Protection des routes
-│   ├── validators.py            # Validations réutilisables
-│   ├── config/
-│   │   └── __init__.py          # Configuration (remplace config.py supprimé)
-│   ├── database.py              # Initialisation SQLAlchemy
-│   └── __init__.py              # Initialisation Flask
-├── tests/
-│   ├── test_backend.py          # Tests principaux (35 tests)
-│   ├── test_profile.py          # Tests profil
-│   ├── test_messages.py         # Tests messages
-│   └── conftest.py              # Fixtures pytest
-├── run.py                       # Point d'entrée
-├── requirements.txt             # Dépendances
-├── init_db.py                   # Initialisation base de données
-└── check_db.py                  # Diagnostic base de données
+ app/
+    routes/
+       auth.py              # Authentification, inscription, réinitialisation mot de passe
+       offers.py            # Offers (non utilisé actuellement) + Demands
+       matching.py          # Moteur de matching et matchs
+       profile.py           # Profils utilisateurs, compétences, lacunes, disponibilités
+       messages.py          # Conversations et messages HTTP
+       notifications.py     # Notifications
+    models/
+       user.py              # User, PasswordResetToken
+       profile.py           # Profile, ProfilCompetence, ProfilLacune, Disponible
+       services.py          # Matiere, Offer, Demand, Matching, ProfilCompetence, ProfilLacune
+       messages.py          # Conversation, Message, Notification
+    services/
+       matching.py          # Moteur de calcul des scores de matching
+       email_service.py     # Envoi d'emails (SMTP Gmail)
+    sockets/
+       chat.py              # WebSocket pour messages en temps réel
+    middleware/
+       auth_guard.py        # Protection des routes
+    validators.py            # Validations réutilisables
+    config/
+       __init__.py          # Configuration (remplace config.py supprimé)
+    database.py              # Initialisation SQLAlchemy
+    __init__.py              # Initialisation Flask
+ tests/
+    test_backend.py          # Tests principaux (35 tests)
+    test_profile.py          # Tests profil
+    test_messages.py         # Tests messages
+    conftest.py              # Fixtures pytest
+ run.py                       # Point d'entrée
+ requirements.txt             # Dépendances
+ init_db.py                   # Initialisation base de données
+ check_db.py                  # Diagnostic base de données
 ```
 
 ---
 
-## 🌐 Endpoints Implémentés
+##  Endpoints Implémentés
 
 ### **Authentification** (`/api/auth`)
 
 | Endpoint | Méthode | Description | Auth |
 |----------|---------|-------------|------|
-| `/api/auth/register` | POST | Inscription utilisateur | ❌ |
-| `/api/auth/login` | POST | Connexion | ❌ |
-| `/api/auth/forgot-password` | POST | Demande réinitialisation mot de passe | ❌ |
-| `/api/auth/reset-password` | POST | Réinitialisation mot de passe | ❌ |
+| `/api/auth/register` | POST | Inscription utilisateur |  |
+| `/api/auth/login` | POST | Connexion |  |
+| `/api/auth/forgot-password` | POST | Demande réinitialisation mot de passe |  |
+| `/api/auth/reset-password` | POST | Réinitialisation mot de passe |  |
 
 ### **Profils** (`/api/profile`)
 
 | Endpoint | Méthode | Description | Auth |
 |----------|---------|-------------|------|
-| `/api/profile/me` | GET | Récupérer mon profil | ✅ |
-| `/api/profile/me` | PUT | Mettre à jour mon profil | ✅ |
-| `/api/profile/<user_id>` | GET | Récupérer le profil d'un utilisateur | ✅ |
-| `/api/profile/me/disponibilites` | GET | Mes créneaux de disponibilité | ✅ |
-| `/api/profile/disponibilites` | POST | Ajouter un créneau | ✅ |
-| `/api/profile/disponibilites/<jour>/<creneau>` | DELETE | Supprimer un créneau | ✅ |
-| `/api/profile/competences` | POST | Ajouter une compétence | ✅ |
-| `/api/profile/competences/<matiere_id>/activate` | PUT | Activer/désactiver une compétence | ✅ |
-| `/api/profile/competences` | GET | Mes compétences | ✅ |
-| `/api/profile/lacunes` | POST | Ajouter une lacune | ✅ |
-| `/api/profile/lacunes` | GET | Mes lacunes | ✅ |
-| `/api/profile/lacunes/<matiere_id>` | DELETE | Supprimer une lacune | ✅ |
+| `/api/profile/me` | GET | Récupérer mon profil |  |
+| `/api/profile/me` | PUT | Mettre à jour mon profil |  |
+| `/api/profile/<user_id>` | GET | Récupérer le profil d'un utilisateur |  |
+| `/api/profile/me/disponibilites` | GET | Mes créneaux de disponibilité |  |
+| `/api/profile/disponibilites` | POST | Ajouter un créneau |  |
+| `/api/profile/disponibilites/<jour>/<creneau>` | DELETE | Supprimer un créneau |  |
+| `/api/profile/competences` | POST | Ajouter une compétence |  |
+| `/api/profile/competences/<matiere_id>/activate` | PUT | Activer/désactiver une compétence |  |
+| `/api/profile/competences` | GET | Mes compétences |  |
+| `/api/profile/lacunes` | POST | Ajouter une lacune |  |
+| `/api/profile/lacunes` | GET | Mes lacunes |  |
+| `/api/profile/lacunes/<matiere_id>` | DELETE | Supprimer une lacune |  |
 
 ### **Demandes** (`/api/demands`)
 
 | Endpoint | Méthode | Description | Paramètres | Auth |
 |----------|---------|-------------|-----------|------|
-| `/api/demands` | POST | **Créer une demande** | `matiere_id`, `jour` ⭐, `creneau` ⭐, `description` | ✅ |
-| `/api/demands` | GET | Lister toutes les demandes | Aucun | ❌ |
-| `/api/demands/<demand_id>` | DELETE | Supprimer une demande | ID de demande | ✅ |
+| `/api/demands` | POST | **Créer une demande** | `matiere_id`, `jour` , `creneau` , `description` |  |
+| `/api/demands` | GET | Lister toutes les demandes | Aucun |  |
+| `/api/demands/<demand_id>` | DELETE | Supprimer une demande | ID de demande |  |
 
-⭐ = **Obligatoire et nouve feature**
+ = **Obligatoire et nouve feature**
 
 ### **Matching** (`/api/matches`)
 
 | Endpoint | Méthode | Description | Paramètres | Auth |
 |----------|---------|-------------|-----------|------|
-| `/api/matches/suggestions` | GET | **Lister les candidats** | `demand_id` ⭐ ou `matiere_id` | ✅ |
-| `/api/matches/<student_id>/request` | POST | **Envoyer une demande** | Body: `demand_id` ⭐, `score` | ✅ |
-| `/api/matches/<matching_id>/accept` | POST | **Accepter un match** | - | ✅ |
-| `/api/matches/<matching_id>/reject` | POST | **Refuser un match** | - | ✅ |
-| `/api/matches/received` | GET | **Mes demandes reçues** (candidat) | - | ✅ |
-| `/api/matches/sent` | GET | **Mes demandes envoyées** (demandeur) | - | ✅ |
+| `/api/matches/suggestions` | GET | **Lister les candidats** | `demand_id`  ou `matiere_id` |  |
+| `/api/matches/<student_id>/request` | POST | **Envoyer une demande** | Body: `demand_id` , `score` |  |
+| `/api/matches/<matching_id>/accept` | POST | **Accepter un match** | - |  |
+| `/api/matches/<matching_id>/reject` | POST | **Refuser un match** | - |  |
+| `/api/matches/received` | GET | **Mes demandes reçues** (candidat) | - |  |
+| `/api/matches/sent` | GET | **Mes demandes envoyées** (demandeur) | - |  |
 
-⭐ = **Feature avec slots obligatoires**
+ = **Feature avec slots obligatoires**
 
 ### **Conversations & Messages** (`/api/conversations`, `/api/messages`)
 
 | Endpoint | Méthode | Description | Auth |
 |----------|---------|-------------|------|
-| `/api/conversations` | POST | Créer/récupérer une conversation | ✅ |
-| `/api/conversations/<conv_id>/messages` | GET | Lister les messages d'une conversation | ✅ |
-| `/api/conversations/<conv_id>/messages` | POST | Envoyer un message | ✅ |
-| `/api/polling/messages` | GET | Polling pour nouveaux messages | ✅ |
+| `/api/conversations` | POST | Créer/récupérer une conversation |  |
+| `/api/conversations/<conv_id>/messages` | GET | Lister les messages d'une conversation |  |
+| `/api/conversations/<conv_id>/messages` | POST | Envoyer un message |  |
+| `/api/polling/messages` | GET | Polling pour nouveaux messages |  |
 
 ### **Notifications** (`/api/notifications`)
 
 | Endpoint | Méthode | Description | Auth |
 |----------|---------|-------------|------|
-| `/api/notifications` | GET | Lister mes notifications | ✅ |
-| `/api/notifications/<notif_id>/read` | PUT | Marquer une notification comme lue | ✅ |
+| `/api/notifications` | GET | Lister mes notifications |  |
+| `/api/notifications/<notif_id>/read` | PUT | Marquer une notification comme lue |  |
 
 ### **Matières** (`/api/matieres`)
 
 | Endpoint | Méthode | Description | Auth |
 |----------|---------|-------------|------|
-| `/api/matieres` | GET | Lister toutes les matières | ❌ |
+| `/api/matieres` | GET | Lister toutes les matières |  |
 
 ### **Health Check**
 
 | Endpoint | Méthode | Description | Auth |
 |----------|---------|-------------|------|
-| `/api/health` | GET | Vérifier le statut du serveur | ❌ |
+| `/api/health` | GET | Vérifier le statut du serveur |  |
 
 ---
 
-## ⭐ Nouvelle Feature: Matching avec Créneaux Obligatoires
+##  Nouvelle Feature: Matching avec Créneaux Obligatoires
 
 ### **Workflow Complet**
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ 1. DEMANDEUR crée une DEMANDE                          │
-│    POST /api/demands                                    │
-│    Body: {matiere_id, jour, creneau, description}      │
-│    → Demande créée avec slot (ex: Lundi 10-11)         │
-└────────────┬────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────┐
-│ 2. DEMANDEUR consulte les SUGGESTIONS                   │
-│    GET /api/matches/suggestions?demand_id=X            │
-│    → Filtre STRICT: candidats avec créneau Lundi 10-11 │
-│                     ET slot pas réservé (is_reserved=0)│
-│    → Score sur 100 (matière, niveau, dispos, filière)   │
-└────────────┬────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────┐
-│ 3. DEMANDEUR ENVOIE UNE DEMANDE                         │
-│    POST /api/matches/<candidate_id>/request            │
-│    Body: {demand_id, score}                             │
-│    → Vérifie que candidat a Lundi 10-11 disponible     │
-│    → Crée Matching(status='pending')                   │
-│    → Notifie le candidat                               │
-└────────────┬────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────┐
-│ 4. CANDIDAT VOIR LES DEMANDES REÇUES                    │
-│    GET /api/matches/received                            │
-│    → Affiche jour + creneau pour chaque match           │
-└────────────┬────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────┐
-│ 5. CANDIDAT ACCEPTE LE MATCH                            │
-│    POST /api/matches/<matching_id>/accept              │
-│    → Change status → 'accepted'                         │
-│    → RÉSERVE le créneau Lundi 10-11 (is_reserved=1)    │
-│    → Crée Conversation automatiquement                 │
-│    → Notifie le demandeur                              │
-└────────────┬────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────┐
-│ 6. OUVERTURE DE LA DISCUSSION                           │
-│    WebSocket: join conversation_id                      │
-│    → Échange de messages en temps réel                 │
-│    → Messages persistés en base                        │
-└─────────────────────────────────────────────────────────┘
+
+ 1. DEMANDEUR crée une DEMANDE                          
+    POST /api/demands                                    
+    Body: {matiere_id, jour, creneau, description}      
+    → Demande créée avec slot (ex: Lundi 10-11)         
+
+             
+             
+
+ 2. DEMANDEUR consulte les SUGGESTIONS                   
+    GET /api/matches/suggestions?demand_id=X            
+    → Filtre STRICT: candidats avec créneau Lundi 10-11 
+                     ET slot pas réservé (is_reserved=0)
+    → Score sur 100 (matière, niveau, dispos, filière)   
+
+             
+             
+
+ 3. DEMANDEUR ENVOIE UNE DEMANDE                         
+    POST /api/matches/<candidate_id>/request            
+    Body: {demand_id, score}                             
+    → Vérifie que candidat a Lundi 10-11 disponible     
+    → Crée Matching(status='pending')                   
+    → Notifie le candidat                               
+
+             
+             
+
+ 4. CANDIDAT VOIR LES DEMANDES REÇUES                    
+    GET /api/matches/received                            
+    → Affiche jour + creneau pour chaque match           
+
+             
+             
+
+ 5. CANDIDAT ACCEPTE LE MATCH                            
+    POST /api/matches/<matching_id>/accept              
+    → Change status → 'accepted'                         
+    → RÉSERVE le créneau Lundi 10-11 (is_reserved=1)    
+    → Crée Conversation automatiquement                 
+    → Notifie le demandeur                              
+
+             
+             
+
+ 6. OUVERTURE DE LA DISCUSSION                           
+    WebSocket: join conversation_id                      
+    → Échange de messages en temps réel                 
+    → Messages persistés en base                        
+
 ```
 
 ### **Points Clés**
@@ -227,34 +227,34 @@ backend/
 
 ---
 
-## 📧 Réinitialisation de Mot de Passe par Email
+##  Réinitialisation de Mot de Passe par Email
 
 ### Fonctionnement
 
 ```
 Utilisateur clique "Mot de passe oublié ?"
-          │
-          ▼
+          
+          
 POST /api/auth/forgot-password  ← email
-          │
-          ▼
+          
+          
 [DEV] FLASK_ENV != production
     → Réponse JSON : { message, reset_token }  ← token visible
 [PROD] FLASK_ENV = production
     → Email envoyé via SMTP Gmail avec lien de réinit
     → Réponse JSON : { message }  ← token caché
-          │
-          ▼
+          
+          
 Utilisateur reçoit l'email → clique sur le lien
-          │
-          ▼
+          
+          
 reset-password.html?token=...  ← pré-remplit le token
-          │
-          ▼
+          
+          
 POST /api/auth/reset-password  ← token + nouveau mot de passe
-          │
-          ▼
-Mot de passe mis à jour ✓
+          
+          
+Mot de passe mis à jour 
 ```
 
 ### Configuration SMTP (Gmail)
@@ -277,9 +277,9 @@ Mot de passe mis à jour ✓
 
 | Environnement | Token dans la réponse | Email envoyé | Usage |
 |--------------|----------------------|--------------|-------|
-| `development` | ✅ Oui | ❌ Non | Tests rapides |
-| `testing` | ✅ Oui | ❌ Non | Tests pytest |
-| `production` | ❌ Non | ✅ Oui (SMTP) | Production réelle |
+| `development` |  Oui |  Non | Tests rapides |
+| `testing` |  Oui |  Non | Tests pytest |
+| `production` |  Non |  Oui (SMTP) | Production réelle |
 
 ### Service technique
 
@@ -291,7 +291,7 @@ Mot de passe mis à jour ✓
 
 ---
 
-## 📊 Modèles de Données
+##  Modèles de Données
 
 ### **User** (`users` table)
 ```sql
@@ -316,7 +316,7 @@ avatar_url: VARCHAR(255)
 telephone: VARCHAR(20)
 ```
 
-### **Demand** (`demands` table) ⭐ **NEW**
+### **Demand** (`demands` table)  **NEW**
 ```sql
 id: INTEGER PRIMARY KEY
 profile_id: INTEGER FOREIGN KEY (profiles.id)
@@ -327,23 +327,23 @@ description: TEXT
 created_at: DATETIME
 ```
 
-### **Disponible** (`disponibles` table) ⭐ **UPDATED**
+### **Disponible** (`disponibles` table)  **UPDATED**
 ```sql
 id: INTEGER PRIMARY KEY
 profile_id: INTEGER FOREIGN KEY (profiles.id)
 jour: VARCHAR(15) NOT NULL
 creneau: VARCHAR(50) NOT NULL
-is_reserved: BOOLEAN DEFAULT False  ⭐ NEW FIELD
+is_reserved: BOOLEAN DEFAULT False   NEW FIELD
 created_at: DATETIME
 ```
 
-### **Matching** (`matching` table) ⭐ **UPDATED**
+### **Matching** (`matching` table)  **UPDATED**
 ```sql
 id: INTEGER PRIMARY KEY
 user_one_id: INTEGER FOREIGN KEY (users.id)  -- demandeur
 user_two_id: INTEGER FOREIGN KEY (users.id)  -- candidat
 initiator_id: INTEGER FOREIGN KEY (users.id)  -- qui a swipé
-demand_id: INTEGER FOREIGN KEY (demands.id)  ⭐ NEW FIELD
+demand_id: INTEGER FOREIGN KEY (demands.id)   NEW FIELD
 matiere_id: INTEGER FOREIGN KEY (matieres.id)
 status: VARCHAR(20) DEFAULT 'pending'  -- pending/accepted/rejected
 score: FLOAT
@@ -370,29 +370,29 @@ created_at: DATETIME
 
 ---
 
-## 🧪 Couverture de Tests
+##  Couverture de Tests
 
 ### Nouveaux Tests (6 tests)
-- ✅ `test_create_demand_requires_slot` - Valide que jour/creneau sont obligatoires
-- ✅ `test_create_demand_with_valid_slot` - Création demande réussie
-- ✅ `test_matching_with_demand_id_filters_by_slot` - Filtre strict par créneau
-- ✅ `test_request_match_with_demand_checks_candidate_slot_availability` - Vérification disponibilité
-- ✅ `test_accept_match_reserves_helper_slot` - Réservation du créneau
-- ✅ `test_reserved_slots_excluded_from_future_matching` - Slots réservés exclus
+-  `test_create_demand_requires_slot` - Valide que jour/creneau sont obligatoires
+-  `test_create_demand_with_valid_slot` - Création demande réussie
+-  `test_matching_with_demand_id_filters_by_slot` - Filtre strict par créneau
+-  `test_request_match_with_demand_checks_candidate_slot_availability` - Vérification disponibilité
+-  `test_accept_match_reserves_helper_slot` - Réservation du créneau
+-  `test_reserved_slots_excluded_from_future_matching` - Slots réservés exclus
 
 ### Tests Existants (29 tests)
-- ✅ Auth (inscription, login, réinitialisation)
-- ✅ Matching (compatibilité, formats)
-- ✅ Profils (compétences, lacunes, disponibilités)
-- ✅ Messages et conversations
-- ✅ Notifications
-- ✅ WebSocket/Socket.IO
+-  Auth (inscription, login, réinitialisation)
+-  Matching (compatibilité, formats)
+-  Profils (compétences, lacunes, disponibilités)
+-  Messages et conversations
+-  Notifications
+-  WebSocket/Socket.IO
 
-**Total**: 35/35 tests passing ✅
+**Total**: 35/35 tests passing 
 
 ---
 
-## 🚀 Démarrage du Serveur
+##  Démarrage du Serveur
 
 ### Développement
 ```bash
@@ -416,7 +416,7 @@ python check_db.py # Diagnostic
 
 ---
 
-## 📝 Variables d'Environnement
+##  Variables d'Environnement
 
 ```bash
 FLASK_ENV=development          # ou production
@@ -435,7 +435,7 @@ FRONTEND_URL=http://localhost:5500
 
 ---
 
-## ⚠️ Limitations Actuelles
+##  Limitations Actuelles
 
 1. **Pas de migration DB automatique** - Utiliser `init_db.py` ou Alembic
 2. **WebSocket** - Socket.IO en dev mode, adapter pour production
@@ -444,7 +444,7 @@ FRONTEND_URL=http://localhost:5500
 
 ---
 
-## 🔜 Prochaines Étapes
+##  Prochaines Étapes
 
 - [ ] Interface frontend pour visualiser le workflow complet
 - [ ] Tests UI intégrés (Playwright/Cypress)
@@ -455,7 +455,7 @@ FRONTEND_URL=http://localhost:5500
 
 ---
 
-## 📞 Contact & Support
+##  Contact & Support
 
 Pour des questions sur l'architecture ou le backend :
 - Architecture: Conforme au PDF "IFRI_Mentorlink_Vision_du_Système_de_Matching.pdf"

@@ -11,49 +11,49 @@ Plateforme de mentorat académique basée sur un matching intelligent.
 - HTML
 - CSS
 - JavaScript
-- ## 👥 Équipe & Rôles
+- ##  Équipe & Rôles
 
 | # | Membre | Groupe | Rôle |
 |---|--------|--------|------|
 | 1 | **GOUTONDE Bidossessi Conceptia Sharone** | F2 | Développeur Frontend |
-| 2 | **HOUEGBELO Uriel Verghis Olsen** | — | 🔧 Tech Lead / Backend |
+| 2 | **HOUEGBELO Uriel Verghis Olsen** | — |  Tech Lead / Backend |
 | 3 | **LOTSU Emmanuel Richard Kwasi** | B3 | Développeur Backend |
 | 4 | **HOUNNOUKON Agossou Prince** | F4 | Développeur Backend / Render |
 | 5 | **YESSOUFOU Scham's-Deen** | F3 | Développeur Fullstack |
 | 6 | **TOCHENALI Paola Eloane** | B2 | Développeur Frontend |
-## 🗂️ Structure du projet
+##  Structure du projet
 
 PIL1_2526_64/
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── database/
-│   │   │   └── __init__.py
-│   │   ├── config/
-│   │   │   ├── __init__.py
-│   │   │   └── logging_config.py
-│   │   ├── middleware/
-│   │   │   └── auth_guard.py
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   └── sockets/
-│   ├── run.py
-│   └── requirements.txt
-├── Frontend/
-│   ├── index.html
-│   ├── pages/
-│   │   ├── login.html
-│   │   ├── debug.html
-│   ├── js/
-│   │   └── api.js
-│   ├── css/
-│   └── assets/
-├── docs/
-├── rapport.html
-└── README.md
+ backend/
+    app/
+       __init__.py
+       database/
+          __init__.py
+       config/
+          __init__.py
+          logging_config.py
+       middleware/
+          auth_guard.py
+       models/
+       routes/
+       services/
+       sockets/
+    run.py
+    requirements.txt
+ Frontend/
+    index.html
+    pages/
+       login.html
+       debug.html
+    js/
+       api.js
+    css/
+    assets/
+ docs/
+ rapport.html
+ README.md
 
-## ⚙️ Installation locale
+##  Installation locale
 
 1. Cloner le dépôt
 ```bash
@@ -89,7 +89,7 @@ python -m http.server 8000
 ```
 Ouvrir `http://127.0.0.1:8000/` dans un navigateur.
 
-## 🧪 Tests en local et sur plusieurs navigateurs
+##  Tests en local et sur plusieurs navigateurs
 
 ### Tests backend automatisés
 Pour exécuter les tests backend sur votre machine locale :
@@ -158,13 +158,13 @@ python -m pytest tests/test_sockets.py -q
 - Si `127.0.0.1:5000` ne fonctionne pas, vérifie le port et l'URL dans `Frontend/pages/debug.html`.
 - Le front de test est conçu pour être simple, mais il couvre toutes les fonctionnalités backend actuelles.
 
-## 🌐 Déploiement (Render)
+##  Déploiement (Render)
 
 - URL de production : https://votre-app.onrender.com
 - Build command : pip install -r requirements.txt
 - Start command : gunicorn app:app
 
-## 📅 Planning
+##  Planning
 
 | Jour | Objectif | Date |
 |------|----------|------|
@@ -172,7 +172,7 @@ python -m pytest tests/test_sockets.py -q
 | J2 | Base de données + Authentification + Déploiement actif | 4 juin |
 | J3 | Backend profils + compétences + disponibilités | 5 juin |
 
-## 📄 Livrables
+##  Livrables
 
 - [x] Repo cloné par tous les membres
 - [x] App Flask qui tourne en local
@@ -181,7 +181,7 @@ python -m pytest tests/test_sockets.py -q
 - [ ] rapport.html complété
 - [ ] Collection Postman commitée dans /docs
 
-## 📝 Rapport d'intégration
+##  Rapport d'intégration
 
 Le rapport officiel est disponible dans rapport.html.
 

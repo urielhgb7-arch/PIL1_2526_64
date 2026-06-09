@@ -43,7 +43,7 @@ def lister_notifications():
         ]
 
         unread_count = Notification.query.filter_by(user_id=current_user_id, is_read=False).count()
-        logger.info(f"✅ Notifications listées: {len(result)} sur {pagination.total} pour user={current_user_id}")
+        logger.info(f" Notifications listées: {len(result)} sur {pagination.total} pour user={current_user_id}")
 
         return jsonify({
             "total": pagination.total,
@@ -79,9 +79,9 @@ def marquer_notification_lue(notif_id: int):
         if not notification.is_read:
             notification.is_read = True
             db.session.commit()
-            logger.info(f"✅ Notification marquée lue: {notif_id}")
+            logger.info(f" Notification marquée lue: {notif_id}")
         else:
-            logger.info(f"⏭️ Notification déjà lue: {notif_id}")
+            logger.info(f" Notification déjà lue: {notif_id}")
 
         return jsonify({'message': 'Notification marquée comme lue'}), 200
         
@@ -108,7 +108,7 @@ def marquer_toutes_lues():
             n.is_read = True
         
         db.session.commit()
-        logger.info(f"✅ {count} notifications marquées lues pour user={current_user_id}")
+        logger.info(f" {count} notifications marquées lues pour user={current_user_id}")
 
         return jsonify({
             'message': f'{count} notifications marquées comme lues',
@@ -140,7 +140,7 @@ def supprimer_notification(notif_id: int):
 
         db.session.delete(notification)
         db.session.commit()
-        logger.info(f"✅ Notification supprimée: {notif_id}")
+        logger.info(f" Notification supprimée: {notif_id}")
 
         return jsonify({'message': 'Notification supprimée'}), 200
         

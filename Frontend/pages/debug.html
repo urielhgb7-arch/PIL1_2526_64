@@ -192,7 +192,7 @@
     <div class="tab" data-tab="messages">💬 Messages</div>
     <div class="tab" data-tab="notifs">🔔 Notifications</div>
     <div class="tab" data-tab="websocket">⚡ WebSocket</div>
-    <div class="tab" data-tab="logs">📋 Logs</div>
+    <div class="tab" data-tab="logs"> Logs</div>
 </div>
 
 <!-- ═══════════ TAB: AUTH ═══════════ -->
@@ -205,7 +205,7 @@
             <button class="btn btn-primary btn-full" id="loginBtn">Se connecter</button>
         </div>
         <div class="card">
-            <div class="card-title">📝 Inscription</div>
+            <div class="card-title"> Inscription</div>
             <div class="grid-2 grid-gap-half">
                 <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="email"></div>
                 <div class="field"><label>Mot de passe</label><input id="regPass" type="password" placeholder="••••••••"></div>
@@ -231,7 +231,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-title">ℹ️ Session courante</div>
+        <div class="card-title"> Session courante</div>
         <div id="sessionInfo" class="text-sm-muted">Non connecté</div>
         <button class="btn btn-danger btn-sm btn-margin-top" id="logoutBtn">Se déconnecter</button>
     </div>
@@ -246,7 +246,7 @@
             <div id="profileDisplay" class="text-sm-muted mt-small"></div>
         </div>
         <div class="card">
-            <div class="card-title">✏️ Modifier le profil</div>
+            <div class="card-title"> Modifier le profil</div>
             <div class="field"><label>Nom</label><input title="Nom" id="upNom" type="text" placeholder="Nom"></div>
             <div class="field"><label>Prénom</label><input title="Prénom" id="upPrenom" type="text" placeholder="Prénom"></div>
             <div class="field"><label>Filière</label>
@@ -304,21 +304,21 @@
             <button class="btn btn-success btn-full" id="addCompBtn">Ajouter compétence</button>
         </div>
         <div class="card">
-            <div class="card-title">🔧 Gérer mes compétences</div>
+            <div class="card-title"> Gérer mes compétences</div>
             <div class="field"><label>Matière ID</label><input title="Matière ID" id="mgCompMatiereId" type="number" placeholder="ID matière"></div>
             <div class="row-flex-wrap">
-                <button class="btn btn-success btn-sm" id="activateCompBtn">✅ Activer</button>
-                <button class="btn btn-warn btn-sm" id="deactivateCompBtn">⏸ Désactiver</button>
+                <button class="btn btn-success btn-sm" id="activateCompBtn"> Activer</button>
+                <button class="btn btn-warn btn-sm" id="deactivateCompBtn"> Désactiver</button>
                 <button class="btn btn-danger btn-sm" id="removeCompBtn">🗑 Supprimer</button>
             </div>
             <hr class="hr-thin">
-            <div class="card-title mb-small">📋 Liste des matières dispo</div>
+            <div class="card-title mb-small"> Liste des matières dispo</div>
             <button class="btn btn-ghost btn-sm" id="listMatieresBtn">Charger les matières</button>
             <div id="matieresListDisplay" class="panel-body"></div>
         </div>
     </div>
     <div class="card">
-        <div class="card-title">📊 Mes compétences actuelles</div>
+        <div class="card-title"> Mes compétences actuelles</div>
         <button class="btn btn-ghost btn-sm" id="loadCompsBtn">Actualiser</button>
         <div id="compsDisplay" class="panel-card"></div>
     </div>
@@ -347,7 +347,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-title">📋 Mes lacunes actuelles</div>
+        <div class="card-title"> Mes lacunes actuelles</div>
         <button class="btn btn-ghost btn-sm" id="loadLacsBtn">Actualiser</button>
         <div id="lacsDisplay" class="panel-card"></div>
     </div>
@@ -434,7 +434,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-title">📋 Mes disponibilités actuelles</div>
+        <div class="card-title"> Mes disponibilités actuelles</div>
         <button class="btn btn-ghost btn-sm" id="loadDisposBtn">Actualiser</button>
         <div id="disposDisplay" class="panel-card"></div>
     </div>
@@ -563,7 +563,7 @@
 <div class="tab-content" id="tab-logs">
     <div class="card">
         <div class="card-row-between">
-            <div class="card-title no-margin">📋 Console de logs</div>
+            <div class="card-title no-margin"> Console de logs</div>
             <button class="btn btn-ghost btn-sm" onclick="document.getElementById('log').innerHTML=''">Effacer</button>
         </div>
         <div id="log"></div>
@@ -620,10 +620,10 @@ async function api(endpoint, method='GET', body=null) {
         const r = await fetch(url, opts);
         const data = await r.json().catch(() => ({}));
         if(!r.ok) {
-            log(`❌ ${method} ${endpoint} → HTTP ${r.status}`, 'err', data);
+            log(` ${method} ${endpoint} → HTTP ${r.status}`, 'err', data);
             return null;
         }
-        log(`✅ ${method} ${endpoint}`, 'ok', data);
+        log(` ${method} ${endpoint}`, 'ok', data);
         return data;
     } catch(e) {
         log(`🔴 Réseau: ${e.message}`, 'err');
@@ -644,7 +644,7 @@ function updateStatusBar() {
         label.textContent = 'Non connecté';
     }
     document.getElementById('sessionInfo').innerHTML = token
-        ? `<div style="color:#34d399">✅ Connecté</div><pre style="color:#64748b; font-size:11px; margin-top:.5rem">${JSON.stringify(currentUser, null, 2)}</pre>`
+        ? `<div style="color:#34d399"> Connecté</div><pre style="color:#64748b; font-size:11px; margin-top:.5rem">${JSON.stringify(currentUser, null, 2)}</pre>`
         : '<span style="color:#64748b">Non connecté</span>';
 }
 
@@ -803,7 +803,7 @@ async function loadComps() {
         `<span class="comp-tag ${c.is_available_to_help?'available':'unavailable'}">
             <strong>#${c.matiere_id}</strong> ${c.matiere_nom}
             <span style="color:#64748b; font-size:11px">${c.niveau}</span>
-            <span>${c.is_available_to_help?'✅':'⏸'}</span>
+            <span>${c.is_available_to_help?'':''}</span>
         </span>`
     ).join('');
 }
@@ -890,7 +890,7 @@ document.getElementById('saveDisposBtn').addEventListener('click', async () => {
         });
         if(r) ok++;
     }
-    log(`✅ ${ok}/${selected.length} créneaux enregistrés`, 'ok');
+    log(` ${ok}/${selected.length} créneaux enregistrés`, 'ok');
     loadDispos();
 });
 
@@ -1003,8 +1003,8 @@ document.getElementById('loadReceivedBtn').addEventListener('click', async () =>
             <div style="font-size:13px"><strong>${m.demandeur?.prenom} ${m.demandeur?.nom}</strong> (user #${m.demandeur?.user_id})</div>
             <div style="font-size:12px; color:#64748b">Matière #${m.matiere_id} · Score ${m.score}%</div>
             <div style="display:flex; gap:.5rem; margin-top:.5rem;">
-                <button class="btn btn-success btn-sm" onclick="acceptMatch(${m.matching_id})">✅ Accepter</button>
-                <button class="btn btn-danger btn-sm" onclick="rejectMatch(${m.matching_id})">❌ Refuser</button>
+                <button class="btn btn-success btn-sm" onclick="acceptMatch(${m.matching_id})"> Accepter</button>
+                <button class="btn btn-danger btn-sm" onclick="rejectMatch(${m.matching_id})"> Refuser</button>
             </div>
         </div>`
     ).join('');
@@ -1168,13 +1168,13 @@ document.getElementById('wsConnectBtn').addEventListener('click', () => {
     if(socket && socket.connected) return wsLog('Déjà connecté');
     const base_url = base().replace('/api', '');
     socket = io(base_url, {transports: ['websocket', 'polling']});
-    socket.on('connect', () => { wsLog('✅ Connecté · ' + socket.id); updateWsStatus(true); });
+    socket.on('connect', () => { wsLog(' Connecté · ' + socket.id); updateWsStatus(true); });
     socket.on('connected', d => wsLog('Event connected: ' + JSON.stringify(d)));
     socket.on('joined', d => wsLog('Event joined: ' + JSON.stringify(d)));
     socket.on('new_message', d => wsLog('📨 new_message: ' + JSON.stringify(d)));
     socket.on('match_received', d => wsLog('🤝 match_received: ' + JSON.stringify(d)));
-    socket.on('registered', d => wsLog('✅ registered: ' + JSON.stringify(d)));
-    socket.on('disconnect', () => { wsLog('❌ Déconnecté'); updateWsStatus(false); });
+    socket.on('registered', d => wsLog(' registered: ' + JSON.stringify(d)));
+    socket.on('disconnect', () => { wsLog(' Déconnecté'); updateWsStatus(false); });
     socket.on('connect_error', e => wsLog('🔴 Erreur: ' + e.message));
 });
 

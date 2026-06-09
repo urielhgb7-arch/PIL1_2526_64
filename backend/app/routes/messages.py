@@ -45,7 +45,7 @@ def creer_conversation():
         ).first()
 
         if conv:
-            logger.info(f"✅ Conversation existante trouvée: {conv.id}")
+            logger.info(f" Conversation existante trouvée: {conv.id}")
             return jsonify({"conversation_id": conv.id}), 200
 
         # Créer une nouvelle conversation
@@ -55,7 +55,7 @@ def creer_conversation():
         )
         db.session.add(nouvelle_conv)
         db.session.commit()
-        logger.info(f"✅ Conversation créée: {nouvelle_conv.id} entre {current_user_id} et {autre_user_id}")
+        logger.info(f" Conversation créée: {nouvelle_conv.id} entre {current_user_id} et {autre_user_id}")
 
         return jsonify({"conversation_id": nouvelle_conv.id}), 201
         
@@ -92,7 +92,7 @@ def mes_conversations():
                 }
             })
 
-        logger.info(f"✅ {len(result)} conversations listées pour user={current_user_id}")
+        logger.info(f" {len(result)} conversations listées pour user={current_user_id}")
         return jsonify(result), 200
         
     except Exception as e:
@@ -137,7 +137,7 @@ def envoyer_message(conv_id: int):
         )
         db.session.add(msg)
         db.session.commit()
-        logger.info(f"✅ Message envoyé: {msg.id} dans conv={conv_id}")
+        logger.info(f" Message envoyé: {msg.id} dans conv={conv_id}")
 
         return jsonify({"message": "Message envoyé", "message_id": msg.id}), 201
         
@@ -181,7 +181,7 @@ def lire_messages(conv_id: int):
             "date_envoi": m.date_envoi.isoformat()
         } for m in pagination.items]
 
-        logger.info(f"✅ {len(result)} messages listés pour conv={conv_id} (page {page}/{pagination.pages})")
+        logger.info(f" {len(result)} messages listés pour conv={conv_id} (page {page}/{pagination.pages})")
         return jsonify({
             "total": pagination.total,
             "page": page,

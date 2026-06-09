@@ -80,7 +80,7 @@ def create_app(config_name=None):
                 for m in default_matieres:
                     db.session.add(m)
                 db.session.commit()
-                logger.info(f"✅ {len(default_matieres)} matières insérées par défaut.")
+                logger.info(f" {len(default_matieres)} matières insérées par défaut.")
         except Exception as seed_error:
             logger.warning(f"Seed matières ignoré: {seed_error}")
 

@@ -10,6 +10,7 @@ if env_file.exists():
     load_dotenv(env_file)
 
 os.environ['FLASK_CONFIG'] = 'testing'
+os.environ['FLASK_ENV'] = 'testing'
 jwt_secret = os.environ.get('JWT_SECRET_KEY', 'test-secret-key')
 if len(jwt_secret) < 32:
     jwt_secret = jwt_secret.ljust(32, '0')

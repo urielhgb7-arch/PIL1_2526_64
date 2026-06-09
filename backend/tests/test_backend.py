@@ -80,7 +80,7 @@ def test_register_requires_all_fields(client):
 def test_register_duplicate_email(client):
     payload = {
         'email': 'duplicate@a.com',
-        'password': 'pass',
+        'password': 'password123',
         'nom': 'Dup',
         'prenom': 'User',
         'filiere': 'STI2D',
@@ -117,7 +117,7 @@ def test_register_and_login_success(client):
 def test_user_role_forced_to_student(client):
     payload = {
         'email': 'student@a.com',
-        'password': 'pass123',
+        'password': 'password123',
         'nom': 'Student',
         'prenom': 'Force',
         'filiere': 'Info',
@@ -387,8 +387,8 @@ def test_send_and_read_message(client, app):
 
     read = client.get(f'/api/conversations/{conv_id}/messages', headers={'Authorization': f'Bearer {token}'})
     assert read.status_code == 200
-    assert read.json[0]['contenu'] == 'Bonjour'
-    assert read.json[0]['sender_id'] == user_a_id
+    assert read.json['messages'][0]['contenu'] == 'Bonjour'
+    assert read.json['messages'][0]['sender_id'] == user_a_id
 
 
 def test_polling_returns_messages(client, app):

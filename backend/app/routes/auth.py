@@ -94,7 +94,7 @@ def register():
         new_user.set_password(data['password'])
         db.session.add(new_user)
         db.session.flush()  # ← obtient l'id SANS commiter
-        logger.info(f"✅ Utilisateur créé: {data['email'][:10]}***")
+        logger.info(f" Utilisateur créé: {data['email'][:10]}***")
 
         # Création du profil dans la même transaction
         new_profile = Profile(
@@ -109,7 +109,7 @@ def register():
         )
         db.session.add(new_profile)
         db.session.commit()  # ← un seul commit pour les deux
-        logger.info(f"✅ Profil créé pour user_id={new_user.id}")
+        logger.info(f" Profil créé pour user_id={new_user.id}")
 
         # Retour du token
         access_token = create_access_token(identity=str(new_user.id))
@@ -154,7 +154,7 @@ def login():
 
         profile_id = user.profile.id if user.profile else None
         access_token = create_access_token(identity=str(user.id))
-        logger.info(f"✅ Login réussi: {data['email'][:10]}***")
+        logger.info(f" Login réussi: {data['email'][:10]}***")
 
         return jsonify({
             "token": access_token,
@@ -215,7 +215,7 @@ def forgot_password():
             email_sent = send_password_reset_email(user.email, token)
             if not email_sent:
                 logger.error(
-                    f"❌ Échec envoi email de réinit à user_id={user.id} "
+                    f" Échec envoi email de réinit à user_id={user.id} "
                     f"({user.email[:10]}***)"
                 )
 

@@ -14,7 +14,7 @@ for t in tables:
 try:
     cursor.execute("SELECT COUNT(*) FROM matieres")
     count = cursor.fetchone()[0]
-    print(f"\n✅ Matières: {count}")
+    print(f"\n Matières: {count}")
     
     cursor.execute("SELECT id, nom, filiere FROM matieres LIMIT 3")
     samples = cursor.fetchall()
@@ -22,6 +22,6 @@ try:
     for row in samples:
         print(f"  - {row[1]} ({row[2]})")
 except Exception as e:
-    print(f"\n❌ Erreur: {e}")
+    print(f"\n Erreur: {e}")
 
 conn.close()

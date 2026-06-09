@@ -6,7 +6,7 @@
 
 ---
 
-## 🚀 Démarrage
+##  Démarrage
 
 ### 1. Lancer le serveur backend
 ```bash
@@ -20,7 +20,7 @@ Ouvrir dans le navigateur: **http://127.0.0.1:5000/debug**
 
 ---
 
-## 📖 Guide Complet du Workflow
+##  Guide Complet du Workflow
 
 Ce guide vous montre comment tester le **workflow complet de matching avec créneaux obligatoires**.
 
@@ -34,11 +34,11 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 **Bob** (Aidant):
 - Email: bob@test.com
 - Compétence: Mathématiques (Avancé)
-- Disponibilité: **Lundi 14-15** ✅
+- Disponibilité: **Lundi 14-15** 
 
 ---
 
-## Step 1️⃣: Créer deux utilisateurs
+## Step 1⃣: Créer deux utilisateurs
 
 ### Alice (Demandeur)
 
@@ -50,7 +50,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    - Filière: `Informatique`
    - Année: `L2`
    - Format: `hybride`
-   - ➡️ Cliquer **"Inscrire"**
+   -  Cliquer **"Inscrire"**
 
 2. **Vérifier la réponse** dans "Dernière réponse API"
    ```json
@@ -62,10 +62,10 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 3. **Se connecter**
    - Email: `alice@test.com`
    - Mot de passe: `password123`
-   - ➡️ Cliquer **"Se connecter"**
+   -  Cliquer **"Se connecter"**
 
 4. **Vérifier la connexion**
-   - Le champ "Statut" doit afficher: "Connecté ✅"
+   - Le champ "Statut" doit afficher: "Connecté "
    - Le champ "Utilisateur" doit afficher: `alice@test.com`
 
 ---
@@ -73,7 +73,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 ### Bob (Aidant)
 
 1. **Se déconnecter** (Alice)
-   - ➡️ Cliquer **"Se déconnecter"** en bas à gauche
+   -  Cliquer **"Se déconnecter"** en bas à gauche
    - Vérifier "Statut" = "Déconnecté"
 
 2. **Inscrire Bob**
@@ -84,16 +84,16 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    - Filière: `Informatique`
    - Année: `L3`
    - Format: `hybride`
-   - ➡️ Cliquer **"Inscrire"**
+   -  Cliquer **"Inscrire"**
 
 3. **Se connecter comme Bob**
    - Email: `bob@test.com`
    - Mot de passe: `password456`
-   - ➡️ Cliquer **"Se connecter"**
+   -  Cliquer **"Se connecter"**
 
 ---
 
-## Step 2️⃣: Configurer les compétences et lacunes
+## Step 2⃣: Configurer les compétences et lacunes
 
 ### Alice - Ajouter sa Lacune
 
@@ -102,7 +102,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 2. **Aller à "Faiblesses"**
    - Matière: **Mathématiques**
    - Gravité: **Haute**
-   - ➡️ Cliquer **"Ajouter faiblesse"**
+   -  Cliquer **"Ajouter faiblesse"**
 
 3. **Vérifier dans "Résultat faiblesse"**
    ```json
@@ -118,8 +118,8 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 2. **Aller à "Compétences"**
    - Matière: **Mathématiques**
    - Niveau: **Avancé**
-   - ✅ Cocher "Disponible pour aider"
-   - ➡️ Cliquer **"Ajouter compétence"**
+   -  Cocher "Disponible pour aider"
+   -  Cliquer **"Ajouter compétence"**
 
 3. **Vérifier** dans "Résultat compétence"
    ```json
@@ -130,7 +130,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 
 ---
 
-## Step 3️⃣: Ajouter les Disponibilités
+## Step 3⃣: Ajouter les Disponibilités
 
 ### Alice - Ajouter Disponibilité
 
@@ -139,7 +139,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 2. **Aller à "Disponibilités"**
    - Jour: **Lundi**
    - Créneau: **14:00-15:00**
-   - ➡️ Cliquer **"Ajouter créneau"**
+   -  Cliquer **"Ajouter créneau"**
 
 3. **Vérifier** dans "Résultat disponibilité"
 
@@ -150,22 +150,22 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 2. **Ajouter disponibilité Bob**
    - Jour: **Lundi**
    - Créneau: **14:00-15:00**
-   - ➡️ Cliquer **"Ajouter créneau"**
+   -  Cliquer **"Ajouter créneau"**
 
 ---
 
-## Step 4️⃣: Alice Crée une Demande
+## Step 4⃣: Alice Crée une Demande
 
-### ⭐ Créer la Demande avec Créneau Obligatoire
+###  Créer la Demande avec Créneau Obligatoire
 
 1. **Alice doit être connectée**
 
 2. **Aller à "Créer une Demande" (section nouvelle)**
    - Matière: **Mathématiques**
-   - Jour: **Lundi** ⭐ (OBLIGATOIRE)
-   - Créneau: **14-15** ⭐ (OBLIGATOIRE)
+   - Jour: **Lundi**  (OBLIGATOIRE)
+   - Créneau: **14-15**  (OBLIGATOIRE)
    - Description: "Besoin d'aide en calcul différentiel"
-   - ➡️ Cliquer **"Créer demande"**
+   -  Cliquer **"Créer demande"**
 
 3. **Vérifier la création**
    ```json
@@ -175,23 +175,23 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    }
    ```
    
-   📌 **Noter l'ID de la demande (ex: 1)**
+    **Noter l'ID de la demande (ex: 1)**
 
 ---
 
-## Step 5️⃣: Alice Cherche des Candidats
+## Step 5⃣: Alice Cherche des Candidats
 
-### 🔍 Matching Filtre par Créneau
+###  Matching Filtre par Créneau
 
 1. **Alice reste connectée**
 
 2. **Aller à "Chercher des Candidats"**
    - ID Demande: **1** (l'ID de la demande créée)
-   - ➡️ Cliquer **"Chercher candidats"**
+   -  Cliquer **"Chercher candidats"**
 
 3. **Vérifier les résultats**
    
-   ✅ **Bob doit apparaître** (car il a Lundi 14-15 disponible ET compétent)
+    **Bob doit apparaître** (car il a Lundi 14-15 disponible ET compétent)
    
    ```json
    {
@@ -226,9 +226,9 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 
 ---
 
-## Step 6️⃣: Alice Envoie une Demande à Bob
+## Step 6⃣: Alice Envoie une Demande à Bob
 
-### 💬 Créer le Match
+###  Créer le Match
 
 1. **Alice reste connectée**
 
@@ -236,7 +236,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    - Candidat ID: **2** (Bob)
    - Demande ID: **1** (la demande créée)
    - Score de compatibilité: **100**
-   - ➡️ Cliquer **"Envoyer demande de match"**
+   -  Cliquer **"Envoyer demande de match"**
 
 3. **Vérifier le résultat**
    ```json
@@ -247,40 +247,40 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    }
    ```
 
-   📌 **Noter l'ID du matching (ex: 1)**
+    **Noter l'ID du matching (ex: 1)**
 
 ---
 
-## Step 7️⃣: Bob Voit la Demande Reçue
+## Step 7⃣: Bob Voit la Demande Reçue
 
-### 📥 Voir les Demandes Reçues
+###  Voir les Demandes Reçues
 
 1. **Se déconnecter Alice → Se connecter Bob**
 
 2. **Aller à "Gérer les Demandes" → "Mes demandes reçues"**
-   - ➡️ Cliquer le bouton
+   -  Cliquer le bouton
 
 3. **Vérifier le tableau**
 
    | ID | Personne | Jour | Créneau | Score | Statut | Action |
    |----|----------|------|---------|-------|--------|--------|
-   | 1 | Alice Dupont | Lundi | 14-15 | 100 | pending | ✅ Accepter / ❌ Refuser |
+   | 1 | Alice Dupont | Lundi | 14-15 | 100 | pending |  Accepter /  Refuser |
 
-   ✅ **Le créneau "Lundi 14-15" doit s'afficher**
+    **Le créneau "Lundi 14-15" doit s'afficher**
 
 ---
 
-## Step 8️⃣: Bob Accepte le Match
+## Step 8⃣: Bob Accepte le Match
 
-### ✅ Acceptation = Réservation du Créneau
+###  Acceptation = Réservation du Créneau
 
 1. **Bob voit la demande reçue**
 
-2. **Dans le tableau, cliquer "✅ Accepter"** (ou manuellement)
+2. **Dans le tableau, cliquer " Accepter"** (ou manuellement)
    
    **Si action manuelle:**
    - Matching ID: **1**
-   - ➡️ Cliquer **"Accepter"**
+   -  Cliquer **"Accepter"**
 
 3. **Vérifier l'acceptation**
    ```json
@@ -291,13 +291,13 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    }
    ```
 
-   ✅ **Une conversation a été créée automatiquement**
+    **Une conversation a été créée automatiquement**
 
 ---
 
-## Step 9️⃣: Vérifier la Réservation du Créneau
+## Step 9⃣: Vérifier la Réservation du Créneau
 
-### 🔒 Slot Réservé = Indisponible pour Autres
+###  Slot Réservé = Indisponible pour Autres
 
 1. **Alice se reconnecte**
 
@@ -306,14 +306,14 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    - Jour: **Lundi**
    - Créneau: **14-15** (même que la première)
    - Description: "Deuxième demande test"
-   - ➡️ **Créer demande**
+   -  **Créer demande**
 
 3. **Alice cherche les candidats pour cette 2e demande**
-   - ➡️ Cliquer **"Chercher candidats"** avec le nouvel ID
+   -  Cliquer **"Chercher candidats"** avec le nouvel ID
 
 4. **Vérifier le résultat**
    
-   ❌ **Bob ne doit PAS apparaître** (son créneau est réservé)
+    **Bob ne doit PAS apparaître** (son créneau est réservé)
    
    ```json
    {
@@ -323,57 +323,57 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
    }
    ```
 
-   ✅ **Test de réservation réussi!**
+    **Test de réservation réussi!**
 
 ---
 
-## 🔟: Converser via WebSocket (Optional)
+## : Converser via WebSocket (Optional)
 
-### 💬 Échanger des Messages
+###  Échanger des Messages
 
 1. **Bob connecté**
 
 2. **Aller à "Conversations"**
    - Conversation ID: **1** (créée automatiquement)
-   - ➡️ Cliquer **"Ouvrir conversation"**
+   -  Cliquer **"Ouvrir conversation"**
 
 3. **Vérifier le message**
    
 4. **Envoyer un message**
    - Message: "Bonjour Alice, je peux t'aider !"
-   - ➡️ Cliquer **"Envoyer message"**
+   -  Cliquer **"Envoyer message"**
 
 5. **Se reconnecter comme Alice**
    - Ouvrir la même conversation
-   - ➡️ Vérifier que le message de Bob s'affiche
+   -  Vérifier que le message de Bob s'affiche
 
 ---
 
-## 📊 Résumé des Tests
+##  Résumé des Tests
 
 | # | Test | Statut |
 |---|------|--------|
-| 1 | 👤 Créer 2 utilisateurs | ✅ |
-| 2 | 📚 Ajouter compétence/lacune | ✅ |
-| 3 | 📅 Ajouter disponibilités (Lundi 14-15) | ✅ |
-| 4 | 📋 Créer demande avec créneau | ✅ |
-| 5 | 🔍 Matching filtre par créneau | ✅ |
-| 6 | 💬 Envoyer demande de match | ✅ |
-| 7 | 📥 Voir demandes reçues | ✅ |
-| 8 | ✅ Accepter match = réserver slot | ✅ |
-| 9 | 🔒 Slot réservé exclu des futurs matchs | ✅ |
-| 10 | 💬 Converser via WebSocket | ✅ |
+| 1 |  Créer 2 utilisateurs |  |
+| 2 |  Ajouter compétence/lacune |  |
+| 3 |  Ajouter disponibilités (Lundi 14-15) |  |
+| 4 |  Créer demande avec créneau |  |
+| 5 |  Matching filtre par créneau |  |
+| 6 |  Envoyer demande de match |  |
+| 7 |  Voir demandes reçues |  |
+| 8 |  Accepter match = réserver slot |  |
+| 9 |  Slot réservé exclu des futurs matchs |  |
+| 10 |  Converser via WebSocket |  |
 
 ---
 
-## 🔧 Cas de Test Supplémentaires
+##  Cas de Test Supplémentaires
 
 ### Test: Refuser un Match
 
 1. **Créer un autre utilisateur Charlie**
 2. **Charlie envoie une demande à Alice**
 3. **Alice reçoit la demande**
-4. **Cliquer "❌ Refuser"** dans le tableau
+4. **Cliquer " Refuser"** dans le tableau
 5. **Vérifier** que le statut passe à "rejected"
 
 ### Test: Matching sans demand_id
@@ -396,7 +396,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 
 ---
 
-## 🐛 Dépannage
+##  Dépannage
 
 ### "La demande n'existe pas"
 - Vérifier l'ID de la demande
@@ -416,16 +416,16 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 
 ---
 
-## 🔐 Points de Sécurité Testés
+##  Points de Sécurité Testés
 
-- ✅ Vérification JWT sur toutes les routes protégées
-- ✅ Validation des données (jour/creneau valides)
-- ✅ Vérification d'autorisation (ne peut matcher que sa propre demande)
-- ✅ Isolation des données (voir uniquement ses propres données)
+-  Vérification JWT sur toutes les routes protégées
+-  Validation des données (jour/creneau valides)
+-  Vérification d'autorisation (ne peut matcher que sa propre demande)
+-  Isolation des données (voir uniquement ses propres données)
 
 ---
 
-## 📸 Dépannage UI
+##  Dépannage UI
 
 ### Les boutons n'apparaissent pas
 - Vérifier que localStorage n'est pas plein
@@ -441,7 +441,7 @@ Ce guide vous montre comment tester le **workflow complet de matching avec crén
 
 ---
 
-## 📚 Documentation Complète
+##  Documentation Complète
 
 Voir aussi:
 - [BACKEND_STATUS.md](../BACKEND_STATUS.md) - État complet du backend
@@ -450,7 +450,7 @@ Voir aussi:
 
 ---
 
-**✅ Test terminé avec succès!**
+** Test terminé avec succès!**
 
 Vous avez testé le workflow complet:
 1. Création de demande avec créneaux obligatoires

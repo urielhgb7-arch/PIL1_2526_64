@@ -24,10 +24,10 @@ app = create_app()
 def init_db(drop_all=False):
     with app.app_context():
         if drop_all:
-            print("🗑️  Suppression de toutes les tables...")
+            print("  Suppression de toutes les tables...")
             db.drop_all()
         
-        print("📊 Création des tables...")
+        print(" Création des tables...")
         db.create_all()
         print("📌 Tables créées. Lance ton script SQL pour insérer les matières :")
         print("   psql -U postgres -d mentorlink -f matieres_ifri.sql")
@@ -48,9 +48,9 @@ if __name__ == '__main__':
     drop_all = '--drop' in sys.argv
     
     if drop_all:
-        confirm = input("⚠️  Êtes-vous sûr? Cela supprimera TOUTES les données. (yes/no): ")
+        confirm = input("  Êtes-vous sûr? Cela supprimera TOUTES les données. (yes/no): ")
         if confirm != "yes":
-            print("❌ Opération annulée.")
+            print(" Opération annulée.")
             sys.exit(1)
     
     success = init_db(drop_all=drop_all)
@@ -59,5 +59,5 @@ if __name__ == '__main__':
         print("\n✨ Base de données initialisée avec succès!")
         print("📌 Vous pouvez maintenant lancer: python run.py")
     else:
-        print("\n❌ Erreur lors de l'initialisation.")
+        print("\n Erreur lors de l'initialisation.")
         sys.exit(1)
