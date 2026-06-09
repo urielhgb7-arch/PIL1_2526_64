@@ -1,21 +1,35 @@
-
 # backend/app/routes/auth.py
 import logging
 import os
 import secrets
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-from flask import Blueprint, request, jsonify
-from sqlalchemy.exc import IntegrityError
+
 from app.database import db
-from app.models import User, Profile, PasswordResetToken
-from flask_jwt_extended import create_access_token
-from app.validators import validate_json, is_valid_email, is_valid_format_preference, is_valid_niveau, is_valid_benin_phone
 from app.middleware.auth_guard import token_required
+from app.models import (
+    Conversation,
+    Matching,
+    Message,
+    Notification,
+    PasswordResetToken,
+    Profile,
+    User,
+)
 from app.services.email_service import send_password_reset_email
+from app.validators import (
+    is_valid_benin_phone,
+    is_valid_email,
+    is_valid_format_preference,
+    is_valid_niveau,
+    validate_json,
+)
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import create_access_token
+from sqlalchemy.exc import IntegrityError
 
 logger = logging.getLogger(__name__)
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint("auth", __name__)
 
 # ── Constantes de validation ─────────────────────────────────────────────────
 PASSWORD_MIN_LENGTH = 8  # Minimum 8 caractères (était 6, trop faible)
@@ -23,7 +37,7 @@ PASSWORD_MIN_LENGTH = 8  # Minimum 8 caractères (était 6, trop faible)
 # ── Rate limiting simple en mémoire pour /forgot-password ────────────────────
 # Structure : { ip_address: [timestamp, timestamp, ...] }
 _forgot_password_attempts: dict = defaultdict(list)
-FORGOT_PASSWORD_MAX_ATTEMPTS = 5    # max 5 tentatives
+FORGOT_PASSWORD_MAX_ATTEMPTS = 5  # max 5 tentatives
 FORGOT_PASSWORD_WINDOW_SECONDS = 3600  # par heure
 
 
@@ -56,64 +70,79 @@ def _validate_password_strength(password: str) -> str | None:
     return None
 
 
-@auth_bp.route('/register', methods=['POST'])
-@validate_json(required_fields=['email', 'password', 'nom', 'prenom'], email_field='email')
+@auth_bp.route("/register", methods=["POST"])
+@validate_json(
+    required_fields=["email", "password", "nom", "prenom"], email_field="email"
+)
 def register():
     """Enregistre un nouvel utilisateur (étudiant)"""
     data = request.validated_json
 
     try:
         # Validation robustesse du mot de passe
-        pwd_error = _validate_password_strength(data['password'])
+        pwd_error = _validate_password_strength(data["password"])
         if pwd_error:
             return jsonify({"message": pwd_error}), 400
 
         # Vérification unicité email
-        if User.query.filter_by(email=data['email']).first():
-            logger.warning(f"Tentative inscription avec email existant: {data['email'][:10]}***")
+        if User.query.filter_by(email=data["email"]).first():
+            logger.warning(
+                f"Tentative inscription avec email existant: {data['email'][:10]}***"
+            )
             return jsonify({"message": "Cet email existe déjà"}), 400
 
         # Validation niveau
-        if data.get('niveau') and not is_valid_niveau(data['niveau']):
-            return jsonify({"message": "Niveau invalide. Valeurs acceptées: L1-L3, M1-M2"}), 400
+        if data.get("niveau") and not is_valid_niveau(data["niveau"]):
+            return jsonify(
+                {"message": "Niveau invalide. Valeurs acceptées: L1-L3, M1-M2"}
+            ), 400
 
         # Validation format
-        format_preference = data.get('format_preference', 'hybride')
+        format_preference = data.get("format_preference", "hybride")
         if format_preference and not is_valid_format_preference(format_preference):
             return jsonify({"message": "Format d'apprentissage invalide"}), 400
-        
+
         # Validation téléphone béninois
-        phone = data.get('telephone')
+        phone = data.get("telephone")
         if phone and not is_valid_benin_phone(phone):
-            return jsonify({"message": "Numéro de téléphone béninois invalide. Format attendu: 01[4569]XXXXXXX (10 chiffres)"}), 400, 400
-        
+            return (
+                jsonify(
+                    {
+                        "message": "Numéro de téléphone béninois invalide. Format attendu: 01[4569]XXXXXXX (10 chiffres)"
+                    }
+                ),
+                400,
+                400,
+            )
 
         # backend/app/routes/auth.py — dans register()
-        if data.get('telephone'):
-            existing_tel = Profile.query.filter_by(telephone=data['telephone']).first()
+        if data.get("telephone"):
+            existing_tel = Profile.query.filter_by(telephone=data["telephone"]).first()
             if existing_tel:
-                return jsonify({"message": "Ce numéro de téléphone est déjà utilisé"}), 400
+                return jsonify(
+                    {"message": "Ce numéro de téléphone est déjà utilisé"}
+                ), 400
 
         # Création user
-        new_user = User(email=data['email'], role='student')
-        new_user.set_password(data['password'])
+        new_user = User(email=data["email"], role="student")
+        new_user.set_password(data["password"])
         db.session.add(new_user)
         db.session.flush()  # ← obtient l'id SANS commiter
         logger.info(f" Utilisateur créé: {data['email'][:10]}***")
 
         # Création du profil dans la même transaction
-        phone = data.get('telephone')
+        phone = data.get("telephone")
         if not phone:
-            phone = f'non-renseigne-{new_user.id}'
+            phone = f"non-renseigne-{new_user.id}"
         new_profile = Profile(
             user_id=new_user.id,
-            nom=data['nom'],
-            prenom=data['prenom'],
-            filiere=data.get('filiere') or 'GL',
-            niveau=data.get('niveau') or 'L1',
+            nom=data["nom"],
+            prenom=data["prenom"],
+            filiere=data.get("filiere") or "GL",
+            niveau=data.get("niveau") or "L1",
             format_preference=format_preference,
-            bio=data.get('bio', ''),
-            telephone=phone
+            bio=data.get("bio", ""),
+            telephone=phone,
         )
         db.session.add(new_profile)
         db.session.commit()  # ← un seul commit pour les deux
@@ -121,15 +150,17 @@ def register():
 
         # Retour du token
         access_token = create_access_token(identity=str(new_user.id))
-        return jsonify({
-            "message": "Compte créé avec succès !",
-            "token": access_token,
-            "user": {
-                "id": new_user.id,
-                "email": new_user.email,
-                "role": new_user.role
+        return jsonify(
+            {
+                "message": "Compte créé avec succès !",
+                "token": access_token,
+                "user": {
+                    "id": new_user.id,
+                    "email": new_user.email,
+                    "role": new_user.role,
+                },
             }
-        }), 201
+        ), 201
 
     except IntegrityError as e:
         db.session.rollback()
@@ -141,22 +172,24 @@ def register():
         return jsonify({"message": f"Erreur serveur: {str(e)[:500]}"}), 500
 
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     """Authentifie un utilisateur et retourne un JWT"""
     try:
         data = request.get_json(force=True, silent=True)
-        if not data or not data.get('email') or not data.get('password'):
+        if not data or not data.get("email") or not data.get("password"):
             logger.warning("Tentative login sans email/password")
             return jsonify({"message": "Email et mot de passe requis"}), 400
 
-        if not is_valid_email(data.get('email')):
-            logger.warning(f"Login avec email invalide: {data.get('email')[:10] if data.get('email') else 'None'}***")
+        if not is_valid_email(data.get("email")):
+            logger.warning(
+                f"Login avec email invalide: {data.get('email')[:10] if data.get('email') else 'None'}***"
+            )
             return jsonify({"message": "Email invalide"}), 400
 
-        user = User.query.filter_by(email=data['email']).first()
+        user = User.query.filter_by(email=data["email"]).first()
 
-        if not user or not user.check_password(data['password']):
+        if not user or not user.check_password(data["password"]):
             logger.warning(f"Login échoué pour: {data['email'][:10]}***")
             return jsonify({"message": "Identifiants invalides"}), 401
 
@@ -164,23 +197,25 @@ def login():
         access_token = create_access_token(identity=str(user.id))
         logger.info(f" Login réussi: {data['email'][:10]}***")
 
-        return jsonify({
-            "token": access_token,
-            "user": {
-                "id": user.id,
-                "email": user.email,
-                "role": user.role,
-                "profile_id": profile_id
+        return jsonify(
+            {
+                "token": access_token,
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "role": user.role,
+                    "profile_id": profile_id,
+                },
             }
-        }), 200
+        ), 200
 
     except Exception as e:
         logger.error(f"Erreur login: {str(e)[:100]}", exc_info=True)
         return jsonify({"message": "Erreur serveur"}), 500
 
 
-@auth_bp.route('/forgot-password', methods=['POST'])
-@validate_json(required_fields=['email'], email_field='email')
+@auth_bp.route("/forgot-password", methods=["POST"])
+@validate_json(required_fields=["email"], email_field="email")
 def forgot_password():
     """Demande de réinitialisation de mot de passe.
     - Rate limité à 5 tentatives/heure par IP pour éviter le spam.
@@ -188,32 +223,38 @@ def forgot_password():
     - En production : le token N'EST PAS retourné (log uniquement).
     """
     # Rate limiting par IP
-    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+    client_ip = (
+        request.headers.get("X-Forwarded-For", request.remote_addr or "unknown")
+        .split(",")[0]
+        .strip()
+    )
     if _check_forgot_password_rate_limit(client_ip):
         logger.warning(f"Rate limit /forgot-password dépassé pour IP={client_ip}")
-        return jsonify({"message": "Trop de tentatives. Réessayez dans une heure."}), 429
+        return jsonify(
+            {"message": "Trop de tentatives. Réessayez dans une heure."}
+        ), 429
 
     data = request.validated_json
-    email = data['email']
+    email = data["email"]
     user = User.query.filter_by(email=email).first()
 
     # Réponse identique qu'il y ait un compte ou non (évite l'énumération d'emails)
-    response = {"message": "Si votre email existe, un lien de réinitialisation a été émis."}
+    response = {
+        "message": "Si votre email existe, un lien de réinitialisation a été émis."
+    }
 
     if user:
         token = secrets.token_urlsafe(32)
         expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
         reset_token = PasswordResetToken(
-            user_id=user.id,
-            token=token,
-            expires_at=expires_at
+            user_id=user.id, token=token, expires_at=expires_at
         )
         db.session.add(reset_token)
         db.session.commit()
 
         # En dev : retourner le token dans la réponse pour faciliter les tests
-        if os.getenv('FLASK_ENV') != 'production':
-            response['reset_token'] = token
+        if os.getenv("FLASK_ENV") != "production":
+            response["reset_token"] = token
             logger.info(
                 f"[DEV UNIQUEMENT] Token reset pour user_id={user.id} : {token} "
                 f"(expire dans 1h)"
@@ -230,12 +271,12 @@ def forgot_password():
     return jsonify(response), 200
 
 
-@auth_bp.route('/reset-password', methods=['POST'])
-@validate_json(required_fields=['token', 'new_password'])
+@auth_bp.route("/reset-password", methods=["POST"])
+@validate_json(required_fields=["token", "new_password"])
 def reset_password():
     data = request.validated_json
-    token = data['token']
-    new_password = data['new_password']
+    token = data["token"]
+    new_password = data["new_password"]
 
     pwd_error = _validate_password_strength(new_password)
     if pwd_error:
@@ -266,13 +307,13 @@ def reset_password():
     return jsonify({"message": "Mot de passe réinitialisé avec succès"}), 200
 
 
-@auth_bp.route('/change-password', methods=['PUT'])
+@auth_bp.route("/change-password", methods=["PUT"])
 @token_required
 def change_password(current_user):
     data = request.get_json(force=True, silent=True) or {}
 
-    old_password = data.get('old_password')
-    new_password = data.get('new_password')
+    old_password = data.get("old_password")
+    new_password = data.get("new_password")
 
     if not old_password or not new_password:
         return jsonify({"message": "Ancien et nouveau mot de passe requis"}), 400
@@ -288,3 +329,70 @@ def change_password(current_user):
     db.session.commit()
 
     return jsonify({"message": "Mot de passe modifié avec succès"}), 200
+
+
+@auth_bp.route("/delete-account", methods=["DELETE"])
+@token_required
+def delete_account(current_user):
+    """Supprime définitivement le compte de l'utilisateur connecté.
+    Requiert la confirmation du mot de passe.
+    """
+    data = request.get_json(force=True, silent=True) or {}
+    password = data.get("password")
+
+    if not password:
+        return jsonify(
+            {"message": "Mot de passe requis pour confirmer la suppression"}
+        ), 400
+
+    if not current_user.check_password(password):
+        return jsonify({"message": "Mot de passe incorrect"}), 401
+
+    user_id = current_user.id
+    user_email = current_user.email
+
+    try:
+        # 1. Supprimer les messages des conversations impliquant l'utilisateur
+        conversations = Conversation.query.filter(
+            (Conversation.user_one_id == user_id)
+            | (Conversation.user_two_id == user_id)
+        ).all()
+        conv_ids = [c.id for c in conversations]
+        if conv_ids:
+            Message.query.filter(Message.conversation_id.in_(conv_ids)).delete(
+                synchronize_session=False
+            )
+
+        # 2. Supprimer les conversations elles-mêmes
+        Conversation.query.filter(
+            (Conversation.user_one_id == user_id)
+            | (Conversation.user_two_id == user_id)
+        ).delete(synchronize_session=False)
+
+        # 3. Supprimer les notifications de l'utilisateur
+        Notification.query.filter_by(user_id=user_id).delete(synchronize_session=False)
+
+        # 4. Supprimer les matchings impliquant l'utilisateur
+        Matching.query.filter(
+            (Matching.user_one_id == user_id)
+            | (Matching.user_two_id == user_id)
+            | (Matching.initiator_id == user_id)
+        ).delete(synchronize_session=False)
+
+        # 5. Supprimer l'utilisateur (cascade vers Profile → Offers, Demands,
+        #    Competences, Lacunes, Disponibilites, PasswordResetTokens)
+        db.session.delete(current_user)
+        db.session.commit()
+
+        logger.info(f"Compte supprimé : user_id={user_id} email={user_email[:10]}***")
+        return jsonify({"message": "Compte supprimé avec succès"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(
+            f"Erreur suppression compte user_id={user_id}: {str(e)[:500]}",
+            exc_info=True,
+        )
+        return jsonify(
+            {"message": "Erreur serveur lors de la suppression du compte"}
+        ), 500
