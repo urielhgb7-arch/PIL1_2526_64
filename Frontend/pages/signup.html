@@ -4,8 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inscription - IFRI MentorLink</title>
-  <link rel="stylesheet" href="../css/tailwind.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-background text-foreground min-h-screen">
   <div class="min-h-screen flex">
@@ -149,6 +170,18 @@
             </div>
 
             <div>
+              <label for="phone" class="block text-sm font-medium mb-2">Téléphone <span class="text-muted">(Bénin, sans +229 et sans 01)</span></label>
+              <input
+                id="phone"
+                type="tel"
+                placeholder="61 23 45 67"
+                class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                pattern="[4569][0-9]{7}"
+                title="Numéro béninois à 8 chiffres : 5X XX XX XX, 6X XX XX XX ou 9X XX XX XX ou 4X XX XX XX "
+              />
+            </div>
+
+            <div>
               <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
               <div class="relative">
                 <input
@@ -247,6 +280,7 @@
     const emailInput     = document.getElementById('email');
     const firstnameInput = document.getElementById('firstname');
     const lastnameInput  = document.getElementById('lastname');
+    const phoneInput     = document.getElementById('phone');
     const pwdInput       = document.getElementById('password');
     const cpwdInput      = document.getElementById('confirm-password');
     const acceptHelp     = document.getElementById('accept-help');
@@ -255,6 +289,10 @@
     const successMsg     = document.getElementById('success-message');
     const successTxt     = document.getElementById('success-text');
     const submitBtn      = document.getElementById('submit-btn');
+
+    function isValidBeninPhone(v) {
+      return /^[4569]\d{7}$/.test(v.replace(/\s/g, ''));
+    }
 
     function showError(msg)   { errorTxt.textContent = msg;   errorMsg.classList.remove('hidden');   successMsg.classList.add('hidden'); }
     function showSuccess(msg) { successTxt.textContent = msg; successMsg.classList.remove('hidden'); errorMsg.classList.add('hidden'); }
@@ -274,6 +312,7 @@
       const email           = emailInput.value.trim();
       const firstname       = firstnameInput.value.trim();
       const lastname        = lastnameInput.value.trim();
+      const phone           = phoneInput.value.trim().replace(/\s/g, '');
       const password        = pwdInput.value;
       const confirmPassword = cpwdInput.value;
       const accepteAide     = acceptHelp.checked;
@@ -285,6 +324,10 @@
       }
       if (!firstname || !lastname) {
         showError('Prénom et nom sont requis.');
+        return;
+      }
+      if (phone && !isValidBeninPhone(phone)) {
+        showError('Numéro de téléphone béninois invalide. Utilisez 8 chiffres (ex: 61 23 45 67).');
         return;
       }
       if (password !== confirmPassword) {
@@ -305,6 +348,7 @@
             password,
             nom: lastname,
             prenom: firstname,
+            telephone: phone || undefined,
             accepte_aide: accepteAide,
           });
 

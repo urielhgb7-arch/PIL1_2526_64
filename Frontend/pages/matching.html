@@ -1,84 +1,343 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matchs - IFRI MentorLink</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matchs - IFRI MentorLink</title>  <script src="https://cdn.tailwindcss.com"></script>  <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/matching.css">
-  <script src="../js/api.js"></script>
 </head>
-<body>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      <span class="brand">IFRI</span><span class="name"> MentorLink</span>
-    </div>
-
-    <nav class="sidebar-nav">
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
-    </div>
-    <div class="nav-item ">
-      <svg viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"/></svg>
-      Matchs
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Trouver
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Demandes
-    </div>
-    <div class="nav-item ">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Messages
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Admin
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-      Paramètres
-    </div>
-  </nav>
-  <div class="sidebar-bottom">
-    <div class="nav-item nav-item-muted">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Déconnexion
+<body class="bg-background text-foreground">
+  <!-- Top Bar -->
+  <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
+    <div class="flex items-center justify-between">
+      <a href="dashboard.html" title="Dashboard" class="text-muted hover:text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <h1 class="text-xl font-bold">Découverte</h1>
+      <a href="notifications.html" class="site-bell" aria-label="Notifications">
+        <span class="ti ti-bell"></span>
+        <span class="dot" id="siteBellDot"></span>
+      </a>
     </div>
   </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
-      <div class="flex items-center justify-between">
-        <a href="dashboard.html" title="Retour" class="text-muted hover:text-white">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+  <!-- Swipe Cards Container -->
+  <div class="flex items-center justify-center px-4 py-8" style="height: calc(100vh - 200px);">
+    <div id="cards-container" class="relative w-full max-w-md" style="height: 500px;">
+      <!-- Cards will be inserted here dynamically -->
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="fixed bottom-24 lg:bottom-8 left-0 right-0 px-4">
+    <div class="max-w-md mx-auto flex items-center justify-center gap-6">
+      <button title="Ne pas aimer" onclick="handleNope()" class="w-16 h-16 rounded-full bg-destructive/20 border-2 border-destructive flex items-center justify-center hover:bg-destructive/30 transition-colors">
+        <svg class="w-8 h-8 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <button title="Aimer" onclick="handleLike()" class="w-20 h-20 rounded-full bg-success/20 border-2 border-success flex items-center justify-center hover:bg-success/30 transition-colors">
+        <svg class="w-10 h-10 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50">
+    <div class="flex items-center justify-around p-2">
+      <a href="dashboard.html" title="Dashboard" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="text-xs">Dashboard</span>
+      </a>
+      <a href="matching.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
+        </svg>
+        <span class="text-xs">Matchs</span>
+      </a>
+      <a href="messages.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span class="text-xs">Messages</span>
+      </a>
+      <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <span class="text-xs">Publications</span>
+      </a>
+      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="text-xs">Paramètres</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="../js/script.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    checkAuth();
+
+    let profiles = [];
+
+    function getDemandId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('demand_id') || null;
+    }
+
+    async function loadSuggestions() {
+      const demandId = getDemandId();
+      try {
+        const filters = {};
+        if (demandId) filters.demand_id = demandId;
+        const data = await API.matching.getSuggestions(filters);
+        const matches = data.matches || [];
+        profiles = matches.map(u => ({
+          id: u.student_id,
+          name: `${u.prenom} ${u.nom}`,
+          level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
+          department: u.filiere || '',
+          bio: (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || 'Aucune bio disponible.',
+          skills: (u.matched_subjects || []).map(s => s.nom),
+          compatibility: u.score,
+          score_detail: u.score_detail,
+          explication: u.explication,
+          rejected_before: u.rejected_before
+        }));
+      } catch (err) {
+        console.warn('API non disponible, utilisation des données de démo.', err);
+        profiles = [
+          { name: 'Sarah Mensah', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Passionnée par le développement web et mobile.', skills: ['React', 'Node.js', 'MongoDB', 'Docker'], compatibility: 92 },
+          { name: 'Karim Diallo', level: 'M1 RSI', department: 'Réseaux et SI', bio: 'Expert en cybersécurité et architecture réseau.', skills: ['Cybersécurité', 'Cisco', 'Linux', 'Python'], compatibility: 88 },
+          { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', skills: ['Python', 'TensorFlow', 'Scikit-learn', 'Pandas'], compatibility: 85 },
+          { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', skills: ['Vue.js', 'Laravel', 'PostgreSQL', 'AWS'], compatibility: 90 }
+        ];
+      }
+      initCards();
+    }
+
+    let currentIndex = 0;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let isDragging = false;
+    let currentCard = null;
+
+    function createCard(profile, index) {
+      const card = document.createElement('div');
+      card.className = 'swipe-card absolute inset-0 bg-card border border-border rounded-3xl overflow-hidden shadow-2xl';
+      card.style.zIndex = profiles.length - index;
+      card.innerHTML = `
+        <div class="h-full flex flex-col">
+          <!-- Profile Header -->
+          <div class="bg-gradient-to-br from-primary/20 to-success/20 p-8 text-center">
+            <div class="w-24 h-24 rounded-full bg-primary/30 flex items-center justify-center mx-auto mb-4">
+              <span class="text-4xl font-bold text-primary">${profile.name.split(' ').map(n => n[0]).join('')}</span>
+            </div>
+            <h2 class="text-2xl font-bold mb-1">${profile.name}</h2>
+            <p class="text-muted">${profile.level} - ${profile.department}</p>
+            <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-success/20 text-success rounded-full">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span class="font-semibold">${profile.compatibility}% compatible</span>
+            </div>
+          </div>
+
+          <!-- Profile Content -->
+          <div class="flex-1 p-6 space-y-6 overflow-y-auto">
+            <div>
+              <h3 class="text-sm font-semibold text-muted mb-2">À PROPOS</h3>
+              <p class="text-sm">${profile.bio}</p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-muted mb-3">COMPÉTENCES</h3>
+              <div class="flex flex-wrap gap-2">
+                ${profile.skills.map(skill => `
+                  <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">${skill}</span>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Swipe Overlays -->
+          <div class="swipe-overlay like">
+            <span>LIKE</span>
+          </div>
+          <div class="swipe-overlay nope">
+            <span>NOPE</span>
+          </div>
+        </div>
+      `;
+
+      // Touch and mouse events
+      card.addEventListener('mousedown', handleDragStart);
+      card.addEventListener('touchstart', handleDragStart);
+      card.addEventListener('mousemove', handleDrag);
+      card.addEventListener('touchmove', handleDrag);
+      card.addEventListener('mouseup', handleDragEnd);
+      card.addEventListener('touchend', handleDragEnd);
+      card.addEventListener('mouseleave', handleDragEnd);
+
+      return card;
+    }
+
+    function handleDragStart(e) {
+      if (isDragging) return;
+      isDragging = true;
+      currentCard = e.currentTarget;
+      currentCard.classList.add('dragging');
+
+      const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+      const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+      
+      dragStartX = clientX;
+      dragStartY = clientY;
+    }
+
+    function handleDrag(e) {
+      if (!isDragging || !currentCard) return;
+      e.preventDefault();
+
+      const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+      const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+      const deltaX = clientX - dragStartX;
+      const deltaY = clientY - dragStartY;
+      const rotation = deltaX / 20;
+
+      currentCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+
+      // Show overlay based on direction
+      const likeOverlay = currentCard.querySelector('.swipe-overlay.like');
+      const nopeOverlay = currentCard.querySelector('.swipe-overlay.nope');
+      
+      if (deltaX > 0) {
+        likeOverlay.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
+        nopeOverlay.style.opacity = 0;
+      } else {
+        nopeOverlay.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
+        likeOverlay.style.opacity = 0;
+      }
+    }
+
+    function handleDragEnd(e) {
+      if (!isDragging || !currentCard) return;
+
+      const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+      const deltaX = clientX - dragStartX;
+
+      if (Math.abs(deltaX) > 100) {
+        // Swipe threshold reached
+        const direction = deltaX > 0 ? 'right' : 'left';
+        swipeCard(direction);
+      } else {
+        // Reset card position
+        currentCard.style.transform = '';
+        currentCard.querySelector('.swipe-overlay.like').style.opacity = 0;
+        currentCard.querySelector('.swipe-overlay.nope').style.opacity = 0;
+      }
+
+      isDragging = false;
+      currentCard.classList.remove('dragging');
+      currentCard = null;
+    }
+
+    function swipeCard(direction) {
+      if (!currentCard) return;
+
+      const profile = profiles[currentIndex];
+      const rotation = direction === 'right' ? 30 : -30;
+      const translateX = direction === 'right' ? 1000 : -1000;
+
+      // Swipe droit = envoi d'une demande de match
+      if (profile && profile.id && direction === 'right') {
+        const demandId = getDemandId();
+        if (demandId) {
+          API.matching.requestMatch(profile.id, { demand_id: parseInt(demandId), score: profile.compatibility })
+            .catch(err => console.warn('API requestMatch error:', err));
+        } else {
+          console.warn('demand_id manquant dans l\'URL');
+        }
+      }
+
+      currentCard.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      currentCard.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
+      currentCard.style.opacity = '0';
+
+      setTimeout(() => {
+        currentCard.remove();
+        currentIndex++;
+        if (currentIndex < profiles.length) {
+          loadNextCard();
+        } else {
+          showNoMoreCards();
+        }
+      }, 300);
+    }
+
+    function handleLike() {
+      currentCard = document.querySelector('.swipe-card');
+      if (currentCard) {
+        swipeCard('right');
+      }
+    }
+
+    function handleNope() {
+      currentCard = document.querySelector('.swipe-card');
+      if (currentCard) {
+        swipeCard('left');
+      }
+    }
+
+    function loadNextCard() {
+      if (currentIndex >= profiles.length) return;
+      
+      const container = document.getElementById('cards-container');
+      const card = createCard(profiles[currentIndex], currentIndex);
+      container.appendChild(card);
+    }
+
+    function showNoMoreCards() {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-full text-center p-8">
+          <svg class="w-20 h-20 text-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-        </a>
-        <h1 class="text-xl font-bold">Découverte</h1>
-        <div class="w-6"></div>
-      </div>
-    </div>
+          <h2 class="text-2xl font-bold mb-2">Plus de profils!</h2>
+          <p class="text-muted mb-6">Revenez plus tard pour découvrir de nouveaux mentors</p>
+          <a href="dashboard.html" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Retour au Dashboard
+          </a>
+        </div>
+      `;
+    }
 
-    <!-- Embed swipe experience -->
-    <div class="p-4">
-      <iframe src="swipe.html" class="w-full h-[calc(100vh-120px)] border-0 rounded-xl shadow-lg" title="Swipe"></iframe>
-    </div>
-  </main>
-<script src="../js/matching.js"></script>
-<script src="../js/matieres-loader.js"></script>
-<script src="../js/notifications-badge.js"></script>
-  
+    // Initialize - load first 3 cards
+    function initCards() {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+      currentIndex = 0;
+      for (let i = Math.min(2, profiles.length - 1); i >= 0; i--) {
+        const card = createCard(profiles[i], i);
+        container.appendChild(card);
+      }
+      if (profiles.length === 0) showNoMoreCards();
+    }
+
+    // Lancement : charger les suggestions depuis l'API
+    loadSuggestions();
+  </script>
+  <script src="../js/matieres-loader.js"></script>
+  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>

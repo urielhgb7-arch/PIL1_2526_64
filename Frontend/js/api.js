@@ -118,14 +118,18 @@ const API = {
 
     offers: {
         getAll: () => fetchAPI('/offers', 'GET'),
+        getMine: () => fetchAPI('/offers/mine', 'GET'),
         create: (data) => fetchAPI('/offers', 'POST', data),
-        delete: (id) => fetchAPI(`/offers/${id}`, 'DELETE')
+        delete: (id) => fetchAPI(`/offers/${id}`, 'DELETE'),
+        respond: (id) => fetchAPI(`/offers/${id}/respond`, 'POST')
     },
 
     demands: {
         getAll: () => fetchAPI('/demands', 'GET'),
+        getMine: () => fetchAPI('/demands/mine', 'GET'),
         create: (data) => fetchAPI('/demands', 'POST', data),
-        delete: (id) => fetchAPI(`/demands/${id}`, 'DELETE')
+        delete: (id) => fetchAPI(`/demands/${id}`, 'DELETE'),
+        offerHelp: (id) => fetchAPI(`/demands/${id}/offer-help`, 'POST')
     },
 
     feedback: {

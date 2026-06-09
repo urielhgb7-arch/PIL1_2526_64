@@ -128,7 +128,70 @@ def get_offers():
         query = query.filter_by(format_preference=format_pref)
 
     offers = query.all()
-    return jsonify([{ ... } for o in offers]), 200
+    result = []
+    for o in offers:
+        profile = Profile.query.get(o.profile_id)
+        publicateur = None
+        if profile:
+            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom}
+        result.append({
+            "id": o.id,
+            "profile_id": o.profile_id,
+            "matiere_id": o.matiere_id,
+            "matiere_nom": o.matiere.nom if o.matiere else None,
+            "description": o.description,
+            "jour": o.jour,
+            "creneau": o.creneau,
+            "format_preference": o.format_preference,
+            "created_at": o.created_at.isoformat() if o.created_at else None,
+            "publicateur": publicateur
+        })
+    return jsonify(result), 200
+
+
+# ── GET /api/offers/mine ─────────────────────────────────────────────────────
+@offers_bp.route('/offers/mine', methods=['GET'])
+@token_required
+def get_my_offers(current_user):
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+    offers = Offer.query.filter_by(profile_id=profile.id).all()
+    result = []
+    for o in offers:
+        result.append({
+            "id": o.id,
+            "matiere_id": o.matiere_id,
+            "matiere_nom": o.matiere.nom if o.matiere else None,
+            "description": o.description,
+            "jour": o.jour,
+            "creneau": o.creneau,
+            "format_preference": o.format_preference,
+            "created_at": o.created_at.isoformat() if o.created_at else None
+        })
+    return jsonify(result), 200
+
+
+# ── GET /api/demands/mine ────────────────────────────────────────────────────
+@offers_bp.route('/demands/mine', methods=['GET'])
+@token_required
+def get_my_demands(current_user):
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+    demands = Demand.query.filter_by(profile_id=profile.id).all()
+    result = []
+    for d in demands:
+        result.append({
+            "id": d.id,
+            "matiere_id": d.matiere_id,
+            "matiere_nom": d.matiere.nom if d.matiere else None,
+            "jour": d.jour,
+            "creneau": d.creneau,
+            "description": d.description,
+            "created_at": d.created_at.isoformat() if d.created_at else None
+        })
+    return jsonify(result), 200
 
 
 # ── DELETE /api/offers/<id> ──────────────────────────────────────────────────
@@ -231,16 +294,24 @@ def create_demand(current_user):
 @offers_bp.route('/demands', methods=['GET'])
 def get_demands():
     demands = Demand.query.all()
-    return jsonify([{
-        "id": d.id,
-        "profile_id": d.profile_id,
-        "matiere_id": d.matiere_id,
-        "matiere_nom": d.matiere.nom if d.matiere else None,
-        "jour": d.jour,
-        "creneau": d.creneau,
-        "description": d.description,
-        "created_at": d.created_at.isoformat()
-    } for d in demands]), 200
+    result = []
+    for d in demands:
+        profile = Profile.query.get(d.profile_id)
+        publicateur = None
+        if profile:
+            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom}
+        result.append({
+            "id": d.id,
+            "profile_id": d.profile_id,
+            "matiere_id": d.matiere_id,
+            "matiere_nom": d.matiere.nom if d.matiere else None,
+            "jour": d.jour,
+            "creneau": d.creneau,
+            "description": d.description,
+            "created_at": d.created_at.isoformat(),
+            "publicateur": publicateur
+        })
+    return jsonify(result), 200
 
 
 # ── DELETE /api/demands/<id> ─────────────────────────────────────────────────
@@ -313,3 +384,50 @@ def respond_to_offer(current_user, offer_id):
         "message": "Réponse envoyée au mentor",
         "matching_id": new_match.id
     }), 201
+
+
+# ── POST /api/demands/<demand_id>/offer-help ──────────────────────────────────
+@offers_bp.route('/demands/<int:demand_id>/offer-help', methods=['POST'])
+@token_required
+def offer_help_on_demand(current_user, demand_id):
+    """Un étudiant avec une compétence propose son aide sur une demande"""
+    demand = db.session.get(Demand, demand_id)
+    if not demand:
+        return jsonify({"message": "Demande introuvable"}), 404
+
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    competence = ProfilCompetence.query.filter_by(
+        profile_id=profile.id,
+        matiere_id=demand.matiere_id
+    ).first()
+    if not competence:
+        return jsonify({"message": "Vous n'avez pas de compétence sur cette matière"}), 400
+
+    demandeur_profile = Profile.query.get(demand.profile_id)
+    if not demandeur_profile:
+        return jsonify({"message": "Profil du demandeur introuvable"}), 404
+
+    existing = Matching.query.filter_by(
+        user_one_id=current_user.id,
+        user_two_id=demandeur_profile.user_id,
+        demand_id=demand_id
+    ).first()
+    if existing:
+        return jsonify({"message": "Aide déjà proposée", "matching_id": existing.id, "status": existing.status}), 200
+
+    new_match = Matching(
+        user_one_id=current_user.id,
+        user_two_id=demandeur_profile.user_id,
+        initiator_id=current_user.id,
+        demand_id=demand_id,
+        matiere_id=demand.matiere_id,
+        score=0.0,
+        status='pending'
+    )
+    db.session.add(new_match)
+    db.session.commit()
+
+    return jsonify({"message": "Aide proposée avec succès", "matching_id": new_match.id}), 201

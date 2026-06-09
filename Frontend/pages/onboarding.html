@@ -3,9 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configuration - IFRI MentorLink</title>
-  <link rel="stylesheet" href="../css/tailwind.css">
-  <link rel="stylesheet" href="../css/styles.css">
+  <title>Configuration - IFRI MentorLink</title>  <script src="https://cdn.tailwindcss.com"></script>  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body class="bg-background text-foreground min-h-screen">
   <div class="min-h-screen py-12 px-4">
@@ -324,26 +342,10 @@
       document.getElementById('step2-form').classList.add('hidden');
 
       try {
-        // Utilise le chargeur centralisé
-        await loadMatieresFromAPI();
-        // Filtrer par la filière sélectionnée dans le step1
-        const dept = userData.department || document.getElementById('department').value || '';
-        const mts = getMatiersByFiliere(dept) || [];
-        // Si le filtre retourne vide, fallback sur l'ensemble
-        matieresCache = mts.length > 0 ? mts : (await loadMatieresFromAPI()) || [];
+        matieresCache = await loadMatieresFromAPI();
       } catch (err) {
         console.warn('Erreur chargement matières via loader, fallback local', err);
-        // fallback statique
-        matieresCache = [
-          { id: 1, nom: 'Algorithmique' },
-          { id: 2, nom: 'Base de données SQL' },
-          { id: 3, nom: 'Réseaux' },
-          { id: 4, nom: 'Web Development' },
-          { id: 5, nom: 'Programmation Orientée Objet' },
-          { id: 6, nom: "Systèmes d'exploitation" },
-          { id: 7, nom: 'Architecture des ordinateurs' },
-          { id: 8, nom: 'Génie Logiciel' },
-        ];
+        matieresCache = await loadMatieresFromAPI();
       }
 
       initSkillsLists();
@@ -402,42 +404,60 @@
       sl.innerHTML = '';
       wl.innerHTML = '';
 
+      const groups = {};
       matieresCache.forEach(mat => {
-        const id  = mat.id;
-        const nom = mat.nom || mat.name || mat.libelle || '';
-        const sid = safeId(id);
+        const f = mat.filiere || 'Autres';
+        if (!groups[f]) groups[f] = [];
+        groups[f].push(mat);
+      });
 
-        // ── Compétence ──
-        const sd = document.createElement('div');
-        sd.className = 'space-y-2';
-        sd.innerHTML = `
-          <button type="button" onclick="toggleSkill(${id},'strength')"
-            id="strength-${sid}"
-            class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors">
-            <div class="flex items-center justify-between"><span>${nom}</span></div>
-          </button>
-          <select id="strength-level-${sid}"
-            class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            onchange="updateSkillLevel(${id},'strength',this.value)">
-            ${masteryLevels.map(l => `<option value="${l}">${l}</option>`).join('')}
-          </select>`;
-        sl.appendChild(sd);
+      Object.keys(groups).sort().forEach(filiere => {
+        const items = groups[filiere];
 
-        // ── Lacune ──
-        const wd = document.createElement('div');
-        wd.className = 'space-y-2';
-        wd.innerHTML = `
-          <button type="button" onclick="toggleSkill(${id},'weakness')"
-            id="weakness-${sid}"
-            class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors">
-            <div class="flex items-center justify-between"><span>${nom}</span></div>
-          </button>
-          <select id="weakness-level-${sid}"
-            class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning"
-            onchange="updateSkillLevel(${id},'weakness',this.value)">
-            ${priorityLevels.map(l => `<option value="${l}">${l}</option>`).join('')}
-          </select>`;
-        wl.appendChild(wd);
+        // En-tête de filière (pleine largeur au-dessus des deux colonnes)
+        const hdrRow = document.createElement('div');
+        hdrRow.className = 'col-span-full mt-4 mb-2 first:mt-0';
+        hdrRow.innerHTML = `<h4 class="text-sm font-semibold text-primary uppercase tracking-wider">${filiere}</h4>`;
+        sl.appendChild(hdrRow.cloneNode(true));
+        wl.appendChild(hdrRow.cloneNode(true));
+
+        items.forEach(mat => {
+          const id  = mat.id;
+          const nom = mat.nom || mat.name || mat.libelle || '';
+          const sid = safeId(id);
+
+          // ── Compétence ──
+          const sd = document.createElement('div');
+          sd.className = 'space-y-2';
+          sd.innerHTML = `
+            <button type="button" onclick="toggleSkill(${id},'strength')"
+              id="strength-${sid}"
+              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors">
+              <div class="flex items-center justify-between"><span>${nom}</span></div>
+            </button>
+            <select id="strength-level-${sid}"
+              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              onchange="updateSkillLevel(${id},'strength',this.value)">
+              ${masteryLevels.map(l => `<option value="${l}">${l}</option>`).join('')}
+            </select>`;
+          sl.appendChild(sd);
+
+          // ── Lacune ──
+          const wd = document.createElement('div');
+          wd.className = 'space-y-2';
+          wd.innerHTML = `
+            <button type="button" onclick="toggleSkill(${id},'weakness')"
+              id="weakness-${sid}"
+              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors">
+              <div class="flex items-center justify-between"><span>${nom}</span></div>
+            </button>
+            <select id="weakness-level-${sid}"
+              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning"
+              onchange="updateSkillLevel(${id},'weakness',this.value)">
+              ${priorityLevels.map(l => `<option value="${l}">${l}</option>`).join('')}
+            </select>`;
+          wl.appendChild(wd);
+        });
       });
     }
 

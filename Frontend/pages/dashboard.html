@@ -4,8 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - IFRI MentorLink</title>
-  <link rel="stylesheet" href="../css/tailwind.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-background text-foreground">
   <!-- Desktop Sidebar -->
@@ -44,7 +66,7 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-        <span>Demandes</span>
+        <span>Publications</span>
       </a>
       <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +115,7 @@
               </svg>
             </div>
           </div>
-          <div class="text-3xl font-bold mb-1">12</div>
+          <div class="text-3xl font-bold mb-1" id="metric-matches">0</div>
           <div class="text-sm text-muted">Matchs actifs</div>
         </div>
 
@@ -105,7 +127,7 @@
               </svg>
             </div>
           </div>
-          <div class="text-3xl font-bold mb-1">24h</div>
+          <div class="text-3xl font-bold mb-1" id="metric-hours">0h</div>
           <div class="text-sm text-muted">Heures de mentorat</div>
         </div>
 
@@ -127,106 +149,20 @@
         <!-- Offres de mentorat -->
         <div class="bg-card border border-border rounded-xl p-6">
           <h2 class="text-xl font-semibold mb-4">Offres de mentorat disponibles</h2>
-          <div class="space-y-3">
-            <div class="bg-popover border border-border rounded-lg p-4">
-              <div class="flex items-start justify-between mb-2">
-                <div>
-                  <h3 class="font-semibold">Aide en Programmation Java</h3>
-                  <p class="text-sm text-muted">Marie Dupont - L3 GL</p>
-                </div>
-                <span class="px-2 py-1 bg-success/10 text-success text-xs rounded-full">Expert</span>
-              </div>
-              <p class="text-sm text-muted mb-3">Disponible pour aider sur POO, collections, et design patterns</p>
-              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                Demander un mentorat
-              </button>
-            </div>
-
-            <div class="bg-popover border border-border rounded-lg p-4">
-              <div class="flex items-start justify-between mb-2">
-                <div>
-                  <h3 class="font-semibold">Base de données SQL</h3>
-                  <p class="text-sm text-muted">Jean Martin - M1 RSI</p>
-                </div>
-                <span class="px-2 py-1 bg-success/10 text-success text-xs rounded-full">Expert</span>
-              </div>
-              <p class="text-sm text-muted mb-3">Requêtes avancées, optimisation, et modélisation</p>
-              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                Demander un mentorat
-              </button>
-            </div>
+          <div class="space-y-3" id="offers-list">
+            <div class="text-sm text-muted text-center py-4">Aucune offre disponible</div>
           </div>
         </div>
 
         <!-- Demandes d'aide -->
         <div class="bg-card border border-border rounded-xl p-6">
           <h2 class="text-xl font-semibold mb-4">Demandes d'aide récentes</h2>
-          <div class="space-y-3">
-            <div class="bg-popover border border-border rounded-lg p-4">
-              <div class="flex items-start justify-between mb-2">
-                <div>
-                  <h3 class="font-semibold">Aide Algorithmique</h3>
-                  <p class="text-sm text-muted">Sophie Bernard - L2 GL</p>
-                </div>
-                <span class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full">Urgent</span>
-              </div>
-              <p class="text-sm text-muted mb-3">Besoin d'aide sur les arbres binaires et graphes</p>
-              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                Proposer mon aide
-              </button>
-            </div>
-
-            <div class="bg-popover border border-border rounded-lg p-4">
-              <div class="flex items-start justify-between mb-2">
-                <div>
-                  <h3 class="font-semibold">Réseaux TCP/IP</h3>
-                  <p class="text-sm text-muted">Lucas Petit - L3 RSI</p>
-                </div>
-                <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">Normal</span>
-              </div>
-              <p class="text-sm text-muted mb-3">Configuration routeurs et protocoles réseau</p>
-              <button class="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                Proposer mon aide
-              </button>
-            </div>
+          <div class="space-y-3" id="demands-list">
+            <div class="text-sm text-muted text-center py-4">Aucune demande récente</div>
           </div>
         </div>
       </div>
 
-      <!-- AI Suggestions -->
-      <div class="bg-gradient-to-br from-primary/10 to-success/10 border border-primary/20 rounded-xl p-6">
-        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-          </svg>
-          Suggestions IA
-        </h2>
-        <div class="space-y-2" id="ai-suggestions-list">
-          <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-              <span class="text-sm font-bold">SM</span>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm"><span class="font-semibold">Sarah Mensah</span> correspond parfaitement à vos compétences en React</p>
-            </div>
-            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
-              Voir profil
-            </button>
-          </div>
-
-          <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-            <div class="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-              <span class="text-sm font-bold">KD</span>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm"><span class="font-semibold">Karim Diallo</span> peut vous aider avec l'architecture logicielle</p>
-            </div>
-            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
-              Voir profil
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -250,6 +186,10 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
         <span class="text-xs">Messages</span>
+      </a>
+      <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <span class="text-xs">Publications</span>
       </a>
       <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-muted">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -281,52 +221,70 @@
         }
       }
 
+      // ── Métriques réelles ─────────────────────────────────────────────────
       try {
-        const data = await API.matching.getSuggestions();
-        const matches = data.matches || [];
-        if (matches.length > 0) {
-          const list = document.getElementById('ai-suggestions-list');
-          list.innerHTML = '';
-          const colors = ['bg-primary/20', 'bg-success/20', 'bg-warning/20'];
-          matches.slice(0, 3).forEach((u, i) => {
-            const name = `${u.prenom || ''} ${u.nom || ''}`.trim();
-            const initials = name.split(' ').map(n => n[0] || '').join('').toUpperCase();
-            const score = u.score || '';
-            const skills = (u.matched_subjects || []).map(s => s.nom).slice(0, 2).join(', ');
-            list.innerHTML += `
-              <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-                <div class="w-10 h-10 rounded-full ${colors[i % colors.length]} flex items-center justify-center flex-shrink-0">
-                  <span class="text-sm font-bold">${initials}</span>
+        const [received, sent, offers] = await Promise.all([
+          API.matching.getReceived().catch(() => []),
+          API.matching.getSent().catch(() => []),
+          API.offers.getAll().catch(() => [])
+        ]);
+        const rArr = Array.isArray(received) ? received : (received.matches || received.data || []);
+        const sArr = Array.isArray(sent) ? sent : (sent.matches || sent.data || []);
+        const oArr = Array.isArray(offers) ? offers : (offers.offers || offers.data || []);
+        const acceptedCount = [...rArr, ...sArr].filter(m => m.status === 'accepted').length;
+        document.getElementById('metric-matches').textContent = acceptedCount;
+        document.getElementById('metric-hours').textContent = acceptedCount > 0 ? `${acceptedCount * 2}h` : '0h';
+      } catch (err) { console.warn('Metrics error', err); }
+
+      // ── Offres réelles ────────────────────────────────────────────────────
+      try {
+        const data = await API.offers.getAll();
+        const items = Array.isArray(data) ? data : (data.offers || data.data || []);
+        const el = document.getElementById('offers-list');
+        if (items.length > 0) {
+          el.innerHTML = items.slice(0, 3).map(o => {
+            const nom = o.matiere_nom || o.matiere?.nom || 'Matière';
+            const profil = o.publicateur ? `${o.publicateur.prenom || ''} ${o.publicateur.nom || ''}`.trim() : (o.profile_name || '');
+            return `
+              <div class="bg-popover border border-border rounded-lg p-4">
+                <div class="flex items-start justify-between mb-2">
+                  <div>
+                    <h3 class="font-semibold">${nom}</h3>
+                    ${profil ? `<p class="text-sm text-muted">${profil}</p>` : ''}
+                  </div>
                 </div>
-                <div class="flex-1">
-                  <p class="text-sm">
-                    <span class="font-semibold">${name}</span>
-                    ${score ? `<span class="text-success ml-1">${score}% compatible</span>` : ''}
-                    ${skills ? ` · ${skills}` : ''}
-                  </p>
-                </div>
-                <a href="swipe.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
-                  Voir profil
+                <a href="matching.html" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                  Voir
                 </a>
               </div>`;
-          });
+          }).join('');
         }
-      } catch (err) {
-        console.warn('Suggestions API non disponible.', err);
-      }
+      } catch (err) { console.warn('Offers error', err); }
 
-      // ── Notifications non lues ─────────────────────────────────────────────
+      // ── Demandes réelles ──────────────────────────────────────────────────
       try {
-        const notifs = await API.notifications.getAll();
-        const unread = (notifs.notifications || notifs).filter(n => !n.lu).length;
-        if (unread > 0) {
-          const msgLink = document.querySelector('a[href="messages.html"]');
-          if (msgLink) {
-            msgLink.insertAdjacentHTML('beforeend',
-              `<span class="ml-1 px-1.5 py-0.5 bg-destructive text-white text-xs rounded-full">${unread}</span>`);
-          }
+        const data = await API.demands.getAll();
+        const items = Array.isArray(data) ? data : (data.demandes || data.data || []);
+        const el = document.getElementById('demands-list');
+        if (items.length > 0) {
+          el.innerHTML = items.slice(0, 3).map(d => {
+            const nom = d.matiere_nom || 'Matière';
+            const slot = d.jour && d.creneau ? `${d.jour} ${d.creneau}` : '';
+            return `
+              <div class="bg-popover border border-border rounded-lg p-4">
+                <div class="flex items-start justify-between mb-2">
+                  <div>
+                    <h3 class="font-semibold">${nom}</h3>
+                    ${slot ? `<p class="text-sm text-muted">${slot}</p>` : ''}
+                  </div>
+                </div>
+                <a href="swipe.html" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                  Voir
+                </a>
+              </div>`;
+          }).join('');
         }
-      } catch (err) { /* silencieux */ }
+      } catch (err) { console.warn('Demands error', err); }
     }
 
     loadDashboard();

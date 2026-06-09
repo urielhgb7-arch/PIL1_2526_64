@@ -4,8 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion - IFRI MentorLink</title>
-  <link rel="stylesheet" href="../css/tailwind.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-background text-foreground min-h-screen">
   <div class="min-h-screen flex">
@@ -323,12 +344,7 @@
         localStorage.setItem('isAuthenticated', 'true');
 
         // redirect according to onboarding flag or profile completeness
-        const hasCompletedOnboarding = localStorage.getItem('onboardingCompleted') || (user && user.onboarding_completed);
-        if (hasCompletedOnboarding) {
-          window.location.href = 'dashboard.html';
-        } else {
-          window.location.href = 'onboarding.html';
-        }
+        window.location.href = 'dashboard.html';
       } catch (err) {
         console.error('Login error', err);
         showError(err.message || 'Impossible de se connecter.');

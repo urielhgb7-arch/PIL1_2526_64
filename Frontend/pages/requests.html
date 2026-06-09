@@ -3,9 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demandes - IFRI MentorLink</title>
-  <link rel="stylesheet" href="../css/tailwind.css">
+  <title>Publications - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-background text-foreground">
 
@@ -36,7 +58,7 @@
       </a>
       <a href="requests.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span>Demandes</span>
+        <span>Publications</span>
       </a>
       <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -57,18 +79,18 @@
     <!-- Top Bar -->
     <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
       <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold">Demandes</h1>
+        <h1 class="text-2xl font-bold">Publications</h1>
         <div class="flex items-center gap-3">
           <a href="notifications.html" class="site-bell" aria-label="Notifications">
             <span class="ti ti-bell"></span>
             <span class="dot" id="siteBellDot"></span>
           </a>
-          <button onclick="openNewDemandModal()"
+          <button onclick="openNewPublicationModal()"
             class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            Nouvelle demande
+            Nouvelle publication
           </button>
         </div>
       </div>
@@ -76,58 +98,113 @@
 
     <div class="p-4 lg:p-8 space-y-8">
 
-      <!-- Toast notification -->
+      <!-- Toast -->
       <div id="toast" class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"></div>
 
-      <!-- ── Tabs ── -->
+      <!-- Tabs: Offres | Demandes -->
       <div class="flex gap-1 bg-card border border-border rounded-xl p-1 w-fit">
-        <button id="tab-received" onclick="switchTab('received')"
+        <button id="tab-offers" onclick="switchTab('offers')"
           class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-white">
-          Reçues
-          <span id="badge-received" class="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs">0</span>
+          Offres
         </button>
-        <button id="tab-sent" onclick="switchTab('sent')"
+        <button id="tab-demands" onclick="switchTab('demands')"
           class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors text-muted hover:text-white">
-          Envoyées
-          <span id="badge-sent" class="ml-2 px-2 py-0.5 bg-white/10 rounded-full text-xs">0</span>
+          Demandes
         </button>
       </div>
 
-      <!-- ── SECTION REÇUES ── -->
-      <div id="section-received">
-        <div id="received-loading" class="flex items-center gap-3 py-12 text-muted text-sm">
-          <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-          Chargement des demandes reçues…
-        </div>
-        <div id="received-empty" class="hidden flex-col items-center justify-center py-16 text-center">
-          <div class="w-16 h-16 rounded-full bg-card border border-border flex items-center justify-center mb-4">
-            <svg class="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
-            </svg>
+      <!-- ═══════════════ OFFERS TAB ═══════════════ -->
+      <div id="section-offers">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <!-- My Offers -->
+          <div class="bg-card border border-border rounded-xl p-5">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Mes offres
+            </h2>
+            <div id="my-offers-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
+              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              Chargement…
+            </div>
+            <div id="my-offers-empty" class="hidden flex-col items-center py-10 text-center">
+              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+              </div>
+              <p class="text-muted text-sm">Vous n'avez pas encore publié d'offre.</p>
+              <button onclick="openNewPublicationModal()" class="mt-3 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors">Publier une offre</button>
+            </div>
+            <div id="my-offers-list" class="hidden space-y-3"></div>
           </div>
-          <p class="text-muted">Aucune demande reçue pour l'instant.</p>
+
+          <!-- Available Offers -->
+          <div class="bg-card border border-border rounded-xl p-5">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              Offres disponibles
+              <span id="available-offers-count" class="ml-1 text-xs text-muted font-normal"></span>
+            </h2>
+            <p class="text-xs text-muted mb-4">Offres publiées par d'autres étudiants, filtrées selon vos lacunes.</p>
+            <div id="available-offers-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
+              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              Chargement…
+            </div>
+            <div id="available-offers-empty" class="hidden flex-col items-center py-10 text-center">
+              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+              </div>
+              <p class="text-muted text-sm">Aucune offre disponible pour vos lacunes.</p>
+              <p class="text-xs text-muted mt-1">Ajoutez des lacunes dans votre profil pour voir les offres correspondantes.</p>
+            </div>
+            <div id="available-offers-list" class="hidden space-y-3"></div>
+          </div>
         </div>
-        <div id="received-list" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
       </div>
 
-      <!-- ── SECTION ENVOYÉES ── -->
-      <div id="section-sent" class="hidden">
-        <div id="sent-loading" class="flex items-center gap-3 py-12 text-muted text-sm">
-          <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-          Chargement des demandes envoyées…
-        </div>
-        <div id="sent-empty" class="hidden flex-col items-center justify-center py-16 text-center">
-          <div class="w-16 h-16 rounded-full bg-card border border-border flex items-center justify-center mb-4">
-            <svg class="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-            </svg>
+      <!-- ═══════════════ DEMANDS TAB ═══════════════ -->
+      <div id="section-demands" class="hidden">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <!-- My Demands (sent match requests) -->
+          <div class="bg-card border border-border rounded-xl p-5">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              Mes demandes
+            </h2>
+            <div id="my-demands-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
+              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              Chargement…
+            </div>
+            <div id="my-demands-empty" class="hidden flex-col items-center py-10 text-center">
+              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              </div>
+              <p class="text-muted text-sm">Aucune demande envoyée.</p>
+              <p class="text-xs text-muted mt-1">Explorez les offres disponibles ou les demandes à aider.</p>
+            </div>
+            <div id="my-demands-list" class="hidden space-y-3"></div>
           </div>
-          <p class="text-muted">Vous n'avez encore envoyé aucune demande.</p>
-          <button onclick="openNewDemandModal()" class="mt-4 px-5 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-            Créer une demande
-          </button>
+
+          <!-- Demands to help (others' demands filtered by my competences) -->
+          <div class="bg-card border border-border rounded-xl p-5">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Demandes à aider
+              <span id="available-demands-count" class="ml-1 text-xs text-muted font-normal"></span>
+            </h2>
+            <p class="text-xs text-muted mb-4">Demandes d'étudiants qui ont besoin d'aide, filtrées selon vos compétences.</p>
+            <div id="available-demands-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
+              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              Chargement…
+            </div>
+            <div id="available-demands-empty" class="hidden flex-col items-center py-10 text-center">
+              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <p class="text-muted text-sm">Aucune demande d'aide disponible.</p>
+              <p class="text-xs text-muted mt-1">Ajoutez des compétences dans votre profil pour voir les demandes correspondantes.</p>
+            </div>
+            <div id="available-demands-list" class="hidden space-y-3"></div>
+          </div>
         </div>
-        <div id="sent-list" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
       </div>
 
     </div>
@@ -152,108 +229,99 @@
       </a>
       <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-primary">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span class="text-xs">Demandes</span>
+        <span class="text-xs">Publications</span>
+      </a>
+      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="text-xs">Paramètres</span>
       </a>
     </div>
   </div>
 
-  <!-- ═══════════════ MODAL NOUVELLE DEMANDE ═══════════════ -->
-  <div id="modal-new-demand" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-md shadow-2xl">
+  <!-- ═══════════════ MODAL NEW PUBLICATION ═══════════════ -->
+  <div id="modal-new-publication" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-semibold">Nouvelle demande d'aide</h2>
-        <button title="Fermer" onclick="closeNewDemandModal()" class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors">
+        <h2 class="text-xl font-semibold">Nouvelle publication</h2>
+        <button title="Fermer" onclick="closeNewPublicationModal()" class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div id="modal-error" class="hidden mb-4 p-3 bg-destructive/10 border border-destructive rounded-lg">
-        <p class="text-destructive text-sm" id="modal-error-text"></p>
+      <div id="pub-modal-error" class="hidden mb-4 p-3 bg-destructive/10 border border-destructive rounded-lg">
+        <p class="text-destructive text-sm" id="pub-modal-error-text"></p>
       </div>
 
-      <form id="new-demand-form" class="space-y-4">
+      <form id="new-publication-form" class="space-y-5">
+
+        <!-- Type toggle -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Type de publication</label>
+          <div class="flex gap-2 p-1 bg-input rounded-lg">
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="pub-type" value="offer" class="sr-only peer" checked />
+              <div class="text-center py-2 rounded-md text-sm font-medium bg-primary text-white peer-checked:bg-primary peer-checked:text-white transition-colors">Offre</div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="pub-type" value="demand" class="sr-only peer" />
+              <div class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors">Demande</div>
+            </label>
+          </div>
+          <p id="pub-type-desc" class="text-xs text-muted mt-2">Proposez votre aide aux étudiants qui ont des lacunes dans cette matière.</p>
+        </div>
+
+        <!-- Matière -->
         <div>
           <label class="block text-sm font-medium mb-2">Matière concernée</label>
-          <select title="Matière concernée" id="demand-matiere" required
+          <select title="Matière concernée" id="pub-matiere" required
             class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm">
             <option value="">Sélectionnez une matière…</option>
           </select>
         </div>
 
+        <!-- Description -->
         <div>
-          <label class="block text-sm font-medium mb-2">Description de la demande</label>
-          <textarea title="Description de la demande" id="demand-desc" rows="3" required placeholder="Décrivez précisément ce dont vous avez besoin…"
+          <label class="block text-sm font-medium mb-2">Description</label>
+          <textarea title="Description" id="pub-desc" rows="3" required placeholder="Décrivez précisément…"
             class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none placeholder:text-muted"></textarea>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium mb-2">Niveau d'urgence</label>
-          <div class="grid grid-cols-4 gap-2">
-            <label class="urgency-option cursor-pointer">
-              <input type="radio" name="urgency" value="Low" class="sr-only" />
-              <div class="px-3 py-2 rounded-lg border border-border bg-input text-center text-xs font-medium text-muted hover:border-success/50 transition-colors peer-checked:bg-success/10 peer-checked:border-success peer-checked:text-success urgency-label">Low</div>
-            </label>
-            <label class="urgency-option cursor-pointer">
-              <input type="radio" name="urgency" value="Medium" class="sr-only" checked />
-              <div class="px-3 py-2 rounded-lg border border-primary bg-primary/10 text-center text-xs font-medium text-primary transition-colors urgency-label">Medium</div>
-            </label>
-            <label class="urgency-option cursor-pointer">
-              <input type="radio" name="urgency" value="High" class="sr-only" />
-              <div class="px-3 py-2 rounded-lg border border-border bg-input text-center text-xs font-medium text-muted hover:border-warning/50 transition-colors urgency-label">High</div>
-            </label>
-            <label class="urgency-option cursor-pointer">
-              <input type="radio" name="urgency" value="Urgent" class="sr-only" />
-              <div class="px-3 py-2 rounded-lg border border-border bg-input text-center text-xs font-medium text-muted hover:border-destructive/50 transition-colors urgency-label">Urgent</div>
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium mb-2">Disponibilités (sélectionnez des créneaux d'1h)</label>
-          <div id="demand-availability-grid" class="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto p-2 bg-input rounded-lg border border-border"></div>
-          <input type="hidden" id="demand-availability" name="disponibilites">
-          <p id="demand-availability-note" class="text-xs text-muted mt-2">Les créneaux affichés proviennent de votre disponibilité enregistrée dans votre profil.</p>
-        </div>
-
+        <!-- Format préféré -->
         <div>
           <label class="block text-sm font-medium mb-2">Format préféré</label>
           <div class="flex gap-3">
-            <label class="cursor-pointer px-3 py-2 rounded-lg border border-border bg-input text-sm">
-              <input type="radio" name="format" value="En ligne" class="mr-2 align-middle" checked />En ligne
+            <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors">
+              <input type="radio" name="pub-format" value="en_ligne" class="sr-only" checked />En ligne
             </label>
-            <label class="cursor-pointer px-3 py-2 rounded-lg border border-border bg-input text-sm">
-              <input type="radio" name="format" value="Présentiel" class="mr-2 align-middle" />Présentiel
+            <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors">
+              <input type="radio" name="pub-format" value="presentiel" class="sr-only" />Présentiel
             </label>
-            <label class="cursor-pointer px-3 py-2 rounded-lg border border-border bg-input text-sm">
-              <input type="radio" name="format" value="Hybride" class="mr-2 align-middle" />Hybride
+            <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors">
+              <input type="radio" name="pub-format" value="hybride" class="sr-only" />Hybride
             </label>
           </div>
         </div>
 
+        <!-- Disponibilités -->
+        <div>
+          <label class="block text-sm font-medium mb-3">Disponibilités</label>
+          <div id="pub-availability-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"></div>
+          <input type="hidden" id="pub-availability" name="disponibilites">
+          <p id="pub-availability-note" class="text-xs text-muted mt-2">Sélectionnez les créneaux où vous êtes disponible.</p>
+        </div>
+
+        <!-- Submit -->
         <div class="flex gap-3 pt-2">
-          <button type="button" onclick="closeNewDemandModal()"
+          <button type="button" onclick="closeNewPublicationModal()"
             class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">
             Annuler
           </button>
-          <button type="submit" id="demand-submit-btn"
+          <button type="submit" id="pub-submit-btn"
             class="flex-1 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center justify-center gap-2">
-            Envoyer la demande
+            Publier
           </button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- ═══════════════ MODAL CONFIRM ACCEPT/REJECT ═══════════════ -->
-  <div id="modal-confirm" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-sm shadow-2xl text-center">
-      <div id="confirm-icon" class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"></div>
-      <h3 id="confirm-title" class="text-lg font-semibold mb-2"></h3>
-      <p id="confirm-desc"  class="text-muted text-sm mb-6"></p>
-      <div class="flex gap-3">
-        <button onclick="closeConfirm()" class="flex-1 py-2.5 bg-popover border border-border rounded-lg text-sm hover:bg-popover/80 transition-colors">Annuler</button>
-        <button title="Confirmer" id="confirm-action-btn" class="flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"></button>
-      </div>
     </div>
   </div>
 
@@ -264,24 +332,26 @@
 
     /* ─── State ─── */
     let matieresCache = [];
-    let currentTab    = 'received';
-    let pendingAction = null;   // { type: 'accept'|'reject'|'delete', id }
+    let currentTab    = 'offers';
+    let userProfile   = null;
+    let userCompetenceIds = [];
+    let userLacuneIds     = [];
 
     /* ─── Toast ─── */
-    function showToast(msg, type = 'success') {
+    function showToast(msg, type) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
         type === 'success' ? 'bg-success text-black' : 'bg-destructive text-white'
       }`;
       t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 3000);
+      setTimeout(() => t.classList.add('hidden'), 3500);
     }
 
     /* ─── Tabs ─── */
     function switchTab(tab) {
       currentTab = tab;
-      ['received','sent'].forEach(t => {
+      ['offers','demands'].forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
         const sec = document.getElementById(`section-${t}`);
         if (t === tab) {
@@ -294,111 +364,66 @@
       });
     }
 
-    /* ─── Badge helpers ─── */
-    function urgencyColor(u) {
-      return { Low:'text-success bg-success/10 border-success/30', Medium:'text-primary bg-primary/10 border-primary/30', High:'text-warning bg-warning/10 border-warning/30', Urgent:'text-destructive bg-destructive/10 border-destructive/30' }[u] || 'text-muted bg-muted/10 border-border';
-    }
-    function statusBadge(s) {
-      const map = { pending:'bg-warning/10 text-warning border-warning/30 Envoyée', accepted:'bg-success/10 text-success border-success/30 Acceptée', rejected:'bg-destructive/10 text-destructive border-destructive/30 Refusée' };
-      const v = map[s] || 'bg-muted/10 text-muted border-border En attente';
-      const [cls, lbl] = v.split(' ');
-      return `<span class="px-2 py-0.5 rounded-full border text-xs ${cls} ${lbl === 'En' ? 'bg-muted/10 text-muted border-border' : ''}">${lbl || s}</span>`;
-    }
-    function avatarInitials(name = '') {
-      return name.split(' ').map(w => w[0] || '').slice(0,2).join('').toUpperCase();
-    }
-
-    /* ─── Render cards ─── */
+    /* ─── Helpers ─── */
     function matiereName(id) {
       const m = matieresCache.find(x => x.id === id);
       return m ? m.nom : `Matière #${id}`;
     }
 
-    function renderReceivedCard(req) {
-      const card = document.createElement('div');
-      card.className = 'bg-card border border-border rounded-xl p-5 flex flex-col gap-4 hover:border-primary/30 transition-colors';
-      const d       = req.demandeur || {};
-      const name    = `${d.prenom || ''} ${d.nom || ''}`.trim() || 'Étudiant';
-      const matiere = matiereName(req.matiere_id);
-      const slot    = req.jour && req.creneau ? `${req.jour} ${req.creneau}` : '';
-      const status  = req.status || 'pending';
-      const id      = req.matching_id;
-
-      card.innerHTML = `
-        <div class="flex items-start justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-              <span class="text-sm font-bold text-primary">${avatarInitials(name)}</span>
-            </div>
-            <div>
-              <p class="font-semibold text-sm">${name}</p>
-              <p class="text-xs text-muted">${matiere}</p>
-            </div>
-          </div>
-          ${slot ? `<span class="px-2 py-0.5 rounded-full border text-xs text-muted bg-background/50">${slot}</span>` : ''}
-        </div>
-        ${status !== 'pending' ? `<div class="pt-1">${statusBadge(status)}</div>` : `
-        <div class="flex gap-2 pt-1">
-          <button onclick="triggerConfirm('reject',${id})"
-            class="flex-1 py-2 rounded-lg border border-destructive/40 text-destructive text-sm hover:bg-destructive/10 transition-colors font-medium">
-            Refuser
-          </button>
-          <button onclick="triggerConfirm('accept',${id})"
-            class="flex-1 py-2 rounded-lg bg-success text-black text-sm hover:bg-success/90 transition-colors font-medium">
-            Accepter
-          </button>
-        </div>`}
-      `;
-      return card;
+    function statusBadge(s) {
+      const map = { pending:'bg-warning/10 text-warning border-warning/30 Envoyée', accepted:'bg-success/10 text-success border-success/30 Acceptée', rejected:'bg-destructive/10 text-destructive border-destructive/30 Refusée' };
+      const v = map[s] || 'bg-muted/10 text-muted border-border En attente';
+      const [cls, ...lblParts] = v.split(' ');
+      return `<span class="px-2 py-0.5 rounded-full border text-xs ${cls}">${lblParts.join(' ')}</span>`;
     }
 
-    function renderSentCard(req) {
-      const card = document.createElement('div');
-      card.className = 'bg-card border border-border rounded-xl p-5 flex flex-col gap-4 hover:border-primary/30 transition-colors';
-      const c       = req.candidat || {};
-      const name    = `${c.prenom || ''} ${c.nom || ''}`.trim() || '';
-      const matiere = matiereName(req.matiere_id);
-      const slot    = req.jour && req.creneau ? `${req.jour} ${req.creneau}` : '';
-      const status  = req.status || 'pending';
-      const id      = req.matching_id;
-
-      card.innerHTML = `
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <p class="font-semibold text-sm">${matiere}</p>
-            ${name ? `<p class="text-xs text-muted mt-0.5">Envoyée à ${name}</p>` : ''}
-            ${slot ? `<p class="text-xs text-muted mt-0.5">${slot}</p>` : ''}
-          </div>
-        </div>
-        <div class="flex items-center justify-between pt-1">
-          <div>${statusBadge(status)}</div>
-          ${status === 'pending' ? `
-          <button onclick="triggerConfirm('delete',${id})"
-            class="text-xs text-destructive hover:underline transition-colors">
-            Annuler
-          </button>` : ''}
-        </div>
-      `;
-      return card;
+    function avatarInitials(name) {
+      return name.split(' ').map(w => w[0] || '').slice(0,2).join('').toUpperCase();
     }
 
-    /* ─── Load data ─── */
-    async function loadReceived() {
-      const loading = document.getElementById('received-loading');
-      const empty   = document.getElementById('received-empty');
-      const list    = document.getElementById('received-list');
+    /* ─── Load matières + user profile ─── */
+    async function loadInitialData() {
+      try {
+        const [matieres, profile] = await Promise.all([
+          API.matieres.getAll().catch(() => []),
+          API.profile.getMe().catch(() => ({}))
+        ]);
+        matieresCache = Array.isArray(matieres) ? matieres : (matieres.matieres || matieres.data || []);
+        userProfile = profile.profile || profile;
+        if (Array.isArray(userProfile.competences)) {
+          userCompetenceIds = userProfile.competences.map(c => (typeof c === 'object' ? (c.matiere_id || c.id) : parseInt(c)));
+        }
+        if (Array.isArray(userProfile.lacunes)) {
+          userLacuneIds = userProfile.lacunes.map(l => (typeof l === 'object' ? (l.matiere_id || l.id) : parseInt(l)));
+        }
+      } catch (err) {
+        console.warn('Init data error', err);
+      }
+    }
+
+    /* ─── Render: My Offers ─── */
+    async function loadMyOffers() {
+      const loading = document.getElementById('my-offers-loading');
+      const empty   = document.getElementById('my-offers-empty');
+      const list    = document.getElementById('my-offers-list');
       loading.classList.remove('hidden');
       empty.classList.add('hidden');
       list.classList.add('hidden');
-
       try {
-        const data = await API.matching.getReceived();
-        const items = Array.isArray(data) ? data : (data.demandes || data.matches || data.data || []);
-        document.getElementById('badge-received').textContent = items.length;
+        const data = await API.offers.getMine();
+        const items = Array.isArray(data) ? data : (data.offers || data.data || []);
         loading.classList.add('hidden');
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = '';
-        items.forEach(r => list.appendChild(renderReceivedCard(r)));
+        list.innerHTML = items.map(o => `
+          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
+              ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
+              ${o.jour && o.creneau ? `<p class="text-xs text-muted mt-1">${o.jour} ${o.creneau}</p>` : ''}
+            </div>
+            <button onclick="deleteOffer(${o.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+          </div>
+        `).join('');
         list.classList.remove('hidden');
       } catch {
         loading.classList.add('hidden');
@@ -406,22 +431,103 @@
       }
     }
 
-    async function loadSent() {
-      const loading = document.getElementById('sent-loading');
-      const empty   = document.getElementById('sent-empty');
-      const list    = document.getElementById('sent-list');
+    async function deleteOffer(id) {
+      if (!confirm('Supprimer cette offre ?')) return;
+      try {
+        await API.offers.delete(id);
+        showToast('Offre supprimée.', 'success');
+        loadMyOffers();
+        loadAvailableOffers();
+      } catch (err) {
+        showToast(err.message || 'Erreur', 'error');
+      }
+    }
+
+    /* ─── Render: Available Offers ─── */
+    async function loadAvailableOffers() {
+      const loading = document.getElementById('available-offers-loading');
+      const empty   = document.getElementById('available-offers-empty');
+      const list    = document.getElementById('available-offers-list');
+      const count   = document.getElementById('available-offers-count');
       loading.classList.remove('hidden');
       empty.classList.add('hidden');
       list.classList.add('hidden');
+      try {
+        const data = await API.offers.getAll();
+        let items = Array.isArray(data) ? data : (data.offers || data.data || []);
+        // Filter by user's lacunes
+        if (userLacuneIds.length > 0) {
+          items = items.filter(o => userLacuneIds.includes(o.matiere_id));
+        }
+        // Exclude own offers
+        const myProfileId = userProfile ? userProfile.id : null;
+        if (myProfileId) {
+          items = items.filter(o => o.profile_id !== myProfileId);
+        }
+        loading.classList.add('hidden');
+        count.textContent = `(${items.length})`;
+        if (items.length === 0) { empty.classList.remove('hidden'); return; }
+        list.innerHTML = items.map(o => {
+          const name = o.publicateur ? `${o.publicateur.prenom || ''} ${o.publicateur.nom || ''}`.trim() : 'Anonyme';
+          return `
+          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
+                <span class="text-xs text-muted">par ${name}</span>
+              </div>
+              ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
+              ${o.jour && o.creneau ? `<p class="text-xs text-muted mt-1">${o.jour} ${o.creneau}</p>` : ''}
+            </div>
+            <button onclick="respondToOffer(${o.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
+          </div>
+        `}).join('');
+        list.classList.remove('hidden');
+      } catch (err) {
+        console.warn('Available offers error', err);
+        loading.classList.add('hidden');
+        empty.classList.remove('hidden');
+      }
+    }
 
+    async function respondToOffer(offerId) {
+      try {
+        await API.offers.respond(offerId);
+        showToast('Réponse envoyée au mentor !', 'success');
+        loadMyDemands();
+      } catch (err) {
+        showToast(err.message || 'Erreur lors de la réponse.', 'error');
+      }
+    }
+
+    /* ─── Render: My Demands (sent match requests) ─── */
+    async function loadMyDemands() {
+      const loading = document.getElementById('my-demands-loading');
+      const empty   = document.getElementById('my-demands-empty');
+      const list    = document.getElementById('my-demands-list');
+      loading.classList.remove('hidden');
+      empty.classList.add('hidden');
+      list.classList.add('hidden');
       try {
         const data = await API.matching.getSent();
-        const items = Array.isArray(data) ? data : (data.demandes || data.matches || data.data || []);
-        document.getElementById('badge-sent').textContent = items.length;
+        const items = Array.isArray(data) ? data : (data.matches || data.data || []);
         loading.classList.add('hidden');
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = '';
-        items.forEach(r => list.appendChild(renderSentCard(r)));
+        list.innerHTML = items.map(m => {
+          const name = m.candidat ? `${m.candidat.prenom || ''} ${m.candidat.nom || ''}`.trim() : '';
+          return `
+          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm">${matiereName(m.matiere_id)}</p>
+              ${name ? `<p class="text-xs text-muted mt-0.5">Vers ${name}</p>` : ''}
+              ${m.jour && m.creneau ? `<p class="text-xs text-muted mt-0.5">${m.jour} ${m.creneau}</p>` : ''}
+            </div>
+            <div class="shrink-0 flex flex-col items-end gap-2">
+              ${statusBadge(m.status)}
+              ${m.status === 'accepted' ? `<a href="messages.html" class="text-xs text-primary hover:underline">Discuter</a>` : ''}
+            </div>
+          </div>
+        `}).join('');
         list.classList.remove('hidden');
       } catch {
         loading.classList.add('hidden');
@@ -429,206 +535,202 @@
       }
     }
 
-    /* ─── Matieres for modal ─── */
-    let userProfile = null;
-
-    async function getUserProfile() {
-      if (userProfile) return userProfile;
+    /* ─── Render: Available Demands ─── */
+    async function loadAvailableDemands() {
+      const loading = document.getElementById('available-demands-loading');
+      const empty   = document.getElementById('available-demands-empty');
+      const list    = document.getElementById('available-demands-list');
+      const count   = document.getElementById('available-demands-count');
+      loading.classList.remove('hidden');
+      empty.classList.add('hidden');
+      list.classList.add('hidden');
       try {
-        userProfile = await API.profile.getMe();
-        // normalize
-        userProfile.competences = userProfile.competences || userProfile.skills || [];
-        userProfile.lacunes = userProfile.lacunes || userProfile.gaps || [];
-        userProfile.disponibilites = userProfile.disponibilites || userProfile.availabilities || [];
-        return userProfile;
+        const data = await API.demands.getAll();
+        let items = Array.isArray(data) ? data : (data.demandes || data.data || []);
+        // Filter by user's competences
+        if (userCompetenceIds.length > 0) {
+          items = items.filter(d => userCompetenceIds.includes(d.matiere_id));
+        }
+        // Exclude own demands
+        const myProfileId = userProfile ? userProfile.id : null;
+        if (myProfileId) {
+          items = items.filter(d => d.profile_id !== myProfileId);
+        }
+        loading.classList.add('hidden');
+        count.textContent = `(${items.length})`;
+        if (items.length === 0) { empty.classList.remove('hidden'); return; }
+        list.innerHTML = items.map(d => {
+          const name = d.publicateur ? `${d.publicateur.prenom || ''} ${d.publicateur.nom || ''}`.trim() : 'Anonyme';
+          return `
+          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
+                <span class="text-xs text-muted">par ${name}</span>
+              </div>
+              ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
+              ${d.jour && d.creneau ? `<p class="text-xs text-muted mt-1">${d.jour} ${d.creneau}</p>` : ''}
+            </div>
+            <button onclick="proposeHelp(${d.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
+          </div>
+        `}).join('');
+        list.classList.remove('hidden');
       } catch (err) {
-        console.warn('Impossible de charger le profil utilisateur :', err);
-        return null;
+        console.warn('Available demands error', err);
+        loading.classList.add('hidden');
+        empty.classList.remove('hidden');
       }
     }
 
-    async function loadMatieres() {
+    async function proposeHelp(demandId) {
       try {
-        const data = await API.matieres.getAll();
-        matieresCache = Array.isArray(data) ? data : (data.matieres || data.data || []);
-      } catch {
-        matieresCache = [
-          {id:1,nom:'Algorithmique'},{id:2,nom:'Base de données SQL'},{id:3,nom:'Réseaux'},
-          {id:4,nom:'Web Development'},{id:5,nom:'Programmation Orientée Objet'},
-          {id:6,nom:"Systèmes d'exploitation"},{id:7,nom:'Architecture des ordinateurs'},{id:8,nom:'Génie Logiciel'}
-        ];
+        await API.demands.offerHelp(demandId);
+        showToast('Aide proposée ! En attente de la réponse.', 'success');
+        loadMyDemands();
+      } catch (err) {
+        showToast(err.message || 'Erreur lors de l\'envoi.', 'error');
       }
+    }
 
-      // Filter matieres according to user's lacunes for creating demands
-      const profile = await getUserProfile();
-      let allowed = matieresCache;
-      if (profile && Array.isArray(profile.lacunes) && profile.lacunes.length > 0) {
-        const lacuneIds = profile.lacunes.map(l => (typeof l === 'object' ? (l.matiere_id || l.id) : l));
-        allowed = matieresCache.filter(m => lacuneIds.includes(m.id) || lacuneIds.includes(m.nom));
-      }
+    /* ─── Modal: New Publication ─── */
+    function creneauToHour(c) {
+      const p = c.split('-');
+      return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
+    }
 
-      const sel = document.getElementById('demand-matiere');
+    function openNewPublicationModal() {
+      document.getElementById('modal-new-publication').classList.remove('hidden');
+      document.getElementById('pub-modal-error').classList.add('hidden');
+      document.getElementById('new-publication-form').reset();
+
+      // Set default type description
+      updateTypeDesc();
+
+      // Load matieres into select
+      const sel = document.getElementById('pub-matiere');
       sel.innerHTML = '<option value="">Sélectionnez une matière…</option>';
-      allowed.forEach(m => {
+      matieresCache.forEach(m => {
         const opt = document.createElement('option');
         opt.value = m.id;
         opt.textContent = m.nom || m.name || m.libelle;
         sel.appendChild(opt);
       });
 
-      // If user has no lacunes, show helper message
-      if (profile && Array.isArray(profile.lacunes) && profile.lacunes.length === 0) {
-        const note = document.getElementById('demand-availability-note');
-        if (note) note.textContent = 'Vous n\'avez pas déclaré de lacunes — vous pouvez tout de même créer une demande, mais pensez à ajouter vos lacunes dans votre profil.';
-      }
+      // Render availability grid with user's saved slots pre-selected
+      renderAvailabilityGrid();
     }
 
-    /* ─── New demand modal ─── */
-    function openNewDemandModal() {
-      document.getElementById('modal-new-demand').classList.remove('hidden');
-      document.getElementById('modal-error').classList.add('hidden');
-      document.getElementById('new-demand-form').reset();
-      document.getElementById('demand-availability').value = '';
-      // Load profile and matieres then render availability grid
-      (async () => {
-        await loadMatieres();
-        const profile = await getUserProfile();
-        renderAvailabilityGrid(profile);
-      })();
-      // re-apply default urgency style
-      document.querySelectorAll('.urgency-option').forEach(opt => {
-        const radio = opt.querySelector('input');
-        const lbl   = opt.querySelector('.urgency-label');
-        lbl.className = 'px-3 py-2 rounded-lg border border-border bg-input text-center text-xs font-medium text-muted transition-colors urgency-label';
-        if (radio.value === 'Medium') {
-          lbl.className = 'px-3 py-2 rounded-lg border border-primary bg-primary/10 text-center text-xs font-medium text-primary transition-colors urgency-label';
-          radio.checked = true;
-        }
-      });
-    }
-    function closeNewDemandModal() {
-      document.getElementById('modal-new-demand').classList.add('hidden');
+    function closeNewPublicationModal() {
+      document.getElementById('modal-new-publication').classList.add('hidden');
     }
 
-    // Urgency radio styling
-    document.querySelectorAll('.urgency-option input[type=radio]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        document.querySelectorAll('.urgency-option').forEach(opt => {
-          const r = opt.querySelector('input');
-          const l = opt.querySelector('.urgency-label');
-          const colorMap = { Low:'border-success bg-success/10 text-success', Medium:'border-primary bg-primary/10 text-primary', High:'border-warning bg-warning/10 text-warning', Urgent:'border-destructive bg-destructive/10 text-destructive' };
-          l.className = r.checked
-            ? `px-3 py-2 rounded-lg border ${colorMap[r.value]} text-center text-xs font-medium transition-colors urgency-label`
-            : 'px-3 py-2 rounded-lg border border-border bg-input text-center text-xs font-medium text-muted transition-colors urgency-label';
+    // Type toggle description
+    document.querySelectorAll('input[name="pub-type"]').forEach(r => {
+      r.addEventListener('change', updateTypeDesc);
+    });
+
+    function updateTypeDesc() {
+      const isOffer = document.querySelector('input[name="pub-type"]:checked')?.value === 'offer';
+      document.getElementById('pub-type-desc').textContent = isOffer
+        ? 'Proposez votre aide aux étudiants qui ont des lacunes dans cette matière.'
+        : 'Demandez de l\'aide pour une matière où vous avez des lacunes.';
+      document.getElementById('pub-submit-btn').textContent = isOffer ? 'Publier l\'offre' : 'Publier la demande';
+    }
+
+    // Format radio styling
+    document.querySelectorAll('input[name="pub-format"]').forEach(r => {
+      r.addEventListener('change', () => {
+        document.querySelectorAll('.format-option').forEach(lbl => {
+          const r2 = lbl.querySelector('input');
+          if (r2.checked) {
+            lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors';
+          } else {
+            lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors';
+          }
         });
       });
     });
 
-    /* ─── Availability grid rendering ─── */
-    function hoursRangeToSlots(startHour, endHour, date) {
-      const slots = [];
-      for (let h = startHour; h < endHour; h++) {
-        const dt = new Date(date);
-        dt.setHours(h, 0, 0, 0);
-        slots.push(dt.toISOString());
-      }
-      return slots;
-    }
-
-    function getPresetRange(preset) {
-      switch ((preset || '').toLowerCase()) {
-        case 'matin': return { start: 8, end: 12 };
-        case 'après-midi': case 'apres-midi': return { start: 13, end: 17 };
-        case 'soir': return { start: 18, end: 21 };
-        case 'week-end': return { start: 9, end: 18, weekendOnly: true };
-        case 'flexible': return { start: 8, end: 20 };
-        default: return { start: 8, end: 17 };
-      }
-    }
-
-    function renderAvailabilityGrid(profile) {
-      const container = document.getElementById('demand-availability-grid');
-      const hidden = document.getElementById('demand-availability');
+    /* ─── Availability grid (styled) ─── */
+    async function renderAvailabilityGrid() {
+      const container = document.getElementById('pub-availability-grid');
+      const hidden    = document.getElementById('pub-availability');
       container.innerHTML = '';
 
-      // Determine preferred preset from profile
-      let preset = null;
-      if (profile) {
-        preset = profile.preferred_disponibilite || profile.preferred_availability || profile.defaultDisponibilite || (profile.disponibilites && profile.disponibilites[0] && (profile.disponibilites[0].label || profile.disponibilites[0].type));
-      }
-      const range = getPresetRange(preset || 'Matin');
+      const days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+      const hours = [];
+      for (let h = 8; h < 20; h++) hours.push(`${h}h-${h+1}h`);
 
-      // Build slots for next 7 days
-      const slots = [];
-      const today = new Date();
-      for (let d = 0; d < 7; d++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() + d);
-        const day = date.getDay(); // 0 Sun ... 6 Sat
-        if (range.weekendOnly && day !== 0 && day !== 6) continue;
-        const daySlots = hoursRangeToSlots(range.start, range.end, date);
-        daySlots.forEach(s => slots.push(s));
-      }
+      // Load user's saved disponibilites to pre-select
+      const selected = new Set();
+      try {
+        const data = await API.profile.getMe();
+        const profile = data.profile || data;
+        (profile.disponibilites || []).forEach(d => {
+          selected.add(`${d.jour}-${creneauToHour(d.creneau)}`);
+        });
+      } catch (_) {}
 
-      if (slots.length === 0) {
-        container.innerHTML = '<div class="text-sm text-muted p-2">Aucune disponibilité trouvée dans votre profil. Ajoutez des disponibilités dans votre profil.</div>';
-        hidden.value = JSON.stringify([]);
-        return;
-      }
+      days.forEach(day => {
+        const dayCol = document.createElement('div');
+        dayCol.className = 'col-span-1';
+        const dayHeader = document.createElement('p');
+        dayHeader.className = 'text-xs font-semibold text-muted mb-1.5 text-center';
+        dayHeader.textContent = day.substring(0,3);
+        dayCol.appendChild(dayHeader);
 
-      // Render buttons
-      slots.forEach(slotIso => {
-        const dt = new Date(slotIso);
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'px-2 py-1 text-xs rounded-lg border border-border bg-card/20 text-white hover:bg-primary/10';
-        btn.dataset.iso = slotIso;
-        btn.innerText = `${dt.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit'})} ${String(dt.getHours()).padStart(2,'0')}:00`;
-        btn.onclick = () => {
-          btn.classList.toggle('bg-primary/70');
-          updateSelectedSlots();
-        };
-        container.appendChild(btn);
+        hours.forEach(hSlot => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const key = `${day}-${hSlot}`;
+          const isPre = selected.has(key);
+          btn.className = isPre
+            ? 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1'
+            : 'w-full text-xs px-1.5 py-1.5 rounded-md border border-border bg-card/30 text-muted hover:bg-primary/10 transition-all mb-1';
+          btn.textContent = hSlot;
+          btn.dataset.key = key;
+          btn.onclick = () => {
+            const k = btn.dataset.key;
+            if (selected.has(k)) {
+              selected.delete(k);
+              btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-border bg-card/30 text-muted hover:bg-primary/10 transition-all mb-1';
+            } else {
+              selected.add(k);
+              btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1';
+            }
+            updateSelectedSlots();
+          };
+          dayCol.appendChild(btn);
+        });
+
+        container.appendChild(dayCol);
       });
 
       function updateSelectedSlots() {
-        const selected = Array.from(container.querySelectorAll('button')).filter(b => b.classList.contains('bg-primary/70')).map(b => b.dataset.iso);
-        hidden.value = JSON.stringify(selected);
+        hidden.value = JSON.stringify(Array.from(selected));
       }
+      updateSelectedSlots();
     }
 
     function getSelectedAvailability() {
       try {
-        const raw = document.getElementById('demand-availability').value || '[]';
+        const raw = document.getElementById('pub-availability').value || '[]';
         const data = JSON.parse(raw);
         return Array.isArray(data) ? data : [];
-      } catch {
-        return [];
-      }
+      } catch { return []; }
     }
 
-    function parseIsoSlot(iso) {
-      const dt = new Date(iso);
-      if (Number.isNaN(dt.getTime())) return null;
-      const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-      const jour = days[dt.getUTCDay()];
-      const heure = dt.getUTCHours();
-      return {
-        jour,
-        creneau: `${String(heure).padStart(2, '0')}-${String(heure + 1).padStart(2, '0')}`
-      };
-    }
-
-    document.getElementById('new-demand-form').addEventListener('submit', async (e) => {
+    /* ─── Submit new publication ─── */
+    document.getElementById('new-publication-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const matiere_id  = document.getElementById('demand-matiere').value;
-      const description = document.getElementById('demand-desc').value.trim();
-      const urgency     = document.querySelector('input[name="urgency"]:checked')?.value || 'Medium';
-      const format_pref = document.querySelector('input[name="format"]:checked')?.value || 'En ligne';
+      const type        = document.querySelector('input[name="pub-type"]:checked')?.value || 'offer';
+      const matiere_id  = document.getElementById('pub-matiere').value;
+      const description = document.getElementById('pub-desc').value.trim();
+      const format_pref = document.querySelector('input[name="pub-format"]:checked')?.value || 'hybride';
       const selectedSlots = getSelectedAvailability();
-      const errEl       = document.getElementById('modal-error');
-      const errTxt      = document.getElementById('modal-error-text');
-      const btn         = document.getElementById('demand-submit-btn');
+      const errEl       = document.getElementById('pub-modal-error');
+      const errTxt      = document.getElementById('pub-modal-error-text');
+      const btn         = document.getElementById('pub-submit-btn');
 
       if (!matiere_id) {
         errTxt.textContent = 'Veuillez sélectionner une matière.';
@@ -636,26 +738,17 @@
         return;
       }
 
-      if (!selectedSlots.length) {
-        errTxt.textContent = 'Veuillez sélectionner au moins un créneau dans vos disponibilités.';
-        errEl.classList.remove('hidden');
-        return;
-      }
-
-      const firstSlot = parseIsoSlot(selectedSlots[0]);
-      if (!firstSlot) {
-        errTxt.textContent = 'Le créneau sélectionné est invalide.';
-        errEl.classList.remove('hidden');
-        return;
-      }
-
-      const profile = await getUserProfile();
-      if (profile && Array.isArray(profile.lacunes) && profile.lacunes.length > 0) {
-        const lacuneIds = profile.lacunes.map(l => (typeof l === 'object' ? (l.matiere_id || l.id) : l));
-        if (!lacuneIds.includes(parseInt(matiere_id))) {
-          errTxt.textContent = 'Vous ne pouvez créer une demande que pour des matières où vous avez déclaré une lacune dans votre profil.';
-          errEl.classList.remove('hidden');
-          return;
+      // Parse first slot for jour/creneau  (key format: "Lundi-8h-9h")
+      let jour = '', creneau = '';
+      if (selectedSlots.length > 0) {
+        const parts = selectedSlots[0].split('-');
+        if (parts.length >= 3) {
+          jour = parts[0];
+          const startH = parseInt(parts[1]);
+          const endH   = parseInt(parts[2]);
+          if (!isNaN(startH) && !isNaN(endH)) {
+            creneau = `${String(startH).padStart(2,'0')}-${String(endH).padStart(2,'0')}`;
+          }
         }
       }
 
@@ -663,96 +756,58 @@
       btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>';
 
       try {
-        await API.demands.create({
-          matiere_id: parseInt(matiere_id),
-          description,
-          urgence: urgency,
-          disponibilite: selectedSlots,
-          format: format_pref,
-          jour: firstSlot.jour,
-          creneau: firstSlot.creneau
-        });
-        closeNewDemandModal();
-        showToast('Demande envoyée avec succès !');
-        await loadSent();
-        switchTab('sent');
+        if (type === 'offer') {
+          await API.offers.create({
+            matiere_id: parseInt(matiere_id),
+            description,
+            format_preference: format_pref,
+            jour,
+            creneau
+          });
+        } else {
+          await API.demands.create({
+            matiere_id: parseInt(matiere_id),
+            description,
+            format: format_pref,
+            jour,
+            creneau,
+            disponibilite: selectedSlots,
+            urgence: 'Medium'
+          });
+        }
+        closeNewPublicationModal();
+        showToast(type === 'offer' ? 'Offre publiée avec succès !' : 'Demande publiée avec succès !', 'success');
+        loadMyOffers();
+        loadAvailableOffers();
+        loadMyDemands();
+        loadAvailableDemands();
       } catch (err) {
-        errTxt.textContent = err.message || 'Erreur lors de l\'envoi.';
+        errTxt.textContent = err.message || 'Erreur lors de la publication.';
         errEl.classList.remove('hidden');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = 'Envoyer la demande';
+        btn.innerHTML = 'Publier';
       }
     });
 
-    /* ─── Confirm modal ─── */
-    function triggerConfirm(type, id) {
-      pendingAction = { type, id };
-      const modal   = document.getElementById('modal-confirm');
-      const icon    = document.getElementById('confirm-icon');
-      const title   = document.getElementById('confirm-title');
-      const desc    = document.getElementById('confirm-desc');
-      const actBtn  = document.getElementById('confirm-action-btn');
-
-      if (type === 'accept') {
-        icon.className  = 'w-14 h-14 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4';
-        icon.innerHTML  = '<svg class="w-7 h-7 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
-        title.textContent = 'Accepter la demande ?';
-        desc.textContent  = 'Vous vous engagez à aider cet étudiant. Un chat sera ouvert.';
-        actBtn.className  = 'flex-1 py-2.5 rounded-lg bg-success text-black text-sm font-medium transition-colors flex items-center justify-center gap-2';
-        actBtn.textContent = 'Confirmer';
-      } else if (type === 'reject') {
-        icon.className  = 'w-14 h-14 rounded-full bg-destructive/20 flex items-center justify-center mx-auto mb-4';
-        icon.innerHTML  = '<svg class="w-7 h-7 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
-        title.textContent = 'Refuser la demande ?';
-        desc.textContent  = 'L\'étudiant sera informé que vous n\'êtes pas disponible.';
-        actBtn.className  = 'flex-1 py-2.5 rounded-lg bg-destructive text-white text-sm font-medium transition-colors flex items-center justify-center gap-2';
-        actBtn.textContent = 'Refuser';
-      } else {
-        icon.className  = 'w-14 h-14 rounded-full bg-warning/20 flex items-center justify-center mx-auto mb-4';
-        icon.innerHTML  = '<svg class="w-7 h-7 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>';
-        title.textContent = 'Annuler la demande ?';
-        desc.textContent  = 'Cette demande sera supprimée définitivement.';
-        actBtn.className  = 'flex-1 py-2.5 rounded-lg bg-warning text-black text-sm font-medium transition-colors flex items-center justify-center gap-2';
-        actBtn.textContent = 'Annuler la demande';
-      }
-
-      actBtn.onclick = executeAction;
-      modal.classList.remove('hidden');
-    }
-
-    function closeConfirm() {
-      document.getElementById('modal-confirm').classList.add('hidden');
-      pendingAction = null;
-    }
-
-    async function executeAction() {
-      if (!pendingAction) return;
-      const { type, id } = pendingAction;
-      const btn = document.getElementById('confirm-action-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>';
-
-      try {
-        if (type === 'accept')  await API.matching.accept(id);
-        if (type === 'reject')  await API.matching.reject(id);
-        if (type === 'delete')  await API.demands.delete(id);
-
-        closeConfirm();
-        const msgs = { accept:'Demande acceptée !', reject:'Demande refusée.', delete:'Demande annulée.' };
-        showToast(msgs[type], type === 'accept' ? 'success' : 'error');
-
-        if (type === 'delete') loadSent(); else loadReceived();
-      } catch (err) {
-        closeConfirm();
-        showToast(err.message || 'Une erreur est survenue.', 'error');
-      }
-    }
-
     /* ─── Init ─── */
-    loadMatieres();
-    loadReceived();
-    loadSent();
+    (async function init() {
+      await loadInitialData();
+      loadMyOffers();
+      loadAvailableOffers();
+      loadMyDemands();
+      loadAvailableDemands();
+
+      // Initial format styling
+      document.querySelectorAll('input[name="pub-format"]').forEach(r => {
+        const lbl = r.closest('.format-option');
+        if (r.checked) {
+          lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors';
+        } else {
+          lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors';
+        }
+      });
+    })();
   </script>
   <script src="../js/matieres-loader.js"></script>
   <script src="../js/notifications-badge.js"></script>

@@ -4,7 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MentorLink — Test UI Complet</title>
-    <link rel="stylesheet" href="../css/tailwind.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#08090C',
+              foreground: '#FFFFFF',
+              card: '#0F111A',
+              popover: '#1F2433',
+              primary: '#7C6FF7',
+              success: '#2DD4A0',
+              warning: '#F5A623',
+              destructive: '#F97066',
+              border: 'rgba(255, 255, 255, 0.08)',
+              input: '#1F2433',
+              muted: 'rgba(255, 255, 255, 0.6)',
+            }
+          }
+        }
+      }
+    </script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root { --accent: #6366f1; --success: #10b981; --warn: #f59e0b; --danger: #ef4444; }

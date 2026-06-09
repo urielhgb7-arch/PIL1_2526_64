@@ -4,8 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Paramètres - IFRI MentorLink</title>
-  <link rel="stylesheet" href="../css/tailwind.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-background text-foreground">
   <!-- Top Bar -->
@@ -90,6 +112,7 @@
         </button>
       </div>
       <p class="text-sm text-muted">Vos créneaux de disponibilité pour le mentorat</p>
+      <div id="dispo-tags" class="flex flex-wrap gap-1.5 mt-3"></div>
     </div>
 
     <!-- Password Section -->
@@ -273,6 +296,10 @@
         </svg>
         <span class="text-xs">Messages</span>
       </a>
+      <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-muted">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <span class="text-xs">Publications</span>
+      </a>
       <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-primary">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -304,11 +331,33 @@
       document.getElementById(`modal-${name}`).classList.add('hidden');
     }
 
-    function initAvailabilityGrid() {
+    const DAY_SHORT_TO_FULL = { 'lun':'Lundi','mar':'Mardi','mer':'Mercredi','jeu':'Jeudi','ven':'Vendredi','sam':'Samedi','dim':'Dimanche' };
+    const DAY_FULL_TO_SHORT = { 'Lundi':'lun','Mardi':'mar','Mercredi':'mer','Jeudi':'jeu','Vendredi':'ven','Samedi':'sam','Dimanche':'dim' };
+
+    function creneauToHour(c) {
+      const p = c.split('-');
+      return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
+    }
+    function hourToCreneau(h) {
+      const p = h.split('h-');
+      return `${String(p[0]).padStart(2,'0')}-${String(p[1].replace('h','')).padStart(2,'0')}`;
+    }
+
+    async function initAvailabilityGrid() {
       const hours = ['8h-9h', '9h-10h', '10h-11h', '11h-12h', '12h-13h', '13h-14h', '14h-15h', '15h-16h', '16h-17h', '17h-18h', '18h-19h', '19h-20h', '20h-21h'];
       const days = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
       const grid = document.getElementById('availability-grid-modal');
       grid.innerHTML = '';
+
+      // Load existing disponibilites
+      let savedDispos = new Set();
+      try {
+        const data = await API.profile.getMe();
+        const profile = data.profile || data;
+        (profile.disponibilites || []).forEach(d => {
+          savedDispos.add(`${DAY_FULL_TO_SHORT[d.jour]}|${creneauToHour(d.creneau)}`);
+        });
+      } catch (_) {}
 
       hours.forEach(hour => {
         const row = document.createElement('tr');
@@ -319,7 +368,9 @@
 
         days.forEach(day => {
           const cell = document.createElement('td');
-          cell.className = 'p-2 border border-border cursor-pointer hover:bg-primary/20 transition-colors';
+          const key = `${day}|${hour}`;
+          const preFilled = savedDispos.has(key);
+          cell.className = 'p-2 border border-border cursor-pointer hover:bg-primary/20 transition-colors' + (preFilled ? ' bg-primary' : '');
           cell.dataset.day = day;
           cell.dataset.hour = hour;
           cell.onclick = () => {
@@ -330,6 +381,35 @@
         grid.appendChild(row);
       });
     }
+
+    // Save availability
+    document.querySelector('#modal-availability form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const cells = document.querySelectorAll('#availability-grid-modal td');
+      const selected = [];
+      cells.forEach(cell => {
+        if (cell.classList.contains('bg-primary')) {
+          selected.push({ jour: DAY_SHORT_TO_FULL[cell.dataset.day], creneau: hourToCreneau(cell.dataset.hour) });
+        }
+      });
+      try {
+        const data = await API.profile.getMe();
+        const profile = data.profile || data;
+        const saved = profile.disponibilites || [];
+        const savedSet = new Set(saved.map(d => `${d.jour}|${d.creneau}`));
+        const selectedSet = new Set(selected.map(s => `${s.jour}|${s.creneau}`));
+
+        const toAdd = selected.filter(s => !savedSet.has(`${s.jour}|${s.creneau}`));
+        const toRemove = saved.filter(d => !selectedSet.has(`${d.jour}|${d.creneau}`));
+
+        for (const s of toAdd) await API.profile.addDisponibilite({ jour: s.jour, creneau: s.creneau });
+        for (const d of toRemove) await API.profile.removeDisponibilite({ jour: d.jour, creneau: d.creneau });
+
+        closeModal('availability');
+      } catch (err) {
+        alert('Erreur lors de la sauvegarde : ' + (err.message || err));
+      }
+    });
 
     // ── Chargement du profil depuis l'API ──────────────────────────────────────
     async function loadProfile() {
@@ -347,6 +427,20 @@
           department: profile.filiere,
           level: profile.niveau
         });
+        // Afficher les disponibilités
+        const dispos = profile.disponibilites || [];
+        const tagsEl = document.getElementById('dispo-tags');
+        tagsEl.innerHTML = '';
+        if (dispos.length === 0) {
+          tagsEl.innerHTML = '<span class="text-xs text-muted">Aucun créneau défini</span>';
+        } else {
+          dispos.forEach(d => {
+            const tag = document.createElement('span');
+            tag.className = 'inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs';
+            tag.textContent = `${d.jour} ${d.creneau}`;
+            tagsEl.appendChild(tag);
+          });
+        }
       } catch (err) {
         console.warn('API profil non disponible, utilisation du cache local.', err);
         // Fallback localStorage
