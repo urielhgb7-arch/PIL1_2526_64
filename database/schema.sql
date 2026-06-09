@@ -41,7 +41,7 @@ CREATE TABLE profiles (
     niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3', 'M1', 'M2')),
     format_preference VARCHAR(20) NOT NULL DEFAULT 'hybride' CHECK (format_preference IN ('presentiel', 'en_ligne', 'hybride')),
     bio TEXT,
-    telephone VARCHAR(20) UNIQUE NOT NULL,
+    telephone VARCHAR(20) UNIQUE,
     avatar_url TEXT DEFAULT 'https://via.placeholder.com/150',
     disponible BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

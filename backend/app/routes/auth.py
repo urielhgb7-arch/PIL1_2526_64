@@ -97,6 +97,7 @@ def register():
         logger.info(f" Utilisateur créé: {data['email'][:10]}***")
 
         # Création du profil dans la même transaction
+        phone = data.get('telephone') or None
         new_profile = Profile(
             user_id=new_user.id,
             nom=data['nom'],
@@ -105,7 +106,7 @@ def register():
             niveau=data.get('niveau') or '',
             format_preference=format_preference,
             bio=data.get('bio', ''),
-            telephone=data.get('telephone', '')
+            telephone=phone
         )
         db.session.add(new_profile)
         db.session.commit()  # ← un seul commit pour les deux
