@@ -4,6 +4,7 @@ import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from app.database import db
 from app.config import config
 from app.config.logging_config import setup_logging
@@ -23,6 +24,7 @@ def create_app(config_name=None):
     CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 
     db.init_app(flask_app)
+    migrate = Migrate(flask_app, db)
     JWTManager(flask_app)
 
     # Socket.IO
@@ -41,6 +43,12 @@ def create_app(config_name=None):
                 create_database(db.engine.url)
                 logger.info("Base de données créée automatiquement !")
             db.create_all()
+            # Appliquer les migrations Flask-Migrate en attente
+            try:
+                from flask_migrate import upgrade
+                upgrade()
+            except Exception as mig_err:
+                logger.warning(f"Migrations Flask-Migrate ignorées: {mig_err}")
             logger.info("Database tables initialized successfully")
         except Exception as db_error:
             logger.error(f"Database initialization error: {db_error}", exc_info=True)

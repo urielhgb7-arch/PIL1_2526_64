@@ -3,7 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matchs - IFRI MentorLink</title>  <script src="https://cdn.tailwindcss.com"></script>  <link rel="stylesheet" href="../css/styles.css">
+  <title>Matchs - IFRI MentorLink</title>  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 </head>
 <body class="bg-background text-foreground">
@@ -81,8 +103,7 @@
     </div>
   </div>
 
-  <script src="../js/script.js"></script>
-  <script src="../js/api.js"></script>
+  <script src="../js/bundle.js"></script>
   <script>
     checkAuth();
 
@@ -93,6 +114,8 @@
       return params.get('demand_id') || null;
     }
 
+    let noMatchesFound = false;
+
     async function loadSuggestions() {
       const demandId = getDemandId();
       try {
@@ -100,18 +123,23 @@
         if (demandId) filters.demand_id = demandId;
         const data = await API.matching.getSuggestions(filters);
         const matches = data.matches || [];
-        profiles = matches.map(u => ({
-          id: u.student_id,
-          name: `${u.prenom} ${u.nom}`,
-          level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
-          department: u.filiere || '',
-          bio: (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || 'Aucune bio disponible.',
-          skills: (u.matched_subjects || []).map(s => s.nom),
-          compatibility: u.score,
-          score_detail: u.score_detail,
-          explication: u.explication,
-          rejected_before: u.rejected_before
-        }));
+        noMatchesFound = matches.length === 0 && (!data.message || data.message.includes('Aucun'));
+        if (noMatchesFound) {
+          profiles = [];
+        } else {
+          profiles = matches.map(u => ({
+            id: u.student_id,
+            name: `${u.prenom} ${u.nom}`,
+            level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
+            department: u.filiere || '',
+            bio: (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || 'Aucune bio disponible.',
+            skills: (u.matched_subjects || []).map(s => s.nom),
+            compatibility: u.score,
+            score_detail: u.score_detail,
+            explication: u.explication,
+            rejected_before: u.rejected_before
+          }));
+        }
       } catch (err) {
         console.warn('API non disponible, utilisation des données de démo.', err);
         profiles = [
@@ -120,6 +148,7 @@
           { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', skills: ['Python', 'TensorFlow', 'Scikit-learn', 'Pandas'], compatibility: 85 },
           { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', skills: ['Vue.js', 'Laravel', 'PostgreSQL', 'AWS'], compatibility: 90 }
         ];
+        noMatchesFound = false;
       }
       initCards();
     }
@@ -306,20 +335,37 @@
       container.appendChild(card);
     }
 
-    function showNoMoreCards() {
+    function showNoMoreCards(noMatches) {
       const container = document.getElementById('cards-container');
-      container.innerHTML = `
-        <div class="flex flex-col items-center justify-center h-full text-center p-8">
-          <svg class="w-20 h-20 text-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <h2 class="text-2xl font-bold mb-2">Plus de profils!</h2>
-          <p class="text-muted mb-6">Revenez plus tard pour découvrir de nouveaux mentors</p>
-          <a href="dashboard.html" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Retour au Dashboard
-          </a>
-        </div>
-      `;
+      if (noMatches) {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-center p-8">
+            <svg class="w-20 h-20 text-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-xl font-bold mb-3">Aucun candidat trouvé</h2>
+            <p class="text-muted text-sm mb-4">Ajoutez des lacunes dans votre profil ou créez une demande pour recevoir des suggestions.</p>
+            <div class="flex flex-col gap-3 w-full max-w-xs">
+              <a href="settings.html" class="block w-full py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">Configurer mes lacunes</a>
+              <a href="requests.html" class="block w-full py-3 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">Créer une demande</a>
+              <a href="dashboard.html" class="text-sm text-muted hover:text-white transition-colors">Retour au Dashboard</a>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-center p-8">
+            <svg class="w-20 h-20 text-muted mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-2xl font-bold mb-2">Plus de profils!</h2>
+            <p class="text-muted mb-6">Revenez plus tard pour découvrir de nouveaux mentors</p>
+            <a href="dashboard.html" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+              Retour au Dashboard
+            </a>
+          </div>
+        `;
+      }
     }
 
     // Initialize - load first 3 cards
@@ -331,13 +377,11 @@
         const card = createCard(profiles[i], i);
         container.appendChild(card);
       }
-      if (profiles.length === 0) showNoMoreCards();
+      if (profiles.length === 0) showNoMoreCards(noMatchesFound);
     }
 
     // Lancement : charger les suggestions depuis l'API
     loadSuggestions();
   </script>
-  <script src="../js/matieres-loader.js"></script>
-  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>

@@ -310,10 +310,7 @@
     </div>
   </div>
 
-  <script src="../js/script.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/matieres-loader.js"></script>
-  <script src="../js/notifications-badge.js"></script>
+  <script src="../js/bundle.js"></script>
   <script>
     checkAuth();
 
@@ -519,7 +516,7 @@
         // compétences
         (comps || []).forEach(c => {
           const id = c.matiere_id || c.matiere || c.id || c.matiere_id;
-          const mastery = c.mastery || c.niveau || c.value || 'Intermediate';
+          const mastery = c.mastery || c.niveau || c.value || 'Intermédiaire';
           const sid = safeId(id);
           const btn = document.getElementById(`ms-strength-${sid}`);
           const lvl = document.getElementById(`ms-strength-level-${sid}`);
@@ -532,7 +529,7 @@
         // lacunes
         (lacs || []).forEach(l => {
           const id = l.matiere_id || l.matiere || l.id || l.matiere_id;
-          const prio = l.priority || l.niveau || l.value || 'Medium';
+          const prio = l.priority || l.niveau || l.value || 'Moyenne';
           const sid = safeId(id);
           const btn = document.getElementById(`ms-weakness-${sid}`);
           const lvl = document.getElementById(`ms-weakness-level-${sid}`);
@@ -566,7 +563,7 @@
             <div class="flex items-center justify-between"><span>${nom}</span></div>
           </button>
           <select id="ms-strength-level-${sid}" class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-            <option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Expert</option>
+            <option>Débutant</option><option>Intermédiaire</option><option>Avancé</option><option>Expert</option>
           </select>`;
         sl.appendChild(sd);
         // attach change handler to update modalUser value
@@ -585,7 +582,7 @@
             <div class="flex items-center justify-between"><span>${nom}</span></div>
           </button>
           <select id="ms-weakness-level-${sid}" class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning">
-            <option>Low</option><option>Medium</option><option>High</option><option>Urgent</option>
+            <option>Basse</option><option>Moyenne</option><option>Haute</option><option>Urgente</option>
           </select>`;
         wl.appendChild(wd);
         const wSelect = document.getElementById(`ms-weakness-level-${sid}`);
@@ -629,7 +626,7 @@
           if (oppBtn) { oppBtn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors`; }
           if (oppLvl) oppLvl.classList.add('hidden');
         }
-        const defaultVal = type === 'strength' ? 'Intermediate' : 'Medium';
+        const defaultVal = type === 'strength' ? 'Intermédiaire' : 'Moyenne';
         arr.push({ matiere_id: id, value: defaultVal });
         btn.className = `w-full text-left px-4 py-3 rounded-lg border ${type==='strength'?'bg-primary/10 border-primary':'bg-warning/10 border-warning'} text-white transition-colors`;
         lvl.classList.remove('hidden'); lvl.value = defaultVal;
@@ -641,11 +638,11 @@
       try {
         // send strengths
         for (const s of modalUser.strengths) {
-          await API.profile.addCompetence({ matiere_id: s.matiere_id, mastery: s.value || 'Intermediate' });
+          await API.profile.addCompetence({ matiere_id: s.matiere_id, niveau: s.value || 'Intermédiaire' });
         }
         // send weaknesses
         for (const w of modalUser.weaknesses) {
-          await API.profile.addLacune({ matiere_id: w.matiere_id, priority: w.value || 'Medium' });
+          await API.profile.addLacune({ matiere_id: w.matiere_id, priorite: w.value || 'Moyenne' });
         }
         // close
         modalUser.strengths = []; modalUser.weaknesses = [];

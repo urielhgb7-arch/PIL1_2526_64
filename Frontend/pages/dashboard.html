@@ -103,6 +103,9 @@
       </div>
     </div>
 
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"></div>
+
     <!-- Dashboard Content -->
     <div class="p-4 lg:p-8 space-y-8">
       <!-- Metrics Cards -->
@@ -201,11 +204,19 @@
     </div>
   </div>
 
-  <script src="../js/script.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/notifications-badge.js"></script>
+  <script src="../js/bundle.js"></script>
   <script>
     checkAuth();
+
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
+        type === 'success' ? 'bg-success text-black' : 'bg-destructive text-white'
+      }`;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3500);
+    }
 
     async function loadDashboard() {
       try {
@@ -223,10 +234,11 @@
 
       // ── Métriques réelles ─────────────────────────────────────────────────
       try {
-        const [received, sent, offers] = await Promise.all([
-          API.matching.getReceived().catch(() => []),
-          API.matching.getSent().catch(() => []),
-          API.offers.getAll().catch(() => [])
+        const [received, sent, offers, prof] = await Promise.all([
+          API.matching.getReceived().catch(() => { showToast('Erreur chargement matchs', 'error'); return []; }),
+          API.matching.getSent().catch(() => { showToast('Erreur chargement matchs', 'error'); return []; }),
+          API.offers.getAll().catch(() => { showToast('Erreur chargement offres', 'error'); return []; }),
+          API.profile.getMe().catch(() => { showToast('Erreur chargement profil', 'error'); return ({}); })
         ]);
         const rArr = Array.isArray(received) ? received : (received.matches || received.data || []);
         const sArr = Array.isArray(sent) ? sent : (sent.matches || sent.data || []);
@@ -234,7 +246,15 @@
         const acceptedCount = [...rArr, ...sArr].filter(m => m.status === 'accepted').length;
         document.getElementById('metric-matches').textContent = acceptedCount;
         document.getElementById('metric-hours').textContent = acceptedCount > 0 ? `${acceptedCount * 2}h` : '0h';
-      } catch (err) { console.warn('Metrics error', err); }
+
+        const p = prof.profile || prof;
+        if (p.user_id) {
+          API.feedback.getUser(p.user_id).then(fb => {
+            const note = (fb || {}).note_moyenne;
+            if (note != null) document.getElementById('metric-rating').textContent = note.toFixed(1);
+          }).catch(() => { showToast('Erreur chargement feedback', 'error'); });
+        }
+      } catch (err) { console.warn('Metrics error', err); showToast('Erreur lors du chargement des métriques', 'error'); }
 
       // ── Offres réelles ────────────────────────────────────────────────────
       try {
@@ -259,7 +279,7 @@
               </div>`;
           }).join('');
         }
-      } catch (err) { console.warn('Offers error', err); }
+      } catch (err) { console.warn('Offers error', err); showToast('Erreur lors du chargement des offres', 'error'); }
 
       // ── Demandes réelles ──────────────────────────────────────────────────
       try {
@@ -278,18 +298,16 @@
                     ${slot ? `<p class="text-sm text-muted">${slot}</p>` : ''}
                   </div>
                 </div>
-                <a href="swipe.html" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                <a href="requests.html?open-demand=${d.id}" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
                   Voir
                 </a>
               </div>`;
           }).join('');
         }
-      } catch (err) { console.warn('Demands error', err); }
+      } catch (err) { console.warn('Demands error', err); showToast('Erreur lors du chargement des demandes', 'error'); }
     }
 
     loadDashboard();
   </script>
-  <script src="../js/matieres-loader.js"></script>
-  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>

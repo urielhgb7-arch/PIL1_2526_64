@@ -1,6 +1,6 @@
 # IFRI MentorLink
 
-Plateforme de mentorat académique basée sur un matching intelligent.
+Plateforme de mentorat academique basee sur un matching intelligent.
 
 ## Stack
 
@@ -11,18 +11,21 @@ Plateforme de mentorat académique basée sur un matching intelligent.
 - HTML
 - CSS
 - JavaScript
-- ##  Équipe & Rôles
 
-| # | Membre | Groupe | Rôle |
+## Equipe & Roles
+
+| # | Membre | Groupe | Role |
 |---|--------|--------|------|
-| 1 | **GOUTONDE Bidossessi Conceptia Sharone** | F2 | Développeur Frontend |
-| 2 | **HOUEGBELO Uriel Verghis Olsen** | — |  Tech Lead / Backend |
-| 3 | **LOTSU Emmanuel Richard Kwasi** | B3 | Développeur Backend |
-| 4 | **HOUNNOUKON Agossou Prince** | F4 | Développeur Backend / Render |
-| 5 | **YESSOUFOU Scham's-Deen** | F3 | Développeur Fullstack |
-| 6 | **TOCHENALI Paola Eloane** | B2 | Développeur Frontend |
-##  Structure du projet
+| 1 | GOUTONDE Bidossessi Conceptia Sharone | F2 | Developpeur Frontend |
+| 2 | HOUEGBELO Uriel Verghis Olsen | — | Tech Lead / Backend |
+| 3 | LOTSU Emmanuel Richard Kwasi | B3 | Developpeur Backend |
+| 4 | HOUNNOUKON Agossou Prince | F4 | Developpeur Backend / Render |
+| 5 | YESSOUFOU Scham's-Deen | F3 | Developpeur Fullstack |
+| 6 | TOCHENALI Paola Eloane | B2 | Developpeur Frontend |
 
+## Structure du projet
+
+```
 PIL1_2526_64/
  backend/
     app/
@@ -50,18 +53,18 @@ PIL1_2526_64/
     css/
     assets/
  docs/
- rapport.html
  README.md
+```
 
-##  Installation locale
+## Installation locale
 
-1. Cloner le dépôt
+1. Cloner le depot
 ```bash
 git clone https://github.com/votre-org/projet-flask.git
 cd PIL1_2526_64
 ```
 
-2. Créer un environnement virtuel
+2. Creer un environnement virtuel
 ```bash
 python -m venv .venv
 # Windows
@@ -70,7 +73,7 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Installer les dépendances backend
+3. Installer les dependances backend
 ```bash
 cd backend
 pip install -r requirements.txt
@@ -80,7 +83,7 @@ pip install -r requirements.txt
 ```bash
 python run.py
 ```
-Le backend écoute par défaut sur `http://127.0.0.1:5000`.
+Le backend ecoute par defaut sur `http://127.0.0.1:5000`.
 
 5. Lancer le frontend de test
 ```bash
@@ -89,31 +92,31 @@ python -m http.server 8000
 ```
 Ouvrir `http://127.0.0.1:8000/` dans un navigateur.
 
-##  Tests en local et sur plusieurs navigateurs
+## Tests en local et sur plusieurs navigateurs
 
-### Tests backend automatisés
-Pour exécuter les tests backend sur votre machine locale :
+### Tests backend automatises
+Pour executer les tests backend sur votre machine locale :
 
 1. Activez votre environnement virtuel depuis la racine du projet :
 ```bash
 cd D:\IFRI-MentorLink\backend
 ..\ .venv\Scripts\activate
 ```
-2. Installez les dépendances si ce n'est pas déjà fait :
+2. Installez les dependances si ce n'est pas deja fait :
 ```bash
 pip install -r requirements.txt
 ```
-3. Lancez la suite complète de tests :
+3. Lancez la suite complete de tests :
 ```bash
 python -m pytest -q
 ```
 
-#### Exécuter des tests ciblés
+#### Executer des tests cibles
 - Pour tester uniquement les demandes :
 ```bash
 python -m pytest tests/test_backend.py -q
 ```
-- Pour tester les offres et réponses aux offres :
+- Pour tester les offres et reponses aux offres :
 ```bash
 python -m pytest tests/test_offers.py -q
 ```
@@ -128,8 +131,8 @@ python -m pytest tests/test_sockets.py -q
 - Utilise `Frontend/pages/debug.html`.
 - Elle permet de tester :
   - inscription et connexion
-  - récupération du profil
-  - liste des matières
+  - recuperation du profil
+  - liste des matieres
   - suggestions de matching
   - conversations et messages
   - notifications
@@ -137,54 +140,53 @@ python -m pytest tests/test_sockets.py -q
   - polling
 
 ### Test WebSocket (3 navigateurs)
-1. Ouvre `http://127.0.0.1:8000/pages/debug.html` dans trois navigateurs différents.
-2. Connecte-toi avec le même compte dans chaque navigateur.
+1. Ouvre `http://127.0.0.1:8000/pages/debug.html` dans trois navigateurs differents.
+2. Connecte-toi avec le meme compte dans chaque navigateur.
 3. Dans chaque navigateur, clique sur `Connecter WebSocket`.
-4. Clique sur `S'enregistrer (user_id)` pour associer le socket à l'utilisateur.
-5. Renseigne la même `Conversation ID` dans chaque navigateur.
+4. Clique sur `S'enregistrer (user_id)` pour associer le socket a l'utilisateur.
+5. Renseigne la meme `Conversation ID` dans chaque navigateur.
 6. Clique sur `Joindre conversation` dans chaque navigateur.
 7. Dans un navigateur, clique sur `Envoyer message WebSocket`.
-8. Vérifie que les autres navigateurs reçoivent bien l'événement `new_message`.
+8. Verifie que les autres navigateurs recoivent bien l'evenement `new_message`.
 
 ### Test polling
 1. Ouvre la page de test dans au moins un navigateur.
-2. Clique sur `Démarrer polling`.
-3. Dans un autre onglet ou un autre navigateur, envoie un message ou ajoute du contenu qui devrait être détecté.
-4. Vérifie dans le premier navigateur que les nouvelles données sont récupérées toutes les 5 secondes.
-5. Clique sur `Arrêter polling` pour mettre fin au test.
+2. Clique sur `Demarrer polling`.
+3. Dans un autre onglet ou un autre navigateur, envoie un message ou ajoute du contenu qui devrait etre detecte.
+4. Verifie dans le premier navigateur que les nouvelles donnees sont recuperees toutes les 5 secondes.
+5. Clique sur `Arreter polling` pour mettre fin au test.
 
 ### Notes importantes
-- Assure-toi que le backend est démarré avant d'ouvrir la page debug.
-- Si `127.0.0.1:5000` ne fonctionne pas, vérifie le port et l'URL dans `Frontend/pages/debug.html`.
-- Le front de test est conçu pour être simple, mais il couvre toutes les fonctionnalités backend actuelles.
+- Assure-toi que le backend est demarre avant d'ouvrir la page debug.
+- Si `127.0.0.1:5000` ne fonctionne pas, verifie le port et l'URL dans `Frontend/pages/debug.html`.
+- Le front de test est concu pour etre simple, mais il couvre toutes les fonctionnalites backend actuelles.
 
-##  Déploiement (Render)
+## Deploiement (Render)
 
 - URL de production : https://votre-app.onrender.com
 - Build command : pip install -r requirements.txt
 - Start command : gunicorn app:app
 
-##  Planning
+## Planning
 
 | Jour | Objectif | Date |
 |------|----------|------|
-| J1 | Structure validée + Flask Hello World + Render configuré | 3 juin |
-| J2 | Base de données + Authentification + Déploiement actif | 4 juin |
-| J3 | Backend profils + compétences + disponibilités | 5 juin |
+| J1 | Structure validee + Flask Hello World + Render configure | 3 juin |
+| J2 | Base de donnees + Authentification + Deploiement actif | 4 juin |
+| J3 | Backend profils + competences + disponibilites | 5 juin |
 
-##  Livrables
+## Livrables
 
-- [x] Repo cloné par tous les membres
+- [x] Repo clone par tous les membres
 - [x] App Flask qui tourne en local
-- [x] Compte Render créé
+- [x] Compte Render cree
 - [ ] /register et /login fonctionnels en production
-- [ ] rapport.html complété
-- [ ] Collection Postman commitée dans /docs
+- [ ] rapport.html complete
+- [ ] Collection Postman commitee dans /docs
 
-##  Rapport d'intégration
+## Rapport d'integration
 
 Le rapport officiel est disponible dans rapport.html.
 
 ---
 *Projet IFRI — PIL1_2526 — Session encadrement J2 : 13h–18h*
-

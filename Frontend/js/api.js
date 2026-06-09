@@ -4,9 +4,13 @@
  * et intercepter les erreurs globales.
  */
 
-const API_BASE_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:5000/api'
-    : 'https://ifri-mentorlink.onrender.com/api'; 
+const API_BASE_URL = (window.API_BASE_URL || (
+    window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+        ? 'http://127.0.0.1:5000/api'
+        : 'https://ifri-mentorlink.onrender.com/api'
+));
+
+console.log('[API] Using base URL:', API_BASE_URL);
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${endpoint}`;

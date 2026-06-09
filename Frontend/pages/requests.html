@@ -238,6 +238,33 @@
     </div>
   </div>
 
+  <!-- ═══════════════ CONFIRM MODAL ═══════════════ -->
+  <div id="modal-confirm" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-sm shadow-2xl">
+      <h3 id="confirm-title" class="text-lg font-semibold mb-2">Confirmer</h3>
+      <p id="confirm-message" class="text-sm text-muted mb-6"></p>
+      <div class="flex gap-3">
+        <button id="confirm-no" onclick="closeConfirmModal()"
+          class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">Non</button>
+        <button id="confirm-yes" onclick="confirmAction()"
+          class="flex-1 py-2.5 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm font-medium">Oui</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DETAIL MODAL ═══════════════ -->
+  <div id="modal-detail" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="detail-title" class="text-xl font-semibold">Détails</h2>
+        <button title="Fermer" onclick="closeDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="detail-body" class="space-y-4"></div>
+    </div>
+  </div>
+
   <!-- ═══════════════ MODAL NEW PUBLICATION ═══════════════ -->
   <div id="modal-new-publication" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
@@ -260,7 +287,7 @@
           <div class="flex gap-2 p-1 bg-input rounded-lg">
             <label class="flex-1 cursor-pointer">
               <input type="radio" name="pub-type" value="offer" class="sr-only peer" checked />
-              <div class="text-center py-2 rounded-md text-sm font-medium bg-primary text-white peer-checked:bg-primary peer-checked:text-white transition-colors">Offre</div>
+              <div class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors">Offre</div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" name="pub-type" value="demand" class="sr-only peer" />
@@ -289,7 +316,7 @@
         <!-- Format préféré -->
         <div>
           <label class="block text-sm font-medium mb-2">Format préféré</label>
-          <div class="flex gap-3">
+          <div class="flex flex-wrap gap-3">
             <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors">
               <input type="radio" name="pub-format" value="en_ligne" class="sr-only" checked />En ligne
             </label>
@@ -302,10 +329,33 @@
           </div>
         </div>
 
+        <!-- Urgence (visible only for demands) -->
+        <div id="pub-urgence-group" class="hidden">
+          <label class="block text-sm font-medium mb-2">Urgence</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="flex-1 min-w-[80px] cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Légère" class="sr-only peer" />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-success/20 peer-checked:text-success peer-checked:border-success/40 transition-colors">Légère</div>
+            </label>
+            <label class="flex-1 min-w-[80px] cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Moyenne" class="sr-only peer" checked />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-warning/20 peer-checked:text-warning peer-checked:border-warning/40 transition-colors">Moyenne</div>
+            </label>
+            <label class="flex-1 min-w-[80px] cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Haute" class="sr-only peer" />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive/40 transition-colors">Haute</div>
+            </label>
+            <label class="flex-1 min-w-[80px] cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Urgente" class="sr-only peer" />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/30 peer-checked:text-destructive peer-checked:border-destructive transition-colors">Urgente</div>
+            </label>
+          </div>
+        </div>
+
         <!-- Disponibilités -->
         <div>
           <label class="block text-sm font-medium mb-3">Disponibilités</label>
-          <div id="pub-availability-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"></div>
+          <div id="pub-availability-grid" class="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"></div>
           <input type="hidden" id="pub-availability" name="disponibilites">
           <p id="pub-availability-note" class="text-xs text-muted mt-2">Sélectionnez les créneaux où vous êtes disponible.</p>
         </div>
@@ -325,8 +375,7 @@
     </div>
   </div>
 
-  <script src="../js/api.js"></script>
-  <script src="../js/script.js"></script>
+  <script src="../js/bundle.js"></script>
   <script>
     checkAuth();
 
@@ -336,6 +385,81 @@
     let userProfile   = null;
     let userCompetenceIds = [];
     let userLacuneIds     = [];
+    const dataCache = { 'my-offers': [], 'available-offers': [], 'my-demands': [], 'available-demands': [] };
+    let receivedMatchings = [];
+
+    /* ─── Confirm Modal ─── */
+    let pendingCallback = null;
+
+    function openConfirmModal(message, onConfirm) {
+      document.getElementById('confirm-message').textContent = message;
+      pendingCallback = onConfirm;
+      document.getElementById('modal-confirm').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('modal-confirm').classList.add('hidden');
+      pendingCallback = null;
+    }
+
+    function confirmAction() {
+      closeConfirmModal();
+      if (typeof pendingCallback === 'function') pendingCallback();
+    }
+
+    /* ─── Detail Modal ─── */
+    function openDetailModal(id, type, cacheKey) {
+      const items = dataCache[cacheKey] || [];
+      const data = items.find(x => x.id === id);
+      if (!data) return;
+
+      const title = document.getElementById('detail-title');
+      const body  = document.getElementById('detail-body');
+      const matiere = matiereName(data.matiere_id);
+      const isOffer = type === 'offer';
+
+      title.textContent = isOffer ? `Offre — ${matiere}` : `Demande — ${matiere}`;
+
+      const dispos = data.disponibilites && Array.isArray(data.disponibilites) ? data.disponibilites : [];
+      const slotsHtml = dispos.map(d => `<span class="inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-medium">${d.jour} ${d.creneau}</span>`).join(' ');
+
+      const publisher = data.publicateur
+        ? `${data.publicateur.prenom || ''} ${data.publicateur.nom || ''}`.trim() || 'Anonyme'
+        : 'Anonyme';
+
+      const createdDate = data.created_at ? new Date(data.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+
+      const isMyItem = ['my-offers','my-demands'].includes(cacheKey);
+      body.innerHTML = `
+        <div class="bg-popover rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold ${isOffer ? 'text-success' : 'text-warning'} uppercase tracking-wide">${isOffer ? 'Offre d\'aide' : 'Demande d\'aide'}</span>
+            <span class="text-xs text-muted">${createdDate}</span>
+          </div>
+          <p class="font-semibold text-base mb-3">${matiere}</p>
+          ${data.description ? `<p class="text-sm text-muted leading-relaxed mb-4">${data.description}</p>` : '<p class="text-sm text-muted mb-4 italic">Aucune description</p>'}
+          ${slotsHtml ? `<div class="mb-4"><p class="text-xs font-medium text-muted mb-1.5">Disponibilités</p><div class="flex flex-wrap gap-1.5">${slotsHtml}</div></div>` : ''}
+          <hr class="border-border my-3">
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div><span class="text-muted">Publié par</span><p class="font-medium">${publisher}</p></div>
+            ${isOffer ? `
+            <div><span class="text-muted">Format</span><p class="font-medium capitalize">${(data.format_preference || 'non spécifié').replace('_', ' ')}</p></div>
+            ` : `
+            <div><span class="text-muted">Urgence</span><p class="font-medium">${data.urgence || 'Non spécifiée'}</p></div>
+            `}
+            ${data.status ? `<div><span class="text-muted">Statut</span><p class="font-medium">${data.status}</p></div>` : ''}
+          </div>
+          ${!isOffer && cacheKey === 'my-demands' ? `
+          <a href="matching.html?demand_id=${data.id}" class="mt-4 block w-full text-center py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">Trouver un mentor</a>
+          ` : ''}
+        </div>
+      `;
+      document.getElementById('modal-detail').classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('modal-detail').classList.add('hidden');
+    }
 
     /* ─── Toast ─── */
     function showToast(msg, type) {
@@ -385,8 +509,8 @@
     async function loadInitialData() {
       try {
         const [matieres, profile] = await Promise.all([
-          API.matieres.getAll().catch(() => []),
-          API.profile.getMe().catch(() => ({}))
+          API.matieres.getAll().catch(() => { showToast('Erreur lors du chargement des matières', 'error'); return []; }),
+          API.profile.getMe().catch(() => { showToast('Erreur lors du chargement du profil', 'error'); return ({}); })
         ]);
         matieresCache = Array.isArray(matieres) ? matieres : (matieres.matieres || matieres.data || []);
         userProfile = profile.profile || profile;
@@ -398,6 +522,7 @@
         }
       } catch (err) {
         console.warn('Init data error', err);
+        showToast('Erreur lors du chargement des données', 'error');
       }
     }
 
@@ -413,34 +538,65 @@
         const data = await API.offers.getMine();
         const items = Array.isArray(data) ? data : (data.offers || data.data || []);
         loading.classList.add('hidden');
+        dataCache['my-offers'] = items;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = items.map(o => `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
-              ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
-              ${o.jour && o.creneau ? `<p class="text-xs text-muted mt-1">${o.jour} ${o.creneau}</p>` : ''}
+        list.innerHTML = items.map(o => {
+          const dispos = o.disponibilites && Array.isArray(o.disponibilites) ? o.disponibilites : [];
+          const slotsHtml = dispos.map(d => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`).join(' ');
+          const responses = getOfferResponses(o.id);
+          const respHtml = responses.map(r => {
+            const name = `${r.initiator.prenom || ''} ${r.initiator.nom || ''}`.trim() || 'Quelqu\'un';
+            if (r.status === 'accepted') {
+              return `<div class="flex items-center justify-between bg-success/5 border border-success/20 rounded-lg px-3 py-2 mt-2">
+                <span class="text-xs text-success font-medium">✓ ${name} — Match accepté</span>
+                <button onclick="event.stopPropagation(); goToMessages(${r.initiator.user_id})" class="px-3 py-1 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Discuter</button>
+              </div>`;
+            }
+            if (r.status === 'rejected') {
+              return `<div class="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2 mt-2">
+                <span class="text-xs text-destructive">✗ ${name} — Refusé</span>
+              </div>`;
+            }
+            return `<div class="flex items-center justify-between bg-warning/5 border border-warning/20 rounded-lg px-3 py-2 mt-2">
+              <span class="text-xs text-warning font-medium">${name} a postulé</span>
+              <div class="flex gap-1.5">
+                <button onclick="event.stopPropagation(); acceptMatching(${r.matching_id})" class="px-2.5 py-1 bg-success text-black rounded-lg text-xs font-medium hover:bg-success/90 transition-colors">Accepter</button>
+                <button onclick="event.stopPropagation(); rejectMatching(${r.matching_id})" class="px-2.5 py-1 bg-destructive text-white rounded-lg text-xs hover:bg-destructive/90 transition-colors">Refuser</button>
+              </div>
+            </div>`;
+          }).join('');
+          return `
+          <div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-popover/80 transition-colors">
+            <div onclick="openDetailModal(${o.id}, 'offer', 'my-offers')" class="flex items-start justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
+                ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
+                ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
+              </div>
+              <button onclick="event.stopPropagation(); deleteOffer(${o.id})" class="shrink-0 px-2.5 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
             </div>
-            <button onclick="deleteOffer(${o.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+            ${respHtml}
           </div>
-        `).join('');
+        `}).join('');
         list.classList.remove('hidden');
-      } catch {
+      } catch (err) {
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement de mes offres', 'error');
       }
     }
 
     async function deleteOffer(id) {
-      if (!confirm('Supprimer cette offre ?')) return;
-      try {
-        await API.offers.delete(id);
-        showToast('Offre supprimée.', 'success');
-        loadMyOffers();
-        loadAvailableOffers();
-      } catch (err) {
-        showToast(err.message || 'Erreur', 'error');
-      }
+      openConfirmModal('Supprimer cette offre ?', async () => {
+        try {
+          await API.offers.delete(id);
+          showToast('Offre supprimée.', 'success');
+          loadMyOffers();
+          loadAvailableOffers();
+        } catch (err) {
+          showToast(err.message || 'Erreur', 'error');
+        }
+      });
     }
 
     /* ─── Render: Available Offers ─── */
@@ -465,21 +621,24 @@
           items = items.filter(o => o.profile_id !== myProfileId);
         }
         loading.classList.add('hidden');
+        dataCache['available-offers'] = items;
         count.textContent = `(${items.length})`;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
         list.innerHTML = items.map(o => {
           const name = o.publicateur ? `${o.publicateur.prenom || ''} ${o.publicateur.nom || ''}`.trim() : 'Anonyme';
+          const dispos = o.disponibilites && Array.isArray(o.disponibilites) ? o.disponibilites : [];
+          const slotsHtml = dispos.map(d => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`).join(' ');
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+          <div onclick="openDetailModal(${o.id}, 'offer', 'available-offers')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
                 <span class="text-xs text-muted">par ${name}</span>
               </div>
               ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
-              ${o.jour && o.creneau ? `<p class="text-xs text-muted mt-1">${o.jour} ${o.creneau}</p>` : ''}
+              ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="respondToOffer(${o.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
+            <button onclick="event.stopPropagation(); respondToOffer(${o.id})" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -487,6 +646,7 @@
         console.warn('Available offers error', err);
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement des offres disponibles', 'error');
       }
     }
 
@@ -495,6 +655,7 @@
         await API.offers.respond(offerId);
         showToast('Réponse envoyée au mentor !', 'success');
         loadMyDemands();
+        loadReceivedMatchings();
       } catch (err) {
         showToast(err.message || 'Erreur lors de la réponse.', 'error');
       }
@@ -509,30 +670,72 @@
       empty.classList.add('hidden');
       list.classList.add('hidden');
       try {
-        const data = await API.matching.getSent();
-        const items = Array.isArray(data) ? data : (data.matches || data.data || []);
+        const data = await API.demands.getMine();
+        const items = Array.isArray(data) ? data : (data.demands || data.demandes || data.data || []);
         loading.classList.add('hidden');
+        dataCache['my-demands'] = items;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = items.map(m => {
-          const name = m.candidat ? `${m.candidat.prenom || ''} ${m.candidat.nom || ''}`.trim() : '';
+        list.innerHTML = items.map(d => {
+          const dispos = d.disponibilites && Array.isArray(d.disponibilites) ? d.disponibilites : [];
+          const slotsHtml = dispos.map(s => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`).join(' ');
+          const helpers = getDemandHelpers(d.id);
+          const helpHtml = helpers.map(r => {
+            const name = `${r.initiator.prenom || ''} ${r.initiator.nom || ''}`.trim() || 'Quelqu\'un';
+            if (r.status === 'accepted') {
+              return `<div class="flex items-center justify-between bg-success/5 border border-success/20 rounded-lg px-3 py-2 mt-2">
+                <span class="text-xs text-success font-medium">✓ ${name} — Match accepté</span>
+                <button onclick="event.stopPropagation(); goToMessages(${r.initiator.user_id})" class="px-3 py-1 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Discuter</button>
+              </div>`;
+            }
+            if (r.status === 'rejected') {
+              return `<div class="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2 mt-2">
+                <span class="text-xs text-destructive">✗ ${name} — Refusé</span>
+              </div>`;
+            }
+            return `<div class="flex items-center justify-between bg-warning/5 border border-warning/20 rounded-lg px-3 py-2 mt-2">
+              <span class="text-xs text-warning font-medium">${name} propose son aide</span>
+              <div class="flex gap-1.5">
+                <button onclick="event.stopPropagation(); acceptMatching(${r.matching_id})" class="px-2.5 py-1 bg-success text-black rounded-lg text-xs font-medium hover:bg-success/90 transition-colors">Accepter</button>
+                <button onclick="event.stopPropagation(); rejectMatching(${r.matching_id})" class="px-2.5 py-1 bg-destructive text-white rounded-lg text-xs hover:bg-destructive/90 transition-colors">Refuser</button>
+              </div>
+            </div>`;
+          }).join('');
+          const urgenceBadge = d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === 'Urgente' ? 'bg-destructive/20 text-destructive' : d.urgence === 'Haute' ? 'bg-warning/20 text-warning' : 'bg-muted/10 text-muted'}">${d.urgence}</span>` : '';
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-sm">${matiereName(m.matiere_id)}</p>
-              ${name ? `<p class="text-xs text-muted mt-0.5">Vers ${name}</p>` : ''}
-              ${m.jour && m.creneau ? `<p class="text-xs text-muted mt-0.5">${m.jour} ${m.creneau}</p>` : ''}
+          <div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-popover/80 transition-colors">
+            <div onclick="openDetailModal(${d.id}, 'demand', 'my-demands')" class="flex items-start justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm">${matiereName(d.matiere_id)} ${urgenceBadge}</p>
+                ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
+                ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <a href="matching.html?demand_id=${d.id}" onclick="event.stopPropagation()" class="shrink-0 px-2 py-1.5 bg-primary/10 text-primary rounded-lg text-xs hover:bg-primary/20 transition-colors font-medium">Trouver un mentor</a>
+                <button onclick="event.stopPropagation(); deleteDemand(${d.id})" class="shrink-0 px-2 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+              </div>
             </div>
-            <div class="shrink-0 flex flex-col items-end gap-2">
-              ${statusBadge(m.status)}
-              ${m.status === 'accepted' ? `<a href="messages.html" class="text-xs text-primary hover:underline">Discuter</a>` : ''}
-            </div>
+            ${helpHtml}
           </div>
         `}).join('');
         list.classList.remove('hidden');
-      } catch {
+      } catch (err) {
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement de mes demandes', 'error');
       }
+    }
+
+    async function deleteDemand(id) {
+      openConfirmModal('Supprimer cette demande ?', async () => {
+        try {
+          await API.demands.delete(id);
+          showToast('Demande supprimée.', 'success');
+          loadMyDemands();
+          loadAvailableDemands();
+        } catch (err) {
+          showToast(err.message || 'Erreur', 'error');
+        }
+      });
     }
 
     /* ─── Render: Available Demands ─── */
@@ -557,21 +760,25 @@
           items = items.filter(d => d.profile_id !== myProfileId);
         }
         loading.classList.add('hidden');
+        dataCache['available-demands'] = items;
         count.textContent = `(${items.length})`;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
         list.innerHTML = items.map(d => {
           const name = d.publicateur ? `${d.publicateur.prenom || ''} ${d.publicateur.nom || ''}`.trim() : 'Anonyme';
+          const dispos = d.disponibilites && Array.isArray(d.disponibilites) ? d.disponibilites : [];
+          const slotsHtml = dispos.map(s => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`).join(' ');
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+          <div onclick="openDetailModal(${d.id}, 'demand', 'available-demands')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
                 <span class="text-xs text-muted">par ${name}</span>
+                ${d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === 'Urgente' ? 'bg-destructive/20 text-destructive' : d.urgence === 'Haute' ? 'bg-warning/20 text-warning' : 'bg-muted/10 text-muted'}">${d.urgence}</span>` : ''}
               </div>
               ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
-              ${d.jour && d.creneau ? `<p class="text-xs text-muted mt-1">${d.jour} ${d.creneau}</p>` : ''}
+              ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="proposeHelp(${d.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
+            <button onclick="event.stopPropagation(); proposeHelp(${d.id})" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -579,6 +786,7 @@
         console.warn('Available demands error', err);
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement des demandes disponibles', 'error');
       }
     }
 
@@ -587,9 +795,57 @@
         await API.demands.offerHelp(demandId);
         showToast('Aide proposée ! En attente de la réponse.', 'success');
         loadMyDemands();
+        loadReceivedMatchings();
       } catch (err) {
         showToast(err.message || 'Erreur lors de l\'envoi.', 'error');
       }
+    }
+
+    /* ─── Accept / Reject / Chat ─── */
+    async function loadReceivedMatchings() {
+      try {
+        const data = await API.matching.getReceived();
+        receivedMatchings = Array.isArray(data) ? data : (data.matchings || data.data || []);
+      } catch {
+        receivedMatchings = [];
+        showToast('Erreur lors du chargement des matchings', 'error');
+      }
+    }
+
+    function getOfferResponses(offerId) {
+      return receivedMatchings.filter(m => m.offer_id === offerId);
+    }
+
+    function getDemandHelpers(demandId) {
+      return receivedMatchings.filter(m => m.demand_id === demandId);
+    }
+
+    async function acceptMatching(matchingId) {
+      try {
+        await API.matching.accept(matchingId);
+        showToast('Match accepté ! Vous pouvez discuter.', 'success');
+        await loadReceivedMatchings();
+        loadMyOffers();
+        loadMyDemands();
+      } catch (err) {
+        showToast(err.message || 'Erreur', 'error');
+      }
+    }
+
+    async function rejectMatching(matchingId) {
+      try {
+        await API.matching.reject(matchingId);
+        showToast('Match refusé.', 'success');
+        await loadReceivedMatchings();
+        loadMyOffers();
+        loadMyDemands();
+      } catch (err) {
+        showToast(err.message || 'Erreur', 'error');
+      }
+    }
+
+    function goToMessages(otherUserId) {
+      window.location.href = `messages.html?user=${otherUserId}`;
     }
 
     /* ─── Modal: New Publication ─── */
@@ -606,10 +862,15 @@
       // Set default type description
       updateTypeDesc();
 
-      // Load matieres into select
+      // Load matieres into select, filtered by filiere
       const sel = document.getElementById('pub-matiere');
       sel.innerHTML = '<option value="">Sélectionnez une matière…</option>';
-      matieresCache.forEach(m => {
+      let filtered = matieresCache;
+      const userData = getUserData();
+      if (userData && userData.department) {
+        filtered = getMatiersByFiliere(userData.department);
+      }
+      filtered.forEach(m => {
         const opt = document.createElement('option');
         opt.value = m.id;
         opt.textContent = m.nom || m.name || m.libelle;
@@ -635,6 +896,7 @@
         ? 'Proposez votre aide aux étudiants qui ont des lacunes dans cette matière.'
         : 'Demandez de l\'aide pour une matière où vous avez des lacunes.';
       document.getElementById('pub-submit-btn').textContent = isOffer ? 'Publier l\'offre' : 'Publier la demande';
+      document.getElementById('pub-urgence-group').classList.toggle('hidden', isOffer);
     }
 
     // Format radio styling
@@ -651,27 +913,41 @@
       });
     });
 
-    /* ─── Availability grid (styled) ─── */
+    /* ─── Availability grid — only user's saved slots ─── */
     async function renderAvailabilityGrid() {
       const container = document.getElementById('pub-availability-grid');
       const hidden    = document.getElementById('pub-availability');
       container.innerHTML = '';
 
-      const days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-      const hours = [];
-      for (let h = 8; h < 20; h++) hours.push(`${h}h-${h+1}h`);
-
-      // Load user's saved disponibilites to pre-select
-      const selected = new Set();
+      let savedSlots = [];
       try {
         const data = await API.profile.getMe();
         const profile = data.profile || data;
-        (profile.disponibilites || []).forEach(d => {
-          selected.add(`${d.jour}-${creneauToHour(d.creneau)}`);
-        });
-      } catch (_) {}
+        savedSlots = profile.disponibilites || [];
+      } catch (_) {
+        showToast('Erreur lors du chargement des disponibilités', 'error');
+      }
 
-      days.forEach(day => {
+      if (savedSlots.length === 0) {
+        container.innerHTML = '<p class="text-xs text-muted col-span-full text-center py-4">Aucune disponibilité définie. Ajoutez-en dans Paramètres.</p>';
+        hidden.value = '[]';
+        return;
+      }
+
+      // Group by day
+      const grouped = {};
+      savedSlots.forEach(d => {
+        const day = d.jour;
+        if (!grouped[day]) grouped[day] = [];
+        grouped[day].push(creneauToHour(d.creneau));
+      });
+
+      const dayOrder = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+      const selected = new Set();
+
+      dayOrder.forEach(day => {
+        const slots = grouped[day];
+        if (!slots || slots.length === 0) return;
         const dayCol = document.createElement('div');
         dayCol.className = 'col-span-1';
         const dayHeader = document.createElement('p');
@@ -679,16 +955,14 @@
         dayHeader.textContent = day.substring(0,3);
         dayCol.appendChild(dayHeader);
 
-        hours.forEach(hSlot => {
+        slots.forEach(hSlot => {
           const btn = document.createElement('button');
           btn.type = 'button';
           const key = `${day}-${hSlot}`;
-          const isPre = selected.has(key);
-          btn.className = isPre
-            ? 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1'
-            : 'w-full text-xs px-1.5 py-1.5 rounded-md border border-border bg-card/30 text-muted hover:bg-primary/10 transition-all mb-1';
+          btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1';
           btn.textContent = hSlot;
           btn.dataset.key = key;
+          selected.add(key);
           btn.onclick = () => {
             const k = btn.dataset.key;
             if (selected.has(k)) {
@@ -717,7 +991,10 @@
         const raw = document.getElementById('pub-availability').value || '[]';
         const data = JSON.parse(raw);
         return Array.isArray(data) ? data : [];
-      } catch { return []; }
+      } catch {
+        showToast('Erreur lors de la lecture des disponibilités', 'error');
+        return [];
+      }
     }
 
     /* ─── Submit new publication ─── */
@@ -761,10 +1038,10 @@
             matiere_id: parseInt(matiere_id),
             description,
             format_preference: format_pref,
-            jour,
-            creneau
+            disponibilites: selectedSlots
           });
         } else {
+          const urgence = document.querySelector('input[name="pub-urgence"]:checked')?.value || 'Moyenne';
           await API.demands.create({
             matiere_id: parseInt(matiere_id),
             description,
@@ -772,7 +1049,7 @@
             jour,
             creneau,
             disponibilite: selectedSlots,
-            urgence: 'Medium'
+            urgence
           });
         }
         closeNewPublicationModal();
@@ -790,6 +1067,26 @@
       }
     });
 
+    /* ─── Handle URL params (open a specific demand) ─── */
+    function handleUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const demandId = params.get('open-demand');
+      if (demandId) {
+        switchTab('demands');
+        // Wait for data to load, then find and open
+        const waitAndOpen = setInterval(() => {
+          const items = dataCache['available-demands'] || [];
+          const found = items.find(d => d.id === parseInt(demandId));
+          if (found) {
+            clearInterval(waitAndOpen);
+            openDetailModal(found.id, 'demand', 'available-demands');
+          }
+        }, 300);
+        // Timeout after 10s
+        setTimeout(() => clearInterval(waitAndOpen), 10000);
+      }
+    }
+
     /* ─── Init ─── */
     (async function init() {
       await loadInitialData();
@@ -797,6 +1094,8 @@
       loadAvailableOffers();
       loadMyDemands();
       loadAvailableDemands();
+      loadReceivedMatchings();
+      handleUrlParams();
 
       // Initial format styling
       document.querySelectorAll('input[name="pub-format"]').forEach(r => {
@@ -809,7 +1108,5 @@
       });
     })();
   </script>
-  <script src="../js/matieres-loader.js"></script>
-  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>
