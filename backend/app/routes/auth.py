@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from app.database import db
 from app.models import User, Profile, PasswordResetToken
 from flask_jwt_extended import create_access_token
-from app.validators import validate_json, is_valid_email, is_valid_format_preference, is_valid_niveau
+from app.validators import validate_json, is_valid_email, is_valid_format_preference, is_valid_niveau, is_valid_benin_phone
 from app.middleware.auth_guard import token_required
 from app.services.email_service import send_password_reset_email
 
@@ -82,6 +82,11 @@ def register():
         if format_preference and not is_valid_format_preference(format_preference):
             return jsonify({"message": "Format d'apprentissage invalide"}), 400
         
+        # Validation téléphone béninois
+        phone = data.get('telephone')
+        if phone and not is_valid_benin_phone(phone):
+            return jsonify({"message": "Numéro de téléphone béninois invalide. Format attendu: 01[4569]XXXXXXX (10 chiffres)"}), 400, 400
+        
 
         # backend/app/routes/auth.py — dans register()
         if data.get('telephone'):
@@ -104,8 +109,8 @@ def register():
             user_id=new_user.id,
             nom=data['nom'],
             prenom=data['prenom'],
-            filiere=data.get('filiere') or '',
-            niveau=data.get('niveau') or '',
+            filiere=data.get('filiere') or 'GL',
+            niveau=data.get('niveau') or 'L1',
             format_preference=format_preference,
             bio=data.get('bio', ''),
             telephone=phone

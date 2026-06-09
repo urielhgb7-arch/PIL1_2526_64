@@ -170,7 +170,7 @@
             </div>
 
             <div>
-              <label for="phone" class="block text-sm font-medium mb-2">Téléphone <span class="text-muted">(Bénin, sans +229 et sans 01)</span></label>
+              <label for="phone" class="block text-sm font-medium mb-2">Téléphone <span class="text-muted">(Bénin, 10 chiffres, ex: 0161234567)</span></label>
               <input
                 id="phone"
                 type="tel"
@@ -289,7 +289,7 @@
     const submitBtn      = document.getElementById('submit-btn');
 
     function isValidBeninPhone(v) {
-      return /^[4569]\d{7}$/.test(v.replace(/\s/g, ''));
+      return /^01[4569]\d{7}$/.test(v.replace(/\s/g, ''));
     }
 
     function showError(msg)   { errorTxt.textContent = msg;   errorMsg.classList.remove('hidden');   successMsg.classList.add('hidden'); }
@@ -325,7 +325,7 @@
         return;
       }
       if (phone && !isValidBeninPhone(phone)) {
-        showError('Numéro de téléphone béninois invalide. Utilisez 8 chiffres (ex: 61 23 45 67).');
+        showError('Numéro de téléphone béninois invalide. Format attendu: 01[4569]XXXXXXX (10 chiffres, ex: 0161234567).');
         return;
       }
       if (password !== confirmPassword) {
