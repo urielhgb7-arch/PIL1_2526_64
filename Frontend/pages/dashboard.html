@@ -289,6 +289,117 @@
                     </div>
                 </div>
 
+                <!-- Profile Preview -->
+                <div class="bg-card border border-border rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold">Mon profil</h2>
+                        <a
+                            href="settings.html"
+                            class="text-sm text-primary hover:underline flex items-center gap-1"
+                        >
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                />
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                            </svg>
+                            Modifier
+                        </a>
+                    </div>
+                    <div
+                        id="profile-preview-loading"
+                        class="text-sm text-muted"
+                    >
+                        Chargement...
+                    </div>
+                    <div id="profile-preview-content" class="hidden">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0"
+                            >
+                                <span
+                                    id="profile-avatar-initials"
+                                    class="text-lg font-bold text-primary"
+                                    >?</span
+                                >
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p
+                                    id="profile-fullname-dash"
+                                    class="font-semibold text-lg"
+                                >
+                                    —
+                                </p>
+                                <p
+                                    id="profile-email-dash"
+                                    class="text-sm text-muted truncate"
+                                >
+                                    —
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+                                        id="profile-filiere-badge"
+                                        >—</span
+                                    >
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success"
+                                        id="profile-niveau-badge"
+                                        >—</span
+                                    >
+                                    <span
+                                        id="profile-telephone-badge"
+                                        class="hidden inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-popover text-muted"
+                                    ></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-border">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-xs text-muted mb-1.5">
+                                        Compétences
+                                    </p>
+                                    <div
+                                        id="profile-comps-dash"
+                                        class="flex flex-wrap gap-1"
+                                    >
+                                        <span class="text-xs text-muted"
+                                            >Aucune</span
+                                        >
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-muted mb-1.5">
+                                        Lacunes
+                                    </p>
+                                    <div
+                                        id="profile-lacs-dash"
+                                        class="flex flex-wrap gap-1"
+                                    >
+                                        <span class="text-xs text-muted"
+                                            >Aucune</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Intentions -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Offres de mentorat -->
@@ -456,12 +567,77 @@
                         department: profile.filiere,
                         level: profile.niveau,
                     });
+
+                    // Afficher la section profil
+                    const initials =
+                        `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
+                        "?";
+                    document.getElementById(
+                        "profile-avatar-initials",
+                    ).textContent = initials;
+                    document.getElementById(
+                        "profile-fullname-dash",
+                    ).textContent = fullName || "—";
+                    document.getElementById("profile-email-dash").textContent =
+                        profile.email || "—";
+                    document.getElementById(
+                        "profile-filiere-badge",
+                    ).textContent = profile.filiere || "—";
+                    document.getElementById(
+                        "profile-niveau-badge",
+                    ).textContent = profile.niveau || "—";
+
+                    const tel = profile.telephone;
+                    if (tel && !tel.startsWith("non-renseigne")) {
+                        const telBadge = document.getElementById(
+                            "profile-telephone-badge",
+                        );
+                        telBadge.textContent = tel;
+                        telBadge.classList.remove("hidden");
+                    }
+
+                    const compsEl =
+                        document.getElementById("profile-comps-dash");
+                    const comps = profile.competences || [];
+                    compsEl.innerHTML =
+                        comps.length > 0
+                            ? comps
+                                  .slice(0, 4)
+                                  .map(
+                                      (c) =>
+                                          `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-success/10 text-success">${c.matiere_nom || ""}</span>`,
+                                  )
+                                  .join("")
+                            : '<span class="text-xs text-muted">Aucune</span>';
+
+                    const lacsEl = document.getElementById("profile-lacs-dash");
+                    const lacs = profile.lacunes || [];
+                    lacsEl.innerHTML =
+                        lacs.length > 0
+                            ? lacs
+                                  .slice(0, 4)
+                                  .map(
+                                      (l) =>
+                                          `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-warning/10 text-warning">${l.matiere_nom || ""}</span>`,
+                                  )
+                                  .join("")
+                            : '<span class="text-xs text-muted">Aucune</span>';
+
+                    document
+                        .getElementById("profile-preview-loading")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("profile-preview-content")
+                        .classList.remove("hidden");
                 } catch (err) {
                     const userData = getUserData();
                     if (userData && userData.firstName) {
                         document.getElementById("user-name").textContent =
                             `${userData.firstName} ${userData.lastName}`;
                     }
+                    document.getElementById(
+                        "profile-preview-loading",
+                    ).textContent = "Profil non disponible.";
                 }
 
                 // ── Métriques réelles ─────────────────────────────────────────────────
