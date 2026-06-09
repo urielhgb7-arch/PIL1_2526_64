@@ -131,6 +131,3 @@ def create_app(config_name=None):
         return send_from_directory(FRONTEND_DIR, 'index.html')
 
     return flask_app
-
-# Pour gunicorn : gunicorn app:app
-app = create_app()
