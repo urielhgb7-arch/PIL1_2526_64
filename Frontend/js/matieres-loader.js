@@ -86,8 +86,7 @@ function getMatieresByFiliereAndNiveau(filiere = null, niveau = null) {
 }
 
 async function initMatieresLoader() {
-  const authPages = /signin\.html|signup\.html|reset-password\.html/.test(window.location.pathname);
-  if (authPages) return;
+  if (/^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) return;
   await loadMatieresFromAPI();
 }
 
