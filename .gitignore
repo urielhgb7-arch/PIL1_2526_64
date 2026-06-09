@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Environnement virtuel Python
 venv/
 
@@ -36,43 +36,4 @@ instance/
 # Node (si plus tard vous utilisez npm)
 node_modules/
 
-=======
-# Environnement virtuel Python
-venv/
-
-# Variables d'environnement
-.env
-
-# Cache Python
-__pycache__/
-*.pyc
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Fichiers temporaires Python
-*.pyo
-*.pyd
-
-# Flask
-instance/
-
-# Pytest
-.pytest_cache/
-
-# Base SQLite (au cas où quelqu'un teste localement)
-*.db
-
-# Node (si plus tard vous utilisez npm)
-node_modules/
-
->>>>>>> 031f9fe4370b1d031dac17a56665eacfc3efb57a
 .env.local
