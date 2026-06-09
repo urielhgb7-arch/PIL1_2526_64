@@ -86,7 +86,7 @@ function getMatieresByFiliereAndNiveau(filiere = null, niveau = null) {
 }
 
 async function initMatieresLoader() {
-  if (/^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) return;
+  if (/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) return;
   await loadMatieresFromAPI();
 }
 

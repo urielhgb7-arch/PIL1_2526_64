@@ -43,7 +43,7 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         const response = await fetch(url, config);
 
         if (response.status === 401) {
-            const pub = /^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
             if (pub) {
                 throw new Error('Non authentifié');
             }
@@ -294,7 +294,7 @@ function getMatieresByFiliereAndNiveau(filiere = null, niveau = null) {
 }
 
 async function initMatieresLoader() {
-  if (/^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) return;
+  if (/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) return;
   await loadMatieresFromAPI();
 }
 
@@ -345,7 +345,7 @@ function startNotificationsBadgePoll(intervalMs = 30000) {
 // Init on DOM ready
 if (typeof window !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
-    const pub = /^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+    const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
     if (!pub) startNotificationsBadgePoll();
   });
 }

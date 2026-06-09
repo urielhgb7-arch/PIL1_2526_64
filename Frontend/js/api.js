@@ -43,7 +43,7 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         const response = await fetch(url, config);
 
         if (response.status === 401) {
-            const pub = /^\/($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
             if (pub) {
                 throw new Error('Non authentifié');
             }
