@@ -924,6 +924,26 @@
       }
     });
 
+    /* ─── Handle URL params (open a specific demand) ─── */
+    function handleUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const demandId = params.get('open-demand');
+      if (demandId) {
+        switchTab('demands');
+        // Wait for data to load, then find and open
+        const waitAndOpen = setInterval(() => {
+          const items = dataCache['available-demands'] || [];
+          const found = items.find(d => d.id === parseInt(demandId));
+          if (found) {
+            clearInterval(waitAndOpen);
+            openDetailModal(found.id, 'demand', 'available-demands');
+          }
+        }, 300);
+        // Timeout after 10s
+        setTimeout(() => clearInterval(waitAndOpen), 10000);
+      }
+    }
+
     /* ─── Init ─── */
     (async function init() {
       await loadInitialData();
@@ -931,6 +951,7 @@
       loadAvailableOffers();
       loadMyDemands();
       loadAvailableDemands();
+      handleUrlParams();
 
       // Initial format styling
       document.querySelectorAll('input[name="pub-format"]').forEach(r => {
