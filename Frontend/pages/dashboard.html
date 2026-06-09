@@ -223,10 +223,11 @@
 
       // ── Métriques réelles ─────────────────────────────────────────────────
       try {
-        const [received, sent, offers] = await Promise.all([
+        const [received, sent, offers, prof] = await Promise.all([
           API.matching.getReceived().catch(() => []),
           API.matching.getSent().catch(() => []),
-          API.offers.getAll().catch(() => [])
+          API.offers.getAll().catch(() => []),
+          API.profile.getMe().catch(() => ({}))
         ]);
         const rArr = Array.isArray(received) ? received : (received.matches || received.data || []);
         const sArr = Array.isArray(sent) ? sent : (sent.matches || sent.data || []);
@@ -234,6 +235,14 @@
         const acceptedCount = [...rArr, ...sArr].filter(m => m.status === 'accepted').length;
         document.getElementById('metric-matches').textContent = acceptedCount;
         document.getElementById('metric-hours').textContent = acceptedCount > 0 ? `${acceptedCount * 2}h` : '0h';
+
+        const p = prof.profile || prof;
+        if (p.user_id) {
+          API.feedback.getUser(p.user_id).then(fb => {
+            const note = (fb || {}).note_moyenne;
+            if (note != null) document.getElementById('metric-rating').textContent = note.toFixed(1);
+          }).catch(() => {});
+        }
       } catch (err) { console.warn('Metrics error', err); }
 
       // ── Offres réelles ────────────────────────────────────────────────────
