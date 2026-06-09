@@ -91,16 +91,36 @@ def create_offer(current_user):
     jour = data.get('jour')
     creneau = data.get('creneau')
     format_preference = data.get('format_preference', 'hybride')
+    disponibilites = data.get('disponibilites') or data.get('disponibilite')
 
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
 
     if not matiere_exists(matiere_id):
         return jsonify({"message": "Matière introuvable"}), 404
-    if jour and not is_valid_day(jour):
-        return jsonify({"message": "jour invalide"}), 400
-    if creneau and not is_valid_creneau(creneau):
-        return jsonify({"message": "creneau invalide"}), 400
+
+    # Parse disponibilites if provided
+    all_slots = []
+    if disponibilites:
+        if not isinstance(disponibilites, list) or len(disponibilites) == 0:
+            return jsonify({"message": "disponibilites doit être une liste non vide"}), 400
+        for slot in disponibilites:
+            slot_jour, slot_creneau = _parse_iso_slot(slot)
+            if not slot_jour or not slot_creneau:
+                return jsonify({"message": "disponibilite invalide"}), 400
+            if not is_valid_day(slot_jour):
+                return jsonify({"message": "jour invalide"}), 400
+            if not is_valid_creneau(slot_creneau):
+                return jsonify({"message": "creneau invalide"}), 400
+            all_slots.append({"jour": slot_jour, "creneau": slot_creneau})
+    else:
+        if jour and not is_valid_day(jour):
+            return jsonify({"message": "jour invalide"}), 400
+        if creneau and not is_valid_creneau(creneau):
+            return jsonify({"message": "creneau invalide"}), 400
+        if jour and creneau:
+            all_slots.append({"jour": jour, "creneau": creneau})
+
     if not is_valid_format_preference(format_preference):
         return jsonify({"message": "format invalide"}), 400
 
@@ -108,20 +128,21 @@ def create_offer(current_user):
     if error_response:
         return error_response, error_status
 
+    first_slot = all_slots[0] if all_slots else {}
 
     offer = Offer(
         profile_id=profile.id,
         matiere_id=matiere_id,
         description=description,
-        jour=jour,
-        creneau=creneau,
-        format_preference=format_preference
+        jour=first_slot.get('jour'),
+        creneau=first_slot.get('creneau'),
+        format_preference=format_preference,
+        disponibilites=all_slots
     )
     db.session.add(offer)
     db.session.commit()
     logger.info(f"Offre créée: profile_id={profile.id} matiere_id={matiere_id}")
     return jsonify({"message": "Offre créée avec succès", "id": offer.id}), 201
-
 
 # ── GET /api/offers ──────────────────────────────────────────────────────────
 @offers_bp.route('/offers', methods=['GET'])
@@ -267,41 +288,41 @@ def create_demand(current_user):
     if error_response:
         return error_response, error_status
 
-    demand_slots = []
+    all_slots = []
     if disponibilite:
+        if not isinstance(disponibilite, list) or len(disponibilite) == 0:
+            return jsonify({"message": "disponibilite doit être une liste non vide"}), 400
         for slot_iso in disponibilite:
             slot_jour, slot_creneau = _parse_iso_slot(slot_iso)
             if not slot_jour or not slot_creneau:
                 return jsonify({"message": "disponibilite invalide"}), 400
-            demand_slots.append((slot_jour, slot_creneau))
+            if not is_valid_day(slot_jour):
+                return jsonify({"message": "jour invalide"}), 400
+            if not is_valid_creneau(slot_creneau):
+                return jsonify({"message": "creneau invalide"}), 400
+            all_slots.append({"jour": slot_jour, "creneau": slot_creneau})
     else:
-        demand_slots.append((jour, creneau))
-
-    created_ids = []
-    for slot_jour, slot_creneau in demand_slots:
-        if not is_valid_day(slot_jour):
+        if jour and not is_valid_day(jour):
             return jsonify({"message": "jour invalide"}), 400
-        if not is_valid_creneau(slot_creneau):
+        if creneau and not is_valid_creneau(creneau):
             return jsonify({"message": "creneau invalide"}), 400
+        if jour and creneau:
+            all_slots.append({"jour": jour, "creneau": creneau})
 
-        demand = Demand(
-            profile_id=profile.id,
-            matiere_id=matiere_id,
-            jour=slot_jour,
-            creneau=slot_creneau,
-            description=description
-        )
-        db.session.add(demand)
-        db.session.flush()
-        created_ids.append(demand.id)
+    first_slot = all_slots[0] if all_slots else {}
 
+    demand = Demand(
+        profile_id=profile.id,
+        matiere_id=matiere_id,
+        jour=first_slot.get('jour'),
+        creneau=first_slot.get('creneau'),
+        description=description,
+        disponibilites=all_slots
+    )
+    db.session.add(demand)
     db.session.commit()
-    logger.info(f"Demande(s) créée(s): profile_id={profile.id} matiere_id={matiere_id} ids={created_ids}")
-
-    if len(created_ids) == 1:
-        return jsonify({"message": "Demande créée avec succès", "id": created_ids[0]}), 201
-
-    return jsonify({"message": "Demandes créées avec succès", "ids": created_ids}), 201
+    logger.info(f"Demande créée: profile_id={profile.id} matiere_id={matiere_id} id={demand.id}")
+    return jsonify({"message": "Demande créée avec succès", "id": demand.id}), 201
 
 
 # ── GET /api/demands ─────────────────────────────────────────────────────────

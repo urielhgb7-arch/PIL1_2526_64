@@ -41,6 +41,19 @@ def create_app(config_name=None):
                 create_database(db.engine.url)
                 logger.info("Base de données créée automatiquement !")
             db.create_all()
+            # Migration: ajouter colonne disponibilites si absente
+            try:
+                from sqlalchemy import inspect, text
+                inspector = inspect(db.engine)
+                for table in ('offers', 'demands'):
+                    cols = [c['name'] for c in inspector.get_columns(table)]
+                    if 'disponibilites' not in cols:
+                        with db.engine.connect() as conn:
+                            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN disponibilites TEXT DEFAULT '[]'"))
+                            conn.commit()
+                            logger.info(f"Migration: colonne disponibilites ajoutée à {table}")
+            except Exception as mig_err:
+                logger.warning(f"Migration disponibilites ignorée: {mig_err}")
             logger.info("Database tables initialized successfully")
         except Exception as db_error:
             logger.error(f"Database initialization error: {db_error}", exc_info=True)
