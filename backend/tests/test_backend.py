@@ -645,7 +645,7 @@ def test_create_demand_with_disponibilite_payload(client, app):
         json={
             'matiere_id': matiere_id,
             'description': 'Je souhaite un créneau le matin',
-            'urgence': 'Urgent',
+            'urgence': 'Urgente',
             'format': 'En ligne',
             'disponibilite': availability
         },
@@ -664,7 +664,7 @@ def test_create_demand_with_disponibilite_payload(client, app):
 
 
 def test_create_demand_with_multiple_disponibilite_creates_multiple_demands(client, app):
-    """Test que plusieurs disponibilités créent plusieurs demandes."""
+    """Test que plusieurs disponibilités sont stockées dans le JSON."""
     with app.app_context():
         matiere = create_matiere('Anglais', annee='L3', filiere='GL')
         user = create_user_direct('demand_multi_dispo@a.com', 'pass')
@@ -679,7 +679,7 @@ def test_create_demand_with_multiple_disponibilite_creates_multiple_demands(clie
         json={
             'matiere_id': matiere_id,
             'description': 'Plusieurs créneaux possibles',
-            'urgence': 'High',
+            'urgence': 'Haute',
             'format': 'Présentiel',
             'disponibilite': availability
         },
@@ -687,13 +687,14 @@ def test_create_demand_with_multiple_disponibilite_creates_multiple_demands(clie
     )
 
     assert response.status_code == 201
-    assert 'ids' in response.json
-    assert len(response.json['ids']) == 2
+    assert 'id' in response.json
+    demand_id = response.json['id']
 
     with app.app_context():
-        demands = [db.session.get(Demand, demand_id) for demand_id in response.json['ids']]
-        assert all(d is not None for d in demands)
-        assert {d.creneau for d in demands} == {'10-11', '11-12'}
+        demand = db.session.get(Demand, demand_id)
+        assert demand is not None
+        creneaux = {s['creneau'] for s in demand.disponibilites}
+        assert creneaux == {'10-11', '11-12'}
 
 
 def test_matching_with_demand_id_filters_by_slot(client, app):

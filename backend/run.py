@@ -18,4 +18,5 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('FLASK_ENV') == 'development'
     print(f"Lancement du serveur Flask en mode {os.getenv('FLASK_ENV', 'development')} sur le port {port}...")
+    # Pour lancer les tests : cd backend && pytest tests/
     socketio.run(app, debug=debug, host='0.0.0.0', port=port)

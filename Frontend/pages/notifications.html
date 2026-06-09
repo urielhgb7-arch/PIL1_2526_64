@@ -4,6 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notifications - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,10 +36,10 @@
     }
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.15), transparent 35%),
-                  radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.16), transparent 35%),
-                  #0b1120;
-      color: #e2e8f0;
+      background: radial-gradient(circle at top left, rgba(124, 111, 247, 0.12), transparent 35%),
+                  radial-gradient(circle at bottom right, rgba(45, 212, 160, 0.12), transparent 35%),
+                  #08090C;
+      color: rgba(255, 255, 255, 0.85);
       padding: 0 1rem 2rem;
       font-family: 'Inter', sans-serif;
     }
@@ -80,13 +102,13 @@
     }
     .panel-card,
     .notifications-panel {
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 17, 26, 0.85);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 24px;
       padding: 1.4rem;
       -webkit-backdrop-filter: blur(18px);
       backdrop-filter: blur(18px);
-      box-shadow: 0 20px 80px rgba(15, 23, 42, 0.28);
+      box-shadow: 0 20px 80px rgba(15, 17, 26, 0.28);
     }
     .notifications-panel .topbar {
       justify-content: space-between;
@@ -155,8 +177,8 @@
       box-shadow: 0 12px 40px rgba(30, 41, 59, 0.2);
     }
     .controls button.active {
-      background: #2563eb;
-      box-shadow: 0 12px 40px rgba(37, 99, 235, 0.3);
+      background: #7C6FF7;
+      box-shadow: 0 12px 40px rgba(124, 111, 247, 0.3);
     }
     .notifications-list {
       display: grid;
@@ -173,8 +195,8 @@
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .notification-card.unread {
-      border-color: #2563eb;
-      background: rgba(37, 99, 235, 0.08);
+      border-color: #7C6FF7;
+      background: rgba(124, 111, 247, 0.08);
     }
     .notification-card:hover {
       transform: translateY(-1px);
@@ -197,11 +219,11 @@
       text-transform: uppercase;
       padding: 0.35rem 0.75rem;
       border-radius: 999px;
-      background: rgba(14, 165, 233, 0.14);
-      color: #7dd3fc;
+      background: rgba(124, 111, 247, 0.14);
+      color: #a78bfa;
     }
     .notification-card p {
-      color: #cbd5e1;
+      color: rgba(255, 255, 255, 0.7);
       line-height: 1.7;
     }
     .notification-card .meta {
@@ -236,11 +258,11 @@
       transform: translateY(-1px);
     }
     .notification-card .actions .primary {
-      background: #22c55e;
-      color: #0f172a;
+      background: #2DD4A0;
+      color: #08090C;
     }
     .notification-card .actions .danger {
-      background: #ef4444;
+      background: #F97066;
       color: #fff;
     }
     .no-notifs {
@@ -262,7 +284,7 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-background text-foreground">
   <div class="page-shell">
     <div class="topbar">
       <div class="flex items-center gap-4">
@@ -330,10 +352,7 @@
     </section>
   </div>
 
-  <script src="../js/api.js"></script>
-  <script src="../js/script.js"></script>
-  <script src="../js/matieres-loader.js"></script>
+  <script src="../js/bundle.js"></script>
   <script src="../js/notifications.js"></script>
-  <script src="../js/notifications-badge.js"></script>
 </body>
 </html>

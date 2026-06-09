@@ -1,4 +1,5 @@
 # backend/app/routes/offers.py
+import re
 import logging
 from datetime import datetime
 from flask import Blueprint, request, jsonify
@@ -7,7 +8,7 @@ from app.database import db
 from app.models import Profile
 from app.models.services import Matching, Offer, Demand, ProfilLacune, ProfilCompetence
 from app.middleware.auth_guard import token_required
-from app.validators import is_valid_format_preference, matiere_exists, is_valid_day, is_valid_creneau
+from app.validators import is_valid_format_preference, matiere_exists, is_valid_day, is_valid_creneau, VALID_DAYS
 
 logger = logging.getLogger(__name__)
 offers_bp = Blueprint('offers', __name__)
@@ -20,7 +21,7 @@ FORMAT_PREFERENCE_MAP = {
     'Hybride': 'hybride',
     'hybride': 'hybride'
 }
-VALID_URGENCIES = {'Low', 'Medium', 'High', 'Urgent'}
+VALID_URGENCIES = {'Légère', 'Moyenne', 'Haute', 'Urgente'}
 DAY_INDEX_TO_NAME = {
     0: 'Lundi',
     1: 'Mardi',
@@ -35,6 +36,19 @@ DAY_INDEX_TO_NAME = {
 def _parse_iso_slot(slot_iso):
     if not slot_iso or not isinstance(slot_iso, str):
         return None, None
+
+    # Try "Jour-hH-hH" format (e.g. "Lundi-8h-9h")
+    match = re.match(r'^(\w+)-(\d+)h-(\d+)h$', slot_iso.strip())
+    if match:
+        jour = match.group(1)
+        debut = int(match.group(2))
+        fin = int(match.group(3))
+        if jour not in VALID_DAYS or debut < 0 or fin > 24 or fin - debut != 1:
+            return None, None
+        creneau = f'{debut:02d}-{fin:02d}'
+        return jour, creneau
+
+    # Try ISO datetime format
     try:
         if slot_iso.endswith('Z'):
             slot_iso = slot_iso[:-1] + '+00:00'
@@ -58,6 +72,14 @@ def _normalize_format_preference(value):
     return None
 
 
+def _notify_user(user_id, data):
+    try:
+        from app.sockets.chat import socketio
+        socketio.emit('notification', data, room=f'user_{user_id}')
+    except Exception:
+        pass
+
+
 def _get_profile_or_404(user_id: int):
     """Récupère le profil associé à un user_id, ou lève une 404."""
     profile = Profile.query.filter_by(user_id=user_id).first()
@@ -77,16 +99,36 @@ def create_offer(current_user):
     jour = data.get('jour')
     creneau = data.get('creneau')
     format_preference = data.get('format_preference', 'hybride')
+    disponibilites = data.get('disponibilites') or data.get('disponibilite')
 
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
 
     if not matiere_exists(matiere_id):
         return jsonify({"message": "Matière introuvable"}), 404
-    if jour and not is_valid_day(jour):
-        return jsonify({"message": "jour invalide"}), 400
-    if creneau and not is_valid_creneau(creneau):
-        return jsonify({"message": "creneau invalide"}), 400
+
+    # Parse disponibilites if provided
+    all_slots = []
+    if disponibilites:
+        if not isinstance(disponibilites, list) or len(disponibilites) == 0:
+            return jsonify({"message": "disponibilites doit être une liste non vide"}), 400
+        for slot in disponibilites:
+            slot_jour, slot_creneau = _parse_iso_slot(slot)
+            if not slot_jour or not slot_creneau:
+                return jsonify({"message": "disponibilite invalide"}), 400
+            if not is_valid_day(slot_jour):
+                return jsonify({"message": "jour invalide"}), 400
+            if not is_valid_creneau(slot_creneau):
+                return jsonify({"message": "creneau invalide"}), 400
+            all_slots.append({"jour": slot_jour, "creneau": slot_creneau})
+    else:
+        if jour and not is_valid_day(jour):
+            return jsonify({"message": "jour invalide"}), 400
+        if creneau and not is_valid_creneau(creneau):
+            return jsonify({"message": "creneau invalide"}), 400
+        if jour and creneau:
+            all_slots.append({"jour": jour, "creneau": creneau})
+
     if not is_valid_format_preference(format_preference):
         return jsonify({"message": "format invalide"}), 400
 
@@ -94,20 +136,21 @@ def create_offer(current_user):
     if error_response:
         return error_response, error_status
 
+    first_slot = all_slots[0] if all_slots else {}
 
     offer = Offer(
         profile_id=profile.id,
         matiere_id=matiere_id,
         description=description,
-        jour=jour,
-        creneau=creneau,
-        format_preference=format_preference
+        jour=first_slot.get('jour'),
+        creneau=first_slot.get('creneau'),
+        format_preference=format_preference,
+        disponibilites=all_slots
     )
     db.session.add(offer)
     db.session.commit()
     logger.info(f"Offre créée: profile_id={profile.id} matiere_id={matiere_id}")
     return jsonify({"message": "Offre créée avec succès", "id": offer.id}), 201
-
 
 # ── GET /api/offers ──────────────────────────────────────────────────────────
 @offers_bp.route('/offers', methods=['GET'])
@@ -116,6 +159,8 @@ def get_offers():
     jour = request.args.get('jour')
     creneau = request.args.get('creneau')
     format_pref = request.args.get('format_preference')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
 
     query = Offer.query
     if matiere_id:
@@ -127,9 +172,9 @@ def get_offers():
     if format_pref:
         query = query.filter_by(format_preference=format_pref)
 
-    offers = query.all()
+    pagination = query.order_by(Offer.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for o in offers:
+    for o in pagination.items:
         profile = Profile.query.get(o.profile_id)
         publicateur = None
         if profile:
@@ -146,7 +191,13 @@ def get_offers():
             "created_at": o.created_at.isoformat() if o.created_at else None,
             "publicateur": publicateur
         })
-    return jsonify(result), 200
+    return jsonify({
+        "offers": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── GET /api/offers/mine ─────────────────────────────────────────────────────
@@ -156,9 +207,11 @@ def get_my_offers(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     if not profile:
         return jsonify({"message": "Profil introuvable"}), 404
-    offers = Offer.query.filter_by(profile_id=profile.id).all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    pagination = Offer.query.filter_by(profile_id=profile.id).order_by(Offer.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for o in offers:
+    for o in pagination.items:
         result.append({
             "id": o.id,
             "matiere_id": o.matiere_id,
@@ -169,7 +222,13 @@ def get_my_offers(current_user):
             "format_preference": o.format_preference,
             "created_at": o.created_at.isoformat() if o.created_at else None
         })
-    return jsonify(result), 200
+    return jsonify({
+        "offers": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── GET /api/demands/mine ────────────────────────────────────────────────────
@@ -179,9 +238,11 @@ def get_my_demands(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     if not profile:
         return jsonify({"message": "Profil introuvable"}), 404
-    demands = Demand.query.filter_by(profile_id=profile.id).all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    pagination = Demand.query.filter_by(profile_id=profile.id).order_by(Demand.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for d in demands:
+    for d in pagination.items:
         result.append({
             "id": d.id,
             "matiere_id": d.matiere_id,
@@ -189,9 +250,16 @@ def get_my_demands(current_user):
             "jour": d.jour,
             "creneau": d.creneau,
             "description": d.description,
+            "urgence": d.urgence or 'Moyenne',
             "created_at": d.created_at.isoformat() if d.created_at else None
         })
-    return jsonify(result), 200
+    return jsonify({
+        "demands": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── DELETE /api/offers/<id> ──────────────────────────────────────────────────
@@ -253,49 +321,52 @@ def create_demand(current_user):
     if error_response:
         return error_response, error_status
 
-    demand_slots = []
+    all_slots = []
     if disponibilite:
+        if not isinstance(disponibilite, list) or len(disponibilite) == 0:
+            return jsonify({"message": "disponibilite doit être une liste non vide"}), 400
         for slot_iso in disponibilite:
             slot_jour, slot_creneau = _parse_iso_slot(slot_iso)
             if not slot_jour or not slot_creneau:
                 return jsonify({"message": "disponibilite invalide"}), 400
-            demand_slots.append((slot_jour, slot_creneau))
+            if not is_valid_day(slot_jour):
+                return jsonify({"message": "jour invalide"}), 400
+            if not is_valid_creneau(slot_creneau):
+                return jsonify({"message": "creneau invalide"}), 400
+            all_slots.append({"jour": slot_jour, "creneau": slot_creneau})
     else:
-        demand_slots.append((jour, creneau))
-
-    created_ids = []
-    for slot_jour, slot_creneau in demand_slots:
-        if not is_valid_day(slot_jour):
+        if jour and not is_valid_day(jour):
             return jsonify({"message": "jour invalide"}), 400
-        if not is_valid_creneau(slot_creneau):
+        if creneau and not is_valid_creneau(creneau):
             return jsonify({"message": "creneau invalide"}), 400
+        if jour and creneau:
+            all_slots.append({"jour": jour, "creneau": creneau})
 
-        demand = Demand(
-            profile_id=profile.id,
-            matiere_id=matiere_id,
-            jour=slot_jour,
-            creneau=slot_creneau,
-            description=description
-        )
-        db.session.add(demand)
-        db.session.flush()
-        created_ids.append(demand.id)
+    first_slot = all_slots[0] if all_slots else {}
 
+    demand = Demand(
+        profile_id=profile.id,
+        matiere_id=matiere_id,
+        jour=first_slot.get('jour'),
+        creneau=first_slot.get('creneau'),
+        description=description,
+        urgence=urgence or 'Moyenne',
+        disponibilites=all_slots
+    )
+    db.session.add(demand)
     db.session.commit()
-    logger.info(f"Demande(s) créée(s): profile_id={profile.id} matiere_id={matiere_id} ids={created_ids}")
-
-    if len(created_ids) == 1:
-        return jsonify({"message": "Demande créée avec succès", "id": created_ids[0]}), 201
-
-    return jsonify({"message": "Demandes créées avec succès", "ids": created_ids}), 201
+    logger.info(f"Demande créée: profile_id={profile.id} matiere_id={matiere_id} id={demand.id}")
+    return jsonify({"message": "Demande créée avec succès", "id": demand.id}), 201
 
 
 # ── GET /api/demands ─────────────────────────────────────────────────────────
 @offers_bp.route('/demands', methods=['GET'])
 def get_demands():
-    demands = Demand.query.all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    pagination = Demand.query.order_by(Demand.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for d in demands:
+    for d in pagination.items:
         profile = Profile.query.get(d.profile_id)
         publicateur = None
         if profile:
@@ -308,10 +379,17 @@ def get_demands():
             "jour": d.jour,
             "creneau": d.creneau,
             "description": d.description,
+            "urgence": d.urgence or 'Moyenne',
             "created_at": d.created_at.isoformat(),
             "publicateur": publicateur
         })
-    return jsonify(result), 200
+    return jsonify({
+        "demands": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── DELETE /api/demands/<id> ─────────────────────────────────────────────────
@@ -361,6 +439,7 @@ def respond_to_offer(current_user, offer_id):
         matiere_id=offer.matiere_id,
         jour=offer.jour or '',
         creneau=offer.creneau or '',
+        urgence='Moyenne',
         description=f"Réponse à l'offre #{offer_id}"
     )
     db.session.add(demand)
@@ -373,12 +452,20 @@ def respond_to_offer(current_user, offer_id):
         user_two_id=offrant_user_id,
         initiator_id=current_user.id,
         demand_id=demand.id,
+        offer_id=offer.id,
         matiere_id=offer.matiere_id,
         score=0.0,
         status='pending'
     )
     db.session.add(new_match)
     db.session.commit()
+
+    _notify_user(offrant_user_id, {
+        'type': 'offer_response',
+        'matching_id': new_match.id,
+        'user_id': current_user.id,
+        'message': f"Quelqu'un a répondu à votre offre"
+    })
 
     return jsonify({
         "message": "Réponse envoyée au mentor",
@@ -391,43 +478,58 @@ def respond_to_offer(current_user, offer_id):
 @token_required
 def offer_help_on_demand(current_user, demand_id):
     """Un étudiant avec une compétence propose son aide sur une demande"""
-    demand = db.session.get(Demand, demand_id)
-    if not demand:
-        return jsonify({"message": "Demande introuvable"}), 404
+    try:
+        demand = db.session.get(Demand, demand_id)
+        if not demand:
+            return jsonify({"message": "Demande introuvable"}), 404
 
-    profile = Profile.query.filter_by(user_id=current_user.id).first()
-    if not profile:
-        return jsonify({"message": "Profil introuvable"}), 404
+        profile = Profile.query.filter_by(user_id=current_user.id).first()
+        if not profile:
+            return jsonify({"message": "Profil introuvable"}), 404
 
-    competence = ProfilCompetence.query.filter_by(
-        profile_id=profile.id,
-        matiere_id=demand.matiere_id
-    ).first()
-    if not competence:
-        return jsonify({"message": "Vous n'avez pas de compétence sur cette matière"}), 400
+        if demand.profile_id == profile.id:
+            return jsonify({"message": "Vous ne pouvez pas vous aider vous-même"}), 400
 
-    demandeur_profile = Profile.query.get(demand.profile_id)
-    if not demandeur_profile:
-        return jsonify({"message": "Profil du demandeur introuvable"}), 404
+        competence = ProfilCompetence.query.filter_by(
+            profile_id=profile.id,
+            matiere_id=demand.matiere_id
+        ).first()
+        if not competence:
+            return jsonify({"message": "Vous n'avez pas de compétence sur cette matière"}), 400
 
-    existing = Matching.query.filter_by(
-        user_one_id=current_user.id,
-        user_two_id=demandeur_profile.user_id,
-        demand_id=demand_id
-    ).first()
-    if existing:
-        return jsonify({"message": "Aide déjà proposée", "matching_id": existing.id, "status": existing.status}), 200
+        demandeur_profile = Profile.query.get(demand.profile_id)
+        if not demandeur_profile:
+            return jsonify({"message": "Profil du demandeur introuvable"}), 404
 
-    new_match = Matching(
-        user_one_id=current_user.id,
-        user_two_id=demandeur_profile.user_id,
-        initiator_id=current_user.id,
-        demand_id=demand_id,
-        matiere_id=demand.matiere_id,
-        score=0.0,
-        status='pending'
-    )
-    db.session.add(new_match)
-    db.session.commit()
+        existing = Matching.query.filter_by(
+            user_one_id=current_user.id,
+            user_two_id=demandeur_profile.user_id,
+            demand_id=demand_id
+        ).first()
+        if existing:
+            return jsonify({"message": "Aide déjà proposée", "matching_id": existing.id, "status": existing.status}), 200
 
-    return jsonify({"message": "Aide proposée avec succès", "matching_id": new_match.id}), 201
+        new_match = Matching(
+            user_one_id=current_user.id,
+            user_two_id=demandeur_profile.user_id,
+            initiator_id=current_user.id,
+            demand_id=demand_id,
+            matiere_id=demand.matiere_id,
+            score=0.0,
+            status='pending'
+        )
+        db.session.add(new_match)
+        db.session.commit()
+
+        _notify_user(demandeur_profile.user_id, {
+            'type': 'help_proposal',
+            'matching_id': new_match.id,
+            'user_id': current_user.id,
+            'message': f"Quelqu'un propose son aide sur votre demande"
+        })
+
+        return jsonify({"message": "Aide proposée avec succès", "matching_id": new_match.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Erreur offer_help_on_demand: {e}", exc_info=True)
+        return jsonify({"message": "Erreur lors de la proposition d'aide", "error": str(e)}), 500
