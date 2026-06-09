@@ -8,10 +8,8 @@ if not env_file.exists():
     env_file = base_dir / '.env'
 load_dotenv(env_file)
 
-from app import create_app
+from app import app
 from app.database import db
-
-app = create_app()
 
 # L'initialisation de la base de donnees se fait dans un hook before_first_request
 # pour eviter les conflits de session avec le modele de fork de gunicorn.
@@ -25,6 +23,12 @@ def _init_db_once():
     _init_done = True
     import logging
     logger = logging.getLogger(__name__)
+    # Disposer l'engine herite du processus parent (gunicorn fork)
+    try:
+        db.engine.dispose()
+        logger.info("Engine disposed (post-fork cleanup)")
+    except Exception as e:
+        logger.warning(f"Engine dispose warning: {e}")
     if os.getenv('FLASK_ENV') != 'production':
         try:
             from sqlalchemy_utils import database_exists, create_database
