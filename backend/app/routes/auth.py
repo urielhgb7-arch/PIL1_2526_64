@@ -97,7 +97,9 @@ def register():
         logger.info(f" Utilisateur créé: {data['email'][:10]}***")
 
         # Création du profil dans la même transaction
-        phone = data.get('telephone') or None
+        phone = data.get('telephone')
+        if not phone:
+            phone = f'non-renseigne-{new_user.id}'
         new_profile = Profile(
             user_id=new_user.id,
             nom=data['nom'],
