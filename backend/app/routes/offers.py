@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
 from app.models import Profile
-from app.models.services import Matching, Offer, Demand, ProfilLacune
+from app.models.services import Matching, Offer, Demand, ProfilLacune, ProfilCompetence
 from app.middleware.auth_guard import token_required
 from app.validators import is_valid_format_preference, matiere_exists, is_valid_day, is_valid_creneau
 
