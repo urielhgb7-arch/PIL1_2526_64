@@ -329,6 +329,29 @@
           </div>
         </div>
 
+        <!-- Urgence (visible only for demands) -->
+        <div id="pub-urgence-group" class="hidden">
+          <label class="block text-sm font-medium mb-2">Urgence</label>
+          <div class="flex gap-2">
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Légère" class="sr-only peer" />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-success/20 peer-checked:text-success peer-checked:border-success/40 transition-colors">Légère</div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Moyenne" class="sr-only peer" checked />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-warning/20 peer-checked:text-warning peer-checked:border-warning/40 transition-colors">Moyenne</div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Haute" class="sr-only peer" />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive/40 transition-colors">Haute</div>
+            </label>
+            <label class="flex-1 cursor-pointer">
+              <input type="radio" name="pub-urgence" value="Urgente" class="sr-only peer" />
+              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/30 peer-checked:text-destructive peer-checked:border-destructive transition-colors">Urgente</div>
+            </label>
+          </div>
+        </div>
+
         <!-- Disponibilités -->
         <div>
           <label class="block text-sm font-medium mb-3">Disponibilités</label>
@@ -675,11 +698,12 @@
               </div>
             </div>`;
           }).join('');
+          const urgenceBadge = d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === 'Urgente' ? 'bg-destructive/20 text-destructive' : d.urgence === 'Haute' ? 'bg-warning/20 text-warning' : 'bg-muted/10 text-muted'}">${d.urgence}</span>` : '';
           return `
           <div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-popover/80 transition-colors">
             <div onclick="openDetailModal(${d.id}, 'demand', 'my-demands')" class="flex items-start justify-between gap-3">
               <div class="flex-1 min-w-0">
-                <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
+                <p class="font-semibold text-sm">${matiereName(d.matiere_id)} ${urgenceBadge}</p>
                 ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
                 ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
               </div>
@@ -743,6 +767,7 @@
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
                 <span class="text-xs text-muted">par ${name}</span>
+                ${d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === 'Urgente' ? 'bg-destructive/20 text-destructive' : d.urgence === 'Haute' ? 'bg-warning/20 text-warning' : 'bg-muted/10 text-muted'}">${d.urgence}</span>` : ''}
               </div>
               ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
@@ -861,6 +886,7 @@
         ? 'Proposez votre aide aux étudiants qui ont des lacunes dans cette matière.'
         : 'Demandez de l\'aide pour une matière où vous avez des lacunes.';
       document.getElementById('pub-submit-btn').textContent = isOffer ? 'Publier l\'offre' : 'Publier la demande';
+      document.getElementById('pub-urgence-group').classList.toggle('hidden', isOffer);
     }
 
     // Format radio styling
@@ -1000,6 +1026,7 @@
             disponibilites: selectedSlots
           });
         } else {
+          const urgence = document.querySelector('input[name="pub-urgence"]:checked')?.value || 'Moyenne';
           await API.demands.create({
             matiere_id: parseInt(matiere_id),
             description,
@@ -1007,7 +1034,7 @@
             jour,
             creneau,
             disponibilite: selectedSlots,
-            urgence: 'Medium'
+            urgence
           });
         }
         closeNewPublicationModal();

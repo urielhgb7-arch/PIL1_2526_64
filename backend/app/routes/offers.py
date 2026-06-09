@@ -21,7 +21,7 @@ FORMAT_PREFERENCE_MAP = {
     'Hybride': 'hybride',
     'hybride': 'hybride'
 }
-VALID_URGENCIES = {'Low', 'Medium', 'High', 'Urgent'}
+VALID_URGENCIES = {'Légère', 'Moyenne', 'Haute', 'Urgente'}
 DAY_INDEX_TO_NAME = {
     0: 'Lundi',
     1: 'Mardi',
@@ -224,6 +224,7 @@ def get_my_demands(current_user):
             "jour": d.jour,
             "creneau": d.creneau,
             "description": d.description,
+            "urgence": d.urgence or 'Moyenne',
             "created_at": d.created_at.isoformat() if d.created_at else None
         })
     return jsonify(result), 200
@@ -317,6 +318,7 @@ def create_demand(current_user):
         jour=first_slot.get('jour'),
         creneau=first_slot.get('creneau'),
         description=description,
+        urgence=urgence or 'Moyenne',
         disponibilites=all_slots
     )
     db.session.add(demand)
@@ -343,6 +345,7 @@ def get_demands():
             "jour": d.jour,
             "creneau": d.creneau,
             "description": d.description,
+            "urgence": d.urgence or 'Moyenne',
             "created_at": d.created_at.isoformat(),
             "publicateur": publicateur
         })
@@ -396,6 +399,7 @@ def respond_to_offer(current_user, offer_id):
         matiere_id=offer.matiere_id,
         jour=offer.jour or '',
         creneau=offer.creneau or '',
+        urgence='Moyenne',
         description=f"Réponse à l'offre #{offer_id}"
     )
     db.session.add(demand)

@@ -45,7 +45,7 @@ def create_app(config_name=None):
             try:
                 from sqlalchemy import inspect, text
                 inspector = inspect(db.engine)
-                for col, table in [('offer_id', 'matching')]:
+                for col, table in [('offer_id', 'matching'), ('urgence', 'demands')]:
                     cols = [c['name'] for c in inspector.get_columns(table)]
                     if col not in cols:
                         with db.engine.connect() as conn:
