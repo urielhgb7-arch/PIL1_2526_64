@@ -29,32 +29,61 @@ cd backend
 pip install -r requirements.txt
 ```
 
-### 4. Configurer la base de données
+### 4. Installer PostgreSQL
 
-**Option A — SQLite (par défaut, aucun setup requis)**
+**Windows** — Télécharger et installer depuis [postgresql.org/download](https://www.postgresql.org/download/windows/).
+Pendant l'installation, notez le mot de passe défini pour l'utilisateur `postgres`.
 
-Le projet utilise SQLite automatiquement si `DATABASE_URL` n'est pas défini :
-```python
-# backend/app/config/__init__.py — ligne 44
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///instance/app.db'
+**macOS :**
+```bash
+brew install postgresql@16
+brew services start postgresql@16
 ```
 
-**Option B — PostgreSQL (production)**
+**Linux (Debian/Ubuntu) :**
+```bash
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql
+```
+
+### 5. Créer la base de données
+
+```bash
+# Se connecter à PostgreSQL (Windows : chercher "pgAdmin" ou utiliser psql)
+psql -U postgres
+
+# Dans psql, exécuter :
+CREATE DATABASE mentorlink;
+\q
+```
+
+> Si `psql` n'est pas reconnu, ajoutez `C:\Program Files\PostgreSQL\16\bin` à votre `PATH`.
+
+### 6. Configurer la connexion
 
 Créer un fichier `backend/.env.local` :
-```
-DATABASE_URL=postgresql://utilisateur:motdepasse@localhost:5432/mentorlink
+
+```env
+DATABASE_URL=postgresql://postgres:votre_mot_de_passe@localhost:5432/mentorlink
 ```
 
-### 5. Lancer les migrations
+**Variables optionnelles** (si vous utilisez d'autres identifiants) :
+
+| Variable | Défaut | Description |
+|----------|--------|-------------|
+| `DB_USER` | `postgres` | Utilisateur PostgreSQL |
+| `DB_PASSWORD` | `postgres` | Mot de passe |
+| `DB_HOST` | `localhost` | Hôte |
+| `DB_PORT` | `5432` | Port |
+| `DB_NAME` | `mentorlink` | Nom de la base |
+
+### 7. Lancer les migrations
 
 ```bash
 flask db upgrade
 ```
 
-Si c'est la première fois, les tables sont aussi créées automatiquement via `db.create_all()` dans `app/__init__.py`.
-
-### 6. Démarrer le serveur backend
+### 8. Démarrer le serveur backend
 
 ```bash
 python run.py
@@ -62,7 +91,7 @@ python run.py
 
 Le serveur écoute sur `http://127.0.0.1:5000`.
 
-### 7. Lancer le frontend
+### 9. Lancer le frontend
 
 Ouvrir un **second terminal** :
 
@@ -77,7 +106,7 @@ npx live-server --port=5500
 python -m http.server 5500
 ```
 
-### 8. Ouvrir le site
+### 10. Ouvrir le site
 
 Naviguer vers `http://127.0.0.1:5500/` dans un navigateur.
 

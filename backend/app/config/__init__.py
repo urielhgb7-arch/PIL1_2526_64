@@ -40,9 +40,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    _db_path = Path(__file__).resolve().parents[2] / 'instance' / 'dev.db'
     SQLALCHEMY_DATABASE_URI = (
-        os.environ.get('DATABASE_URL') or f'sqlite:///{_db_path.as_posix()}'
+        os.environ.get('DATABASE_URL')
+        or f'postgresql://{os.environ.get("DB_USER", "postgres")}:{os.environ.get("DB_PASSWORD", "postgres")}@{os.environ.get("DB_HOST", "localhost")}:{os.environ.get("DB_PORT", "5432")}/{os.environ.get("DB_NAME", "mentorlink")}'
     )
 
 class ProductionConfig(Config):
