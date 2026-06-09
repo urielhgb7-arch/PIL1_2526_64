@@ -19,9 +19,10 @@ Plateforme de mentorat academique basee sur un matching intelligent.
 | 1 | GOUTONDE Bidossessi Conceptia Sharone | F2 | Developpeur Frontend |
 | 2 | HOUEGBELO Uriel Verghis Olsen | — | Tech Lead / Backend |
 | 3 | LOTSU Emmanuel Richard Kwasi | B3 | Developpeur Backend |
-| 4 | HOUNNOUKON Agossou Prince | F4 | Developpeur Backend / Render |
-| 5 | YESSOUFOU Scham's-Deen | F3 | Developpeur Fullstack |
-| 6 | TOCHENALI Paola Eloane | B2 | Developpeur Frontend |
+| 4 | HOUNNOUKON Agossou Prince | F4 | Rapporteur |
+| 5 | YESSOUFOU Scham's-Deen | F3 | Developpeur Frontend |
+| 6 | TOCHENALI Paola Eloane | B2 | Developpeur Backend |
+| 7 | 
 
 ## Structure du projet
 
@@ -174,15 +175,12 @@ python -m pytest tests/test_sockets.py -q
 | J1 | Structure validee + Flask Hello World + Render configure | 3 juin |
 | J2 | Base de donnees + Authentification + Deploiement actif | 4 juin |
 | J3 | Backend profils + competences + disponibilites | 5 juin |
+| J4 |  |  |
+| J5 |  |  |
+| J6 |  |  |
+| J7 |  |  |
 
-## Livrables
 
-- [x] Repo clone par tous les membres
-- [x] App Flask qui tourne en local
-- [x] Compte Render cree
-- [ ] /register et /login fonctionnels en production
-- [ ] rapport.html complete
-- [ ] Collection Postman commitee dans /docs
 
 ## Rapport d'integration
 
