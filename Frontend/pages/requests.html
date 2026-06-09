@@ -238,6 +238,33 @@
     </div>
   </div>
 
+  <!-- ═══════════════ CONFIRM MODAL ═══════════════ -->
+  <div id="modal-confirm" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-sm shadow-2xl">
+      <h3 id="confirm-title" class="text-lg font-semibold mb-2">Confirmer</h3>
+      <p id="confirm-message" class="text-sm text-muted mb-6"></p>
+      <div class="flex gap-3">
+        <button id="confirm-no" onclick="closeConfirmModal()"
+          class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">Non</button>
+        <button id="confirm-yes" onclick="confirmAction()"
+          class="flex-1 py-2.5 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm font-medium">Oui</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DETAIL MODAL ═══════════════ -->
+  <div id="modal-detail" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="detail-title" class="text-xl font-semibold">Détails</h2>
+        <button title="Fermer" onclick="closeDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="detail-body" class="space-y-4"></div>
+    </div>
+  </div>
+
   <!-- ═══════════════ MODAL NEW PUBLICATION ═══════════════ -->
   <div id="modal-new-publication" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
@@ -336,6 +363,76 @@
     let userProfile   = null;
     let userCompetenceIds = [];
     let userLacuneIds     = [];
+    const dataCache = { 'my-offers': [], 'available-offers': [], 'my-demands': [], 'available-demands': [] };
+
+    /* ─── Confirm Modal ─── */
+    let pendingCallback = null;
+
+    function openConfirmModal(message, onConfirm) {
+      document.getElementById('confirm-message').textContent = message;
+      pendingCallback = onConfirm;
+      document.getElementById('modal-confirm').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('modal-confirm').classList.add('hidden');
+      pendingCallback = null;
+    }
+
+    function confirmAction() {
+      closeConfirmModal();
+      if (typeof pendingCallback === 'function') pendingCallback();
+    }
+
+    /* ─── Detail Modal ─── */
+    function openDetailModal(id, type, cacheKey) {
+      const items = dataCache[cacheKey] || [];
+      const data = items.find(x => x.id === id);
+      if (!data) return;
+
+      const title = document.getElementById('detail-title');
+      const body  = document.getElementById('detail-body');
+      const matiere = matiereName(data.matiere_id);
+      const isOffer = type === 'offer';
+
+      title.textContent = isOffer ? `Offre — ${matiere}` : `Demande — ${matiere}`;
+
+      const dispos = data.disponibilites && Array.isArray(data.disponibilites) ? data.disponibilites : [];
+      const slotsHtml = dispos.map(d => `<span class="inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-medium">${d.jour} ${d.creneau}</span>`).join(' ');
+
+      const publisher = data.publicateur
+        ? `${data.publicateur.prenom || ''} ${data.publicateur.nom || ''}`.trim() || 'Anonyme'
+        : 'Anonyme';
+
+      const createdDate = data.created_at ? new Date(data.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+
+      body.innerHTML = `
+        <div class="bg-popover rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold ${isOffer ? 'text-success' : 'text-warning'} uppercase tracking-wide">${isOffer ? 'Offre d\'aide' : 'Demande d\'aide'}</span>
+            <span class="text-xs text-muted">${createdDate}</span>
+          </div>
+          <p class="font-semibold text-base mb-3">${matiere}</p>
+          ${data.description ? `<p class="text-sm text-muted leading-relaxed mb-4">${data.description}</p>` : '<p class="text-sm text-muted mb-4 italic">Aucune description</p>'}
+          ${slotsHtml ? `<div class="mb-4"><p class="text-xs font-medium text-muted mb-1.5">Disponibilités</p><div class="flex flex-wrap gap-1.5">${slotsHtml}</div></div>` : ''}
+          <hr class="border-border my-3">
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div><span class="text-muted">Publié par</span><p class="font-medium">${publisher}</p></div>
+            ${isOffer ? `
+            <div><span class="text-muted">Format</span><p class="font-medium capitalize">${(data.format_preference || 'non spécifié').replace('_', ' ')}</p></div>
+            ` : `
+            <div><span class="text-muted">Urgence</span><p class="font-medium">${data.urgence || 'Non spécifiée'}</p></div>
+            `}
+            ${data.status ? `<div><span class="text-muted">Statut</span><p class="font-medium">${data.status}</p></div>` : ''}
+          </div>
+        </div>
+      `;
+      document.getElementById('modal-detail').classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('modal-detail').classList.add('hidden');
+    }
 
     /* ─── Toast ─── */
     function showToast(msg, type) {
@@ -413,18 +510,19 @@
         const data = await API.offers.getMine();
         const items = Array.isArray(data) ? data : (data.offers || data.data || []);
         loading.classList.add('hidden');
+        dataCache['my-offers'] = items;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
         list.innerHTML = items.map(o => {
           const dispos = o.disponibilites && Array.isArray(o.disponibilites) ? o.disponibilites : [];
           const slotsHtml = dispos.map(d => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`).join(' ');
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+          <div onclick="openDetailModal(${o.id}, 'offer', 'my-offers')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
               ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="deleteOffer(${o.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+            <button onclick="event.stopPropagation(); deleteOffer(${o.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -435,15 +533,16 @@
     }
 
     async function deleteOffer(id) {
-      if (!confirm('Supprimer cette offre ?')) return;
-      try {
-        await API.offers.delete(id);
-        showToast('Offre supprimée.', 'success');
-        loadMyOffers();
-        loadAvailableOffers();
-      } catch (err) {
-        showToast(err.message || 'Erreur', 'error');
-      }
+      openConfirmModal('Supprimer cette offre ?', async () => {
+        try {
+          await API.offers.delete(id);
+          showToast('Offre supprimée.', 'success');
+          loadMyOffers();
+          loadAvailableOffers();
+        } catch (err) {
+          showToast(err.message || 'Erreur', 'error');
+        }
+      });
     }
 
     /* ─── Render: Available Offers ─── */
@@ -468,6 +567,7 @@
           items = items.filter(o => o.profile_id !== myProfileId);
         }
         loading.classList.add('hidden');
+        dataCache['available-offers'] = items;
         count.textContent = `(${items.length})`;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
         list.innerHTML = items.map(o => {
@@ -475,7 +575,7 @@
           const dispos = o.disponibilites && Array.isArray(o.disponibilites) ? o.disponibilites : [];
           const slotsHtml = dispos.map(d => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`).join(' ');
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+          <div onclick="openDetailModal(${o.id}, 'offer', 'available-offers')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
@@ -484,7 +584,7 @@
               ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="respondToOffer(${o.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
+            <button onclick="event.stopPropagation(); respondToOffer(${o.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -517,18 +617,19 @@
         const data = await API.demands.getMine();
         const items = Array.isArray(data) ? data : (data.demands || data.demandes || data.data || []);
         loading.classList.add('hidden');
+        dataCache['my-demands'] = items;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
         list.innerHTML = items.map(d => {
           const dispos = d.disponibilites && Array.isArray(d.disponibilites) ? d.disponibilites : [];
           const slotsHtml = dispos.map(s => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`).join(' ');
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+          <div onclick="openDetailModal(${d.id}, 'demand', 'my-demands')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
               ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="deleteDemand(${d.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+            <button onclick="event.stopPropagation(); deleteDemand(${d.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -539,15 +640,16 @@
     }
 
     async function deleteDemand(id) {
-      if (!confirm('Supprimer cette demande ?')) return;
-      try {
-        await API.demands.delete(id);
-        showToast('Demande supprimée.', 'success');
-        loadMyDemands();
-        loadAvailableDemands();
-      } catch (err) {
-        showToast(err.message || 'Erreur', 'error');
-      }
+      openConfirmModal('Supprimer cette demande ?', async () => {
+        try {
+          await API.demands.delete(id);
+          showToast('Demande supprimée.', 'success');
+          loadMyDemands();
+          loadAvailableDemands();
+        } catch (err) {
+          showToast(err.message || 'Erreur', 'error');
+        }
+      });
     }
 
     /* ─── Render: Available Demands ─── */
@@ -572,6 +674,7 @@
           items = items.filter(d => d.profile_id !== myProfileId);
         }
         loading.classList.add('hidden');
+        dataCache['available-demands'] = items;
         count.textContent = `(${items.length})`;
         if (items.length === 0) { empty.classList.remove('hidden'); return; }
         list.innerHTML = items.map(d => {
@@ -579,7 +682,7 @@
           const dispos = d.disponibilites && Array.isArray(d.disponibilites) ? d.disponibilites : [];
           const slotsHtml = dispos.map(s => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`).join(' ');
           return `
-          <div class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3">
+          <div onclick="openDetailModal(${d.id}, 'demand', 'available-demands')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
@@ -588,7 +691,7 @@
               ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="proposeHelp(${d.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
+            <button onclick="event.stopPropagation(); proposeHelp(${d.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
