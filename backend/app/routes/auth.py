@@ -12,6 +12,7 @@ from app.models import User, Profile, PasswordResetToken
 from flask_jwt_extended import create_access_token
 from app.validators import validate_json, is_valid_email, is_valid_format_preference, is_valid_niveau
 from app.middleware.auth_guard import token_required
+from app.services.email_service import send_password_reset_email
 
 logger = logging.getLogger(__name__)
 auth_bp = Blueprint('auth', __name__)
@@ -175,8 +176,8 @@ def login():
 def forgot_password():
     """Demande de réinitialisation de mot de passe.
     - Rate limité à 5 tentatives/heure par IP pour éviter le spam.
-    - Le token N'EST JAMAIS retourné dans la réponse (même en dev).
-      Consultez les logs du serveur en développement.
+    - En dev : le token est retourné dans la réponse pour faciliter les tests.
+    - En production : le token N'EST PAS retourné (log uniquement).
     """
     # Rate limiting par IP
     client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
@@ -202,15 +203,21 @@ def forgot_password():
         db.session.add(reset_token)
         db.session.commit()
 
-        # En dev : afficher le token dans les logs (jamais dans la réponse HTTP)
+        # En dev : retourner le token dans la réponse pour faciliter les tests
         if os.getenv('FLASK_ENV') != 'production':
+            response['reset_token'] = token
             logger.info(
                 f"[DEV UNIQUEMENT] Token reset pour user_id={user.id} : {token} "
-                f"(expire dans 1h — ne jamais afficher en production)"
+                f"(expire dans 1h)"
             )
         else:
             logger.info(f"Réinitialisation MDP demandée pour user_id={user.id}")
-            # TODO : envoyer le token par email via un service SMTP (ex: SendGrid, Mailgun)
+            email_sent = send_password_reset_email(user.email, token)
+            if not email_sent:
+                logger.error(
+                    f"❌ Échec envoi email de réinit à user_id={user.id} "
+                    f"({user.email[:10]}***)"
+                )
 
     return jsonify(response), 200
 

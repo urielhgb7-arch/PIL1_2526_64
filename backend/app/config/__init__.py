@@ -30,6 +30,14 @@ class Config:
     JSON_SORT_KEYS = False
     PROPAGATE_EXCEPTIONS = True
 
+    # Configuration SMTP (Gmail)
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME', '')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', '')
+    MAIL_FROM = os.environ.get('MAIL_FROM', 'noreply@mentorlink.com')
+    FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5500')
+
 class DevelopmentConfig(Config):
     DEBUG = True
     _db_path = Path(__file__).resolve().parents[2] / 'instance' / 'dev.db'
