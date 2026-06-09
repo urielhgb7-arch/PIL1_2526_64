@@ -4,6 +4,7 @@ import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from app.database import db
 from app.config import config
 from app.config.logging_config import setup_logging
@@ -23,6 +24,7 @@ def create_app(config_name=None):
     CORS(flask_app, resources={r"/api/*": {"origins": "*"}})
 
     db.init_app(flask_app)
+    migrate = Migrate(flask_app, db)
     JWTManager(flask_app)
 
     # Socket.IO
@@ -41,33 +43,12 @@ def create_app(config_name=None):
                 create_database(db.engine.url)
                 logger.info("Base de données créée automatiquement !")
             db.create_all()
-            # Migration: ajouter colonnes manquantes
+            # Appliquer les migrations Flask-Migrate en attente
             try:
-                from sqlalchemy import inspect, text
-                inspector = inspect(db.engine)
-                col_defs = [('offer_id', 'matching', 'INTEGER'), ('urgence', 'demands', 'VARCHAR(20)')]
-                for col, table, col_type in col_defs:
-                    cols = [c['name'] for c in inspector.get_columns(table)]
-                    if col not in cols:
-                        with db.engine.connect() as conn:
-                            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} {col_type} DEFAULT NULL"))
-                            conn.commit()
-                            logger.info(f"Migration: colonne {col} ajoutée à {table}")
+                from flask_migrate import upgrade
+                upgrade()
             except Exception as mig_err:
-                logger.warning(f"Migration colonnes ignorée: {mig_err}")
-            # Migration: ajouter colonne disponibilites si absente
-            try:
-                from sqlalchemy import inspect, text
-                inspector = inspect(db.engine)
-                for table in ('offers', 'demands'):
-                    cols = [c['name'] for c in inspector.get_columns(table)]
-                    if 'disponibilites' not in cols:
-                        with db.engine.connect() as conn:
-                            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN disponibilites TEXT DEFAULT '[]'"))
-                            conn.commit()
-                            logger.info(f"Migration: colonne disponibilites ajoutée à {table}")
-            except Exception as mig_err:
-                logger.warning(f"Migration disponibilites ignorée: {mig_err}")
+                logger.warning(f"Migrations Flask-Migrate ignorées: {mig_err}")
             logger.info("Database tables initialized successfully")
         except Exception as db_error:
             logger.error(f"Database initialization error: {db_error}", exc_info=True)

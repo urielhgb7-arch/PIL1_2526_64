@@ -316,7 +316,7 @@
         <!-- Format préféré -->
         <div>
           <label class="block text-sm font-medium mb-2">Format préféré</label>
-          <div class="flex gap-3">
+          <div class="flex flex-wrap gap-3">
             <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors">
               <input type="radio" name="pub-format" value="en_ligne" class="sr-only" checked />En ligne
             </label>
@@ -332,20 +332,20 @@
         <!-- Urgence (visible only for demands) -->
         <div id="pub-urgence-group" class="hidden">
           <label class="block text-sm font-medium mb-2">Urgence</label>
-          <div class="flex gap-2">
-            <label class="flex-1 cursor-pointer">
+          <div class="flex flex-wrap gap-2">
+            <label class="flex-1 min-w-[80px] cursor-pointer">
               <input type="radio" name="pub-urgence" value="Légère" class="sr-only peer" />
               <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-success/20 peer-checked:text-success peer-checked:border-success/40 transition-colors">Légère</div>
             </label>
-            <label class="flex-1 cursor-pointer">
+            <label class="flex-1 min-w-[80px] cursor-pointer">
               <input type="radio" name="pub-urgence" value="Moyenne" class="sr-only peer" checked />
               <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-warning/20 peer-checked:text-warning peer-checked:border-warning/40 transition-colors">Moyenne</div>
             </label>
-            <label class="flex-1 cursor-pointer">
+            <label class="flex-1 min-w-[80px] cursor-pointer">
               <input type="radio" name="pub-urgence" value="Haute" class="sr-only peer" />
               <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive/40 transition-colors">Haute</div>
             </label>
-            <label class="flex-1 cursor-pointer">
+            <label class="flex-1 min-w-[80px] cursor-pointer">
               <input type="radio" name="pub-urgence" value="Urgente" class="sr-only peer" />
               <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/30 peer-checked:text-destructive peer-checked:border-destructive transition-colors">Urgente</div>
             </label>
@@ -355,7 +355,7 @@
         <!-- Disponibilités -->
         <div>
           <label class="block text-sm font-medium mb-3">Disponibilités</label>
-          <div id="pub-availability-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"></div>
+          <div id="pub-availability-grid" class="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"></div>
           <input type="hidden" id="pub-availability" name="disponibilites">
           <p id="pub-availability-note" class="text-xs text-muted mt-2">Sélectionnez les créneaux où vous êtes disponible.</p>
         </div>
@@ -510,8 +510,8 @@
     async function loadInitialData() {
       try {
         const [matieres, profile] = await Promise.all([
-          API.matieres.getAll().catch(() => []),
-          API.profile.getMe().catch(() => ({}))
+          API.matieres.getAll().catch(() => { showToast('Erreur lors du chargement des matières', 'error'); return []; }),
+          API.profile.getMe().catch(() => { showToast('Erreur lors du chargement du profil', 'error'); return ({}); })
         ]);
         matieresCache = Array.isArray(matieres) ? matieres : (matieres.matieres || matieres.data || []);
         userProfile = profile.profile || profile;
@@ -523,6 +523,7 @@
         }
       } catch (err) {
         console.warn('Init data error', err);
+        showToast('Erreur lors du chargement des données', 'error');
       }
     }
 
@@ -573,15 +574,16 @@
                 ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
                 ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
               </div>
-              <button onclick="event.stopPropagation(); deleteOffer(${o.id})" class="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+              <button onclick="event.stopPropagation(); deleteOffer(${o.id})" class="shrink-0 px-2.5 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
             </div>
             ${respHtml}
           </div>
         `}).join('');
         list.classList.remove('hidden');
-      } catch {
+      } catch (err) {
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement de mes offres', 'error');
       }
     }
 
@@ -637,7 +639,7 @@
               ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="event.stopPropagation(); respondToOffer(${o.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
+            <button onclick="event.stopPropagation(); respondToOffer(${o.id})" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -645,6 +647,7 @@
         console.warn('Available offers error', err);
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement des offres disponibles', 'error');
       }
     }
 
@@ -708,17 +711,18 @@
                 ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
-                <a href="matching.html?demand_id=${d.id}" onclick="event.stopPropagation()" class="px-2.5 py-1.5 bg-primary/10 text-primary rounded-lg text-xs hover:bg-primary/20 transition-colors font-medium">Trouver un mentor</a>
-                <button onclick="event.stopPropagation(); deleteDemand(${d.id})" class="px-2.5 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
+                <a href="matching.html?demand_id=${d.id}" onclick="event.stopPropagation()" class="shrink-0 px-2 py-1.5 bg-primary/10 text-primary rounded-lg text-xs hover:bg-primary/20 transition-colors font-medium">Trouver un mentor</a>
+                <button onclick="event.stopPropagation(); deleteDemand(${d.id})" class="shrink-0 px-2 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
               </div>
             </div>
             ${helpHtml}
           </div>
         `}).join('');
         list.classList.remove('hidden');
-      } catch {
+      } catch (err) {
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement de mes demandes', 'error');
       }
     }
 
@@ -775,7 +779,7 @@
               ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
             </div>
-            <button onclick="event.stopPropagation(); proposeHelp(${d.id})" class="shrink-0 px-4 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
+            <button onclick="event.stopPropagation(); proposeHelp(${d.id})" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
           </div>
         `}).join('');
         list.classList.remove('hidden');
@@ -783,6 +787,7 @@
         console.warn('Available demands error', err);
         loading.classList.add('hidden');
         empty.classList.remove('hidden');
+        showToast('Erreur lors du chargement des demandes disponibles', 'error');
       }
     }
 
@@ -802,7 +807,10 @@
       try {
         const data = await API.matching.getReceived();
         receivedMatchings = Array.isArray(data) ? data : (data.matchings || data.data || []);
-      } catch { receivedMatchings = []; }
+      } catch {
+        receivedMatchings = [];
+        showToast('Erreur lors du chargement des matchings', 'error');
+      }
     }
 
     function getOfferResponses(offerId) {
@@ -917,7 +925,9 @@
         const data = await API.profile.getMe();
         const profile = data.profile || data;
         savedSlots = profile.disponibilites || [];
-      } catch (_) {}
+      } catch (_) {
+        showToast('Erreur lors du chargement des disponibilités', 'error');
+      }
 
       if (savedSlots.length === 0) {
         container.innerHTML = '<p class="text-xs text-muted col-span-full text-center py-4">Aucune disponibilité définie. Ajoutez-en dans Paramètres.</p>';
@@ -982,7 +992,10 @@
         const raw = document.getElementById('pub-availability').value || '[]';
         const data = JSON.parse(raw);
         return Array.isArray(data) ? data : [];
-      } catch { return []; }
+      } catch {
+        showToast('Erreur lors de la lecture des disponibilités', 'error');
+        return [];
+      }
     }
 
     /* ─── Submit new publication ─── */

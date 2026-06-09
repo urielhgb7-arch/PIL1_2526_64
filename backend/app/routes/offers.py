@@ -72,6 +72,14 @@ def _normalize_format_preference(value):
     return None
 
 
+def _notify_user(user_id, data):
+    try:
+        from app.sockets.chat import socketio
+        socketio.emit('notification', data, room=f'user_{user_id}')
+    except Exception:
+        pass
+
+
 def _get_profile_or_404(user_id: int):
     """Récupère le profil associé à un user_id, ou lève une 404."""
     profile = Profile.query.filter_by(user_id=user_id).first()
@@ -151,6 +159,8 @@ def get_offers():
     jour = request.args.get('jour')
     creneau = request.args.get('creneau')
     format_pref = request.args.get('format_preference')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
 
     query = Offer.query
     if matiere_id:
@@ -162,9 +172,9 @@ def get_offers():
     if format_pref:
         query = query.filter_by(format_preference=format_pref)
 
-    offers = query.all()
+    pagination = query.order_by(Offer.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for o in offers:
+    for o in pagination.items:
         profile = Profile.query.get(o.profile_id)
         publicateur = None
         if profile:
@@ -181,7 +191,13 @@ def get_offers():
             "created_at": o.created_at.isoformat() if o.created_at else None,
             "publicateur": publicateur
         })
-    return jsonify(result), 200
+    return jsonify({
+        "offers": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── GET /api/offers/mine ─────────────────────────────────────────────────────
@@ -191,9 +207,11 @@ def get_my_offers(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     if not profile:
         return jsonify({"message": "Profil introuvable"}), 404
-    offers = Offer.query.filter_by(profile_id=profile.id).all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    pagination = Offer.query.filter_by(profile_id=profile.id).order_by(Offer.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for o in offers:
+    for o in pagination.items:
         result.append({
             "id": o.id,
             "matiere_id": o.matiere_id,
@@ -204,7 +222,13 @@ def get_my_offers(current_user):
             "format_preference": o.format_preference,
             "created_at": o.created_at.isoformat() if o.created_at else None
         })
-    return jsonify(result), 200
+    return jsonify({
+        "offers": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── GET /api/demands/mine ────────────────────────────────────────────────────
@@ -214,9 +238,11 @@ def get_my_demands(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     if not profile:
         return jsonify({"message": "Profil introuvable"}), 404
-    demands = Demand.query.filter_by(profile_id=profile.id).all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    pagination = Demand.query.filter_by(profile_id=profile.id).order_by(Demand.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for d in demands:
+    for d in pagination.items:
         result.append({
             "id": d.id,
             "matiere_id": d.matiere_id,
@@ -227,7 +253,13 @@ def get_my_demands(current_user):
             "urgence": d.urgence or 'Moyenne',
             "created_at": d.created_at.isoformat() if d.created_at else None
         })
-    return jsonify(result), 200
+    return jsonify({
+        "demands": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── DELETE /api/offers/<id> ──────────────────────────────────────────────────
@@ -330,9 +362,11 @@ def create_demand(current_user):
 # ── GET /api/demands ─────────────────────────────────────────────────────────
 @offers_bp.route('/demands', methods=['GET'])
 def get_demands():
-    demands = Demand.query.all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    pagination = Demand.query.order_by(Demand.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
     result = []
-    for d in demands:
+    for d in pagination.items:
         profile = Profile.query.get(d.profile_id)
         publicateur = None
         if profile:
@@ -349,7 +383,13 @@ def get_demands():
             "created_at": d.created_at.isoformat(),
             "publicateur": publicateur
         })
-    return jsonify(result), 200
+    return jsonify({
+        "demands": result,
+        "total": pagination.total,
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "pages": pagination.pages
+    }), 200
 
 
 # ── DELETE /api/demands/<id> ─────────────────────────────────────────────────
@@ -420,6 +460,13 @@ def respond_to_offer(current_user, offer_id):
     db.session.add(new_match)
     db.session.commit()
 
+    _notify_user(offrant_user_id, {
+        'type': 'offer_response',
+        'matching_id': new_match.id,
+        'user_id': current_user.id,
+        'message': f"Quelqu'un a répondu à votre offre"
+    })
+
     return jsonify({
         "message": "Réponse envoyée au mentor",
         "matching_id": new_match.id
@@ -473,6 +520,13 @@ def offer_help_on_demand(current_user, demand_id):
         )
         db.session.add(new_match)
         db.session.commit()
+
+        _notify_user(demandeur_profile.user_id, {
+            'type': 'help_proposal',
+            'matching_id': new_match.id,
+            'user_id': current_user.id,
+            'message': f"Quelqu'un propose son aide sur votre demande"
+        })
 
         return jsonify({"message": "Aide proposée avec succès", "matching_id": new_match.id}), 201
     except Exception as e:

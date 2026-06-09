@@ -103,6 +103,9 @@
       </div>
     </div>
 
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"></div>
+
     <!-- Dashboard Content -->
     <div class="p-4 lg:p-8 space-y-8">
       <!-- Metrics Cards -->
@@ -207,6 +210,16 @@
   <script>
     checkAuth();
 
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
+        type === 'success' ? 'bg-success text-black' : 'bg-destructive text-white'
+      }`;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3500);
+    }
+
     async function loadDashboard() {
       try {
         const data = await API.profile.getMe();
@@ -224,10 +237,10 @@
       // ── Métriques réelles ─────────────────────────────────────────────────
       try {
         const [received, sent, offers, prof] = await Promise.all([
-          API.matching.getReceived().catch(() => []),
-          API.matching.getSent().catch(() => []),
-          API.offers.getAll().catch(() => []),
-          API.profile.getMe().catch(() => ({}))
+          API.matching.getReceived().catch(() => { showToast('Erreur chargement matchs', 'error'); return []; }),
+          API.matching.getSent().catch(() => { showToast('Erreur chargement matchs', 'error'); return []; }),
+          API.offers.getAll().catch(() => { showToast('Erreur chargement offres', 'error'); return []; }),
+          API.profile.getMe().catch(() => { showToast('Erreur chargement profil', 'error'); return ({}); })
         ]);
         const rArr = Array.isArray(received) ? received : (received.matches || received.data || []);
         const sArr = Array.isArray(sent) ? sent : (sent.matches || sent.data || []);
@@ -241,9 +254,9 @@
           API.feedback.getUser(p.user_id).then(fb => {
             const note = (fb || {}).note_moyenne;
             if (note != null) document.getElementById('metric-rating').textContent = note.toFixed(1);
-          }).catch(() => {});
+          }).catch(() => { showToast('Erreur chargement feedback', 'error'); });
         }
-      } catch (err) { console.warn('Metrics error', err); }
+      } catch (err) { console.warn('Metrics error', err); showToast('Erreur lors du chargement des métriques', 'error'); }
 
       // ── Offres réelles ────────────────────────────────────────────────────
       try {
@@ -268,7 +281,7 @@
               </div>`;
           }).join('');
         }
-      } catch (err) { console.warn('Offers error', err); }
+      } catch (err) { console.warn('Offers error', err); showToast('Erreur lors du chargement des offres', 'error'); }
 
       // ── Demandes réelles ──────────────────────────────────────────────────
       try {
@@ -293,7 +306,7 @@
               </div>`;
           }).join('');
         }
-      } catch (err) { console.warn('Demands error', err); }
+      } catch (err) { console.warn('Demands error', err); showToast('Erreur lors du chargement des demandes', 'error'); }
     }
 
     loadDashboard();
