@@ -260,7 +260,7 @@
           <div class="flex gap-2 p-1 bg-input rounded-lg">
             <label class="flex-1 cursor-pointer">
               <input type="radio" name="pub-type" value="offer" class="sr-only peer" checked />
-              <div class="text-center py-2 rounded-md text-sm font-medium bg-primary text-white peer-checked:bg-primary peer-checked:text-white transition-colors">Offre</div>
+              <div class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors">Offre</div>
             </label>
             <label class="flex-1 cursor-pointer">
               <input type="radio" name="pub-type" value="demand" class="sr-only peer" />
@@ -656,27 +656,39 @@
       });
     });
 
-    /* ─── Availability grid (styled) ─── */
+    /* ─── Availability grid — only user's saved slots ─── */
     async function renderAvailabilityGrid() {
       const container = document.getElementById('pub-availability-grid');
       const hidden    = document.getElementById('pub-availability');
       container.innerHTML = '';
 
-      const days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-      const hours = [];
-      for (let h = 8; h < 20; h++) hours.push(`${h}h-${h+1}h`);
-
-      // Load user's saved disponibilites to pre-select
-      const selected = new Set();
+      let savedSlots = [];
       try {
         const data = await API.profile.getMe();
         const profile = data.profile || data;
-        (profile.disponibilites || []).forEach(d => {
-          selected.add(`${d.jour}-${creneauToHour(d.creneau)}`);
-        });
+        savedSlots = profile.disponibilites || [];
       } catch (_) {}
 
-      days.forEach(day => {
+      if (savedSlots.length === 0) {
+        container.innerHTML = '<p class="text-xs text-muted col-span-full text-center py-4">Aucune disponibilité définie. Ajoutez-en dans Paramètres.</p>';
+        hidden.value = '[]';
+        return;
+      }
+
+      // Group by day
+      const grouped = {};
+      savedSlots.forEach(d => {
+        const day = d.jour;
+        if (!grouped[day]) grouped[day] = [];
+        grouped[day].push(creneauToHour(d.creneau));
+      });
+
+      const dayOrder = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+      const selected = new Set();
+
+      dayOrder.forEach(day => {
+        const slots = grouped[day];
+        if (!slots || slots.length === 0) return;
         const dayCol = document.createElement('div');
         dayCol.className = 'col-span-1';
         const dayHeader = document.createElement('p');
@@ -684,16 +696,14 @@
         dayHeader.textContent = day.substring(0,3);
         dayCol.appendChild(dayHeader);
 
-        hours.forEach(hSlot => {
+        slots.forEach(hSlot => {
           const btn = document.createElement('button');
           btn.type = 'button';
           const key = `${day}-${hSlot}`;
-          const isPre = selected.has(key);
-          btn.className = isPre
-            ? 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1'
-            : 'w-full text-xs px-1.5 py-1.5 rounded-md border border-border bg-card/30 text-muted hover:bg-primary/10 transition-all mb-1';
+          btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1';
           btn.textContent = hSlot;
           btn.dataset.key = key;
+          selected.add(key);
           btn.onclick = () => {
             const k = btn.dataset.key;
             if (selected.has(k)) {
