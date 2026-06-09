@@ -32,7 +32,7 @@ class TestAuth:
     def test_signup_duplicate_email(self, client):
         payload = {
             'email': 'duplicate@test.com',
-            'password': 'pass123',
+            'password': 'pass1234',
             'nom': 'Test',
             'prenom': 'User',
             'filiere': 'GL',
@@ -46,14 +46,14 @@ class TestAuth:
     def test_signin_success(self, client):
         payload = {
             'email': 'signin@test.com',
-            'password': 'securepass',
+            'password': 'securepa1ss',
             'nom': 'Sign',
             'prenom': 'In',
             'filiere': 'RSI',
             'niveau': 'L3'
         }
         register_user(client, payload)
-        resp = login_user(client, 'signin@test.com', 'securepass')
+        resp = login_user(client, 'signin@test.com', 'securepa1ss')
         assert resp.status_code == 200
         assert 'token' in resp.json
         assert resp.json['user']['email'] == 'signin@test.com'

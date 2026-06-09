@@ -130,5 +130,5 @@ def test_lire_messages(client, app_context):
         headers={'Authorization': f'Bearer {token}'})
     
     assert resp.status_code == 200
-    assert len(resp.json) == 1
-    assert resp.json[0]['contenu'] == 'Test message'
+    assert len(resp.json['messages']) == 1
+    assert resp.json['messages'][0]['contenu'] == 'Test message'
