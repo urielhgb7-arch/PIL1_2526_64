@@ -42,17 +42,20 @@ def create_app(config_name=None):
 
     with flask_app.app_context():
         try:
-            from sqlalchemy_utils import database_exists, create_database
-            if not database_exists(db.engine.url):
-                create_database(db.engine.url)
-                logger.info("Base de données créée automatiquement !")
+            import sqlalchemy
+            is_production = os.environ.get('FLASK_ENV') == 'production'
+            if not is_production:
+                from sqlalchemy_utils import database_exists, create_database
+                if not database_exists(db.engine.url):
+                    create_database(db.engine.url)
+                    logger.info("Base de données créée automatiquement !")
             db.create_all()
-            # Appliquer les migrations Flask-Migrate en attente
-            try:
-                from flask_migrate import upgrade
-                upgrade()
-            except Exception as mig_err:
-                logger.warning(f"Migrations Flask-Migrate ignorées: {mig_err}")
+            if not is_production:
+                try:
+                    from flask_migrate import upgrade
+                    upgrade()
+                except Exception as mig_err:
+                    logger.warning(f"Migrations Flask-Migrate ignorées: {mig_err}")
             logger.info("Database tables initialized successfully")
         except Exception as db_error:
             logger.error(f"Database initialization error: {db_error}", exc_info=True)
