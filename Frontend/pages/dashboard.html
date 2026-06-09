@@ -139,7 +139,7 @@
               </svg>
             </div>
           </div>
-          <div class="text-3xl font-bold mb-1">4.8</div>
+          <div class="text-3xl font-bold mb-1" id="metric-rating">—</div>
           <div class="text-sm text-muted">Note moyenne</div>
         </div>
       </div>
@@ -223,10 +223,11 @@
 
       // ── Métriques réelles ─────────────────────────────────────────────────
       try {
-        const [received, sent, offers] = await Promise.all([
+        const [received, sent, offers, userData] = await Promise.all([
           API.matching.getReceived().catch(() => []),
           API.matching.getSent().catch(() => []),
-          API.offers.getAll().catch(() => [])
+          API.offers.getAll().catch(() => []),
+          API.profile.getMe().catch(() => ({}))
         ]);
         const rArr = Array.isArray(received) ? received : (received.matches || received.data || []);
         const sArr = Array.isArray(sent) ? sent : (sent.matches || sent.data || []);
@@ -234,6 +235,16 @@
         const acceptedCount = [...rArr, ...sArr].filter(m => m.status === 'accepted').length;
         document.getElementById('metric-matches').textContent = acceptedCount;
         document.getElementById('metric-hours').textContent = acceptedCount > 0 ? `${acceptedCount * 2}h` : '0h';
+
+        // Note moyenne
+        const profile_ = userData.profile || userData;
+        if (profile_.user_id) {
+          API.feedback.getUser(profile_.user_id).then(fb => {
+            const d = fb || {};
+            const note = d.note_moyenne;
+            document.getElementById('metric-rating').textContent = note != null ? note.toFixed(1) : '—';
+          }).catch(() => {});
+        }
       } catch (err) { console.warn('Metrics error', err); }
 
       // ── Offres réelles ────────────────────────────────────────────────────
