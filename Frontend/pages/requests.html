@@ -606,10 +606,15 @@
       // Set default type description
       updateTypeDesc();
 
-      // Load matieres into select
+      // Load matieres into select, filtered by filiere
       const sel = document.getElementById('pub-matiere');
       sel.innerHTML = '<option value="">Sélectionnez une matière…</option>';
-      matieresCache.forEach(m => {
+      let filtered = matieresCache;
+      const userData = getUserData();
+      if (userData && userData.department) {
+        filtered = getMatiersByFiliere(userData.department);
+      }
+      filtered.forEach(m => {
         const opt = document.createElement('option');
         opt.value = m.id;
         opt.textContent = m.nom || m.name || m.libelle;

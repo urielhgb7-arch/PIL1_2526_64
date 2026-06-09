@@ -348,6 +348,9 @@
         matieresCache = await loadMatieresFromAPI();
       }
 
+      // Filtrer par filière
+      matieresCache = getMatiersByFiliere(userData.department);
+
       initSkillsLists();
       // pré-remplir les sélections existantes depuis le profil si disponible
       try {
@@ -367,7 +370,7 @@
       try {
         (comps || []).forEach(c => {
           const id = c.matiere_id || c.matiere || c.id;
-          const mastery = c.mastery || c.niveau || 'Intermediate';
+          const mastery = c.mastery || c.niveau || 'Intermédiaire';
           // add to userData.strengths if not present
           if (!userData.strengths.find(x => x.matiere_id === id)) {
             userData.strengths.push({ matiere_id: id, mastery });
@@ -380,7 +383,7 @@
         });
         (lacs || []).forEach(l => {
           const id = l.matiere_id || l.matiere || l.id;
-          const prio = l.priority || l.niveau || 'Medium';
+          const prio = l.priority || l.niveau || 'Moyenne';
           if (!userData.weaknesses.find(x => x.matiere_id === id)) {
             userData.weaknesses.push({ matiere_id: id, priority: prio });
             const sid = safeId(id);
@@ -485,7 +488,7 @@
       const arr        = isStrength ? userData.strengths : userData.weaknesses;
       const oppArr     = isStrength ? userData.weaknesses : userData.strengths;
       const key        = isStrength ? 'mastery' : 'priority';
-      const defaultVal = isStrength ? 'Intermediate' : 'Medium';
+      const defaultVal = isStrength ? 'Intermédiaire' : 'Moyenne';
       const activeColor = isStrength ? 'bg-primary/10 border-primary' : 'bg-warning/10 border-warning';
       const iconColor   = isStrength ? 'text-primary' : 'text-warning';
       const hoverClass  = isStrength ? 'hover:border-primary/50' : 'hover:border-warning/50';
