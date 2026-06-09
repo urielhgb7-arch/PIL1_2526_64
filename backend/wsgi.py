@@ -8,10 +8,8 @@ if not env_file.exists():
     env_file = base_dir / '.env'
 load_dotenv(env_file)
 
-from app import create_app
+from app import app
 from app.database import db
-
-app = create_app()
 
 # L'initialisation de la base de donnees se fait dans un hook before_first_request
 # pour eviter les conflits de session avec le modele de fork de gunicorn.
