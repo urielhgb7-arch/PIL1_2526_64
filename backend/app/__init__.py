@@ -123,7 +123,16 @@ def create_app(config_name=None):
 
     @flask_app.route('/api/health', methods=['GET'])
     def health_check():
-        return jsonify({"status": "healthy", "database": "connected"}), 200
+        db_ok = False
+        db_msg = "unknown"
+        try:
+            from sqlalchemy import text
+            db.session.execute(text('SELECT 1'))
+            db_ok = True
+            db_msg = "connected"
+        except Exception as e:
+            db_msg = str(e)[:300]
+        return jsonify({"status": "healthy" if db_ok else "degraded", "database": db_msg}), 200 if db_ok else 503
 
     @flask_app.route('/', defaults={'path': ''})
     @flask_app.route('/<path:path>')
