@@ -45,11 +45,11 @@ def create_app(config_name=None):
     # ou via gunicorn post-fork hook ou script externe en production.
     logger.info(f"App created (env: {os.environ.get('FLASK_ENV', 'not set')})")
 
-        # Seed matières par défaut si la table est vide
-        try:
-            from app.models import Matiere
-            if db.session.query(Matiere).count() == 0:
-                default_matieres = [
+    # Seed matières par défaut si la table est vide (uniquement si DB existe)
+    try:
+        from app.models import Matiere
+        if db.session.query(Matiere).count() == 0:
+            default_matieres = [
                     Matiere(nom='Algorithmique', filiere='GL', annee='L1'),
                     Matiere(nom='Structures de données', filiere='GL', annee='L2'),
                     Matiere(nom='Base de données SQL', filiere='GL', annee='L1'),
@@ -77,12 +77,12 @@ def create_app(config_name=None):
                     Matiere(nom='Sécurité web', filiere='Sécurité', annee='L3'),
                     Matiere(nom='Ethical Hacking', filiere='Sécurité', annee='M1'),
                 ]
-                for m in default_matieres:
-                    db.session.add(m)
-                db.session.commit()
-                logger.info(f" {len(default_matieres)} matières insérées par défaut.")
-        except Exception as seed_error:
-            logger.warning(f"Seed matières ignoré: {seed_error}")
+            for m in default_matieres:
+                db.session.add(m)
+            db.session.commit()
+            logger.info(f"{len(default_matieres)} matieres inserees par defaut.")
+    except Exception as seed_error:
+        logger.warning(f"Seed matieres ignore: {seed_error}")
 
     # Blueprints
     from app.routes.auth import auth_bp
@@ -108,6 +108,20 @@ def create_app(config_name=None):
 
     from app.routes.feedback import feedback_bp
     flask_app.register_blueprint(feedback_bp, url_prefix='/api')
+
+    _disposed = False
+
+    @flask_app.before_request
+    def _dispose_engine_once():
+        nonlocal _disposed
+        if _disposed:
+            return
+        _disposed = True
+        try:
+            db.engine.dispose()
+            logger.info("Engine disposed (post-fork cleanup)")
+        except Exception as e:
+            logger.warning(f"Engine dispose warning: {e}")
 
     @flask_app.route('/api/health', methods=['GET'])
     def health_check():

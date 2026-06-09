@@ -23,6 +23,12 @@ def _init_db_once():
     _init_done = True
     import logging
     logger = logging.getLogger(__name__)
+    # Disposer l'engine herite du processus parent (gunicorn fork)
+    try:
+        db.engine.dispose()
+        logger.info("Engine disposed (post-fork cleanup)")
+    except Exception as e:
+        logger.warning(f"Engine dispose warning: {e}")
     if os.getenv('FLASK_ENV') != 'production':
         try:
             from sqlalchemy_utils import database_exists, create_database
