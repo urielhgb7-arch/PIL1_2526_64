@@ -10,6 +10,7 @@ Plateforme de mentorat academique basee sur un matching intelligent.
 - Socket.IO
 - HTML
 - CSS
+- Tailwind CSS
 - JavaScript
 
 ## Equipe & Roles
