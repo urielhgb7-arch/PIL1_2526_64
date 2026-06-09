@@ -46,7 +46,7 @@ def create_app(config_name=None):
     logger.info(f"App created (env: {os.environ.get('FLASK_ENV', 'not set')})")
 
         # Seed matières par défaut si la table est vide
-        try:
+    try:
             from app.models import Matiere
             if db.session.query(Matiere).count() == 0:
                 default_matieres = [
@@ -81,7 +81,7 @@ def create_app(config_name=None):
                     db.session.add(m)
                 db.session.commit()
                 logger.info(f" {len(default_matieres)} matières insérées par défaut.")
-        except Exception as seed_error:
+    except Exception as seed_error:
             logger.warning(f"Seed matières ignoré: {seed_error}")
 
     # Blueprints
