@@ -7,9 +7,6 @@ from flask_jwt_extended import JWTManager
 from app.database import db
 from app.config import config
 from app.config.logging_config import setup_logging
-from sqlalchemy_utils import database_exists, create_database
-
-
 def create_app(config_name=None):
     flask_app = Flask(__name__)
 
