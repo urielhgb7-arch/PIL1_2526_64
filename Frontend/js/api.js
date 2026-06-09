@@ -43,13 +43,14 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         const response = await fetch(url, config);
 
         if (response.status === 401) {
+            const isPublicPage = /signin\.html|signup\.html|reset-password\.html|index\.html/.test(window.location.pathname);
+            if (isPublicPage) {
+                throw new Error('Non authentifié');
+            }
             console.warn('Session expirée. Redirection vers login.');
             localStorage.removeItem('mentorlink_token');
             localStorage.removeItem('mentorlink_user');
-            const isAuthPage = /signin\.html|signup\.html/.test(window.location.pathname);
-            if (!isAuthPage) {
-                window.location.href = getLoginRedirectPath();
-            }
+            window.location.href = getLoginRedirectPath();
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
 
