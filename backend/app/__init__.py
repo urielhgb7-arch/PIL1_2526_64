@@ -128,8 +128,6 @@ def create_app(config_name=None):
     @flask_app.route('/', defaults={'path': ''})
     @flask_app.route('/<path:path>')
     def serve_frontend(path):
-        if path.startswith('api/') or path.startswith('socket.io/'):
-            return jsonify({"error": "Not found"}), 404
         full_path = os.path.join(FRONTEND_DIR, path)
         if path and os.path.exists(full_path) and not os.path.isdir(full_path):
             return send_from_directory(FRONTEND_DIR, path)
