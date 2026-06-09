@@ -40,10 +40,11 @@ def create_app(config_name=None):
 
     #Creation de la base de données si elle n'existe pas
 
-    # Ne PAS appeler db.create_all() ici en production (gunicorn fork).
-    # L'initialisation DB est gérée dans init_app() appelé depuis run.py (dev)
-    # ou via gunicorn post-fork hook ou script externe en production.
-    logger.info(f"App created (env: {os.environ.get('FLASK_ENV', 'not set')})")
+    with flask_app.app_context():
+        try:
+            db.create_all()
+        except Exception as db_err:
+            logger.warning(f"db.create_all(): {db_err}")
 
     # Seed matières par défaut si la table est vide (uniquement si DB existe)
     try:
@@ -117,6 +118,10 @@ def create_app(config_name=None):
         if _disposed:
             return
         _disposed = True
+        # Ne pas disposer pour SQLite (in-memory serait perdu)
+        if 'sqlite' in db.engine.url.drivername:
+            logger.info("SQLite detected, skipping engine dispose")
+            return
         try:
             db.engine.dispose()
             logger.info("Engine disposed (post-fork cleanup)")
