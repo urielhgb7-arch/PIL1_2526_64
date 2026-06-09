@@ -47,9 +47,14 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = (
-        os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
-    )
+    from sqlalchemy.pool import NullPool
+    db_url = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
+    SQLALCHEMY_DATABASE_URI = db_url
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+        'poolclass': NullPool if db_url else None,
+    }
 
 class TestingConfig(Config):
     TESTING = True
