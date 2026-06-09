@@ -164,7 +164,7 @@ python -m pytest tests/test_sockets.py -q
 
 ## Deploiement (Render)
 
-- URL de production : https://votre-app.onrender.com
+- URL de production : [https://votre-app.onrender.com](https://ifri-mentorlink.onrender.com)
 - Build command : pip install -r requirements.txt
 - Start command : gunicorn app:app
 
