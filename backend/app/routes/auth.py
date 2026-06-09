@@ -126,10 +126,10 @@ def register():
     except IntegrityError as e:
         db.session.rollback()
         logger.error(f"Erreur intégrité DB: {str(e)[:100]}")
-        return jsonify({"message": f"Erreur intégrité: {str(e)[:200]}"}), 400
+        return jsonify({"message": "Erreur lors de la création du compte"}), 400
     except Exception as e:
         db.session.rollback()
-        logger.error(f"Erreur inscription: {str(e)[:200]}", exc_info=True)
+        logger.error(f"Erreur inscription: {str(e)[:500]}", exc_info=True)
         return jsonify({"message": f"Erreur serveur: {str(e)[:500]}"}), 500
 
 
