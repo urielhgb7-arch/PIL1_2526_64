@@ -59,43 +59,21 @@
 
   <!-- MAIN -->
   <main class="main">
-    <a href="notifications.html" class="notification-btn" aria-label="Notifications">
-      <i class="ti ti-bell"></i>
-      <span class="dot" id="siteBellDot"></span>
-    </a>
-
-    <!-- CARD -->
-    <div class="mentor-card pop-in" id="card">
-      <div class="card-hero">
-        <div class="match-badge" id="match-badge">98% Match</div>
-        <div class="avatar" id="avatar">AD</div>
-        <div class="mentor-name" id="mentor-name">Aïcha D.</div>
-        <div class="mentor-role" id="mentor-role">GL · L3</div>
-      </div>
-      <div class="card-body">
-        <div class="tags" id="tags">
-          <span class="tag algo">Algorithmique</span>
-          <span class="tag gl">GL</span>
-          <span class="tag time">Mer. Après-midi</span>
-        </div>
-        <div class="about-label">À propos</div>
-        <p class="about-text" id="about">
-          Peut aider avec les algorithmes récursifs complexes, la programmation dynamique et les révisions d'examens.
-        </p>
+    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
+      <div class="flex items-center justify-between">
+        <a href="dashboard.html" title="Retour" class="text-muted hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <h1 class="text-xl font-bold">Découverte</h1>
+        <div class="w-6"></div>
       </div>
     </div>
 
-    <!-- ACTIONS -->
-    <div class="actions">
-      <button class="btn-action pass" onclick="swipe('pass')" aria-label="Passer">
-        <i class="ti ti-x"></i>
-      </button>
-      <button class="btn-action info" onclick="swipe('info')" aria-label="Détails">
-        <i class="ti ti-info-circle"></i>
-      </button>
-      <button class="btn-action like" onclick="swipe('like')" aria-label="Aimer">
-        <i class="ti ti-heart-filled"></i>
-      </button>
+    <!-- Embed swipe experience -->
+    <div class="p-4">
+      <iframe src="swipe.html" class="w-full h-[calc(100vh-120px)] border-0 rounded-xl shadow-lg" title="Swipe"></iframe>
     </div>
   </main>
 <script src="../js/matching.js"></script>

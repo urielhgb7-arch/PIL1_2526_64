@@ -29,7 +29,7 @@ def create_profile(user, nom='Test', prenom='User', filiere='INFO', niveau='L1')
         niveau=niveau,
         format_preference='hybride',
         bio='',
-        telephone=''
+        telephone=None
     )
     db.session.add(profile)
     db.session.commit()

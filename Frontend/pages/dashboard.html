@@ -4,29 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - IFRI MentorLink</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/tailwind.css">
   <link rel="stylesheet" href="../css/styles.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            background: '#08090C',
-            foreground: '#FFFFFF',
-            card: '#0F111A',
-            popover: '#1F2433',
-            primary: '#7C6FF7',
-            success: '#2DD4A0',
-            warning: '#F5A623',
-            destructive: '#F97066',
-            border: 'rgba(255, 255, 255, 0.08)',
-            input: '#1F2433',
-            muted: 'rgba(255, 255, 255, 0.6)',
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="bg-background text-foreground">
   <!-- Desktop Sidebar -->
@@ -282,15 +261,13 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="../js/script.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/notifications-badge.js"></script>
   <script>
     checkAuth();
 
-    // ── Chargement du profil & affichage du nom ────────────────────────────────
     async function loadDashboard() {
-      // Nom d'utilisateur
       try {
         const data = await API.profile.getMe();
         const profile = data.profile || data;
@@ -298,26 +275,24 @@
         document.getElementById('user-name').textContent = fullName;
         saveUserData({ firstName: profile.prenom, lastName: profile.nom, department: profile.filiere, level: profile.niveau });
       } catch (err) {
-        // Fallback cache local
         const userData = getUserData();
         if (userData && userData.firstName) {
           document.getElementById('user-name').textContent = `${userData.firstName} ${userData.lastName}`;
         }
       }
 
-      // ── Suggestions IA (matching) ──────────────────────────────────────────
       try {
-        const data = await API.matching.getSuggestions({ limit: 3 });
-        const suggestions = data.suggestions || data;
-        if (suggestions && suggestions.length > 0) {
+        const data = await API.matching.getSuggestions();
+        const matches = data.matches || [];
+        if (matches.length > 0) {
           const list = document.getElementById('ai-suggestions-list');
           list.innerHTML = '';
           const colors = ['bg-primary/20', 'bg-success/20', 'bg-warning/20'];
-          suggestions.slice(0, 3).forEach((u, i) => {
+          matches.slice(0, 3).forEach((u, i) => {
             const name = `${u.prenom || ''} ${u.nom || ''}`.trim();
             const initials = name.split(' ').map(n => n[0] || '').join('').toUpperCase();
-            const score = u.score_compatibilite || '';
-            const skills = (u.competences || []).map(c => c.matiere_nom || c).slice(0, 2).join(', ');
+            const score = u.score || '';
+            const skills = (u.matched_subjects || []).map(s => s.nom).slice(0, 2).join(', ');
             list.innerHTML += `
               <div class="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
                 <div class="w-10 h-10 rounded-full ${colors[i % colors.length]} flex items-center justify-center flex-shrink-0">
@@ -330,14 +305,14 @@
                     ${skills ? ` · ${skills}` : ''}
                   </p>
                 </div>
-                <a href="matching.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
+                <a href="swipe.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm whitespace-nowrap">
                   Voir profil
                 </a>
               </div>`;
           });
         }
       } catch (err) {
-        console.warn('Suggestions API non disponible, conservation des données de démo.', err);
+        console.warn('Suggestions API non disponible.', err);
       }
 
       // ── Notifications non lues ─────────────────────────────────────────────

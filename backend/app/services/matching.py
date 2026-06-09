@@ -1,17 +1,8 @@
-# backend/app/services/matching.py
-# ============================================================
-# MOTEUR DE MATCHING — IFRI MENTORLINK
-# Conforme à : IFRI_Mentorlink_Vision_du_Système_de_Matching.pdf
-# Score sur 100 = Matière(35) + Niveau↔Gravité(20) + Dispos(25) + Niveau académique(10) + Filière(10)
-# ============================================================
-
 from app.database import db
-from app.models import (
-    User, Profile, Disponible,
-    ProfilCompetence, ProfilLacune, Matiere, Demand
-)
+from app.models.user import User
+from app.models.profile import Profile, Disponible
+from app.models.services import ProfilCompetence, ProfilLacune, Matiere, Demand, Matching
 
-# ── Mapping des niveaux en valeurs numériques ────────────────────────────────
 COMPETENCE_LEVELS = {
     'Débutant':      1,
     'Intermédiaire': 2,
@@ -20,86 +11,28 @@ COMPETENCE_LEVELS = {
 }
 
 LACUNE_LEVELS = {
-    'Basse':    1,   # correspond à "Faible" dans le PDF
+    'Basse':    1,
     'Moyenne':  2,
-    'Haute':    3,   # correspond à "Importante"
-    'Urgente':  4    # correspond à "Critique"
+    'Haute':    3,
+    'Urgente':  4
 }
 
-
 def _score_niveau_vs_gravite(niveau_competence: str, priorite_lacune: str) -> float:
-    """
-    Critère 2 — Niveau de compétence du candidat vs gravité de la lacune du demandeur.
-    Score max : 20 points.
-
-    Logique : plus le niveau du candidat est élevé par rapport à la gravité de la lacune,
-    meilleur est le score. Un Expert face à une lacune Urgente = score maximal.
-
-    Exemple :
-      Expert(4) ↔ Urgente(4)  → 20/20
-      Avancé(3) ↔ Urgente(4)  → 15/20
-      Débutant(1) ↔ Urgente(4) → 5/20
-    """
     comp_val   = COMPETENCE_LEVELS.get(niveau_competence, 1)
     lacune_val = LACUNE_LEVELS.get(priorite_lacune, 1)
-
-    # Ratio : quel % du besoin le candidat couvre-t-il ?
     ratio = comp_val / lacune_val if lacune_val > 0 else 0
-    # On plafonne à 1 (un Expert face à une lacune Faible ne dépasse pas 20)
     ratio = min(ratio, 1.0)
-
     return round(ratio * 20, 2)
 
 
 def _score_disponibilites(profile_slots: set, candidate_slots: set) -> float:
-    """
-    Critère 3 — Créneaux communs.
-    Score max : 25 points.
-
-    Plus les créneaux communs sont nombreux par rapport aux créneaux du demandeur,
-    plus le score est élevé.
-    """
     if not profile_slots:
         return 0.0
-
     shared = profile_slots.intersection(candidate_slots)
-    ratio  = len(shared) / len(profile_slots)
-    return round(ratio * 25, 2)
-
-
-def _build_explanation(
-    matched_subjects: list,
-    shared_slots_count: int,
-    same_filiere: bool,
-    same_niveau: bool,
-    same_format: bool,
-    score: float
-) -> dict:
-    """
-    Génère l'explication lisible du score (Section 9 du PDF).
-    Affiché dans l'interface swipe sur la carte candidat.
-    """
-    raisons = []
-
-    for subj in matched_subjects:
-        raisons.append(f"Compétent en {subj['nom']} (niveau {subj['niveau_competence']})")
-
-    if shared_slots_count > 0:
-        raisons.append(f"{shared_slots_count} créneau(x) disponible(s) en commun")
-
-    if same_filiere:
-        raisons.append("Même filière")
-
-    if same_niveau:
-        raisons.append("Même année académique")
-
-    if same_format:
-        raisons.append("Même format d'apprentissage")
-
-    return {
-        "score_pct": f"{score}%",
-        "raisons": raisons
-    }
+    if not shared:
+        return 0.0
+    denom = max(len(profile_slots), len(candidate_slots))
+    return round(min(len(shared) / denom, 1.0) * 25, 2)
 
 
 def _score_format_bonus(current_format: str, candidate_format: str) -> float:
@@ -108,179 +41,268 @@ def _score_format_bonus(current_format: str, candidate_format: str) -> float:
     return 10.0 if current_format == candidate_format else 0.0
 
 
-def calculate_matches(current_user_id: int, matiere_id: int = None, demand_id: int = None) -> list:
-    """
-    Fonction principale du moteur de matching.
+def _build_explanation(matched_subjects: list, shared_slots_count: int, same_filiere: bool, same_niveau: bool, same_format: bool, score: float) -> dict:
+    raisons = []
+    for subj in matched_subjects:
+        raisons.append(f"Compétent en {subj['nom']} (niveau {subj['niveau_competence']})")
+    if shared_slots_count > 0:
+        raisons.append(f"{shared_slots_count} créneau(x) disponible(s) en commun")
+    if same_filiere:
+        raisons.append("Même filière")
+    if same_niveau:
+        raisons.append("Même année académique")
+    if same_format:
+        raisons.append("Même format d'apprentissage")
+    return {"score_pct": f"{score}%", "raisons": raisons}
 
-    Paramètres :
-        current_user_id : l'utilisateur connecté (le demandeur)
-        matiere_id      : filtre optionnel sur une matière précise
-        demand_id       : filtre optionnel sur une demande précise (creneau obligatoire)
 
-    Retourne :
-        Liste de candidats triés par score décroissant, avec explication.
+def _get_excluded_user_ids(current_user_id: int) -> tuple:
+    matchings = Matching.query.filter(
+        (Matching.user_one_id == current_user_id) | (Matching.user_two_id == current_user_id)
+    ).all()
+    blocked = set()
+    rejected_set = set()
+    for m in matchings:
+        other_id = m.user_two_id if m.user_one_id == current_user_id else m.user_one_id
+        if m.status in ('pending', 'accepted'):
+            blocked.add(other_id)
+        elif m.status == 'rejected':
+            rejected_set.add(other_id)
+    return blocked, rejected_set
 
-    Étapes (conformes au PDF) :
-        1. Récupérer le profil du demandeur
-        2. Récupérer ses lacunes (avec priorité)
-        3. Filtrer : exclure le demandeur, les profils sans compétence sur les matières cherchées
-        4. Pour chaque candidat, calculer le score sur 100
-        5. Trier par score décroissant
-    """
 
-    # ── 1. Profil du demandeur ───────────────────────────────────────────────
+def _get_feedback_bonus(user_id: int) -> float:
+    from app.models.services import Feedback
+    avg = db.session.query(db.func.avg(Feedback.note)).filter(
+        Feedback.to_user_id == user_id
+    ).scalar()
+    if avg is None:
+        return 0.0
+    return round((avg / 5.0) * 5, 2)
+
+
+def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_slots, same_filiere, same_niveau, same_format, score_matiere, score_niveau, score_dispos, score_niveau_acad, score_filiere, score_format, penalty, feedback_bonus, total_score):
+    explication = _build_explanation(
+        matched_subjects=matched_subjects,
+        shared_slots_count=len(shared_slots),
+        same_filiere=same_filiere,
+        same_niveau=same_niveau,
+        same_format=same_format,
+        score=total_score
+    )
+    return {
+        "student_id":      candidate_user.id,
+        "profile_id":      candidate.id,
+        "nom":             candidate.nom,
+        "prenom":          candidate.prenom,
+        "filiere":         candidate.filiere,
+        "niveau":          candidate.niveau,
+        "avatar_url":      candidate.avatar_url,
+        "score":           total_score,
+        "matched_subjects": matched_subjects,
+        "explication":     explication,
+        "score_detail": {
+            "matiere":           score_matiere,
+            "niveau_vs_gravite": score_niveau,
+            "disponibilites":    score_dispos,
+            "meme_niveau":       score_niveau_acad,
+            "meme_filiere":      score_filiere,
+            "format_preference": score_format,
+            "penalite_rejet":    penalty,
+            "bonus_feedback":    feedback_bonus
+        },
+        "rejected_before": penalty < 0
+    }
+
+
+def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
     demandeur_profile = Profile.query.filter_by(user_id=current_user_id).first()
     if not demandeur_profile:
         return []
 
-    # ── 2. Lacunes du demandeur ──────────────────────────────────────────────
-    demand_slot = None
-    if demand_id:
-        demande = db.session.get(Demand, demand_id)
-        if not demande or demande.profile.user_id != current_user_id:
-            return []
-        matiere_id = demande.matiere_id
-        demand_slot = (demande.jour, demande.creneau)
+    demande = db.session.get(Demand, demand_id)
+    if not demande or demande.profile.user_id != current_user_id:
+        return []
+
+    matiere_id = demande.matiere_id
+    demand_slot = (demande.jour, demande.creneau)
+
+    blocked_ids, rejected_ids = _get_excluded_user_ids(current_user_id)
+
+    candidates = db.session.query(Profile).join(
+        ProfilCompetence, ProfilCompetence.profile_id == Profile.id
+    ).filter(
+        Profile.user_id != current_user_id,
+        ProfilCompetence.matiere_id == matiere_id,
+        ProfilCompetence.is_available_to_help == True
+    ).all()
+
+    matiere_obj = db.session.get(Matiere, matiere_id)
+    lacune = ProfilLacune.query.filter_by(
+        profile_id=demandeur_profile.id, matiere_id=matiere_id
+    ).first()
+
+    resultats = []
+    for candidate in candidates:
+        if candidate.user_id in blocked_ids:
+            continue
+
+        candidate_slot = Disponible.query.filter_by(
+            profile_id=candidate.id,
+            jour=demande.jour,
+            creneau=demande.creneau,
+            is_reserved=False
+        ).first()
+        if not candidate_slot:
+            continue
+
+        comp = ProfilCompetence.query.filter_by(
+            profile_id=candidate.id, matiere_id=matiere_id, is_available_to_help=True
+        ).first()
+
+        score_matiere = 35.0
+        score_niveau = _score_niveau_vs_gravite(
+            comp.niveau if comp else 'Intermédiaire',
+            lacune.priorite if lacune else 'Moyenne'
+        )
+        score_dispos = 25.0
+
+        same_niveau = demandeur_profile.niveau == candidate.niveau
+        score_niveau_acad = 10 if same_niveau else 0
+
+        same_filiere = demandeur_profile.filiere == candidate.filiere
+        score_filiere = 10 if same_filiere else 0
+
+        same_format = demandeur_profile.format_preference == candidate.format_preference
+        score_format = _score_format_bonus(demandeur_profile.format_preference, candidate.format_preference)
+
+        penalty = -5 if candidate.user_id in rejected_ids else 0
+        feedback_bonus = _get_feedback_bonus(candidate.user_id)
+
+        total_score = round(min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty + feedback_bonus), 2)
+
+        matched_subjects = []
+        if matiere_obj:
+            matched_subjects.append({
+                "matiere_id": matiere_id,
+                "nom": matiere_obj.nom,
+                "niveau_competence": comp.niveau if comp else 'Intermédiaire',
+                "priorite_lacune": lacune.priorite if lacune else 'Moyenne'
+            })
+
+        candidate_user = db.session.get(User, candidate.user_id)
+        if not candidate_user:
+            continue
+
+        resultats.append(_make_candidate_result(
+            candidate, candidate_user, matched_subjects, {demand_slot},
+            same_filiere, same_niveau, same_format,
+            score_matiere, score_niveau, score_dispos,
+            score_niveau_acad, score_filiere, score_format,
+            penalty, feedback_bonus, total_score
+        ))
+
+    resultats.sort(key=lambda x: x["score"], reverse=True)
+    return resultats
+
+
+def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> list:
+    demandeur_profile = Profile.query.filter_by(user_id=current_user_id).first()
+    if not demandeur_profile:
+        return []
 
     lacunes_query = ProfilLacune.query.filter_by(profile_id=demandeur_profile.id)
-
-    # Filtre optionnel sur une matière précise (vient de ?matiere_id=X dans la route)
     if matiere_id:
         lacunes_query = lacunes_query.filter_by(matiere_id=matiere_id)
 
     mes_lacunes = lacunes_query.all()
-
     if not mes_lacunes:
         return []
 
-    # Dict : matiere_id → priorité de la lacune
     lacunes_dict = {l.matiere_id: l.priorite for l in mes_lacunes}
     matiere_ids_cherchees = set(lacunes_dict.keys())
 
-    # ── 3. Créneaux du demandeur ─────────────────────────────────────────────
-    if demand_slot:
-        mes_slots = {demand_slot}
-    else:
-        mes_dispos = Disponible.query.filter_by(profile_id=demandeur_profile.id, is_reserved=False).all()
-        mes_slots  = {(d.jour, d.creneau) for d in mes_dispos}
+    mes_dispos = Disponible.query.filter_by(profile_id=demandeur_profile.id, is_reserved=False).all()
+    mes_slots = {(d.jour, d.creneau) for d in mes_dispos}
 
-    # ── 4. Candidats potentiels ──────────────────────────────────────────────
-    # Filtrage initial : tous les profils sauf le demandeur
-    candidates = Profile.query.filter(
-        Profile.user_id != current_user_id
-    ).all()
+    blocked_ids, rejected_ids = _get_excluded_user_ids(current_user_id)
+
+    candidates = Profile.query.filter(Profile.user_id != current_user_id).all()
 
     resultats = []
-
     for candidate in candidates:
+        if candidate.user_id in blocked_ids:
+            continue
 
-        # ── Compétences du candidat sur les matières cherchées ───────────────
         competences_candidates = ProfilCompetence.query.filter(
             ProfilCompetence.profile_id == candidate.id,
             ProfilCompetence.matiere_id.in_(matiere_ids_cherchees),
             ProfilCompetence.is_available_to_help == True
         ).all()
-
-        # Filtre : éliminer les candidats sans compétence sur aucune matière cherchée
         if not competences_candidates:
             continue
 
-        # ── CRITÈRE 1 — Correspondance matière (35 pts) ──────────────────────
         nb_matieres_cherchees = len(matiere_ids_cherchees)
-        nb_matieres_matchees  = len(competences_candidates)
+        nb_matieres_matchees = len(competences_candidates)
         score_matiere = round(35 * (nb_matieres_matchees / nb_matieres_cherchees), 2)
 
-        # ── CRITÈRE 2 — Niveau compétence ↔ gravité lacune (20 pts) ──────────
-        # Pour chaque matière matchée, on compare le niveau du candidat
-        # à la priorité de la lacune du demandeur, puis on fait la moyenne
         scores_niveau = []
         matched_subjects = []
-
         for comp in competences_candidates:
             priorite_lacune = lacunes_dict.get(comp.matiere_id, 'Moyenne')
             s = _score_niveau_vs_gravite(comp.niveau, priorite_lacune)
             scores_niveau.append(s)
-
-            # Récupérer le nom de la matière pour l'explication
             matiere_obj = db.session.get(Matiere, comp.matiere_id)
             if matiere_obj:
                 matched_subjects.append({
-                    "matiere_id":        comp.matiere_id,
-                    "nom":               matiere_obj.nom,
+                    "matiere_id": comp.matiere_id,
+                    "nom": matiere_obj.nom,
                     "niveau_competence": comp.niveau,
-                    "priorite_lacune":   priorite_lacune
+                    "priorite_lacune": priorite_lacune
                 })
 
         score_niveau = round(sum(scores_niveau) / len(scores_niveau), 2) if scores_niveau else 0
 
-        # ── CRITÈRE 3 — Disponibilités communes (25 pts) ────────────────────
         candidate_dispos = Disponible.query.filter_by(profile_id=candidate.id, is_reserved=False).all()
-        candidate_slots  = {(d.jour, d.creneau) for d in candidate_dispos}
+        candidate_slots = {(d.jour, d.creneau) for d in candidate_dispos}
 
-        if demand_slot:
-            if demand_slot not in candidate_slots:
-                continue
-            shared_slots = {demand_slot}
-            score_dispos = 25.0
-        else:
-            shared_slots     = mes_slots.intersection(candidate_slots)
-            score_dispos     = _score_disponibilites(mes_slots, candidate_slots)
+        shared_slots = mes_slots.intersection(candidate_slots)
+        score_dispos = _score_disponibilites(mes_slots, candidate_slots) if shared_slots else 0
 
-        # ── CRITÈRE 4 — Même année académique (10 pts) ───────────────────────
-        same_niveau  = demandeur_profile.niveau == candidate.niveau
+        same_niveau = demandeur_profile.niveau == candidate.niveau
         score_niveau_acad = 10 if same_niveau else 0
 
-        # ── CRITÈRE 5 — Même filière (10 pts) ───────────────────────────────
-        same_filiere  = demandeur_profile.filiere == candidate.filiere
+        same_filiere = demandeur_profile.filiere == candidate.filiere
         score_filiere = 10 if same_filiere else 0
 
-        # ── BONUS — Même format d'apprentissage (10 pts) ────────────────
         same_format = demandeur_profile.format_preference == candidate.format_preference
         score_format = _score_format_bonus(demandeur_profile.format_preference, candidate.format_preference)
 
-        # ── SCORE TOTAL ──────────────────────────────────────────────────────
+        penalty = -5 if candidate.user_id in rejected_ids else 0
+        feedback_bonus = _get_feedback_bonus(candidate.user_id)
+
         total_score = round(
-            min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format),
+            min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty + feedback_bonus),
             2
         )
 
-        # ── EXPLICATION (Section 9 du PDF) ──────────────────────────────────
-        explication = _build_explanation(
-            matched_subjects=matched_subjects,
-            shared_slots_count=len(shared_slots),
-            same_filiere=same_filiere,
-            same_niveau=same_niveau,
-            same_format=same_format,
-            score=total_score
-        )
-
-        # ── Récupérer le user_id du candidat ────────────────────────────────
         candidate_user = db.session.get(User, candidate.user_id)
         if not candidate_user:
             continue
 
-        resultats.append({
-            "student_id":      candidate_user.id,
-            "profile_id":      candidate.id,
-            "nom":             candidate.nom,
-            "prenom":          candidate.prenom,
-            "filiere":         candidate.filiere,
-            "niveau":          candidate.niveau,
-            "avatar_url":      candidate.avatar_url,
-            "score":           total_score,
-            "matched_subjects": matched_subjects,
-            "explication":     explication,
-            # Détail des sous-scores pour debug / transparence
-            "score_detail": {
-                "matiere":           score_matiere,
-                "niveau_vs_gravite": score_niveau,
-                "disponibilites":    score_dispos,
-                "meme_niveau":       score_niveau_acad,
-                "meme_filiere":      score_filiere,
-                "format_preference": score_format
-            }
-        })
+        resultats.append(_make_candidate_result(
+            candidate, candidate_user, matched_subjects, shared_slots,
+            same_filiere, same_niveau, same_format,
+            score_matiere, score_niveau, score_dispos,
+            score_niveau_acad, score_filiere, score_format,
+            penalty, feedback_bonus, total_score
+        ))
 
-    # ── 5. Tri par score décroissant ─────────────────────────────────────────
     resultats.sort(key=lambda x: x["score"], reverse=True)
     return resultats
+
+
+def calculate_matches(current_user_id: int, matiere_id: int = None, demand_id: int = None) -> list:
+    if demand_id:
+        return calculate_matches_demand(current_user_id, demand_id)
+    return calculate_matches_general(current_user_id, matiere_id)

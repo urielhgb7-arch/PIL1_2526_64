@@ -87,11 +87,44 @@ Le backend écoute par défaut sur `http://127.0.0.1:5000`.
 cd ../Frontend
 python -m http.server 8000
 ```
-Ouvrir `http://127.0.0.1:8000/pages/debug.html` dans un navigateur.
+Ouvrir `http://127.0.0.1:8000/` dans un navigateur.
 
 ## 🧪 Tests en local et sur plusieurs navigateurs
 
-### Page de test
+### Tests backend automatisés
+Pour exécuter les tests backend sur votre machine locale :
+
+1. Activez votre environnement virtuel depuis la racine du projet :
+```bash
+cd D:\IFRI-MentorLink\backend
+..\ .venv\Scripts\activate
+```
+2. Installez les dépendances si ce n'est pas déjà fait :
+```bash
+pip install -r requirements.txt
+```
+3. Lancez la suite complète de tests :
+```bash
+python -m pytest -q
+```
+
+#### Exécuter des tests ciblés
+- Pour tester uniquement les demandes :
+```bash
+python -m pytest tests/test_backend.py -q
+```
+- Pour tester les offres et réponses aux offres :
+```bash
+python -m pytest tests/test_offers.py -q
+```
+- Pour tester les sockets :
+```bash
+python -m pytest tests/test_sockets.py -q
+```
+
+> Si les tests utilisent plusieurs profils ou sockets, assurez-vous de lancer `python -m pytest` depuis le dossier `backend`.
+
+### Page de test frontend
 - Utilise `Frontend/pages/debug.html`.
 - Elle permet de tester :
   - inscription et connexion

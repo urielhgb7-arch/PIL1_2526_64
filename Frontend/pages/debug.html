@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MentorLink — Test UI Complet</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/tailwind.css">
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root { --accent: #6366f1; --success: #10b981; --warn: #f59e0b; --danger: #ef4444; }
@@ -431,6 +431,7 @@
             <div class="card-title">📤 Envoyer une demande</div>
             <div class="field"><label>ID de l'étudiant cible</label><input title="ID de l'étudiant cible" id="reqStudentId" type="number" placeholder="student_id du candidat"></div>
             <div class="field"><label>Matière ID</label><input title="Matière ID"   id="reqMatiereId" type="number" placeholder="matiere_id"></div>
+            <div class="field"><label>Demande ID</label><input title="Demande ID" id="reqDemandId" type="number" placeholder="demand_id"></div>
             <div class="field"><label>Score estimé (%)</label><input title="Score estimé (%)" id="reqScore" type="number" placeholder="75" value="75"></div>
             <button class="btn btn-success btn-full" id="sendMatchReqBtn">Envoyer la demande</button>
         </div>
@@ -957,15 +958,17 @@ async function sendMatchRequest(studentId, matiereId, score) {
     document.getElementById('reqStudentId').value = studentId;
     document.getElementById('reqMatiereId').value = matiereId;
     document.getElementById('reqScore').value = Math.round(score);
+    const demandId = document.getElementById('reqDemandId').value;
     await api(`/matches/${studentId}/request`, 'POST', {
-        matiere_id: Number(matiereId), score: Number(score)
+        matiere_id: Number(matiereId), score: Number(score), demand_id: Number(demandId)
     });
 }
 
 document.getElementById('sendMatchReqBtn').addEventListener('click', async () => {
     await api(`/matches/${document.getElementById('reqStudentId').value}/request`, 'POST', {
         matiere_id: Number(document.getElementById('reqMatiereId').value),
-        score: Number(document.getElementById('reqScore').value)
+        score: Number(document.getElementById('reqScore').value),
+        demand_id: Number(document.getElementById('reqDemandId').value)
     });
 });
 

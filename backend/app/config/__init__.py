@@ -43,7 +43,14 @@ class ProductionConfig(Config):
         os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
     )
 
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get('TEST_DATABASE_URL') or 'sqlite:///:memory:'
+    )
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'testing': TestingConfig,
 }

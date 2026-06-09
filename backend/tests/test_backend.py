@@ -36,7 +36,7 @@ def create_profile(user, nom='Test', prenom='User', filiere='STI2D', niveau='L1'
         niveau=niveau,
         format_preference=format_preference,
         bio='Bio',
-        telephone='0123456789'
+        telephone=None
     )
     db.session.add(profile)
     db.session.commit()
@@ -627,6 +627,73 @@ def test_create_demand_with_valid_slot(client, app):
         assert demand is not None
         assert demand.jour == 'Lundi'
         assert demand.creneau == '10-11'
+
+
+def test_create_demand_with_disponibilite_payload(client, app):
+    """Test que le backend accepte le champ disponibilite et crée la demande."""
+    with app.app_context():
+        matiere = create_matiere('Physique Avancée', annee='L2', filiere='STI2D')
+        user = create_user_direct('demand_disponibilite@a.com', 'pass')
+        create_profile(user)
+        matiere_id = matiere.id
+
+    availability = ['2026-06-10T10:00:00.000Z']
+    token = login_user(client, 'demand_disponibilite@a.com', 'pass').json['token']
+
+    response = client.post(
+        '/api/demands',
+        json={
+            'matiere_id': matiere_id,
+            'description': 'Je souhaite un créneau le matin',
+            'urgence': 'Urgent',
+            'format': 'En ligne',
+            'disponibilite': availability
+        },
+        headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == 201
+    assert 'id' in response.json
+    demand_id = response.json['id']
+
+    with app.app_context():
+        demand = db.session.get(Demand, demand_id)
+        assert demand is not None
+        assert demand.jour == 'Jeudi' or demand.jour in ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche']
+        assert demand.creneau == '10-11'
+
+
+def test_create_demand_with_multiple_disponibilite_creates_multiple_demands(client, app):
+    """Test que plusieurs disponibilités créent plusieurs demandes."""
+    with app.app_context():
+        matiere = create_matiere('Anglais', annee='L3', filiere='GL')
+        user = create_user_direct('demand_multi_dispo@a.com', 'pass')
+        create_profile(user)
+        matiere_id = matiere.id
+
+    availability = ['2026-06-10T10:00:00.000Z', '2026-06-11T11:00:00.000Z']
+    token = login_user(client, 'demand_multi_dispo@a.com', 'pass').json['token']
+
+    response = client.post(
+        '/api/demands',
+        json={
+            'matiere_id': matiere_id,
+            'description': 'Plusieurs créneaux possibles',
+            'urgence': 'High',
+            'format': 'Présentiel',
+            'disponibilite': availability
+        },
+        headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == 201
+    assert 'ids' in response.json
+    assert len(response.json['ids']) == 2
+
+    with app.app_context():
+        demands = [db.session.get(Demand, demand_id) for demand_id in response.json['ids']]
+        assert all(d is not None for d in demands)
+        assert {d.creneau for d in demands} == {'10-11', '11-12'}
 
 
 def test_matching_with_demand_id_filters_by_slot(client, app):

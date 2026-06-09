@@ -4,29 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matchs - IFRI MentorLink</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/tailwind.css">
   <link rel="stylesheet" href="../css/styles.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            background: '#08090C',
-            foreground: '#FFFFFF',
-            card: '#0F111A',
-            popover: '#1F2433',
-            primary: '#7C6FF7',
-            success: '#2DD4A0',
-            warning: '#F5A623',
-            destructive: '#F97066',
-            border: 'rgba(255, 255, 255, 0.08)',
-            input: '#1F2433',
-            muted: 'rgba(255, 255, 255, 0.6)',
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="bg-background text-foreground">
   <!-- Top Bar -->
@@ -96,66 +75,46 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="../js/script.js"></script>
   <script src="../js/api.js"></script>
   <script>
     checkAuth();
 
-    // --- Chargement des suggestions de matching via API ---
     let profiles = [];
 
+    function getDemandId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('demand_id') || null;
+    }
+
     async function loadSuggestions() {
+      const demandId = getDemandId();
       try {
-        const data = await API.matching.getSuggestions();
-        // Adapter la réponse selon la structure du backend
-        profiles = (data.suggestions || data).map(u => ({
-          id: u.id,
+        const filters = {};
+        if (demandId) filters.demand_id = demandId;
+        const data = await API.matching.getSuggestions(filters);
+        const matches = data.matches || [];
+        profiles = matches.map(u => ({
+          id: u.student_id,
           name: `${u.prenom} ${u.nom}`,
           level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
           department: u.filiere || '',
-          bio: u.bio || 'Aucune bio disponible.',
-          skills: (u.competences || []).map(c => c.matiere_nom || c),
-          compatibility: u.score_compatibilite || 0
+          bio: (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || 'Aucune bio disponible.',
+          skills: (u.matched_subjects || []).map(s => s.nom),
+          compatibility: u.score,
+          score_detail: u.score_detail,
+          explication: u.explication,
+          rejected_before: u.rejected_before
         }));
       } catch (err) {
         console.warn('API non disponible, utilisation des données de démo.', err);
-        // Fallback vers données de démo
         profiles = [
-      {
-        name: 'Sarah Mensah',
-        level: 'M2 GL',
-        department: 'Génie Logiciel',
-        bio: 'Passionnée par le développement web et mobile. Spécialisée en React et Node.js',
-        skills: ['React', 'Node.js', 'MongoDB', 'Docker'],
-        compatibility: 92
-      },
-      {
-        name: 'Karim Diallo',
-        level: 'M1 RSI',
-        department: 'Réseaux et SI',
-        bio: 'Expert en cybersécurité et architecture réseau. Mentor actif depuis 2 ans',
-        skills: ['Cybersécurité', 'Cisco', 'Linux', 'Python'],
-        compatibility: 88
-      },
-      {
-        name: 'Aminata Traoré',
-        level: 'L3 IA',
-        department: 'Intelligence Artificielle',
-        bio: 'Machine Learning et Data Science. Participante hackathons internationaux',
-        skills: ['Python', 'TensorFlow', 'Scikit-learn', 'Pandas'],
-        compatibility: 85
-      },
-      {
-        name: 'Youssouf Koné',
-        level: 'M2 GL',
-        department: 'Génie Logiciel',
-        bio: 'Full-stack developer. Freelance sur projets open-source',
-        skills: ['Vue.js', 'Laravel', 'PostgreSQL', 'AWS'],
-        compatibility: 90
-      }
+          { name: 'Sarah Mensah', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Passionnée par le développement web et mobile.', skills: ['React', 'Node.js', 'MongoDB', 'Docker'], compatibility: 92 },
+          { name: 'Karim Diallo', level: 'M1 RSI', department: 'Réseaux et SI', bio: 'Expert en cybersécurité et architecture réseau.', skills: ['Cybersécurité', 'Cisco', 'Linux', 'Python'], compatibility: 88 },
+          { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', skills: ['Python', 'TensorFlow', 'Scikit-learn', 'Pandas'], compatibility: 85 },
+          { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', skills: ['Vue.js', 'Laravel', 'PostgreSQL', 'AWS'], compatibility: 90 }
         ];
       }
-      // Initialiser les cartes après chargement
       initCards();
     }
 
@@ -293,12 +252,14 @@
       const rotation = direction === 'right' ? 30 : -30;
       const translateX = direction === 'right' ? 1000 : -1000;
 
-      // Appel API accept/reject si l'utilisateur a un id
-      if (profile && profile.id) {
-        if (direction === 'right') {
-          API.matching.accept(profile.id).catch(err => console.warn('API accept error:', err));
+      // Swipe droit = envoi d'une demande de match
+      if (profile && profile.id && direction === 'right') {
+        const demandId = getDemandId();
+        if (demandId) {
+          API.matching.requestMatch(profile.id, { demand_id: parseInt(demandId), score: profile.compatibility })
+            .catch(err => console.warn('API requestMatch error:', err));
         } else {
-          API.matching.reject(profile.id).catch(err => console.warn('API reject error:', err));
+          console.warn('demand_id manquant dans l\'URL');
         }
       }
 

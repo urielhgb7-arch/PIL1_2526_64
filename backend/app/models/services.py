@@ -15,16 +15,19 @@ class Matiere(db.Model):
     lacunes = db.relationship('ProfilLacune', back_populates='matiere', cascade='all, delete-orphan')
 
 
+# backend/app/models/services.py — Offer
 class Offer(db.Model):
     __tablename__ = 'offers'
     id = db.Column(db.Integer, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     matiere_id = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     description = db.Column(db.Text)
+    # NOUVEAUX CHAMPS
+    jour = db.Column(db.String(15), nullable=True)
+    creneau = db.Column(db.String(10), nullable=True)
+    format_preference = db.Column(db.String(20), default='hybride')
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-
     matiere = db.relationship('Matiere', back_populates='offers')
-
 
 class Demand(db.Model):
     __tablename__ = 'demands'
@@ -76,4 +79,20 @@ class Matching(db.Model):
 
     __table_args__ = (
         db.UniqueConstraint('user_one_id', 'user_two_id', 'demand_id', name='unique_match'),
+    )
+
+
+class Feedback(db.Model):
+    __tablename__ = 'feedbacks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    from_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    to_user_id   = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    matching_id  = db.Column(db.Integer, db.ForeignKey('matching.id'), nullable=False)
+    note         = db.Column(db.Integer, nullable=False)  # 1-5
+    commentaire  = db.Column(db.Text)
+    created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    __table_args__ = (
+        db.UniqueConstraint('from_user_id', 'matching_id', name='unique_feedback'),
     )
