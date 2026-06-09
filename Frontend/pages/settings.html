@@ -87,17 +87,14 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="text-sm text-muted mb-2 block">Compétences</label>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 bg-success/10 text-success rounded-full text-sm">React</span>
-            <span class="px-3 py-1 bg-success/10 text-success rounded-full text-sm">Node.js</span>
-            <span class="px-3 py-1 bg-success/10 text-success rounded-full text-sm">Python</span>
+          <div id="skills-display" class="flex flex-wrap gap-2">
+            <span class="text-xs text-muted">Chargement...</span>
           </div>
         </div>
         <div>
           <label class="text-sm text-muted mb-2 block">Faiblesses</label>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm">Algorithmique</span>
-            <span class="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm">Mathématiques</span>
+          <div id="weaknesses-display" class="flex flex-wrap gap-2">
+            <span class="text-xs text-muted">Chargement...</span>
           </div>
         </div>
       </div>
@@ -438,6 +435,12 @@
             tagsEl.appendChild(tag);
           });
         }
+        // Afficher les compétences depuis l'API
+        const comps = profile.competences || profile.competences_list || [];
+        renderTags('skills-display', comps, 'bg-success/10 text-success', 'Compétence');
+        // Afficher les faiblesses depuis l'API
+        const lacs = profile.lacunes || profile.lacunes_list || [];
+        renderTags('weaknesses-display', lacs, 'bg-warning/10 text-warning', 'Faiblesse');
       } catch (err) {
         console.warn('API profil non disponible, utilisation du cache local.', err);
         // Fallback localStorage
@@ -496,8 +499,8 @@
         try {
           const data = await API.profile.getMe();
           const profile = data.profile || data;
-          const comps = profile.competences || profile.competences_list || profile.competences || [];
-          const lacs = profile.lacunes || profile.lacunes_list || profile.lacunes || [];
+          const comps = profile.competences || profile.competences_list || [];
+          const lacs = profile.lacunes || profile.lacunes_list || [];
           prefillSkillsModal(comps, lacs);
         } catch (e) {
           // pas de profil ou erreur, silencieux
@@ -509,6 +512,23 @@
         document.getElementById('matieres-loading-modal').classList.add('hidden');
         document.getElementById('modal-skills-form').classList.remove('hidden');
       }
+    }
+
+    function renderTags(containerId, items, baseClass, label) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      el.innerHTML = '';
+      if (!items || items.length === 0) {
+        el.innerHTML = `<span class="text-xs text-muted">Aucune ${label.toLowerCase()} définie</span>`;
+        return;
+      }
+      items.forEach(item => {
+        const nom = item.nom || item.matiere_nom || item.libelle || item.name || item.matiere || '';
+        const tag = document.createElement('span');
+        tag.className = `px-3 py-1 ${baseClass} rounded-full text-sm`;
+        tag.textContent = nom;
+        el.appendChild(tag);
+      });
     }
 
     function prefillSkillsModal(comps = [], lacs = []) {
@@ -636,18 +656,40 @@
     document.getElementById('modal-skills-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
-        // send strengths
-        for (const s of modalUser.strengths) {
-          await API.profile.addCompetence({ matiere_id: s.matiere_id, niveau: s.value || 'Intermédiaire' });
+        // Récupérer les compétences/lacunes actuelles depuis l'API pour savoir quoi supprimer
+        const data = await API.profile.getMe();
+        const profile = data.profile || data;
+        const currentComps = profile.competences || profile.competences_list || [];
+        const currentLacs = profile.lacunes || profile.lacunes_list || [];
+        // Supprimer les compétences décochées
+        for (const c of currentComps) {
+          const cid = c.matiere_id || c.matiere;
+          if (!modalUser.strengths.some(s => s.matiere_id === cid)) {
+            await API.profile.removeCompetence({ matiere_id: cid }).catch(() => {});
+          }
         }
-        // send weaknesses
+        // Supprimer les lacunes décochées
+        for (const l of currentLacs) {
+          const lid = l.matiere_id || l.matiere;
+          if (!modalUser.weaknesses.some(w => w.matiere_id === lid)) {
+            await API.profile.removeLacune({ matiere_id: lid }).catch(() => {});
+          }
+        }
+        // Ajouter les nouvelles compétences
+        for (const s of modalUser.strengths) {
+          if (!currentComps.some(c => (c.matiere_id || c.matiere) === s.matiere_id)) {
+            await API.profile.addCompetence({ matiere_id: s.matiere_id, niveau: s.value || 'Intermédiaire' });
+          }
+        }
+        // Ajouter les nouvelles lacunes
         for (const w of modalUser.weaknesses) {
-          await API.profile.addLacune({ matiere_id: w.matiere_id, priorite: w.value || 'Moyenne' });
+          if (!currentLacs.some(l => (l.matiere_id || l.matiere) === w.matiere_id)) {
+            await API.profile.addLacune({ matiere_id: w.matiere_id, priorite: w.value || 'Moyenne' });
+          }
         }
         // close
         modalUser.strengths = []; modalUser.weaknesses = [];
         closeModal('skills');
-        // refresh display (optional)
         loadProfile();
       } catch (err) {
         alert('Erreur lors de la sauvegarde des compétences: ' + (err.message || err));

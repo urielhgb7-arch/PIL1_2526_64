@@ -27,7 +27,7 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
 
     const config = { method, headers };
 
-    if (body && (method === 'POST' || method === 'PUT')) {
+    if (body && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
         config.body = JSON.stringify(body);
     }
 
