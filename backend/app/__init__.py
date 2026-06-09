@@ -40,25 +40,29 @@ def create_app(config_name=None):
 
     #Creation de la base de données si elle n'existe pas
 
+    is_production = os.environ.get('FLASK_ENV') == 'production'
     with flask_app.app_context():
-        try:
-            import sqlalchemy
-            is_production = os.environ.get('FLASK_ENV') == 'production'
-            if not is_production:
+        if is_production:
+            try:
+                db.create_all()
+                logger.info("Database tables created/verified in production")
+            except Exception as db_error:
+                logger.error(f"DB init warning (non-blocking): {db_error}")
+        else:
+            try:
                 from sqlalchemy_utils import database_exists, create_database
                 if not database_exists(db.engine.url):
                     create_database(db.engine.url)
                     logger.info("Base de données créée automatiquement !")
-            db.create_all()
-            if not is_production:
+                db.create_all()
                 try:
                     from flask_migrate import upgrade
                     upgrade()
                 except Exception as mig_err:
                     logger.warning(f"Migrations Flask-Migrate ignorées: {mig_err}")
-            logger.info("Database tables initialized successfully")
-        except Exception as db_error:
-            logger.error(f"Database initialization error: {db_error}", exc_info=True)
+                logger.info("Database tables initialized successfully")
+            except Exception as db_error:
+                logger.error(f"Database initialization error: {db_error}", exc_info=True)
 
         # Seed matières par défaut si la table est vide
         try:
@@ -146,3 +150,6 @@ def create_app(config_name=None):
         return send_from_directory(FRONTEND_DIR, 'index.html')
 
     return flask_app
+
+# Pour gunicorn : gunicorn app:app
+app = create_app()
