@@ -1,165 +1,986 @@
-# IFRI MentorLink
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rapport — IFRI_MentorLink | PIL1_2526_64</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #05080f;
+      --surface:   #0a1120;
+      --surface2:  #0f1c35;
+      --blue:      #00c2ff;
+      --gold:      #f0b429;
+      --green:     #00e5a0;
+      --blue-glow: rgba(0,194,255,0.15);
+      --gold-glow: rgba(240,180,41,0.12);
+      --green-glow:rgba(0,229,160,0.12);
+      --text:      #dceeff;
+      --muted:     #4a6a8a;
+      --border:    #112240;
+      --heading:   'Playfair Display', serif;
+      --body:      'Plus Jakarta Sans', sans-serif;
+    }
 
-Plateforme de mentorat académique **peer-to-peer** pour l'Institut de Formation et de Recherche en Informatique (IFRI).  
-Les étudiants peuvent publier des offres d'aide ou des demandes de mentorat, et un algorithme de **matching intelligent** les met en relation selon les compétences, disponibilités et filières.
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-## Stack
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
 
-| Couche | Technologie |
-|--------|-------------|
-| Backend | Python 3.11+ / Flask / SQLAlchemy |
-| Base de données | PostgreSQL (Render) / SQLite (local) |
-| Temps réel | Socket.IO (Flask-SocketIO) |
-| Frontend | HTML / JavaScript vanilla / Tailwind CSS (CDN) |
-| Auth | JWT (PyJWT) |
-| Tests | pytest |
-| Déploiement | Render (Web Service + PostgreSQL) |
+    /* ─── BACKGROUND GRID ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,194,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,194,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-## Architecture
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(5,8,15,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,194,255,0.12);
+    }
+    .nav-logo {
+      font-family: var(--heading);
+      font-weight: 800; font-size: 1.15rem;
+      background: linear-gradient(135deg, var(--blue), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--blue); }
 
-```
-Frontend/                          Backend/
-├── index.html        ← accueil    ├── run.py
-├── pages/            ← app        ├── app/
-│   ├── signin.html                │   ├── __init__.py   ← création Flask, CORS, Socket.IO
-│   ├── signup.html                │   ├── routes/       ← API REST
-│   ├── dashboard.html             │   ├── models/       ← SQLAlchemy models
-│   ├── matching.html              │   ├── services/     ← matching, feedback
-│   ├── requests.html              │   ├── sockets/      ← Socket.IO events
-│   ├── messages.html              │   └── middleware/   ← auth guard JWT
-│   ├── settings.html              └── requirements.txt
-│   ├── onboarding.html
-│   ├── notifications.html
-│   └── debug.html
-├── js/
-│   ├── bundle.js     ← API client + utilitaires + matières + badge notifs
-│   └── notifications.js   ← page notifications uniquement
-└── css/
-    └── styles.css
-```
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-orb1 {
+      position: absolute; top: -150px; right: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,194,255,0.13) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-orb2 {
+      position: absolute; bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(240,180,41,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-orb3 {
+      position: absolute; top: 40%; left: 40%;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: rgba(0,194,255,0.08);
+      border: 1px solid rgba(0,194,255,0.25);
+      border-radius: 100px;
+      padding: 0.4rem 1.1rem;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 2rem; width: fit-content;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--green); border-radius: 50%;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 6px var(--green);
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.7); }
+    }
+    h1 {
+      font-family: var(--heading);
+      font-size: clamp(4rem, 9vw, 7.5rem);
+      font-weight: 800; line-height: 0.95;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+      animation: fadeUp 0.6s 0.1s ease both;
+      filter: drop-shadow(0 0 40px rgba(0,194,255,0.18));
+    }
+    .h1-line1 {
+      color: var(--text);
+      text-shadow: 0 0 60px rgba(220,238,255,0.15);
+    }
+    .h1-line2 {
+      background: linear-gradient(100deg, #00c2ff 0%, #00e5a0 60%, #00c2ff 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    .h1-line3 {
+      background: linear-gradient(100deg, #f0b429 0%, #ff9f43 50%, #ffe066 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite reverse;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    .hero-desc {
+      max-width: 580px; color: var(--muted);
+      font-size: 1.05rem; font-weight: 400;
+      line-height: 1.8; margin-bottom: 3rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      width: fit-content;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .meta-item {
+      padding: 1rem 1.5rem;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 0.25rem;
+    }
+    .meta-item:last-child { border-right: none; }
+    .meta-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .meta-value { font-family: var(--heading); font-size: 0.9rem; font-weight: 700; color: var(--text); }
 
-### Fonctionnement
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(28px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
 
-1. L'utilisateur s'inscrit / se connecte → reçoit un **JWT** stocké dans `localStorage`
-2. Le dashboard affiche ses stats (offres, demandes, matchings, note moyenne)
-3. L'utilisateur peut **publier** une offre (proposer son aide) ou une demande (chercher de l'aide), avec matières, créneaux et niveau d'urgence
-4. L'algorithme de **matching** suggère des profils compatibles selon :
-   - Compétences / lacunes des matières
-   - Disponibilités (créneaux horaires)
-   - Filière et niveau
-   - Note moyenne (feedback des mentors précédents)
-5. Le matching s'affiche dans une interface "swipe" (accepter / refuser)
-6. Une fois matchés, les utilisateurs peuvent **discuter en temps réel** via Socket.IO
-7. Les notifications sont mises à jour par **polling** toutes les 30s
+    /* ─── SECTIONS ─── */
+    .section-wrap { position: relative; z-index: 1; }
+    section { padding: 5rem 2.5rem; max-width: 1120px; margin: 0 auto; }
 
-### Requêtes HTTP par page
+    .section-label {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--gold); font-weight: 700; margin-bottom: 0.9rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 18px; height: 2px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    h2 {
+      font-family: var(--heading);
+      font-size: clamp(1.9rem, 3.8vw, 3rem);
+      font-weight: 800; line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .section-intro {
+      color: var(--muted); max-width: 640px;
+      margin-bottom: 3rem; font-weight: 400;
+      font-size: 0.97rem;
+    }
 
-Chaque page charge 2-3 ressources externes + 1 bundle :
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 100%; max-width: 1120px; margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,194,255,0.2), rgba(240,180,41,0.2), transparent);
+    }
 
-| Ressource | Type |
-|-----------|------|
-| `https://cdn.tailwindcss.com` | CSS utility (CDN) |
-| `https://cdn.jsdelivr.net/npm/@tabler/icons-*` | Icônes (CDN) |
-| `../js/bundle.js` (ou `js/bundle.js` sur l'accueil) | JS applicatif |
-| `../css/styles.css` | Styles personnalisés |
+    /* ─── GROUPE ─── */
+    .groupe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .membre-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.3rem 1.5rem;
+      display: flex; align-items: center; gap: 1.1rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .membre-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--blue-glow), transparent 60%);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .membre-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(0,194,255,0.35);
+      box-shadow: 0 8px 32px rgba(0,194,255,0.1);
+    }
+    .membre-card:hover::after { opacity: 1; }
+    .avatar {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--heading); font-weight: 800; font-size: 0.95rem;
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .membre-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
+    .membre-nom {
+      font-weight: 700; font-size: 0.88rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--text);
+    }
+    .membre-role { font-size: 0.76rem; color: var(--muted); margin-top: 0.15rem; }
+    .filiere-badge {
+      font-size: 0.66rem; font-weight: 800;
+      padding: 0.22rem 0.6rem; border-radius: 6px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .badge-blue  { background:rgba(0,194,255,0.12); color:var(--blue);  border:1px solid rgba(0,194,255,0.25); }
+    .badge-gold  { background:rgba(240,180,41,0.12); color:var(--gold);  border:1px solid rgba(240,180,41,0.25); }
+    .badge-green { background:rgba(0,229,160,0.12); color:var(--green); border:1px solid rgba(0,229,160,0.25); }
 
-## 🚀 Lancer l'UI en local
+    /* ─── FONCTIONNEMENT ─── */
+    .fonct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .fonct-grid { grid-template-columns: 1fr; } }
+    .fonct-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.6rem;
+      transition: border-color 0.2s;
+    }
+    .fonct-card:hover { border-color: rgba(240,180,41,0.3); }
+    .fonct-card h3 {
+      font-family: var(--heading); font-size: 1rem; font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.6rem;
+      color: var(--gold);
+    }
+    .fonct-card ul { list-style: none; }
+    .fonct-card ul li {
+      font-size: 0.86rem; color: var(--muted);
+      padding: 0.38rem 0;
+      border-bottom: 1px solid rgba(17,34,64,0.8);
+      display: flex; align-items: flex-start; gap: 0.6rem;
+    }
+    .fonct-card ul li:last-child { border-bottom: none; }
+    .fonct-card ul li::before { content:'▸'; color:var(--green); flex-shrink:0; }
 
-### 1. Backend
+    /* ─── TABS ─── */
+    .conception-tabs { display:flex; gap:0.5rem; margin-bottom:2rem; flex-wrap:wrap; }
+    .tab-btn {
+      padding: 0.55rem 1.3rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--body);
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: #05080f; border-color: transparent;
+      box-shadow: 0 0 20px rgba(0,194,255,0.25);
+    }
+    .tab-btn:hover:not(.active) { border-color: var(--blue); color: var(--text); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
 
-```bash
-# Depuis la racine du projet
-cd backend
-python -m venv .venv
-.venv\Scripts\activate    # Windows
-pip install -r requirements.txt
-python run.py
-```
+    /* ─── DB TABLES ─── */
+    .db-tables { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:1rem; }
+    .db-table {
+      background: var(--surface); border:1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .db-table:hover { border-color:rgba(0,194,255,0.3); box-shadow:0 4px 20px rgba(0,194,255,0.08); }
+    .db-table-header {
+      background: linear-gradient(90deg, rgba(0,194,255,0.1), rgba(0,229,160,0.06));
+      border-bottom: 1px solid rgba(0,194,255,0.15);
+      padding: 0.75rem 1rem;
+      font-family: var(--heading); font-size: 0.85rem; font-weight: 700;
+      color: var(--blue);
+    }
+    .db-table-body { padding: 0.4rem 0; }
+    .db-field {
+      padding: 0.3rem 1rem;
+      font-size: 0.76rem; font-family:'Courier New',monospace;
+      display:flex; justify-content:space-between; align-items:center; gap:0.8rem;
+    }
+    .db-field:hover { background:rgba(0,194,255,0.04); }
+    .field-name { color:var(--text); }
+    .field-type { color:rgba(240,180,41,0.8); font-size:0.7rem; }
+    .field-pk   { color:var(--green); font-size:0.66rem; font-weight:800;
+                  background:rgba(0,229,160,0.1); padding:0.1rem 0.4rem; border-radius:4px; }
 
-Le backend écoute sur `http://127.0.0.1:5000`.
+    /* ─── ARCHITECTURE ─── */
+    .arch-layers { display:flex; flex-direction:column; gap:0.8rem; }
+    .arch-layer {
+      background: var(--surface); border:1px solid var(--border);
+      border-radius: 14px; padding:1.3rem 1.6rem;
+      display:flex; align-items:center; gap:1.4rem;
+      transition: border-color 0.2s;
+    }
+    .arch-layer:nth-child(1):hover { border-color:rgba(0,194,255,0.35); }
+    .arch-layer:nth-child(3):hover { border-color:rgba(240,180,41,0.35); }
+    .arch-layer:nth-child(5):hover { border-color:rgba(0,229,160,0.35); }
+    .arch-icon {
+      width:42px; height:42px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem; flex-shrink:0;
+    }
+    .arch-layer h4 { font-family:var(--heading); font-size:0.95rem; font-weight:700; margin-bottom:0.25rem; }
+    .arch-layer p  { font-size:0.82rem; color:var(--muted); }
+    .arch-arrow { text-align:center; color:var(--muted); padding:0.1rem 0; font-size:0.85rem; letter-spacing:0.05em; }
 
-> 💡 Par défaut le frontend se connecte à `http://127.0.0.1:5000/api`.  
-> Pour utiliser une autre URL, définissez `window.API_BASE_URL` dans la console avant de naviguer, ou modifiez `js/bundle.js`.
+    /* ─── TREE ─── */
+    .tree {
+      background: var(--surface); border:1px solid var(--border);
+      border-radius: 14px; padding:1.6rem;
+      font-family:'Courier New',monospace; font-size:0.82rem; line-height:2;
+    }
+    .tree .folder { color:var(--gold); font-weight:bold; }
+    .tree .file   { color:var(--muted); }
+    .tree .comment{ color:var(--green); font-style:italic; opacity:0.8; }
 
-### 2. Frontend
+    /* ─── STEPS ─── */
+    .steps { display:flex; flex-direction:column; }
+    .step { display:flex; gap:1.5rem; position:relative; }
+    .step:not(:last-child)::after {
+      content:'';
+      position:absolute; left:20px; top:46px;
+      width:2px; height:calc(100% - 26px);
+      background: linear-gradient(180deg, var(--blue), transparent);
+    }
+    .step-num {
+      width:42px; height:42px; border-radius:50%;
+      background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,229,160,0.1));
+      border:2px solid var(--blue);
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--heading); font-weight:800; font-size:0.9rem;
+      color:var(--blue); flex-shrink:0; position:relative; z-index:1;
+      box-shadow: 0 0 12px rgba(0,194,255,0.2);
+    }
+    .step-body { padding-bottom:2.2rem; flex:1; }
+    .step-body h4 {
+      font-family:var(--heading); font-size:1rem; font-weight:700;
+      margin-bottom:0.5rem; padding-top:0.65rem; color:var(--text);
+    }
+    .step-body p { font-size:0.86rem; color:var(--muted); }
+    .code-block {
+      background:#020509;
+      border:1px solid rgba(0,194,255,0.15);
+      border-left:3px solid var(--blue);
+      border-radius:10px; padding:1rem 1.2rem; margin-top:0.8rem;
+      font-family:'Courier New',monospace; font-size:0.79rem;
+      line-height:1.8; overflow-x:auto;
+    }
+    .code-block .cmd     { color:var(--green); }
+    .code-block .comment { color:var(--muted); font-style:italic; }
 
-**Option A — Live Server (recommandé)**
+    /* ─── MANUEL ─── */
+    .manuel-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1rem; }
+    .manuel-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:16px; padding:1.6rem;
+      transition:transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .manuel-card:hover {
+      transform:translateY(-3px);
+      border-color:rgba(0,229,160,0.3);
+      box-shadow:0 8px 28px rgba(0,229,160,0.08);
+    }
+    .manuel-icon {
+      width:46px; height:46px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; margin-bottom:1rem;
+    }
+    .manuel-card h3 { font-family:var(--heading); font-size:0.98rem; font-weight:700; margin-bottom:0.7rem; color:var(--text); }
+    .manuel-card ol { padding-left:1.2rem; }
+    .manuel-card ol li { font-size:0.84rem; color:var(--muted); padding:0.22rem 0; }
 
-```bash
-cd Frontend
-npx live-server --port=5500
-```
+    /* ─── FOOTER ─── */
+    footer {
+      border-top:1px solid rgba(0,194,255,0.1);
+      padding:2.5rem 2.5rem;
+      max-width:1120px; margin:0 auto;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:1rem;
+      position:relative; z-index:1;
+    }
+    .footer-left {
+      font-family:var(--heading); font-weight:800; font-size:1rem;
+      background:linear-gradient(135deg,var(--blue),var(--gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .footer-right { font-size:0.78rem; color:var(--muted); }
 
-**Option B — Serveur HTTP simple**
+    /* ─── RESPONSIVE ─── */
+    @media (max-width:768px) {
+      nav { padding:1rem 1.2rem; }
+      .nav-links { display:none; }
+      section { padding:3.5rem 1.2rem; }
+      .hero { padding:7rem 1.2rem 3rem; }
+      .hero-meta { flex-direction:column; width:100%; }
+      .meta-item { border-right:none; border-bottom:1px solid var(--border); }
+      .meta-item:last-child { border-bottom:none; }
+      footer { padding:2rem 1.2rem; flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
 
-```bash
-cd Frontend
-python -m http.server 5500
-```
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IFRI_MentorLink</div>
+  <ul class="nav-links">
+    <li><a href="#groupe">Groupe</a></li>
+    <li><a href="#fonctionnement">Méthode</a></li>
+    <li><a href="#conception">Conception</a></li>
+    <li><a href="#deploiement">Déploiement</a></li>
+    <li><a href="#manuel">Manuel</a></li>
+  </ul>
+</nav>
 
-Ouvrir `http://127.0.0.1:5500/` dans un navigateur.
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-orb3"></div>
+  <div class="hero-tag">PIL1_2526_64 · Rapport de projet</div>
+  <h1>
+    <span class="h1-line1">IFRI</span><br>
+    <span class="h1-line2">_Mentor</span><span class="h1-line3">Link</span>
+  </h1>
+  <p class="hero-desc">
+    Application web de mise en relation mentor–mentoré au sein de l'IFRI.
+    Réalisée dans le cadre du Projet Intégrateur de Licence 1ère année — Année universitaire 2025–2026.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Établissement</span>
+      <span class="meta-value">IFRI — UAC</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Groupe</span>
+      <span class="meta-value">PIL1_2526_64</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Encadrants</span>
+      <span class="meta-value">M. ACCROMBESSI · Mme GAHOU</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Superviseur</span>
+      <span class="meta-value">M. HOUNDJI</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Dépôt final</span>
+      <span class="meta-value">10 juin 2026</span>
+    </div>
+  </div>
+</header>
 
-### 3. Pages principales
+<div class="divider"></div>
 
-| Page | URL | Rôle |
-|------|-----|------|
-| Accueil | `/index.html` | Landing page |
-| Inscription | `/pages/signup.html` | Création de compte |
-| Connexion | `/pages/signin.html` | Connexion JWT |
-| Dashboard | `/pages/dashboard.html` | Vue d'ensemble |
-| Publications | `/pages/requests.html` | CRUD offres/demandes |
-| Matching | `/pages/matching.html` | Swipe & matcher |
-| Messages | `/pages/messages.html` | Chat temps réel |
-| Paramètres | `/pages/settings.html` | Profil, compétences, dispo |
-| Notifications | `/pages/notifications.html` | Historique des notifs |
-| Onboarding | `/pages/onboarding.html` | Première connexion |
-| Debug | `/pages/debug.html` | Tests API/WS |
+<!-- GROUPE -->
+<div class="section-wrap">
+<section id="groupe">
+  <div class="section-label">01 — Membres</div>
+  <h2>Composition du groupe</h2>
+  <p class="section-intro">Groupe constitué de façon mixte, réunissant des étudiants issus de différentes filières de l'IFRI — Groupe n°64.</p>
 
-## ☁️ Déploiement (Render)
+  <div class="groupe-grid">
 
-### Backend (Web Service)
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(0,194,255,0.12);color:var(--blue);">GB</div>
+      <div class="membre-info">
+        <div class="membre-nom">GOUTONDE Bidossessi Conceptia Sharone</div>
+        <div class="membre-role">Développeur Frontend</div>
+      </div>
+      <div class="filiere-badge badge-blue">SI</div>
+    </div>
 
-1. Créer un Web Service sur [Render](https://render.com)
-2. Branch : `develop`
-3. Root directory : `backend`
-4. Build command : `pip install -r requirements.txt`
-5. Start command : `gunicorn -k eventlet -w 1 run:app`
-6. Ajouter une base PostgreSQL (créer une DB via Render Dashboard)
-7. Variables d'environnement :
-   - `DATABASE_URL` → URL PostgreSQL interne Render
-   - `SECRET_KEY` → clé secrète JWT
-   - `FLASK_ENV=production`
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(240,180,41,0.12);color:var(--gold);">HU</div>
+      <div class="membre-info">
+        <div class="membre-nom">HOUEGBELO Uriel Verghis Olsen</div>
+        <div class="membre-role">Tech Lead / Backend</div>
+      </div>
+      <div class="filiere-badge badge-gold">GL</div>
+    </div>
 
-### Frontend
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(0,229,160,0.12);color:var(--green);">LE</div>
+      <div class="membre-info">
+        <div class="membre-nom">LOTSU Emmanuel Richard Kwasi</div>
+        <div class="membre-role">Développeur Backend / Render</div>
+      </div>
+      <div class="filiere-badge badge-blue">SI</div>
+    </div>
 
-Le frontend est **statique** (pas de build step). Vous pouvez :
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(0,194,255,0.12);color:var(--blue);">HA</div>
+      <div class="membre-info">
+        <div class="membre-nom">HOUNNOUKON Agossou Prince</div>
+        <div class="membre-role">Développeur Frontend</div>
+      </div>
+      <div class="filiere-badge badge-blue">SI</div>
+    </div>
 
-- Le servir via Render comme **Static Site** pointant vers `Frontend/`
-- Ou l'héberger sur **GitHub Pages**, **Netlify** ou **Vercel**
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(240,180,41,0.12);color:var(--gold);">YS</div>
+      <div class="membre-info">
+        <div class="membre-nom">YESSOUFOU Scham's-Deen</div>
+        <div class="membre-role">Développeur Fullstack</div>
+      </div>
+      <div class="filiere-badge badge-gold">GL</div>
+    </div>
 
-> ⚠️ En production, le frontend se connecte automatiquement à `https://ifri-mentorlink.onrender.com/api`.  
-> Pour changer l'URL backend, définissez `window.API_BASE_URL` avant tout appel API.
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(240,180,41,0.12);color:var(--gold);">TP</div>
+      <div class="membre-info">
+        <div class="membre-nom">TOCHENALI Paola Eloane</div>
+        <div class="membre-role">Développeur Backend</div>
+      </div>
+      <div class="filiere-badge badge-gold">GL</div>
+    </div>
 
-## 🧪 Tests
+    <div class="membre-card">
+      <div class="avatar" style="background:rgba(0,229,160,0.12);color:var(--green);">ML</div>
+      <div class="membre-info">
+        <div class="membre-nom">MOUTOUAMA Liwêto Eben-Ezer</div>
+        <div class="membre-role">Développeur Frontend</div>
+      </div>
+      <div class="filiere-badge badge-green">IM</div>
+    </div>
 
-```bash
-cd backend
-pytest -q
-```
+  </div>
+</section>
+</div>
 
-Tests unitaires et d'intégration pour : auth, profils, offres, demandes, matching, messages, notifications, sockets.
+<div class="divider"></div>
 
-## 👥 Équipe
+<!-- FONCTIONNEMENT -->
+<div class="section-wrap">
+<section id="fonctionnement">
+  <div class="section-label">02 — Méthode</div>
+  <h2>Mode de fonctionnement</h2>
+  <p class="section-intro">Organisation interne, rôles, démarche suivie et outils de collaboration utilisés tout au long du projet.</p>
 
-| Membre | Rôle |
-|--------|------|
-| **GOUTONDE Bidossessi Conceptia Sharone** | Développeur Frontend |
-| **HOUEGBELO Uriel Verghis Olsen** | Tech Lead / Backend |
-| **LOTSU Emmanuel Richard Kwasi** | Développeur Backend |
-| **HOUNNOUKON Agossou Prince** | Développeur Backend / Déploiement |
-| **YESSOUFOU Scham's-Deen** | Développeur Fullstack |
-| **TOCHENALI Paola Eloane** | Développeur Frontend |
+  <div class="fonct-grid">
+    <div class="fonct-card">
+      <h3>📋 Organisation & outils</h3>
+      <ul>
+        <li>Réunions quotidiennes de synchronisation (standup 15 min)</li>
+        <li>Gestion des tâches via Trello (Todo / In Progress / Done)</li>
+        <li>Communication du groupe via WhatsApp / Discord</li>
+        <li>Versioning du code via Git & GitHub</li>
+        <li>Branches par fonctionnalité (feature branching)</li>
+      </ul>
+    </div>
+    <div class="fonct-card">
+      <h3>🗂️ Répartition des tâches</h3>
+      <ul>
+        <li>GL — Tech Lead &amp; Architecture backend : HOUEGBELO Uriel</li>
+        <li>SI — Backend, API REST, Render : LOTSU Emmanuel</li>
+        <li>SI — Développeur Frontend : GOUTONDE Bidossessi Conceptia Sharone</li>
+        <li>SI — Développeur Frontend &amp; Messagerie : HOUNNOUKON Agossou Prince</li>
+        <li>GL — Fullstack &amp; Algorithme Matching : YESSOUFOU Scham's-Deen</li>
+        <li>GL — Développeur Backend : TOCHENALI Paola Eloane</li>
+        <li>IM — Interfaces UI/UX : MOUTOUAMA Liwêto Eben-Ezer</li>
+      </ul>
+    </div>
+    <div class="fonct-card">
+      <h3>🔄 Démarche suivie</h3>
+      <ul>
+        <li>J1 : Lecture du cahier des charges et répartition des tâches</li>
+        <li>J2–J3 : Conception BD, maquettes, architecture backend</li>
+        <li>J4–J6 : Développement des modules principaux</li>
+        <li>J7–J8 : Intégration, tests et corrections de bugs</li>
+        <li>J9 : Rédaction rapport, finalisation documentation</li>
+        <li>J10 : Relecture, tests finaux, dépôt GitHub</li>
+      </ul>
+    </div>
+    <div class="fonct-card">
+      <h3>⚠️ Difficultés rencontrées</h3>
+      <ul>
+        <li>Coordination entre les modules frontend et backend</li>
+        <li>Implémentation de la messagerie en temps réel</li>
+        <li>Calibrage de l'algorithme de matching</li>
+        <li>Gestion des conflits Git lors des fusions de branches</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</div>
 
----
+<div class="divider"></div>
 
-*Projet IFRI — PIL1_2526*
+<!-- CONCEPTION -->
+<div class="section-wrap">
+<section id="conception">
+  <div class="section-label">03 — Conception</div>
+  <h2>Architecture & structure</h2>
+  <p class="section-intro">Détail technique du projet : base de données, architecture logicielle et organisation du code source.</p>
+
+  <div class="conception-tabs">
+    <button class="tab-btn active" onclick="switchTab('db',this)">Base de données</button>
+    <button class="tab-btn" onclick="switchTab('arch',this)">Architecture</button>
+    <button class="tab-btn" onclick="switchTab('struct',this)">Structure du projet</button>
+  </div>
+
+  <!-- BD -->
+  <div class="tab-content active" id="tab-db">
+    <div class="db-tables">
+      <div class="db-table">
+        <div class="db-table-header">🗄️ users</div>
+        <div class="db-table-body">
+          <div class="db-field"><span class="field-name">id</span><span class="field-pk">PK</span></div>
+          <div class="db-field"><span class="field-name">nom</span><span class="field-type">VARCHAR</span></div>
+          <div class="db-field"><span class="field-name">prenom</span><span class="field-type">VARCHAR</span></div>
+          <div class="db-field"><span class="field-name">email</span><span class="field-type">UNIQUE</span></div>
+          <div class="db-field"><span class="field-name">telephone</span><span class="field-type">UNIQUE</span></div>
+          <div class="db-field"><span class="field-name">password_hash</span><span class="field-type">VARCHAR</span></div>
+          <div class="db-field"><span class="field-name">filiere</span><span class="field-type">ENUM</span></div>
+          <div class="db-field"><span class="field-name">niveau</span><span class="field-type">VARCHAR</span></div>
+          <div class="db-field"><span class="field-name">photo_url</span><span class="field-type">VARCHAR</span></div>
+          <div class="db-field"><span class="field-name">bio</span><span class="field-type">TEXT</span></div>
+          <div class="db-field"><span class="field-name">disponibilites</span><span class="field-type">JSON</span></div>
+          <div class="db-field"><span class="field-name">created_at</span><span class="field-type">DATETIME</span></div>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header">📚 competences</div>
+        <div class="db-table-body">
+          <div class="db-field"><span class="field-name">id</span><span class="field-pk">PK</span></div>
+          <div class="db-field"><span class="field-name">nom</span><span class="field-type">UNIQUE</span></div>
+          <div class="db-field"><span class="field-name">categorie</span><span class="field-type">VARCHAR</span></div>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header">🔗 user_competences</div>
+        <div class="db-table-body">
+          <div class="db-field"><span class="field-name">user_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">competence_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">type</span><span class="field-type">ENUM(FORT/FAIBLE)</span></div>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header">📝 offres_mentorat</div>
+        <div class="db-table-body">
+          <div class="db-field"><span class="field-name">id</span><span class="field-pk">PK</span></div>
+          <div class="db-field"><span class="field-name">user_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">competence_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">type</span><span class="field-type">ENUM(offre/demande)</span></div>
+          <div class="db-field"><span class="field-name">format</span><span class="field-type">ENUM</span></div>
+          <div class="db-field"><span class="field-name">disponibilites</span><span class="field-type">JSON</span></div>
+          <div class="db-field"><span class="field-name">created_at</span><span class="field-type">DATETIME</span></div>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header">💬 conversations</div>
+        <div class="db-table-body">
+          <div class="db-field"><span class="field-name">id</span><span class="field-pk">PK</span></div>
+          <div class="db-field"><span class="field-name">user1_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">user2_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">created_at</span><span class="field-type">DATETIME</span></div>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header">✉️ messages</div>
+        <div class="db-table-body">
+          <div class="db-field"><span class="field-name">id</span><span class="field-pk">PK</span></div>
+          <div class="db-field"><span class="field-name">conversation_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">sender_id</span><span class="field-pk">FK</span></div>
+          <div class="db-field"><span class="field-name">contenu</span><span class="field-type">TEXT</span></div>
+          <div class="db-field"><span class="field-name">lu</span><span class="field-type">BOOLEAN</span></div>
+          <div class="db-field"><span class="field-name">created_at</span><span class="field-type">DATETIME</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHI -->
+  <div class="tab-content" id="tab-arch">
+    <div class="arch-layers">
+      <div class="arch-layer">
+        <div class="arch-icon" style="background:rgba(0,194,255,0.12);">🖥️</div>
+        <div>
+          <h4 style="color:var(--blue);">Couche Présentation — Frontend</h4>
+          <p>HTML5 / CSS3 / JavaScript · Tailwind CSS · Pages : Accueil, Inscription, Connexion, Profil, Matching, Messagerie</p>
+        </div>
+      </div>
+      <div class="arch-arrow">⇅ &nbsp; Requêtes HTTP / API REST (JSON)</div>
+      <div class="arch-layer">
+        <div class="arch-icon" style="background:rgba(240,180,41,0.12);">⚙️</div>
+        <div>
+          <h4 style="color:var(--gold);">Couche Logique — Backend</h4>
+          <p>Python · Flask · Routes : /auth, /profil, /matching, /offres, /messages · Sessions sécurisées · bcrypt</p>
+        </div>
+      </div>
+      <div class="arch-arrow">⇅ &nbsp; Requêtes SQL paramétrées</div>
+      <div class="arch-layer">
+        <div class="arch-icon" style="background:rgba(0,229,160,0.12);">🗄️</div>
+        <div>
+          <h4 style="color:var(--green);">Couche Données — Base de données</h4>
+          <p>MySQL / PostgreSQL · 6 tables · Contraintes d'intégrité référentielle · Index sur email, téléphone, user_id</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRUCTURE -->
+  <div class="tab-content" id="tab-struct">
+    <div class="tree">
+<span class="folder">PIL1_2526_64/</span>
+├── <span class="file">index.html</span>          <span class="comment"># Rapport de projet (ce fichier)</span>
+├── <span class="file">README.md</span>            <span class="comment"># Instructions rapides</span>
+├── <span class="file">database.sql</span>         <span class="comment"># Structure complète de la BD</span>
+│
+├── <span class="folder">frontend/</span>
+│   ├── <span class="file">index.html</span>         <span class="comment"># Page d'accueil / landing</span>
+│   ├── <span class="file">login.html</span>         <span class="comment"># Connexion</span>
+│   ├── <span class="file">register.html</span>      <span class="comment"># Inscription</span>
+│   ├── <span class="file">dashboard.html</span>     <span class="comment"># Tableau de bord</span>
+│   ├── <span class="file">profile.html</span>       <span class="comment"># Profil utilisateur</span>
+│   ├── <span class="file">matching.html</span>      <span class="comment"># Résultats de matching</span>
+│   ├── <span class="file">messages.html</span>      <span class="comment"># Messagerie</span>
+│   └── <span class="folder">assets/</span>
+│       ├── <span class="folder">css/</span>  <span class="file">style.css</span>
+│       ├── <span class="folder">js/</span>   <span class="file">main.js · matching.js · chat.js</span>
+│       └── <span class="folder">img/</span>
+│
+└── <span class="folder">backend/</span>
+    ├── <span class="file">app.py</span>             <span class="comment"># Point d'entrée Flask</span>
+    ├── <span class="file">models.py</span>          <span class="comment"># Modèles de données</span>
+    ├── <span class="file">config.py</span>          <span class="comment"># Configuration (DB, secret key)</span>
+    ├── <span class="file">requirements.txt</span>   <span class="comment"># Dépendances Python</span>
+    └── <span class="folder">routes/</span>
+        ├── <span class="file">auth.py</span>            <span class="comment"># /register · /login · /logout</span>
+        ├── <span class="file">profile.py</span>         <span class="comment"># /profil (GET, PUT)</span>
+        ├── <span class="file">matching.py</span>        <span class="comment"># /matching · /offres</span>
+        └── <span class="file">messages.py</span>        <span class="comment"># /conversations · /messages</span>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<!-- DEPLOIEMENT -->
+<div class="section-wrap">
+<section id="deploiement">
+  <div class="section-label">04 — Déploiement</div>
+  <h2>Instructions de déploiement</h2>
+  <p class="section-intro">Étapes pour installer et lancer l'application en local. Prérequis : Python 3.10+, MySQL/PostgreSQL, Git.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Cloner le dépôt GitHub</h4>
+        <p>Récupérer le code source depuis le dépôt officiel du groupe.</p>
+        <div class="code-block">
+          <span class="cmd">git clone https://github.com/[votre-org]/PIL1_2526_64.git</span><br>
+          <span class="cmd">cd PIL1_2526_64</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Créer l'environnement virtuel Python</h4>
+        <p>Isoler les dépendances du projet dans un environnement virtuel.</p>
+        <div class="code-block">
+          <span class="cmd">python -m venv venv</span><br>
+          <span class="cmd">source venv/bin/activate</span>  <span class="comment"># Linux/Mac</span><br>
+          <span class="cmd">venv\Scripts\activate</span>     <span class="comment"># Windows</span><br>
+          <span class="cmd">pip install -r backend/requirements.txt</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Configurer la base de données</h4>
+        <p>Créer la base de données et importer la structure SQL.</p>
+        <div class="code-block">
+          <span class="comment"># Créer la base dans MySQL</span><br>
+          <span class="cmd">mysql -u root -p</span><br>
+          <span class="cmd">CREATE DATABASE mentorlink CHARACTER SET utf8mb4;</span><br>
+          <span class="cmd">EXIT;</span><br><br>
+          <span class="comment"># Importer la structure</span><br>
+          <span class="cmd">mysql -u root -p mentorlink &lt; database.sql</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Configurer les variables d'environnement</h4>
+        <p>Renseigner les paramètres dans <code>backend/config.py</code>.</p>
+        <div class="code-block">
+          <span class="comment"># backend/config.py</span><br>
+          <span class="cmd">DB_HOST = "localhost"</span><br>
+          <span class="cmd">DB_NAME = "mentorlink"</span><br>
+          <span class="cmd">DB_USER = "root"</span><br>
+          <span class="cmd">DB_PASSWORD = "votre_mdp"</span><br>
+          <span class="cmd">SECRET_KEY = "une_cle_secrete_longue"</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Lancer le serveur Flask</h4>
+        <p>L'application sera accessible sur <strong>http://localhost:5000</strong>.</p>
+        <div class="code-block">
+          <span class="cmd">cd backend</span><br>
+          <span class="cmd">python app.py</span><br><br>
+          <span class="comment"># Ouvrir dans le navigateur :</span><br>
+          <span class="cmd">http://localhost:5000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<!-- MANUEL -->
+<div class="section-wrap">
+<section id="manuel">
+  <div class="section-label">05 — Manuel</div>
+  <h2>Manuel d'utilisation</h2>
+  <p class="section-intro">Guide des principales fonctionnalités de l'application IFRI_MentorLink.</p>
+
+  <div class="manuel-grid">
+    <div class="manuel-card">
+      <div class="manuel-icon" style="background:rgba(0,194,255,0.1);">👤</div>
+      <h3>Créer un compte</h3>
+      <ol>
+        <li>Cliquer sur "S'inscrire" depuis l'accueil</li>
+        <li>Remplir nom, prénom, email, téléphone, mot de passe</li>
+        <li>Choisir sa filière et niveau d'études</li>
+        <li>Sélectionner ses points forts et faibles</li>
+        <li>Valider l'inscription</li>
+      </ol>
+    </div>
+    <div class="manuel-card">
+      <div class="manuel-icon" style="background:rgba(240,180,41,0.1);">🔑</div>
+      <h3>Se connecter</h3>
+      <ol>
+        <li>Cliquer sur "Connexion" depuis l'accueil</li>
+        <li>Saisir email ou numéro de téléphone</li>
+        <li>Entrer son mot de passe</li>
+        <li>Cliquer sur "Se connecter"</li>
+        <li>En cas d'oubli : "Mot de passe oublié"</li>
+      </ol>
+    </div>
+    <div class="manuel-card">
+      <div class="manuel-icon" style="background:rgba(0,229,160,0.1);">🎯</div>
+      <h3>Trouver un mentor</h3>
+      <ol>
+        <li>Accéder à "Matching" depuis le tableau de bord</li>
+        <li>L'algorithme propose les profils compatibles</li>
+        <li>Consulter le score et les matières communes</li>
+        <li>Cliquer sur un profil pour ses disponibilités</li>
+        <li>Envoyer une demande de mentorat</li>
+      </ol>
+    </div>
+    <div class="manuel-card">
+      <div class="manuel-icon" style="background:rgba(240,180,41,0.1);">📢</div>
+      <h3>Publier une offre</h3>
+      <ol>
+        <li>Aller dans "Mes offres" depuis le tableau de bord</li>
+        <li>Cliquer sur "Nouvelle offre" ou "Nouvelle demande"</li>
+        <li>Sélectionner la matière concernée</li>
+        <li>Indiquer le format (présentiel/en ligne)</li>
+        <li>Préciser vos disponibilités et publier</li>
+      </ol>
+    </div>
+    <div class="manuel-card">
+      <div class="manuel-icon" style="background:rgba(0,194,255,0.1);">💬</div>
+      <h3>Utiliser la messagerie</h3>
+      <ol>
+        <li>Accéder à "Messages" depuis la navigation</li>
+        <li>Sélectionner ou démarrer une conversation</li>
+        <li>Taper votre message dans le champ de saisie</li>
+        <li>Appuyer sur Entrée ou cliquer sur Envoyer</li>
+        <li>Notifications en temps réel à la réception</li>
+      </ol>
+    </div>
+    <div class="manuel-card">
+      <div class="manuel-icon" style="background:rgba(0,229,160,0.1);">✏️</div>
+      <h3>Modifier son profil</h3>
+      <ol>
+        <li>Cliquer sur son avatar en haut à droite</li>
+        <li>Sélectionner "Mon profil"</li>
+        <li>Modifier les informations souhaitées</li>
+        <li>Mettre à jour compétences / lacunes</li>
+        <li>Enregistrer les modifications</li>
+      </ol>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-left">IFRI_MentorLink · PIL1_2526_64</div>
+  <div class="footer-right">Université d'Abomey-Calavi · IFRI · Année 2025–2026</div>
+</footer>
+
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.membre-card, .fonct-card, .manuel-card, .db-table, .arch-layer, .step').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(22px)';
+    el.style.transition = `opacity 0.5s ${i * 0.05}s ease, transform 0.5s ${i * 0.05}s ease`;
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
