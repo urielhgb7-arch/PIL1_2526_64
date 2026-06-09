@@ -22,7 +22,7 @@ Plateforme de mentorat academique basee sur un matching intelligent.
 | 4 | HOUNNOUKON Agossou Prince | F4 | Rapporteur |
 | 5 | YESSOUFOU Scham's-Deen | F3 | Developpeur Frontend |
 | 6 | TOCHENALI Paola Eloane | B2 | Developpeur Backend |
-| 7 | 
+| 7 | MOUTOUAMA Liwêto Eben-Ezer | F1 | Developpeur Frontend |
 
 ## Structure du projet
 
