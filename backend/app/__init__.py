@@ -16,7 +16,7 @@ def create_app(config_name=None):
     flask_app = Flask(__name__)
 
     if config_name is None:
-        config_name = os.getenv('FLASK_CONFIG', 'development')
+        config_name = os.getenv('FLASK_CONFIG') or os.getenv('FLASK_ENV', 'development')
 
     flask_app.config.from_object(config.get(config_name, config['development']))
 

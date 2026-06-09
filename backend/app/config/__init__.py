@@ -49,12 +49,17 @@ class ProductionConfig(Config):
     DEBUG = False
     from sqlalchemy.pool import NullPool
     db_url = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
-    SQLALCHEMY_DATABASE_URI = db_url
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_pre_ping': True,
-        'pool_recycle': 300,
-        'poolclass': NullPool if db_url else None,
-    }
+    if db_url:
+        SQLALCHEMY_DATABASE_URI = db_url
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            'pool_pre_ping': True,
+            'pool_recycle': 300,
+            'poolclass': NullPool,
+        }
+    else:
+        _db_path = Path(__file__).resolve().parents[2] / 'instance' / 'prod.db'
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{_db_path.as_posix()}'
+        SQLALCHEMY_ENGINE_OPTIONS = {}
 
 class TestingConfig(Config):
     TESTING = True
