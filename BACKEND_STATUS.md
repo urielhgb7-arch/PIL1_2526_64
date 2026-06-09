@@ -43,7 +43,8 @@ backend/
 │   │   ├── services.py          # Matiere, Offer, Demand, Matching, ProfilCompetence, ProfilLacune
 │   │   └── messages.py          # Conversation, Message, Notification
 │   ├── services/
-│   │   └── matching.py          # Moteur de calcul des scores de matching
+│   │   ├── matching.py          # Moteur de calcul des scores de matching
+│   │   └── email_service.py     # Envoi d'emails (SMTP Gmail)
 │   ├── sockets/
 │   │   └── chat.py              # WebSocket pour messages en temps réel
 │   ├── middleware/
@@ -226,6 +227,70 @@ backend/
 
 ---
 
+## 📧 Réinitialisation de Mot de Passe par Email
+
+### Fonctionnement
+
+```
+Utilisateur clique "Mot de passe oublié ?"
+          │
+          ▼
+POST /api/auth/forgot-password  ← email
+          │
+          ▼
+[DEV] FLASK_ENV != production
+    → Réponse JSON : { message, reset_token }  ← token visible
+[PROD] FLASK_ENV = production
+    → Email envoyé via SMTP Gmail avec lien de réinit
+    → Réponse JSON : { message }  ← token caché
+          │
+          ▼
+Utilisateur reçoit l'email → clique sur le lien
+          │
+          ▼
+reset-password.html?token=...  ← pré-remplit le token
+          │
+          ▼
+POST /api/auth/reset-password  ← token + nouveau mot de passe
+          │
+          ▼
+Mot de passe mis à jour ✓
+```
+
+### Configuration SMTP (Gmail)
+
+1. Activer la **2FA** sur le compte Gmail
+2. Générer un **mot de passe d'application** :
+   - https://myaccount.google.com/apppasswords
+   - Appareil : "Autre" → nommer "MentorLink"
+   - Copier les 16 caractères
+3. Renseigner dans `.env` ou `.env.local` :
+   ```ini
+   FLASK_ENV=production
+   MAIL_USERNAME=ton.email@gmail.com
+   MAIL_PASSWORD=les_16_caracteres
+   MAIL_FROM=ton.email@gmail.com
+   FRONTEND_URL=http://localhost:5500
+   ```
+
+### Comportement par environnement
+
+| Environnement | Token dans la réponse | Email envoyé | Usage |
+|--------------|----------------------|--------------|-------|
+| `development` | ✅ Oui | ❌ Non | Tests rapides |
+| `testing` | ✅ Oui | ❌ Non | Tests pytest |
+| `production` | ❌ Non | ✅ Oui (SMTP) | Production réelle |
+
+### Service technique
+
+- **Fichier** : `app/services/email_service.py`
+- **Librairie** : `smtplib` (stdlib Python) — 0 dépendance
+- **Template** : Email HTML responsive avec bouton de réinit
+- **Sécurité** : Token de 32 octets URL-safe, expire après 1h, usage unique
+- **Rate limiting** : 5 tentatives/heure par IP
+
+---
+
 ## 📊 Modèles de Données
 
 ### **User** (`users` table)
@@ -360,6 +425,12 @@ SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-key
 DATABASE_URL=sqlite:///ifri.db  # ou postgresql://...
 DEBUG=True                       # False en production
+
+# SMTP Gmail (pour réinitialisation mot de passe)
+MAIL_USERNAME=votre.email@gmail.com
+MAIL_PASSWORD=mdp_application_16_car
+MAIL_FROM=votre.email@gmail.com
+FRONTEND_URL=http://localhost:5500
 ```
 
 ---
@@ -368,9 +439,8 @@ DEBUG=True                       # False en production
 
 1. **Pas de migration DB automatique** - Utiliser `init_db.py` ou Alembic
 2. **WebSocket** - Socket.IO en dev mode, adapter pour production
-3. **Authentification SMS/Email** - À implémenter
-4. **Paiements** - À implémenter
-5. **Système de notes** - À implémenter
+3. **Paiements** - À implémenter
+4. **Système de notes** - À implémenter
 
 ---
 
