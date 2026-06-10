@@ -65,7 +65,7 @@ Chat temps réel via Socket.IO :
 ## 8. Paramètres (`settings.html`)
 
 Gestion complète du profil :
-- **Avatar** : upload (data URL, max 2 Mo) — sauvegardé via API → visible partout.
+- **Avatar** : upload → recadrage (Cropper.js, carré 1:1) → bouton Enregistrer/Annuler. Sauvegardé via API, persistant jusqu'à modification manuelle. Le cache dashboard (`mentorlink_profile_cache`) est mis à jour après validation.
 - **Informations** : nom, prénom, email, téléphone, filière, niveau, bio.
 - **Compétences** : ajout/suppression avec toggle activation.
 - **Lacunes** : ajout/suppression.
@@ -77,7 +77,8 @@ Gestion complète du profil :
 Centre de notifications :
 - Non lues en surbrillance.
 - Marquer comme lue / tout lire / supprimer.
-- Types : message, match_system, alert.
+- Types : `match_system` (demande, acceptation, refus), `message` (nouveau message reçu dans une conversation), `alert`.
+- Les notifications de message sont créées côté backend à chaque envoi (socket REST).
 
 ## 10. Connexion (`signin.html`)
 
@@ -134,3 +135,4 @@ js/
 - **Tailwind CSS** (CDN) — styling utilitaire
 - **Tabler Icons** (CDN) — icônes SVG
 - **Socket.IO** (CDN `socket.io.min.js`) — chat temps réel
+- **Cropper.js** (CDN) — recadrage photo de profil

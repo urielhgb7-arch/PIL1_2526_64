@@ -214,6 +214,32 @@ Les erreurs 401 redirigent vers la page de connexion (sauf sur les pages publiqu
 
 ---
 
+## Algorithme de Matching
+
+Fichier : `backend/app/services/matching.py`
+
+Score sur **100 points**, calculé pour chaque candidat :
+
+| Critère | Max | Règle |
+|---------|-----|-------|
+| **Matière** | 35 | Candidat compétent dans la matière de la demande → 35 pts. Autres matières seulement → 10 pts |
+| **Niveau vs urgence** | 20 | Rapport entre le niveau de compétence (1–4) et la priorité de la lacune (1–4) |
+| **Disponibilités** | 25 | Fraction des créneaux de la demande couverts par le candidat. 0 si aucun |
+| **Même année** | 10 | Si `niveau` identique |
+| **Même filière** | 10 | Si `filiere` identique |
+| **Même format** | 10 | Si `format_preference` identique |
+| **Pénalité rejet** | -5 | Si l'utilisateur a déjà rejeté ce candidat |
+
+Résultats triés par score décroissant. Deux variantes :
+- **Général** (`calculate_matches_general`) — parcourt toutes les lacunes de l'utilisateur, trouve les candidats compétents sur au moins une matière.
+- **Par demande** (`calculate_matches_demand`) — trouve des candidats pour une demande spécifique : vérifie la matière (35 pts si correspond, 10 si autres compétences uniquement) et calcule la disponibilité sur les créneaux de la demande.
+
+```
+score = min(100, matiere + niveau + dispos + meme_niveau + meme_filiere + format + penalite)
+```
+
+---
+
 ## Installation locale
 
 ```bash

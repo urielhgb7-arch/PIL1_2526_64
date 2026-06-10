@@ -188,21 +188,37 @@
                     <div class="flex items-center gap-4">
                         <a
                             href="settings.html"
-                            class="flex flex-col items-end group cursor-pointer hover:opacity-80 transition-opacity"
+                            class="flex items-center gap-2 group cursor-pointer hover:opacity-80 transition-opacity"
                         >
-                            <span
-                                id="user-name"
-                                class="text-sm font-medium text-white group-hover:text-primary transition-colors"
-                            ></span>
-                            <div class="flex gap-1.5 mt-0.5">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden relative"
+                            >
                                 <span
-                                    id="topbar-filiere"
-                                    class="hidden text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
-                                ></span>
+                                    id="topbar-avatar-initials"
+                                    class="text-xs font-bold text-primary"
+                                >?</span>
+                                <img
+                                    id="topbar-avatar-img"
+                                    src=""
+                                    alt="avatar"
+                                    class="hidden w-full h-full object-cover absolute inset-0"
+                                />
+                            </div>
+                            <div class="flex flex-col items-end">
                                 <span
-                                    id="topbar-niveau"
-                                    class="hidden text-xs px-2 py-0.5 bg-success/10 text-success rounded-full"
+                                    id="user-name"
+                                    class="text-sm font-medium text-white group-hover:text-primary transition-colors"
                                 ></span>
+                                <div class="flex gap-1.5 mt-0.5">
+                                    <span
+                                        id="topbar-filiere"
+                                        class="hidden text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
+                                    ></span>
+                                    <span
+                                        id="topbar-niveau"
+                                        class="hidden text-xs px-2 py-0.5 bg-success/10 text-success rounded-full"
+                                    ></span>
+                                </div>
                             </div>
                         </a>
                         <a
@@ -1179,23 +1195,25 @@
                 window._profileLacs = profile.lacunes || [];
                 window._profileAvatarUrl = profile.avatar_url || "";
 
+                const avatarUrl = profile.avatar_url || "";
                 const initials =
                     `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
                     "?";
-                document.getElementById(
-                    "profile-avatar-initials",
-                ).textContent = initials;
-                const avatarUrl = profile.avatar_url || "";
-                const avImg = document.getElementById("profile-avatar-img");
-                const avInit = document.getElementById("profile-avatar-initials");
-                if (avatarUrl && avatarUrl !== "https://via.placeholder.com/150") {
-                    avImg.src = avatarUrl;
-                    avImg.classList.remove("hidden");
-                    avInit.classList.add("hidden");
-                } else {
-                    avImg.classList.add("hidden");
-                    avInit.classList.remove("hidden");
+                function setAvatar(imgId, initId, url, initials) {
+                    const img = document.getElementById(imgId);
+                    const ini = document.getElementById(initId);
+                    if (url && url !== "https://via.placeholder.com/150") {
+                        img.src = url;
+                        img.classList.remove("hidden");
+                        ini.classList.add("hidden");
+                    } else {
+                        img.classList.add("hidden");
+                        ini.classList.remove("hidden");
+                        ini.textContent = initials;
+                    }
                 }
+                setAvatar("profile-avatar-img", "profile-avatar-initials", avatarUrl, initials);
+                setAvatar("topbar-avatar-img", "topbar-avatar-initials", avatarUrl, initials);
                 document.getElementById(
                     "profile-fullname-dash",
                 ).textContent = fullName || "—";
@@ -1238,27 +1256,26 @@
                 const cached = localStorage.getItem("mentorlink_profile_cache");
                 if (cached) {
                     try { renderProfileCard(JSON.parse(cached)); } catch (_) {}
-                }
-
-                // Rafraîchissement depuis l'API
-                try {
-                    const data = await API.profile.getMe();
-                    const profile = data.profile || data;
-                    renderProfileCard(profile);
-                } catch (err) {
-                    if (!cached) {
+                } else {
+                    // Pas de cache : un seul appel API pour charger le profil
+                    try {
+                        const data = await API.profile.getMe();
+                        const profile = data.profile || data;
+                        renderProfileCard(profile);
+                    } catch (_) {
                         const userData = getUserData();
                         if (userData && userData.firstName) {
                             document.getElementById("user-name").textContent =
                                 `${userData.firstName} ${userData.lastName}`;
                         }
-                        document.getElementById("profile-preview-loading").textContent = "Profil non disponible.";
+                        document.getElementById("profile-preview-loading").classList.add("hidden");
+                        document.getElementById("profile-preview-content").classList.remove("hidden");
                     }
                 }
 
                 // ── Métriques réelles ─────────────────────────────────────────────────
                 try {
-                    const [received, sent, offers, prof] = await Promise.all([
+                    const [received, sent, offers] = await Promise.all([
                         API.matching.getReceived().catch(() => {
                             showToast("Erreur chargement matchs", "error");
                             return [];
@@ -1270,10 +1287,6 @@
                         API.offers.getAll().catch(() => {
                             showToast("Erreur chargement offres", "error");
                             return [];
-                        }),
-                        API.profile.getMe().catch(() => {
-                            showToast("Erreur chargement profil", "error");
-                            return {};
                         }),
                     ]);
                     const rArr = Array.isArray(received)

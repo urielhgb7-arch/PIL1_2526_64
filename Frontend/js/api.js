@@ -54,7 +54,15 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
 
-        const data = await response.json();
+        // Tente de parser le JSON ; si la réponse n'est pas du JSON, on utilise le texte
+        let data;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
 
         if (!response.ok) {
             throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
@@ -92,7 +100,8 @@ const API = {
         addDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'POST', data),
         removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
         activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
-        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT')
+        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT'),
+        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data)
     },
 
     matching: {

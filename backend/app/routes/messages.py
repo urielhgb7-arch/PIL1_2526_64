@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
 from app.models import User, Profile
-from app.models.messages import Conversation, Message
+from app.models.messages import Conversation, Message, Notification
 
 logger = logging.getLogger(__name__)
 messages_bp = Blueprint('messages', __name__)
@@ -138,6 +138,23 @@ def envoyer_message(conv_id: int):
         db.session.add(msg)
         db.session.commit()
         logger.info(f" Message envoyé: {msg.id} dans conv={conv_id}")
+
+        # Notification pour le destinataire
+        try:
+            current_user = db.session.get(User, current_user_id)
+            profile = Profile.query.filter_by(user_id=current_user_id).first()
+            sender_name = f"{profile.prenom} {profile.nom}" if profile else "Quelqu'un"
+            other_user_id = conv.user_one_id if conv.user_two_id == current_user_id else conv.user_two_id
+            notif = Notification(
+                user_id=other_user_id,
+                titre="Nouveau message",
+                contenu=f"{sender_name} vous a envoyé un message",
+                type='message'
+            )
+            db.session.add(notif)
+            db.session.commit()
+        except Exception as e:
+            logger.warning(f"Échec création notification message REST: {e}")
 
         return jsonify({"message": "Message envoyé", "message_id": msg.id}), 201
         

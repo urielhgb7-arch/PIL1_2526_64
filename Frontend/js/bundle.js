@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MentorLink — Configuration & Client API Centralisé
  * Rôle : Gérer l'URL du serveur, joindre automatiquement le token JWT,
  * et intercepter les erreurs globales.
@@ -54,7 +54,15 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
 
-        const data = await response.json();
+        // Tente de parser le JSON ; si la réponse n'est pas du JSON, on utilise le texte
+        let data;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
 
         if (!response.ok) {
             throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
@@ -92,7 +100,8 @@ const API = {
         addDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'POST', data),
         removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
         activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
-        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT')
+        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT'),
+        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data)
     },
 
     matching: {
@@ -144,9 +153,6 @@ const API = {
 };
 
 window.API = API;
-
-
-/** script.js */
 // Check authentication
 function checkAuth(redirectTo = 'signin.html') {
   const isAuthenticated = localStorage.getItem('isAuthenticated');
@@ -210,9 +216,6 @@ function formatTime(date) {
   const options = { hour: '2-digit', minute: '2-digit' };
   return new Date(date).toLocaleTimeString('fr-FR', options);
 }
-
-
-/** matieres-loader.js */
 // Load matieres from API and cache locally with filiere + niveau filtering
 let _matieresCache = null;
 
@@ -314,9 +317,6 @@ window.loadMatieresFromAPI = loadMatieresFromAPI;
 window.getMatiersByFiliere = getMatiersByFiliere;
 window.getMatieresByFiliereAndNiveau = getMatieresByFiliereAndNiveau;
 window.initMatieresLoader = initMatieresLoader;
-
-
-/** notifications-badge.js */
 // Centralized notifications badge updater
 async function fetchUnreadCount() {
   try {
@@ -362,4 +362,3 @@ if (typeof window !== 'undefined') {
 // expose for manual control
 window.updateNotificationsBadge = updateNotificationsBadge;
 window.startNotificationsBadgePoll = startNotificationsBadgePoll;
-

@@ -2,7 +2,7 @@ import logging
 from flask_socketio import SocketIO, join_room, leave_room, emit, disconnect
 from flask_jwt_extended import decode_token
 from jwt.exceptions import InvalidTokenError
-from app.models.messages import Message, Conversation
+from app.models.messages import Message, Conversation, Notification
 from app.database import db
 
 logger = logging.getLogger(__name__)
@@ -132,6 +132,23 @@ def on_message(data):
     db.session.add(msg)
     db.session.commit()
     logger.info(f"Socket : message {msg.id} persisté dans conv {conversation_id}")
+
+    # Notification pour le destinataire
+    try:
+        from app.models.users import User
+        sender = db.session.get(User, user_id)
+        sender_name = f"{sender.prenom} {sender.nom}" if sender else "Quelqu'un"
+        other_user_id = conv.user_one_id if conv.user_two_id == user_id else conv.user_two_id
+        notif = Notification(
+            user_id=other_user_id,
+            titre="Nouveau message",
+            contenu=f"{sender_name} vous a envoyé un message",
+            type='message'
+        )
+        db.session.add(notif)
+        db.session.commit()
+    except Exception as e:
+        logger.warning(f"Échec création notification message : {e}")
 
     # Diffusion à tous les membres de la room
     emit('new_message', {

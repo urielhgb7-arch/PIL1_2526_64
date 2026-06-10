@@ -342,6 +342,19 @@
         if (user) localStorage.setItem('mentorlink_user', JSON.stringify(user));
         localStorage.setItem('isAuthenticated', 'true');
 
+        // Pré-charge le profil complet dans le cache pour affichage instantané au dashboard
+        try {
+          const profData = await API.profile.getMe();
+          const prof = profData.profile || profData;
+          localStorage.setItem('mentorlink_profile_cache', JSON.stringify(prof));
+          saveUserData({
+            firstName: prof.prenom,
+            lastName: prof.nom,
+            department: prof.filiere,
+            level: prof.niveau,
+          });
+        } catch (_) { /* cache optionnel, le dashboard fera l'appel */ }
+
         // redirect according to onboarding flag or profile completeness
         window.location.href = 'dashboard.html';
       } catch (err) {

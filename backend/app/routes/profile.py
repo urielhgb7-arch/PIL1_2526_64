@@ -233,6 +233,48 @@ def update_my_profile(current_user):
     return jsonify({"message": "Profil mis à jour avec succès"}), 200
 
 
+# ─── POST /api/profile/avatar ────────────────────────────────────────────────
+@profile_bp.route("/profile/avatar", methods=["PUT"])
+@token_required
+def update_avatar(current_user):
+    """Met à jour UNIQUEMENT l'avatar. Retourne le profil complet pour vérification."""
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    data = request.get_json(silent=True)
+    if not data or "avatar_url" not in data:
+        return jsonify({"message": "avatar_url requis"}), 400
+
+    avatar_url = data["avatar_url"]
+    if not avatar_url or not isinstance(avatar_url, str):
+        return jsonify({"message": "avatar_url invalide"}), 400
+
+    # Vérifie que c'est une data URL valide (commence par data:image/)
+    if not avatar_url.startswith("data:image/"):
+        return jsonify({"message": "Format d'image invalide. Utilisez une data URL (data:image/...)"}), 400
+
+    profile.avatar_url = avatar_url
+    db.session.commit()
+
+    # Retourne le profil complet pour que le frontend puisse vérifier
+    competences = ProfilCompetence.query.filter_by(profile_id=profile.id).all()
+    lacunes = ProfilLacune.query.filter_by(profile_id=profile.id).all()
+    return jsonify({
+        "message": "Avatar enregistré avec succès",
+        "profile": {
+            "id": profile.id,
+            "user_id": current_user.id,
+            "email": current_user.email,
+            "nom": profile.nom,
+            "prenom": profile.prenom,
+            "filiere": profile.filiere,
+            "niveau": profile.niveau,
+            "avatar_url": profile.avatar_url,
+        }
+    }), 200
+
+
 # ─── POST /api/profile/disponibilites ───────────────────────────────────────
 @profile_bp.route("/profile/disponibilites", methods=["POST"])
 @token_required

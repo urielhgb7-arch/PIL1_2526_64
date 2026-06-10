@@ -10,6 +10,12 @@
             href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
         />
         <link rel="stylesheet" href="../css/styles.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js">
+        </script>
         <script>
             tailwind.config = {
                 theme: {
@@ -70,6 +76,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- Toast -->
+        <div
+            id="toast"
+            class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"
+        ></div>
 
         <!-- Settings Content -->
         <div class="max-w-4xl mx-auto p-4 pb-24 lg:pb-8 space-y-6">
@@ -678,6 +690,40 @@
             </div>
         </div>
 
+        <!-- Crop Avatar Modal -->
+        <div
+            id="modal-crop-avatar"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 hidden"
+            onclick="if(event.target===this)closeCropModal()"
+        >
+            <div
+                class="bg-card rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl border border-border"
+                onclick="event.stopPropagation()"
+            >
+                <h3 class="text-lg font-bold mb-4">Recadrer la photo</h3>
+                <div class="w-full max-h-80 overflow-hidden rounded-xl bg-black/40">
+                    <img id="crop-image" src="" alt="Photo à recadrer" class="max-w-full" />
+                </div>
+                <div class="flex gap-3 mt-5">
+                    <button
+                        type="button"
+                        onclick="closeCropModal()"
+                        class="flex-1 py-2.5 bg-popover text-white rounded-xl hover:bg-popover/80 transition-colors text-sm font-medium"
+                    >
+                        Annuler
+                    </button>
+                    <button
+                        type="button"
+                        id="btn-save-crop"
+                        onclick="saveCrop()"
+                        class="flex-1 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Mobile Bottom Navigation -->
         <div
             class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50"
@@ -843,6 +889,29 @@
                 }
             }
 
+            let _cropper = null;
+
+            function openCropModal(dataUrl) {
+                const img = document.getElementById("crop-image");
+                img.src = dataUrl;
+                document.getElementById("modal-crop-avatar").classList.remove("hidden");
+                if (_cropper) _cropper.destroy();
+                _cropper = new Cropper(img, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: "move",
+                    autoCropArea: 1,
+                    cropBoxMovable: false,
+                    cropBoxResizable: true,
+                    background: false,
+                });
+            }
+
+            function closeCropModal() {
+                document.getElementById("modal-crop-avatar").classList.add("hidden");
+                if (_cropper) { _cropper.destroy(); _cropper = null; }
+            }
+
             async function handleAvatarChange(event) {
                 const file = event.target.files[0];
                 if (!file) return;
@@ -851,15 +920,7 @@
                     return;
                 }
                 const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const dataUrl = e.target.result;
-                    displayAvatar(dataUrl, "");
-                    try {
-                        await API.profile.updateMe({ avatar_url: dataUrl });
-                    } catch (err) {
-                        console.warn("Erreur sauvegarde avatar:", err);
-                    }
-                };
+                reader.onload = (e) => openCropModal(e.target.result);
                 reader.readAsDataURL(file);
             }
 
@@ -1179,13 +1240,23 @@
                     const payload = { prenom, nom, filiere, niveau, bio };
 
                     try {
-                        await API.profile.updateMe(payload);
+                        const result = await API.profile.updateMe(payload);
                         saveUserData({
                             firstName: prenom,
                             lastName: nom,
                             department: filiere,
                             level: niveau,
                         });
+                        // Met à jour le cache dashboard
+                        try {
+                            const cached = JSON.parse(localStorage.getItem("mentorlink_profile_cache") || "{}");
+                            cached.prenom = prenom;
+                            cached.nom = nom;
+                            cached.filiere = filiere;
+                            cached.niveau = niveau;
+                            if (result && result.profile) Object.assign(cached, result.profile);
+                            localStorage.setItem("mentorlink_profile_cache", JSON.stringify(cached));
+                        } catch (_) {}
                         await loadProfile();
                         closeModal("profile");
                     } catch (err) {
@@ -1612,6 +1683,57 @@
                         btn.textContent = "Supprimer définitivement";
                     }
                 });
+
+            // ── Toast ────────────────────────────────────────────────────────────────
+            function showToast(msg, type) {
+                const el = document.getElementById("toast");
+                if (!el) return;
+                el.textContent = msg;
+                el.className = "fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all";
+                const bg = type === "success" ? "bg-success/20 text-success border border-success/30"
+                    : type === "error" ? "bg-destructive/20 text-destructive border border-destructive/30"
+                    : "bg-popover text-white border border-border";
+                el.className += " " + bg;
+                el.classList.remove("hidden");
+                clearTimeout(el._timeout);
+                el._timeout = setTimeout(() => el.classList.add("hidden"), 3500);
+            }
+
+            // ── Save Crop ────────────────────────────────────────────────────────────
+            async function saveCrop() {
+                if (!_cropper) return;
+                const btn = document.getElementById("btn-save-crop");
+                btn.innerHTML = '<span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle"></span>Enregistrement...';
+                btn.disabled = true;
+                const canvas = _cropper.getCroppedCanvas({ width: 256, height: 256 });
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+                displayAvatar(dataUrl, "");
+                closeCropModal();
+                try {
+                    // Essaie d'abord l'endpoint dédié (plus récent)
+                    let savedUrl = null;
+                    try {
+                        const result = await API.profile.updateAvatar({ avatar_url: dataUrl });
+                        savedUrl = result?.profile?.avatar_url || null;
+                    } catch (_) {
+                        // Fallback vers updateMe si l'endpoint dédié n'existe pas (backend pas à jour)
+                        await API.profile.updateMe({ avatar_url: dataUrl });
+                        savedUrl = dataUrl;
+                    }
+                    // Mise à jour du cache dashboard
+                    try {
+                        const cached = JSON.parse(localStorage.getItem("mentorlink_profile_cache") || "{}");
+                        cached.avatar_url = savedUrl || dataUrl;
+                        localStorage.setItem("mentorlink_profile_cache", JSON.stringify(cached));
+                    } catch (_) {}
+                    showToast("Photo de profil enregistrée avec succès", "success");
+                } catch (err) {
+                    showToast("Erreur lors de l'enregistrement de la photo : " + (err.message || "réessayez"), "error");
+                    console.warn("Erreur sauvegarde avatar:", err);
+                }
+                btn.innerHTML = 'Enregistrer';
+                btn.disabled = false;
+            }
 
             // Lancement
             loadProfile();
