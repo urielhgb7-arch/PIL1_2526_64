@@ -62,7 +62,7 @@ async function uploadFileAPI(endpoint, method, formData) {
             const text = await res.text();
             try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
         }
-        if (!res.ok) throw new Error(data.message || ('Erreur (' + res.status + ')'));
+        if (!res.ok) throw new Error((data.message || ('Erreur (' + res.status + ')')) + (data.error ? ': ' + data.error : ''));
         return data;
     } catch (e) {
         console.error('[API Upload] ' + endpoint + ':', e);
@@ -96,7 +96,7 @@ async function fetchAPI(endpoint, method, body) {
             const text = await res.text();
             try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
         }
-        if (!res.ok) throw new Error(data.message || ('Erreur (' + res.status + ')'));
+        if (!res.ok) throw new Error((data.message || ('Erreur (' + res.status + ')')) + (data.error ? ': ' + data.error : ''));
         return data;
     } catch (e) {
         console.error('[API Error] ' + endpoint + ':', e);
