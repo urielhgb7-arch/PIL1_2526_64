@@ -817,6 +817,68 @@
             </div>
         </div>
 
+        <!-- Remplissage instantané du profil depuis le cache (avant loadDashboard) -->
+        <script>
+            (function() {
+                try {
+                    var data = JSON.parse(localStorage.getItem('mentorlink_profile_cache') || sessionStorage.getItem('mentorlink_profile_cache') || 'null');
+                    if (!data) {
+                        var legacy = localStorage.getItem('userData');
+                        if (legacy) {
+                            var ud = JSON.parse(legacy);
+                            data = { prenom: ud.firstName, nom: ud.lastName, filiere: ud.department, niveau: ud.level, avatar_url: '' };
+                        }
+                    }
+                    if (!data) return;
+
+                    var prenom = data.prenom || '';
+                    var nom = data.nom || '';
+                    var fullName = (prenom + ' ' + nom).trim();
+                    var initials = (prenom.charAt(0) + nom.charAt(0)).toUpperCase() || '?';
+
+                    // Top bar
+                    var userName = document.getElementById('user-name');
+                    if (userName) userName.textContent = fullName;
+
+                    var topInit = document.getElementById('topbar-avatar-initials');
+                    var topImg = document.getElementById('topbar-avatar-img');
+                    var avatarUrl = data.avatar_url || '';
+                    if (avatarUrl && avatarUrl !== 'https://via.placeholder.com/150') {
+                        if (topImg) { topImg.src = avatarUrl; topImg.classList.remove('hidden'); }
+                        if (topInit) topInit.classList.add('hidden');
+                    } else {
+                        if (topInit) { topInit.textContent = initials; topInit.classList.remove('hidden'); }
+                        if (topImg) topImg.classList.add('hidden');
+                    }
+
+                    var topFiliere = document.getElementById('topbar-filiere');
+                    if (topFiliere && data.filiere) { topFiliere.textContent = data.filiere; topFiliere.classList.remove('hidden'); }
+                    var topNiveau = document.getElementById('topbar-niveau');
+                    if (topNiveau && data.niveau) { topNiveau.textContent = data.niveau; topNiveau.classList.remove('hidden'); }
+
+                    // Profile preview card
+                    var pfpName = document.getElementById('profile-fullname-dash');
+                    if (pfpName) pfpName.textContent = fullName || '—';
+
+                    var pfInit = document.getElementById('profile-avatar-initials');
+                    var pfImg = document.getElementById('profile-avatar-img');
+                    if (avatarUrl && avatarUrl !== 'https://via.placeholder.com/150') {
+                        if (pfImg) { pfImg.src = avatarUrl; pfImg.classList.remove('hidden'); }
+                        if (pfInit) pfInit.classList.add('hidden');
+                    } else {
+                        if (pfInit) { pfInit.textContent = initials; pfInit.classList.remove('hidden'); }
+                        if (pfImg) pfImg.classList.add('hidden');
+                    }
+
+                    var pfFiliere = document.getElementById('profile-filiere-badge');
+                    if (pfFiliere) pfFiliere.textContent = data.filiere || '—';
+                    var pfNiveau = document.getElementById('profile-niveau-badge');
+                    if (pfNiveau) pfNiveau.textContent = data.niveau || '—';
+                    var pfEmail = document.getElementById('profile-email-dash');
+                    if (pfEmail && data.email) pfEmail.textContent = data.email;
+                } catch(e) {}
+            })();
+        </script>
         <script src="../js/bundle.js"></script>
         <script>
             checkAuth();
