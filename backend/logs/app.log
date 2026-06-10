@@ -6090,3 +6090,202 @@ with app.app_context(). See the documentation for more information.
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
+[2026-06-10 23:39:46] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:39:46] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:39:47] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:39:47] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:39:47] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:39:47] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:39:47] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:39:47] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:39:47] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:39:47] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:39:47] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:39:47] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:39:47] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:39:47] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:39:47] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:39:47] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:39:50] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:39:50] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:39:50] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:39:50] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:39:50] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:39:50] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:39:51] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:39:51] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:39:51] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:39:51] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:39:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:39:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:39:51] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:39:51] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:39:51] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:39:51] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:40:50] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:40:50] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:40:51] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:40:51] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:40:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:40:51] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:40:51] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:40:51] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:40:51] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:40:51] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:40:51] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:40:51] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:40:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:40:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:40:51] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:40:51] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:40:53] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:40:53] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:40:53] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:40:53] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:40:53] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:40:53] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:40:53] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:40:53] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:40:53] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:40:53] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:40:53] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:40:53] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:40:53] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:40:53] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:40:53] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:40:53] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:41:39] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:41:39] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:41:39] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:41:39] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:41:39] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:41:39] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:41:39] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:41:39] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:41:39] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:41:39] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:41:39] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:41:39] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:41:39] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:41:39] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:41:39] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:41:39] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:41:41] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:41:41] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:41:41] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:41:41] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:41:41] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:41:41] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:41:41] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:41:41] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:41:41] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:41:41] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:41:41] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:41:41] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:41:41] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:41:41] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:41:41] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:41:41] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:42:14] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:42:14] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:42:15] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:42:15] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:42:15] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:42:15] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:42:15] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:42:15] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:42:15] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:42:15] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:42:15] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:42:15] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:42:15] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:42:15] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:42:15] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:42:15] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:42:16] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:42:16] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:42:17] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:42:17] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:42:17] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:42:17] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:42:17] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:42:17] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:42:17] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:42:17] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:42:17] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:42:17] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:42:17] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:42:17] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:42:17] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:42:17] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:43:21] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:43:21] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:43:22] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:43:22] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:43:22] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:22] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:43:22] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:43:22] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:43:22] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:43:22] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:43:22] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:43:22] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:43:22] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:22] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:22] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:43:22] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:43:23] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:43:23] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:43:24] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:43:24] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:43:24] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:24] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:43:24] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:43:24] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:43:24] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:43:24] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:43:24] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:43:24] INFO     [app:create_app:125] 34 matieres inserees par defaut.
+[2026-06-10 23:43:24] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:24] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:24] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:43:24] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:44:33] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:44:33] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:44:34] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:44:34] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:44:34] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:44:34] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:44:34] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:44:34] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:44:34] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:44:34] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:44:34] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:44:34] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:44:34] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:44:34] INFO     [app:_dispose_engine_once:224] Engine disposed (post-fork cleanup)
+[2026-06-10 23:44:34] INFO     [app:_dispose_engine_once:224] Engine disposed (post-fork cleanup)

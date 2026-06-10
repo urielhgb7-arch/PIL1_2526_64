@@ -75,6 +75,57 @@ def create_app(config_name=None):
         except Exception as db_err:
             logger.warning(f"db.create_all(): {db_err}")
 
+        # Seed matières par défaut si la table est vide (uniquement si DB existe)
+        try:
+            from app.models import Matiere
+
+            if db.session.query(Matiere).count() == 0:
+                default_matieres = [
+                    # GL - Genie Logiciel
+                    Matiere(nom="Algorithmique", filiere="GL", annee="L1"),
+                    Matiere(nom="Structures de données", filiere="GL", annee="L2"),
+                    Matiere(nom="Base de données SQL", filiere="GL", annee="L1"),
+                    Matiere(nom="Programmation Orientée Objet", filiere="GL", annee="L2"),
+                    Matiere(nom="Génie logiciel", filiere="GL", annee="L3"),
+                    Matiere(nom="Architecture des ordinateurs", filiere="GL", annee="L1"),
+                    Matiere(nom="Systèmes d'exploitation", filiere="GL", annee="L2"),
+                    Matiere(nom="Web Development", filiere="GL", annee="L2"),
+                    Matiere(nom="Intelligence artificielle", filiere="GL", annee="L3"),
+                    Matiere(nom="Machine Learning", filiere="GL", annee="M1"),
+                    Matiere(nom="Cloud Computing", filiere="GL", annee="M1"),
+                    Matiere(nom="Développement mobile", filiere="GL", annee="L3"),
+                    Matiere(nom="Gestion de projet informatique", filiere="GL", annee="M2"),
+                    # SIRI - Sciences et Ingénierie des Réseaux
+                    Matiere(nom="Réseaux informatiques", filiere="SIRI", annee="L1"),
+                    Matiere(nom="Sécurité des réseaux", filiere="SIRI", annee="L2"),
+                    Matiere(nom="Télécommunications", filiere="SIRI", annee="L2"),
+                    Matiere(nom="Administration système", filiere="SIRI", annee="L3"),
+                    Matiere(nom="Cyberdéfense", filiere="SIRI", annee="L3"),
+                    Matiere(nom="Cryptographie", filiere="SIRI", annee="L2"),
+                    Matiere(nom="Sécurité des applications", filiere="SIRI", annee="L3"),
+                    Matiere(nom="Audit de sécurité", filiere="SIRI", annee="L3"),
+                    Matiere(nom="Big Data", filiere="SIRI", annee="M1"),
+                    Matiere(nom="Langage SQL avancé", filiere="SIRI", annee="L3"),
+                    Matiere(nom="Administration de bases de données", filiere="SIRI", annee="M1"),
+                    Matiere(nom="Sécurité web", filiere="SIRI", annee="L3"),
+                    Matiere(nom="Ethical Hacking", filiere="SIRI", annee="M1"),
+                    # IM - Internet et Multimédia
+                    Matiere(nom="Design graphique", filiere="IM", annee="L1"),
+                    Matiere(nom="Infographie", filiere="IM", annee="L1"),
+                    Matiere(nom="Développement Web Frontend", filiere="IM", annee="L2"),
+                    Matiere(nom="Création de contenu multimédia", filiere="IM", annee="L2"),
+                    Matiere(nom="Marketing digital", filiere="IM", annee="L2"),
+                    Matiere(nom="Animation 2D/3D", filiere="IM", annee="L3"),
+                    Matiere(nom="Production audiovisuelle", filiere="IM", annee="L3"),
+                    Matiere(nom="UI/UX Design", filiere="IM", annee="L3"),
+                ]
+                for m in default_matieres:
+                    db.session.add(m)
+                db.session.commit()
+                logger.info(f"{len(default_matieres)} matieres inserees par defaut.")
+        except Exception as seed_error:
+            logger.warning(f"Seed matieres ignore: {seed_error}")
+
     # Initialisation Cloudinary
     from app.services.cloudinary_service import init_cloudinary
     init_cloudinary(flask_app)
@@ -126,57 +177,6 @@ def create_app(config_name=None):
         logger.info("Swagger UI disponible sur /docs/")
     except ImportError:
         logger.warning("flasgger not installed — Swagger UI disabled")
-
-    # Seed matières par défaut si la table est vide (uniquement si DB existe)
-    try:
-        from app.models import Matiere
-
-        if db.session.query(Matiere).count() == 0:
-            default_matieres = [
-                # GL - Genie Logiciel
-                Matiere(nom="Algorithmique", filiere="GL", annee="L1"),
-                Matiere(nom="Structures de données", filiere="GL", annee="L2"),
-                Matiere(nom="Base de données SQL", filiere="GL", annee="L1"),
-                Matiere(nom="Programmation Orientée Objet", filiere="GL", annee="L2"),
-                Matiere(nom="Génie logiciel", filiere="GL", annee="L3"),
-                Matiere(nom="Architecture des ordinateurs", filiere="GL", annee="L1"),
-                Matiere(nom="Systèmes d'exploitation", filiere="GL", annee="L2"),
-                Matiere(nom="Web Development", filiere="GL", annee="L2"),
-                Matiere(nom="Intelligence artificielle", filiere="GL", annee="L3"),
-                Matiere(nom="Machine Learning", filiere="GL", annee="M1"),
-                Matiere(nom="Cloud Computing", filiere="GL", annee="M1"),
-                Matiere(nom="Développement mobile", filiere="GL", annee="L3"),
-                Matiere(nom="Gestion de projet informatique", filiere="GL", annee="M2"),
-                # SIRI - Sciences et Ingénierie des Réseaux
-                Matiere(nom="Réseaux informatiques", filiere="SIRI", annee="L1"),
-                Matiere(nom="Sécurité des réseaux", filiere="SIRI", annee="L2"),
-                Matiere(nom="Télécommunications", filiere="SIRI", annee="L2"),
-                Matiere(nom="Administration système", filiere="SIRI", annee="L3"),
-                Matiere(nom="Cyberdéfense", filiere="SIRI", annee="L3"),
-                Matiere(nom="Cryptographie", filiere="SIRI", annee="L2"),
-                Matiere(nom="Sécurité des applications", filiere="SIRI", annee="L3"),
-                Matiere(nom="Audit de sécurité", filiere="SIRI", annee="L3"),
-                Matiere(nom="Big Data", filiere="SIRI", annee="M1"),
-                Matiere(nom="Langage SQL avancé", filiere="SIRI", annee="L3"),
-                Matiere(nom="Administration de bases de données", filiere="SIRI", annee="M1"),
-                Matiere(nom="Sécurité web", filiere="SIRI", annee="L3"),
-                Matiere(nom="Ethical Hacking", filiere="SIRI", annee="M1"),
-                # IM - Internet et Multimédia
-                Matiere(nom="Design graphique", filiere="IM", annee="L1"),
-                Matiere(nom="Infographie", filiere="IM", annee="L1"),
-                Matiere(nom="Développement Web Frontend", filiere="IM", annee="L2"),
-                Matiere(nom="Création de contenu multimédia", filiere="IM", annee="L2"),
-                Matiere(nom="Marketing digital", filiere="IM", annee="L2"),
-                Matiere(nom="Animation 2D/3D", filiere="IM", annee="L3"),
-                Matiere(nom="Production audiovisuelle", filiere="IM", annee="L3"),
-                Matiere(nom="UI/UX Design", filiere="IM", annee="L3"),
-            ]
-            for m in default_matieres:
-                db.session.add(m)
-            db.session.commit()
-            logger.info(f"{len(default_matieres)} matieres inserees par defaut.")
-    except Exception as seed_error:
-        logger.warning(f"Seed matieres ignore: {seed_error}")
 
     # Blueprints
     from app.routes.auth import auth_bp
