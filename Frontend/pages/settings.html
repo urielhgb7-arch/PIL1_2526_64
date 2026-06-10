@@ -296,22 +296,6 @@
                             <option value="M2">Master 2 (M2)</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2"
-                            >Téléphone
-                            <span class="text-muted text-xs"
-                                >(Bénin, ex: 0161234567)</span
-                            ></label
-                        >
-                        <input
-                            id="profile-telephone"
-                            type="tel"
-                            placeholder="0161234567"
-                            pattern="01[4569][0-9]{7}"
-                            title="Numéro béninois à 10 chiffres commençant par 014, 015, 016 ou 019"
-                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                    </div>
                     <p
                         id="profile-form-error"
                         class="hidden text-sm text-destructive"
@@ -729,6 +713,34 @@
         <script>
             checkAuth();
 
+            // ── Fonctions de label locales (aussi dans bundle.js) ────────────────
+            const _NIVEAU_LABELS = {
+                L1: "Licence 1",
+                L2: "Licence 2",
+                L3: "Licence 3",
+                M1: "Master 1",
+                M2: "Master 2",
+            };
+            const _FILIERE_LABELS = {
+                GL: "Génie Logiciel",
+                RSI: "Réseaux et Systèmes d'Information",
+                SI: "Systèmes d'Information",
+                IA: "Intelligence Artificielle",
+                IM: "Ingénierie Mathématique",
+                SIRI: "Sécurité Informatique",
+                SEoIT: "Software Engineering",
+            };
+            function niveauLabel(val) {
+                return _NIVEAU_LABELS[val] || val || "—";
+            }
+            function filiereLabel(val, short = false) {
+                if (!val) return "—";
+                if (short) return val;
+                return _FILIERE_LABELS[val]
+                    ? `${_FILIERE_LABELS[val]} (${val})`
+                    : val;
+            }
+
             function openModal(name) {
                 document
                     .getElementById(`modal-${name}`)
@@ -755,11 +767,6 @@
                                 p.filiere || "GL";
                             document.getElementById("profile-niveau").value =
                                 p.niveau || "L1";
-                            document.getElementById("profile-telephone").value =
-                                p.telephone &&
-                                !p.telephone.startsWith("non-renseigne")
-                                    ? p.telephone
-                                    : "";
                         })
                         .catch(() => {});
                 }
@@ -1019,25 +1026,13 @@
                         document.getElementById("profile-filiere").value;
                     const niveau =
                         document.getElementById("profile-niveau").value;
-                    const phone = document
-                        .getElementById("profile-telephone")
-                        .value.trim()
-                        .replace(/\s/g, "");
 
                     if (!prenom || !nom) {
                         errorEl.textContent = "Prénom et nom sont requis.";
                         errorEl.classList.remove("hidden");
                         return;
                     }
-                    if (phone && !/^01[4569]\d{7}$/.test(phone)) {
-                        errorEl.textContent =
-                            "Numéro invalide. Format: 014/015/016/019 + 7 chiffres (ex: 0161234567)";
-                        errorEl.classList.remove("hidden");
-                        return;
-                    }
-
                     const payload = { prenom, nom, filiere, niveau };
-                    if (phone) payload.telephone = phone;
 
                     try {
                         await API.profile.updateMe(payload);

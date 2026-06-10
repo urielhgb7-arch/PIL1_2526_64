@@ -186,7 +186,25 @@
                 <div class="flex items-center justify-between">
                     <h1 class="text-2xl font-bold">Dashboard</h1>
                     <div class="flex items-center gap-4">
-                        <div id="user-name" class="text-sm text-muted"></div>
+                        <a
+                            href="settings.html"
+                            class="flex flex-col items-end group cursor-pointer hover:opacity-80 transition-opacity"
+                        >
+                            <span
+                                id="user-name"
+                                class="text-sm font-medium text-white group-hover:text-primary transition-colors"
+                            ></span>
+                            <div class="flex gap-1.5 mt-0.5">
+                                <span
+                                    id="topbar-filiere"
+                                    class="hidden text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
+                                ></span>
+                                <span
+                                    id="topbar-niveau"
+                                    class="hidden text-xs px-2 py-0.5 bg-success/10 text-success rounded-full"
+                                ></span>
+                            </div>
+                        </a>
                         <a
                             href="notifications.html"
                             class="site-bell ml-4"
@@ -400,29 +418,65 @@
                     </div>
                 </div>
 
-                <!-- Intentions -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Offres de mentorat -->
-                    <div class="bg-card border border-border rounded-xl p-6">
-                        <h2 class="text-xl font-semibold mb-4">
-                            Offres de mentorat disponibles
+                <!-- Offres & Demandes avec filtres -->
+                <div class="bg-card border border-border rounded-xl p-6">
+                    <div
+                        class="flex flex-wrap items-center justify-between gap-3 mb-4"
+                    >
+                        <h2 class="text-xl font-semibold">
+                            Offres &amp; Demandes
                         </h2>
-                        <div class="space-y-3" id="offers-list">
-                            <div class="text-sm text-muted text-center py-4">
-                                Aucune offre disponible
-                            </div>
+                        <div class="flex gap-2">
+                            <button
+                                id="tab-btn-offers"
+                                onclick="switchTab('offers')"
+                                class="px-3 py-1.5 text-sm rounded-lg bg-primary text-white transition-colors"
+                            >
+                                Offres
+                            </button>
+                            <button
+                                id="tab-btn-demands"
+                                onclick="switchTab('demands')"
+                                class="px-3 py-1.5 text-sm rounded-lg bg-popover text-muted hover:text-white transition-colors"
+                            >
+                                Demandes
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Demandes d'aide -->
-                    <div class="bg-card border border-border rounded-xl p-6">
-                        <h2 class="text-xl font-semibold mb-4">
-                            Demandes d'aide récentes
-                        </h2>
-                        <div class="space-y-3" id="demands-list">
-                            <div class="text-sm text-muted text-center py-4">
-                                Aucune demande récente
-                            </div>
+                    <!-- Filtres -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <select
+                            id="filter-matiere"
+                            onchange="applyFilters()"
+                            class="flex-1 min-w-36 px-3 py-2 bg-input text-sm rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+                        >
+                            <option value="">Toutes les matières</option>
+                        </select>
+                        <select
+                            id="filter-horaire"
+                            onchange="applyFilters()"
+                            class="flex-1 min-w-36 px-3 py-2 bg-input text-sm rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+                        >
+                            <option value="">Tous les horaires</option>
+                            <option value="08-09">08h–09h</option>
+                            <option value="09-10">09h–10h</option>
+                            <option value="10-11">10h–11h</option>
+                            <option value="11-12">11h–12h</option>
+                            <option value="12-13">12h–13h</option>
+                            <option value="13-14">13h–14h</option>
+                            <option value="14-15">14h–15h</option>
+                            <option value="15-16">15h–16h</option>
+                            <option value="16-17">16h–17h</option>
+                            <option value="17-18">17h–18h</option>
+                            <option value="18-19">18h–19h</option>
+                            <option value="19-20">19h–20h</option>
+                            <option value="20-21">20h–21h</option>
+                            <option value="21-22">21h–22h</option>
+                        </select>
+                    </div>
+                    <div id="offers-demands-list" class="space-y-3">
+                        <div class="text-sm text-muted text-center py-6">
+                            Chargement...
                         </div>
                     </div>
                 </div>
@@ -554,6 +608,120 @@
                 setTimeout(() => t.classList.add("hidden"), 3500);
             }
 
+            function switchTab(tab) {
+                window._currentTab = tab;
+                document.getElementById("tab-btn-offers").className =
+                    tab === "offers"
+                        ? "px-3 py-1.5 text-sm rounded-lg bg-primary text-white transition-colors"
+                        : "px-3 py-1.5 text-sm rounded-lg bg-popover text-muted hover:text-white transition-colors";
+                document.getElementById("tab-btn-demands").className =
+                    tab === "demands"
+                        ? "px-3 py-1.5 text-sm rounded-lg bg-primary text-white transition-colors"
+                        : "px-3 py-1.5 text-sm rounded-lg bg-popover text-muted hover:text-white transition-colors";
+                applyFilters();
+            }
+
+            function applyFilters() {
+                const matId = document.getElementById("filter-matiere").value;
+                const horaire = document.getElementById("filter-horaire").value;
+                const tab = window._currentTab || "offers";
+                const items =
+                    tab === "offers"
+                        ? window._allOffers || []
+                        : window._allDemands || [];
+                const el = document.getElementById("offers-demands-list");
+
+                let filtered = items;
+
+                if (matId) {
+                    filtered = filtered.filter(
+                        (item) => String(item.matiere_id) === String(matId),
+                    );
+                }
+                if (horaire) {
+                    filtered = filtered.filter((item) => {
+                        const dispos = Array.isArray(item.disponibilites)
+                            ? item.disponibilites
+                            : [];
+                        return dispos.some((d) => d.creneau === horaire);
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    el.innerHTML =
+                        '<div class="text-sm text-muted text-center py-6">Aucun résultat pour ces filtres.</div>';
+                    return;
+                }
+
+                if (tab === "offers") {
+                    el.innerHTML = filtered
+                        .map((o) => {
+                            const nom =
+                                o.matiere_nom ||
+                                (window._matieres || []).find(
+                                    (m) => m.id === o.matiere_id,
+                                )?.nom ||
+                                "Matière";
+                            const profil = o.publicateur
+                                ? `${o.publicateur.prenom || ""} ${o.publicateur.nom || ""}`.trim()
+                                : o.profile_name || "";
+                            const dispos = Array.isArray(o.disponibilites)
+                                ? o.disponibilites
+                                : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (d) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour ? d.jour + " " : ""}${d.creneau || ""}</span>`,
+                                )
+                                .join(" ");
+                            return `<div class="bg-popover border border-border rounded-lg p-4">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm">${nom}</p>
+                        ${profil ? `<p class="text-xs text-muted mt-0.5">${profil}</p>` : ""}
+                        ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
+                    </div>
+                    <a href="matching.html" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Voir</a>
+                </div>
+            </div>`;
+                        })
+                        .join("");
+                } else {
+                    el.innerHTML = filtered
+                        .map((d) => {
+                            const nom =
+                                d.matiere_nom ||
+                                (window._matieres || []).find(
+                                    (m) => m.id === d.matiere_id,
+                                )?.nom ||
+                                "Matière";
+                            const dispos = Array.isArray(d.disponibilites)
+                                ? d.disponibilites
+                                : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (s) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour ? s.jour + " " : ""}${s.creneau || ""}</span>`,
+                                )
+                                .join(" ");
+                            const urgBadge = d.urgence
+                                ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : d.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${d.urgence}</span>`
+                                : "";
+                            return `<div class="bg-popover border border-border rounded-lg p-4">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm">${nom} ${urgBadge}</p>
+                        ${d.description ? `<p class="text-xs text-muted mt-0.5 truncate">${d.description}</p>` : ""}
+                        ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
+                    </div>
+                    <a href="requests.html?open-demand=${d.id}" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Voir</a>
+                </div>
+            </div>`;
+                        })
+                        .join("");
+                }
+            }
+
             async function loadDashboard() {
                 try {
                     const data = await API.profile.getMe();
@@ -561,6 +729,18 @@
                     const fullName =
                         `${profile.prenom || ""} ${profile.nom || ""}`.trim();
                     document.getElementById("user-name").textContent = fullName;
+                    // Top bar badges
+                    const topFiliere =
+                        document.getElementById("topbar-filiere");
+                    const topNiveau = document.getElementById("topbar-niveau");
+                    if (profile.filiere) {
+                        topFiliere.textContent = profile.filiere;
+                        topFiliere.classList.remove("hidden");
+                    }
+                    if (profile.niveau) {
+                        topNiveau.textContent = niveauLabel(profile.niveau);
+                        topNiveau.classList.remove("hidden");
+                    }
                     saveUserData({
                         firstName: profile.prenom,
                         lastName: profile.nom,
@@ -687,79 +867,41 @@
                     );
                 }
 
-                // ── Offres réelles ────────────────────────────────────────────────────
+                // ── Chargement offres & demandes ────────────────────────────────────────
                 try {
-                    const data = await API.offers.getAll();
-                    const items = Array.isArray(data)
-                        ? data
-                        : data.offers || data.data || [];
-                    const el = document.getElementById("offers-list");
-                    if (items.length > 0) {
-                        el.innerHTML = items
-                            .slice(0, 3)
-                            .map((o) => {
-                                const nom =
-                                    o.matiere_nom ||
-                                    o.matiere?.nom ||
-                                    "Matière";
-                                const profil = o.publicateur
-                                    ? `${o.publicateur.prenom || ""} ${o.publicateur.nom || ""}`.trim()
-                                    : o.profile_name || "";
-                                return `
-              <div class="bg-popover border border-border rounded-lg p-4">
-                <div class="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 class="font-semibold">${nom}</h3>
-                    ${profil ? `<p class="text-sm text-muted">${profil}</p>` : ""}
-                  </div>
-                </div>
-                <a href="matching.html" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                  Voir
-                </a>
-              </div>`;
-                            })
-                            .join("");
-                    }
-                } catch (err) {
-                    console.warn("Offers error", err);
-                    showToast("Erreur lors du chargement des offres", "error");
-                }
+                    const [offersData, demandsData, matieresData] =
+                        await Promise.all([
+                            API.offers.getAll().catch(() => []),
+                            API.demands.getAll().catch(() => []),
+                            API.matieres.getAll().catch(() => []),
+                        ]);
 
-                // ── Demandes réelles ──────────────────────────────────────────────────
-                try {
-                    const data = await API.demands.getAll();
-                    const items = Array.isArray(data)
-                        ? data
-                        : data.demandes || data.data || [];
-                    const el = document.getElementById("demands-list");
-                    if (items.length > 0) {
-                        el.innerHTML = items
-                            .slice(0, 3)
-                            .map((d) => {
-                                const nom = d.matiere_nom || "Matière";
-                                const slot =
-                                    d.jour && d.creneau
-                                        ? `${d.jour} ${d.creneau}`
-                                        : "";
-                                return `
-              <div class="bg-popover border border-border rounded-lg p-4">
-                <div class="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 class="font-semibold">${nom}</h3>
-                    ${slot ? `<p class="text-sm text-muted">${slot}</p>` : ""}
-                  </div>
-                </div>
-                <a href="requests.html?open-demand=${d.id}" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                  Voir
-                </a>
-              </div>`;
-                            })
-                            .join("");
-                    }
+                    window._allOffers = Array.isArray(offersData)
+                        ? offersData
+                        : offersData.offers || offersData.data || [];
+                    window._allDemands = Array.isArray(demandsData)
+                        ? demandsData
+                        : demandsData.demands || demandsData.data || [];
+                    window._matieres = Array.isArray(matieresData)
+                        ? matieresData
+                        : [];
+
+                    // Remplir le dropdown des matières
+                    const selMat = document.getElementById("filter-matiere");
+                    window._matieres.forEach((m) => {
+                        const opt = document.createElement("option");
+                        opt.value = m.id;
+                        opt.textContent = m.nom;
+                        selMat.appendChild(opt);
+                    });
+
+                    // Afficher par défaut les offres
+                    window._currentTab = "offers";
+                    applyFilters();
                 } catch (err) {
-                    console.warn("Demands error", err);
+                    console.warn("Offers/demands error", err);
                     showToast(
-                        "Erreur lors du chargement des demandes",
+                        "Erreur lors du chargement des offres et demandes",
                         "error",
                     );
                 }
