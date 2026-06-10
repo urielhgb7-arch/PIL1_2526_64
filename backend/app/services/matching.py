@@ -71,7 +71,10 @@ def _get_excluded_user_ids(current_user_id: int) -> tuple:
         if m.status in ('pending', 'accepted'):
             blocked.add(other_id)
         elif m.status == 'rejected':
-            rejected_set.add(other_id)
+            if m.initiator_id == current_user_id:
+                blocked.add(other_id)
+            else:
+                rejected_set.add(other_id)
     return blocked, rejected_set
 
 

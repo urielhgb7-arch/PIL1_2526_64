@@ -166,6 +166,58 @@ def request_match(student_id):
     }), 201
 
 
+# ── POST /api/matches/<student_id>/skip ───────────────────────────────────────
+# Swipe gauche → enregistre un rejet pour ne plus revoir ce profil
+@matching_bp.route('/matches/<int:student_id>/skip', methods=['POST'])
+@jwt_required()
+def skip_match(student_id):
+    current_user_id = int(get_jwt_identity())
+
+    if current_user_id == student_id:
+        return jsonify({"message": "Vous ne pouvez pas vous ignorer vous-même"}), 400
+
+    data = request.get_json(force=True, silent=True) or {}
+    demand_id = data.get('demand_id')
+
+    if not demand_id:
+        return jsonify({"message": "demand_id est requis"}), 400
+
+    profile = Profile.query.filter_by(user_id=current_user_id).first()
+    demand = db.session.get(Demand, demand_id)
+    if not demand or not profile or demand.profile_id != profile.id:
+        return jsonify({"message": "Demande introuvable ou non autorisée"}), 404
+
+    existing = Matching.query.filter_by(
+        user_one_id=current_user_id,
+        user_two_id=student_id,
+        demand_id=demand_id
+    ).first()
+
+    if existing:
+        if existing.status == 'pending':
+            existing.status = 'rejected'
+            db.session.commit()
+            return jsonify({"message": "Demande annulée", "status": "rejected"}), 200
+        elif existing.status == 'rejected':
+            return jsonify({"message": "Déjà ignoré", "status": "rejected"}), 200
+        else:
+            return jsonify({"message": f"Impossible d'ignorer (statut: {existing.status})"}), 400
+
+    new_match = Matching(
+        user_one_id=current_user_id,
+        user_two_id=student_id,
+        initiator_id=current_user_id,
+        demand_id=demand_id,
+        matiere_id=demand.matiere_id,
+        score=0,
+        status='rejected'
+    )
+    db.session.add(new_match)
+    db.session.commit()
+
+    return jsonify({"message": "Profil ignoré", "status": "rejected"}), 201
+
+
 # ── POST /api/matches/<matching_id>/accept ───────────────────────────────────
 # Section 14 du PDF : acceptation → statut 'accepted' + conversation créée
 @matching_bp.route('/matches/<int:matching_id>/accept', methods=['POST'])

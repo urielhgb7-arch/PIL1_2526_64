@@ -147,6 +147,7 @@ const API = {
         requestMatch: (id, body) => fetchAPI('/matches/' + id + '/request', 'POST', body),
         accept: (id) => fetchAPI('/matches/' + id + '/accept', 'POST'),
         reject: (id) => fetchAPI('/matches/' + id + '/reject', 'POST'),
+        skipMatch: (id, body) => fetchAPI('/matches/' + id + '/skip', 'POST', body),
         getReceived: () => fetchAPI('/matches/received', 'GET'),
         getSent: () => fetchAPI('/matches/sent', 'GET')
     },

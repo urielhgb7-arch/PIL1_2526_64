@@ -357,23 +357,35 @@
       const rotation = direction === 'right' ? 30 : -30;
       const translateX = direction === 'right' ? 1000 : -1000;
 
-      // Swipe droit = envoi d'une demande de match
-      if (profile && profile.id && direction === 'right') {
-        const body = { score: profile.compatibility };
-        const demandId = getDemandId() || autoDemandId;
-        if (demandId) body.demand_id = parseInt(demandId);
-        API.matching.requestMatch(profile.id, body)
-          .then(() => {
-            if (typeof showToast === 'function') {
-              showToast(`Demande envoyée à ${profile.name} !`, 'success');
-            }
-          })
-          .catch(err => {
-            const msg = err?.message || 'Erreur lors de l\'envoi';
-            if (typeof showToast === 'function') {
-              showToast(msg, 'error');
-            }
-          });
+      const demandId = getDemandId() || autoDemandId;
+
+      if (profile && profile.id) {
+        if (direction === 'right') {
+          const body = { score: profile.compatibility };
+          if (demandId) body.demand_id = parseInt(demandId);
+          API.matching.requestMatch(profile.id, body)
+            .then(() => {
+              if (typeof showToast === 'function') {
+                showToast(`Demande envoyée à ${profile.name} !`, 'success');
+              }
+            })
+            .catch(err => {
+              const msg = err?.message || 'Erreur lors de l\'envoi';
+              if (typeof showToast === 'function') {
+                showToast(msg, 'error');
+              }
+            });
+        } else if (direction === 'left') {
+          if (demandId) {
+            API.matching.skipMatch(profile.id, { demand_id: parseInt(demandId) })
+              .catch(err => {
+                const msg = err?.message || 'Erreur lors de l\'enregistrement';
+                if (typeof showToast === 'function') {
+                  showToast(msg, 'error');
+                }
+              });
+          }
+        }
       }
 
       card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';

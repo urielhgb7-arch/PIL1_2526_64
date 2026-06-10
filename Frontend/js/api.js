@@ -169,6 +169,7 @@ const API = {
         requestMatch: (studentId, body) => fetchAPI(`/matches/${studentId}/request`, 'POST', body),
         accept: (matchId) => fetchAPI(`/matches/${matchId}/accept`, 'POST'),
         reject: (matchId) => fetchAPI(`/matches/${matchId}/reject`, 'POST'),
+        skipMatch: (studentId, body) => fetchAPI(`/matches/${studentId}/skip`, 'POST', body),
         getReceived: () => fetchAPI('/matches/received', 'GET'),
         getSent: () => fetchAPI('/matches/sent', 'GET')
     },

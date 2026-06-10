@@ -89,7 +89,7 @@ def mes_conversations():
                     "user_id": autre_id,
                     "nom": autre_profile.nom if autre_profile else "Inconnu",
                     "prenom": autre_profile.prenom if autre_profile else "",
-                    "avatar_url": autre_profile.avatar_url if autre_profile else None
+                    "avatar_url": (autre_profile.avatar_url or 'https://via.placeholder.com/150') if autre_profile else None
                 }
             })
 
