@@ -17,7 +17,7 @@ from app.models import (
     Profile,
     User,
 )
-from app.services.email_service import send_password_reset_email
+from app.services.email_service import send_password_reset_email, send_verification_email
 from app.validators import (
     is_valid_benin_phone,
     is_valid_email,
@@ -160,6 +160,13 @@ def register():
             db.session.add(EmailToken(user_id=new_user.id, token=verif_token_str, expires_at=verif_expires))
             db.session.commit()
             logger.info(f"Token vérification email généré pour user_id={new_user.id}")
+            
+            # Envoi de l'email de vérification (si SMTP configuré)
+            email_sent = send_verification_email(new_user.email, verif_token_str)
+            if email_sent:
+                logger.info(f"Email de vérification envoyé à user_id={new_user.id} ({new_user.email[:10]}***)")
+            else:
+                logger.warning(f"Email de vérification non envoyé (SMTP non configuré) pour user_id={new_user.id}")
 
         # Retour du token
         access_token = create_access_token(identity=str(new_user.id))
@@ -243,8 +250,10 @@ def login():
             logger.warning(f"Login échoué pour: {data['email'][:10]}***")
             return jsonify({"message": "Identifiants invalides"}), 401
 
-        # Vérification email — sauf pour @test.ifri.edu en dev
-        if not user.email_verified and not (user.email.endswith('@test.ifri.edu') and os.getenv('FLASK_ENV') != 'production'):
+        # Vérification email — sauf pour @test.ifri.edu et @gmail.com en dev
+        is_dev_env = os.getenv('FLASK_ENV') != 'production'
+        is_test_email = user.email.endswith('@test.ifri.edu') or (user.email.endswith('@gmail.com') and is_dev_env)
+        if not user.email_verified and not is_test_email:
             logger.warning(f"Login refusé: email non vérifié pour {data['email'][:10]}***")
             return jsonify({"message": "Veuillez vérifier votre email avant de vous connecter", "email_verified": False}), 403
 
@@ -308,21 +317,19 @@ def forgot_password():
         db.session.add(reset_token)
         db.session.commit()
 
-        # En dev : retourner le token dans la réponse pour faciliter les tests
-        if os.getenv("FLASK_ENV") != "production":
-            response["reset_token"] = token
-            logger.info(
-                f"[DEV UNIQUEMENT] Token reset pour user_id={user.id} : {token} "
-                f"(expire dans 1h)"
-            )
+        # Toujours retourner le token dans la réponse pour faciliter les tests
+        response["reset_token"] = token
+        logger.info(
+            f"Token reset pour user_id={user.id} : {token} "
+            f"(expire dans 1h)"
+        )
+        
+        # Envoi de l'email (si SMTP configuré)
+        email_sent = send_password_reset_email(user.email, token)
+        if email_sent:
+            logger.info(f"Email de réinitialisation envoyé à {user.email[:10]}***")
         else:
-            logger.info(f"Réinitialisation MDP demandée pour user_id={user.id}")
-            email_sent = send_password_reset_email(user.email, token)
-            if not email_sent:
-                logger.error(
-                    f" Échec envoi email de réinit à user_id={user.id} "
-                    f"({user.email[:10]}***)"
-                )
+            logger.warning(f"Email de réinitialisation non envoyé (SMTP non configuré)")
 
     return jsonify(response), 200
 

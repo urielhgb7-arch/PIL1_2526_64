@@ -144,3 +144,36 @@ def send_match_notification_email(
 </body>
 </html>"""
     return _send_email(recipient_email, subject, html)
+
+
+def send_verification_email(to_email: str, token: str) -> bool:
+    """Envoie un email de vérification d'email via SMTP."""
+    config = current_app.config
+    frontend_url = config.get('FRONTEND_URL', 'http://localhost:5500')
+    verify_link = f"{frontend_url.rstrip('/')}/pages/verify-email.html?token={token}"
+
+    html = f"""\
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 32px;">
+    <h2 style="color: #7C6FF7; margin-top: 0;">Vérification de votre email</h2>
+    <p>Bonjour,</p>
+    <p>Merci pour votre inscription sur MentorLink !</p>
+    <p>Veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse email :</p>
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="{verify_link}"
+         style="display: inline-block; padding: 14px 28px; background: #7C6FF7; color: #fff;
+                text-decoration: none; border-radius: 6px; font-size: 16px;">
+        Vérifier mon email
+      </a>
+    </div>
+    <p style="color: #666; font-size: 14px;">Ce lien expire dans <strong>24 heures</strong>.</p>
+    <p style="color: #666; font-size: 14px;">Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>
+    <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
+    <p style="color: #999; font-size: 12px;">Équipe MentorLink</p>
+  </div>
+</body>
+</html>"""
+    return _send_email(to_email, "Vérification de votre email - MentorLink", html)
