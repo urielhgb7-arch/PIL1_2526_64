@@ -738,6 +738,30 @@
             </div>
         </div>
 
+        <!-- ═══════════════ MENTEE PROFILE MODAL ═══════════════ -->
+        <div
+            id="modal-mentee-profile"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8"
+            >
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Profil du demandeur</h2>
+                    <button
+                        title="Fermer"
+                        onclick="closeMenteeProfileModal()"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="mentee-profile-body" class="space-y-4"></div>
+            </div>
+        </div>
+
         <!-- ═══════════════ MODAL NEW PUBLICATION ═══════════════ -->
         <div
             id="modal-new-publication"
@@ -1671,10 +1695,18 @@
                 empty.classList.add('hidden');
                 loading.classList.add('hidden');
 
-                list.innerHTML = pending.map(m => `
+                list.innerHTML = pending.map(m => {
+                    const initials = ((m.initiator?.prenom?.[0] || '') + (m.initiator?.nom?.[0] || ''));
+                    const score = parseFloat(m.score) || 0;
+                    const scoreColor = score >= 75 ? 'bg-success' : score >= 55 ? 'bg-warning' : 'bg-destructive';
+                    return `
                     <div class="bg-popover border border-border rounded-xl p-4 flex items-start gap-4">
                         <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                            <span class="text-sm font-bold text-primary">${(m.initiator?.prenom?.[0] || '')}${(m.initiator?.nom?.[0] || '')}</span>
+                            ${m.initiator?.avatar_url
+                              ? `<img src="${m.initiator.avatar_url}" class="w-full h-full rounded-full object-cover"
+                                   onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-sm font-bold text-primary\\'>${initials}</span>';this.parentElement.classList.add('flex','items-center','justify-center','bg-primary/20')">`
+                              : `<span class="text-sm font-bold text-primary">${initials}</span>`
+                            }
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between mb-1">
@@ -1683,11 +1715,18 @@
                             </div>
                             <p class="text-xs text-muted">${m.matiere_nom || 'Matière inconnue'}</p>
                             ${m.jour ? `<p class="text-xs text-muted mt-1">${m.jour} ${m.creneau || ''}</p>` : ''}
-                            <div class="mt-2 inline-flex items-center gap-1 px-2 py-0.5 bg-success/10 text-success rounded-full text-xs font-medium">
-                                <span>${m.score}% compatible</span>
+                            <div class="mt-2 inline-flex items-center gap-1.5">
+                                <div class="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div class="h-full ${scoreColor} rounded-full" style="width:${score}%"></div>
+                                </div>
+                                <span class="text-xs font-medium">${score}%</span>
                             </div>
                         </div>
                         <div class="flex flex-col gap-2 shrink-0">
+                            <button onclick="openMenteeProfileModal(${m.matching_id})"
+                                class="px-3 py-1.5 bg-primary/20 text-primary rounded-lg text-xs font-medium hover:bg-primary/30 transition-colors">
+                                Voir profil
+                            </button>
                             <button onclick="acceptMatching(${m.matching_id})"
                                 class="px-3 py-1.5 bg-success text-white rounded-lg text-xs font-medium hover:bg-success/90 transition-colors">
                                 Accepter
@@ -1696,9 +1735,76 @@
                                 class="px-3 py-1.5 bg-destructive/20 text-destructive rounded-lg text-xs font-medium hover:bg-destructive/30 transition-colors">
                                 Refuser
                             </button>
+                            <button onclick="goToMessages(${m.initiator?.user_id})"
+                                class="px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-medium hover:bg-primary/20 transition-colors">
+                                Envoyer message
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            function closeMenteeProfileModal() {
+                document.getElementById('modal-mentee-profile').classList.add('hidden');
+            }
+
+            function openMenteeProfileModal(matchingId) {
+                const m = receivedMatchings.find(r => r.matching_id === matchingId);
+                if (!m) return;
+                const score = parseFloat(m.score) || 0;
+                const scoreColor = score >= 75 ? 'bg-success' : score >= 55 ? 'bg-warning' : 'bg-destructive';
+                const initials = ((m.initiator?.prenom?.[0] || '') + (m.initiator?.nom?.[0] || ''));
+                const body = document.getElementById('mentee-profile-body');
+                body.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-20 h-20 rounded-full mx-auto mb-3 ring-2 ring-primary/40 overflow-hidden">
+                            ${m.initiator?.avatar_url
+                              ? `<img src="${m.initiator.avatar_url}" class="w-full h-full object-cover"
+                                   onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-3xl font-bold text-primary\\'>${initials}</span>';this.parentElement.classList.add('flex','items-center','justify-center','bg-primary/20')">`
+                              : `<div class="w-full h-full flex items-center justify-center bg-primary/20">
+                                   <span class="text-3xl font-bold text-primary">${initials}</span>
+                                 </div>`
+                            }
+                        </div>
+                        <h3 class="text-lg font-bold">${m.initiator?.prenom || ''} ${m.initiator?.nom || '?'}</h3>
+                        <div class="flex items-center justify-center gap-2 mt-1">
+                            ${m.initiator?.niveau ? `<span class="px-2 py-0.5 bg-primary/20 text-primary rounded-full text-xs font-medium">${m.initiator.niveau}</span>` : ''}
+                            ${m.initiator?.filiere ? `<span class="px-2 py-0.5 bg-popover border border-border rounded-full text-xs text-muted">${m.initiator.filiere}</span>` : ''}
                         </div>
                     </div>
-                `).join('');
+                    <div class="border-t border-border pt-4 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-muted">Matière</span>
+                            <span class="font-medium">${m.matiere_nom || 'Inconnue'}</span>
+                        </div>
+                        ${m.jour ? `<div class="flex justify-between text-sm"><span class="text-muted">Créneau</span><span class="font-medium">${m.jour} ${m.creneau || ''}</span></div>` : ''}
+                        <div class="flex justify-between text-sm items-center">
+                            <span class="text-muted">Score</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                                    <div class="h-full ${scoreColor} rounded-full" style="width:${score}%"></div>
+                                </div>
+                                <span class="font-medium text-sm">${score}%</span>
+                            </div>
+                        </div>
+                        ${m.initiator?.bio ? `<div class="pt-2"><p class="text-xs text-muted mb-1">Bio</p><p class="text-sm">${m.initiator.bio}</p></div>` : ''}
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="closeMenteeProfileModal(); acceptMatching(${m.matching_id})"
+                            class="flex-1 py-2.5 bg-success text-white rounded-lg text-sm font-medium hover:bg-success/90 transition-colors">
+                            Accepter
+                        </button>
+                        <button onclick="closeMenteeProfileModal(); rejectMatching(${m.matching_id})"
+                            class="flex-1 py-2.5 bg-destructive/20 text-destructive rounded-lg text-sm font-medium hover:bg-destructive/30 transition-colors">
+                            Refuser
+                        </button>
+                        <button onclick="closeMenteeProfileModal(); goToMessages(${m.initiator?.user_id})"
+                            class="flex-1 py-2.5 bg-primary/10 text-primary rounded-lg text-sm font-medium hover:bg-primary/20 transition-colors">
+                            Message
+                        </button>
+                    </div>
+                `;
+                document.getElementById('modal-mentee-profile').classList.remove('hidden');
             }
 
             function getOfferResponses(offerId) {
@@ -2106,10 +2212,10 @@
                 await loadInitialData();
                 // Load matchings FIRST so render functions have data
                 await loadReceivedMatchings();
-                loadMyOffers();
-                loadAvailableOffers();
-                loadMyDemands();
-                loadAvailableDemands();
+                await loadMyOffers();
+                await loadAvailableOffers();
+                await loadMyDemands();
+                await loadAvailableDemands();
                 handleUrlParams();
 
                 // Initial format styling
