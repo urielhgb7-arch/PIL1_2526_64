@@ -1046,6 +1046,10 @@
                 const pubAvHtml = pubAv && pubAv !== "https://via.placeholder.com/150"
                     ? `<img src="${pubAv}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
                     : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${publisher.charAt(0)}</span>`;
+                const pubFil = data.publicateur?.filiere || "";
+                const pubNiv = data.publicateur?.niveau || "";
+                const pubBadges = [pubFil ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">${pubFil}</span>` : "",
+                                   pubNiv ? `<span class="px-2 py-0.5 bg-success/10 text-success rounded-full text-xs">${pubNiv}</span>` : ""].filter(Boolean).join(" ");
 
                 const createdDate = data.created_at
                     ? new Date(data.created_at).toLocaleDateString("fr-FR", {
@@ -1070,7 +1074,7 @@
           <hr class="border-border my-3">
           <div class="grid grid-cols-2 gap-3 text-xs">
             <div><span class="text-muted">Publié par</span><p class="font-medium flex items-center gap-1 mt-0.5">${pubAvHtml} ${publisher}</p>
-            ${data.publicateur?.telephone && !data.publicateur.telephone.startsWith("non-renseigne") ? `<p class="text-xs text-muted mt-0.5">📞 ${data.publicateur.telephone}</p>` : ""}</div>
+            ${pubBadges ? `<div class="flex gap-1 mt-1">${pubBadges}</div>` : ""}</div>
             ${
                 isOffer
                     ? `

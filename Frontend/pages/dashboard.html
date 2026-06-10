@@ -1058,6 +1058,18 @@
                         : '<span class="text-xs text-muted">Aucune disponibilité</span>';
             }
 
+            function handleOfferHelp(demandId) {
+                API.demands.offerHelp(demandId)
+                    .then(() => { showToast("Aide proposée avec succès !", "success"); document.getElementById("modal-detail").classList.add("hidden"); })
+                    .catch(err => showToast(err.message || "Erreur", "error"));
+            }
+
+            function handleRequestHelp(offerId) {
+                API.offers.respond(offerId)
+                    .then(() => { showToast("Demande d'aide envoyée !", "success"); document.getElementById("modal-detail").classList.add("hidden"); })
+                    .catch(err => showToast(err.message || "Erreur", "error"));
+            }
+
             function openDetailModal(id, type) {
                 const modal = document.getElementById("modal-detail");
                 const title = document.getElementById("modal-detail-title");
@@ -1079,6 +1091,12 @@
                 const avatarP = p.avatar_url && p.avatar_url !== "https://via.placeholder.com/150"
                     ? `<img src="${p.avatar_url}" alt="" class="w-10 h-10 rounded-full object-cover" />`
                     : `<span class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">${nomPublieur.charAt(0)}</span>`;
+                const filiereBadge = p.filiere
+                    ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">${p.filiere}</span>`
+                    : "";
+                const niveauBadge = p.niveau
+                    ? `<span class="px-2 py-0.5 bg-success/10 text-success rounded-full text-xs">${p.niveau}</span>`
+                    : "";
 
                 const matiereNom = item.matiere_nom ||
                     ((window._matieres || []).find(m => m.id === item.matiere_id)?.nom) ||
@@ -1092,13 +1110,24 @@
                     ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${item.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : item.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${item.urgence}</span>`
                     : "";
 
+                // Bouton action selon compétences/lacunes du user connecté
+                const mid = item.matiere_id;
+                const hasComp = (window._profileComps || []).some(c => c.matiere_id === mid);
+                const hasLacune = (window._profileLacs || []).some(l => l.matiere_id === mid);
+                let actionBtn = "";
+                if (type === "demand" && hasComp) {
+                    actionBtn = `<button onclick="handleOfferHelp(${item.id})" class="w-full py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium">Offrir mon aide</button>`;
+                } else if (type === "offer" && hasLacune) {
+                    actionBtn = `<button onclick="handleRequestHelp(${item.id})" class="w-full py-2.5 bg-warning text-white rounded-xl hover:bg-warning/90 transition-colors text-sm font-medium">Demander de l'aide</button>`;
+                }
+
                 title.textContent = type === "offer" ? "Offre de mentorat" : "Demande d'aide";
                 body.innerHTML = `
                     <div class="flex items-center gap-3 p-3 bg-popover rounded-xl mb-2">
                         ${avatarP}
                         <div>
                             <p class="font-medium text-sm">${nomPublieur}</p>
-                            ${p.telephone && !p.telephone.startsWith("non-renseigne") ? `<p class="text-xs text-muted">${p.telephone}</p>` : ""}
+                            <div class="flex gap-1.5 mt-1">${filiereBadge} ${niveauBadge}</div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
@@ -1120,6 +1149,7 @@
                         <p class="text-xs text-muted mb-1">Disponibilités</p>
                         <div class="flex flex-wrap gap-1">${disposHtml}</div>
                     </div>
+                    ${actionBtn ? `<div class="pt-2">${actionBtn}</div>` : ""}
                 `;
             }
 
