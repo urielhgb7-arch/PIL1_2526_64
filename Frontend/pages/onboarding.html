@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration - IFRI MentorLink</title>  <script src="https://cdn.tailwindcss.com"></script>  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="bg-background text-foreground min-h-screen">
+  <div class="min-h-screen py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-2 mb-8">
+        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+          <span class="text-sm font-bold text-primary">ML</span>
+        </div>
+        <span class="text-xl font-bold"><span class="text-primary">IFRI</span> MentorLink</span>
+      </div>
+
+      <!-- Global API error banner -->
+      <div id="api-error" class="hidden mb-6 p-4 bg-destructive/10 border border-destructive rounded-lg">
+        <p class="text-destructive text-sm" id="api-error-text"></p>
+      </div>
+
+      <!-- Progress indicator -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center flex-1">
+            <div id="step1-indicator" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold">1</div>
+            <div class="flex-1 h-1 mx-2 rounded bg-card" id="progress-bar-1"></div>
+          </div>
+          <div class="flex items-center flex-1">
+            <div id="step2-indicator" class="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted">2</div>
+            <div class="flex-1 h-1 mx-2 rounded bg-card" id="progress-bar-2"></div>
+          </div>
+          <div class="flex items-center">
+            <div id="step3-indicator" class="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted">3</div>
+          </div>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span id="step1-label" class="font-medium">Données académiques</span>
+          <span id="step2-label" class="text-muted">Compétences & Lacunes</span>
+          <span id="step3-label" class="text-muted">Disponibilité</span>
+        </div>
+      </div>
+
+      <!-- ───────────────── STEP 1 : Profil académique ───────────────── -->
+      <div id="step1" class="bg-card rounded-xl p-8 border border-border">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-2">Informations académiques</h2>
+          <p class="text-muted">Complétez votre profil académique</p>
+        </div>
+        <form id="step1-form" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium mb-2" title="Département">Département</label>
+            <select id="department" required name="department" title="Département"
+              class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
+              <option value="">Sélectionnez votre département</option>
+              <option value="GL">GL(Génie Logiciel)</option>
+              <option value="SIRI">SIRI(Sciences et Ingénierie des Réseaux)</option>
+              <option value="IM">IM(Internet et Multimédia)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" title="Niveau académique">Niveau académique</label>
+            <select id="level" required name="level" title="Niveau académique"
+              class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
+              <option value="">Sélectionnez votre niveau</option>
+              <option value="L1">L1</option>
+              <option value="L2">L2</option>
+              <option value="L3">L3</option>
+            </select>
+          </div>
+          <!-- Step-1 error -->
+          <div id="step1-error" class="hidden p-3 bg-destructive/10 border border-destructive rounded-lg">
+            <p class="text-destructive text-sm" id="step1-error-text"></p>
+          </div>
+          <button type="submit" id="step1-btn"
+            class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+            Continuer
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- ───────────────── STEP 2 : Compétences & Lacunes ───────────────── -->
+      <div id="step2" class="hidden bg-card rounded-xl p-8 border border-border">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-2">Compétences & Lacunes</h2>
+          <p class="text-muted">Sélectionnez vos forces et faiblesses académiques</p>
+        </div>
+
+        <!-- Loading matieres -->
+        <div id="matieres-loading" class="flex items-center justify-center py-12">
+          <div class="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-3"></div>
+          <span class="text-muted text-sm">Chargement des matières…</span>
+        </div>
+
+        <form id="step2-form" class="space-y-6 hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-medium mb-4 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
+                Mes compétences
+              </h3>
+              <div class="space-y-2" id="strengths-list"></div>
+            </div>
+            <div>
+              <h3 class="font-medium mb-4 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-warning inline-block"></span>
+                Mes lacunes
+              </h3>
+              <div class="space-y-2" id="weaknesses-list"></div>
+            </div>
+          </div>
+
+          <div id="step2-error" class="hidden p-3 bg-destructive/10 border border-destructive rounded-lg">
+            <p class="text-destructive text-sm" id="step2-error-text"></p>
+          </div>
+
+          <div class="flex justify-between mt-8 pt-6 border-t border-border">
+            <button type="button" onclick="previousStep()"
+              class="flex items-center gap-2 px-6 py-3 bg-input border border-border rounded-lg hover:bg-popover transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Retour
+            </button>
+            <button type="submit" id="step2-btn"
+              class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+              Continuer
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ───────────────── STEP 3 : Disponibilités ───────────────── -->
+      <div id="step3" class="hidden bg-card rounded-xl p-8 border border-border">
+        <div class="mb-6">
+          <h2 class="text-2xl font-semibold mb-2">Grille de disponibilités</h2>
+          <p class="text-muted">Sélectionnez vos créneaux horaires disponibles</p>
+        </div>
+        <form id="step3-form" class="space-y-6">
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="selectMornings()"
+              class="px-4 py-2 bg-input border border-border rounded-lg text-sm hover:bg-primary/10 hover:border-primary transition-colors">
+              Sélectionner toutes les matinées
+            </button>
+            <button type="button" onclick="selectAfternoons()"
+              class="px-4 py-2 bg-input border border-border rounded-lg text-sm hover:bg-primary/10 hover:border-primary transition-colors">
+              Sélectionner toutes les après-midis
+            </button>
+            <button type="button" onclick="clearAll()"
+              class="px-4 py-2 bg-input border border-border rounded-lg text-sm hover:bg-destructive/10 hover:border-destructive transition-colors text-muted">
+              Tout effacer
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr>
+                  <th class="sticky left-0 bg-card border border-border p-2 text-left text-sm font-medium">Horaires</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Lundi</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Mardi</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Mercredi</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Jeudi</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Vendredi</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Samedi</th>
+                  <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Dimanche</th>
+                </tr>
+              </thead>
+              <tbody id="availability-grid"></tbody>
+            </table>
+          </div>
+
+          <div id="step3-error" class="hidden p-3 bg-destructive/10 border border-destructive rounded-lg">
+            <p class="text-destructive text-sm" id="step3-error-text"></p>
+          </div>
+
+          <div class="flex justify-between mt-8 pt-6 border-t border-border">
+            <button type="button" onclick="previousStep()"
+              class="flex items-center gap-2 px-6 py-3 bg-input border border-border rounded-lg hover:bg-popover transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Retour
+            </button>
+            <button type="submit" id="finish-btn"
+              class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+              Terminer la configuration
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../js/bundle.js"></script>
+  <script>
+    checkAuth();
+    console.log('Token:', localStorage.getItem('mentorlink_token'));
+    console.log('User:', localStorage.getItem('mentorlink_user'));
+
+    /* ──────────────────────────────────────────
+       État local
+    ────────────────────────────────────────── */
+    let currentStep = 1;
+    let matieresCache = [];   // matières chargées depuis l'API
+
+    const userData = {
+      department: '', level: '',
+      strengths: [],    // [{matiere_id, mastery}]
+      weaknesses: [],   // [{matiere_id, priority}]
+      availability: Array(7).fill(null).map(() => Array(13).fill(false))
+    };
+
+    const masteryLevels  = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert'];
+    const priorityLevels = ['Basse', 'Moyenne', 'Haute', 'Urgente'];
+    const hours = Array.from({ length: 13 }, (_, i) => `${8 + i}h-${9 + i}h`);
+    const days  = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+
+    /* ──────────────────────────────────────────
+       Helpers UI
+    ────────────────────────────────────────── */
+    function showStepError(step, msg) {
+      document.getElementById(`step${step}-error-text`).textContent = msg;
+      document.getElementById(`step${step}-error`).classList.remove('hidden');
+    }
+    function hideStepError(step) {
+      document.getElementById(`step${step}-error`).classList.add('hidden');
+    }
+    function setStepLoading(btnId, loading, label = 'Continuer') {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? `<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>`
+        : `${label} <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>`;
+    }
+
+    /* ──────────────────────────────────────────
+       Progress bar
+    ────────────────────────────────────────── */
+    function updateProgress() {
+      for (let i = 1; i <= 3; i++) {
+        const ind = document.getElementById(`step${i}-indicator`);
+        const lbl = document.getElementById(`step${i}-label`);
+        if (i < currentStep) {
+          ind.className = 'w-10 h-10 rounded-full bg-success flex items-center justify-center font-semibold text-white';
+          ind.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+          lbl.className = 'text-muted';
+        } else if (i === currentStep) {
+          ind.className = 'w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold text-white';
+          ind.textContent = i;
+          lbl.className = 'font-medium';
+        } else {
+          ind.className = 'w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center font-semibold text-muted';
+          ind.textContent = i;
+          lbl.className = 'text-muted';
+        }
+      }
+      document.getElementById('progress-bar-1').className = currentStep >= 2 ? 'flex-1 h-1 mx-2 rounded bg-success' : 'flex-1 h-1 mx-2 rounded bg-card';
+      document.getElementById('progress-bar-2').className = currentStep >= 3 ? 'flex-1 h-1 mx-2 rounded bg-success' : 'flex-1 h-1 mx-2 rounded bg-card';
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`step${i}`).classList.toggle('hidden', i !== currentStep);
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) { currentStep--; updateProgress(); }
+    }
+
+    /* ──────────────────────────────────────────
+       STEP 1 — Profil → API.profile.updateMe
+    ────────────────────────────────────────── */
+    document.getElementById('step1-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideStepError(1);
+
+      userData.department = document.getElementById('department').value;
+      userData.level      = document.getElementById('level').value;
+
+      setStepLoading('step1-btn', true);
+      try {
+        await API.profile.updateMe({
+          filiere: userData.department,
+          niveau:  userData.level
+        });
+
+        // Persistance locale (script.js compat)
+        const stored = getUserData() || {};
+        saveUserData({ ...stored, ...userData });
+
+        currentStep = 2;
+        updateProgress();
+        await loadMatieres();
+
+      } catch (err) {
+        showStepError(1, err.message || 'Impossible de sauvegarder le profil.');
+      } finally {
+        setStepLoading('step1-btn', false);
+      }
+    });
+
+    /* ──────────────────────────────────────────
+       Chargement des matières via matieres-loader
+       récupère toutes les matières puis filtre par filière sélectionnée
+    ────────────────────────────────────────── */
+    async function loadMatieres() {
+      document.getElementById('matieres-loading').classList.remove('hidden');
+      document.getElementById('step2-form').classList.add('hidden');
+
+      try {
+        matieresCache = await loadMatieresFromAPI();
+      } catch (err) {
+        console.warn('Erreur chargement matières via loader, fallback local', err);
+        matieresCache = await loadMatieresFromAPI();
+      }
+
+      // Filtrer par filière
+      matieresCache = getMatiersByFiliere(userData.department);
+
+      initSkillsLists();
+      // pré-remplir les sélections existantes depuis le profil si disponible
+      try {
+        if (!window.skipProfilePrefill) {
+          const data = await API.profile.getMe();
+          const profile = data.profile || data;
+          const comps = profile.competences || profile.competences_list || [];
+          const lacs = profile.lacunes || profile.lacunes_list || [];
+          prefillOnboardingSkills(comps, lacs);
+        }
+      } catch (e) { /* silencieux */ }
+      document.getElementById('matieres-loading').classList.add('hidden');
+      document.getElementById('step2-form').classList.remove('hidden');
+    }
+
+    function prefillOnboardingSkills(comps = [], lacs = []) {
+      try {
+        (comps || []).forEach(c => {
+          const id = c.matiere_id || c.matiere || c.id;
+          const mastery = c.mastery || c.niveau || 'Intermédiaire';
+          // add to userData.strengths if not present
+          if (!userData.strengths.find(x => x.matiere_id === id)) {
+            userData.strengths.push({ matiere_id: id, mastery });
+            const sid = safeId(id);
+            const btn = document.getElementById(`strength-${sid}`);
+            const lvl = document.getElementById(`strength-level-${sid}`);
+            if (btn) { btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors`; btn.innerHTML = `<div class="flex items-center justify-between"><span>${getMatiereNom(id)}</span><span class="text-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span></div>`; }
+            if (lvl) { lvl.classList.remove('hidden'); lvl.value = mastery; }
+          }
+        });
+        (lacs || []).forEach(l => {
+          const id = l.matiere_id || l.matiere || l.id;
+          const prio = l.priority || l.niveau || 'Moyenne';
+          if (!userData.weaknesses.find(x => x.matiere_id === id)) {
+            userData.weaknesses.push({ matiere_id: id, priority: prio });
+            const sid = safeId(id);
+            const btn = document.getElementById(`weakness-${sid}`);
+            const lvl = document.getElementById(`weakness-level-${sid}`);
+            if (btn) { btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors`; btn.innerHTML = `<div class="flex items-center justify-between"><span>${getMatiereNom(id)}</span><span class="text-warning"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span></div>`; }
+            if (lvl) { lvl.classList.remove('hidden'); lvl.value = prio; }
+          }
+        });
+      } catch (err) { console.warn('prefillOnboardingSkills error', err); }
+    }
+
+    /* ──────────────────────────────────────────
+       Construction liste compétences / lacunes
+    ────────────────────────────────────────── */
+    function safeId(str) { return String(str).replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, ''); }
+
+    function initSkillsLists() {
+      const sl = document.getElementById('strengths-list');
+      const wl = document.getElementById('weaknesses-list');
+      sl.innerHTML = '';
+      wl.innerHTML = '';
+
+      const groups = {};
+      matieresCache.forEach(mat => {
+        const f = mat.filiere || 'Autres';
+        if (!groups[f]) groups[f] = [];
+        groups[f].push(mat);
+      });
+
+      Object.keys(groups).sort().forEach(filiere => {
+        const items = groups[filiere];
+
+        // En-tête de filière (pleine largeur au-dessus des deux colonnes)
+        const hdrRow = document.createElement('div');
+        hdrRow.className = 'col-span-full mt-4 mb-2 first:mt-0';
+        hdrRow.innerHTML = `<h4 class="text-sm font-semibold text-primary uppercase tracking-wider">${filiere}</h4>`;
+        sl.appendChild(hdrRow.cloneNode(true));
+        wl.appendChild(hdrRow.cloneNode(true));
+
+        items.forEach(mat => {
+          const id  = mat.id;
+          const nom = mat.nom || mat.name || mat.libelle || '';
+          const sid = safeId(id);
+
+          // ── Compétence ──
+          const sd = document.createElement('div');
+          sd.className = 'space-y-2';
+          sd.innerHTML = `
+            <button type="button" onclick="toggleSkill(${id},'strength')"
+              id="strength-${sid}"
+              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors">
+              <div class="flex items-center justify-between"><span>${nom}</span></div>
+            </button>
+            <select id="strength-level-${sid}"
+              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              onchange="updateSkillLevel(${id},'strength',this.value)">
+              ${masteryLevels.map(l => `<option value="${l}">${l}</option>`).join('')}
+            </select>`;
+          sl.appendChild(sd);
+
+          // ── Lacune ──
+          const wd = document.createElement('div');
+          wd.className = 'space-y-2';
+          wd.innerHTML = `
+            <button type="button" onclick="toggleSkill(${id},'weakness')"
+              id="weakness-${sid}"
+              class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors">
+              <div class="flex items-center justify-between"><span>${nom}</span></div>
+            </button>
+            <select id="weakness-level-${sid}"
+              class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning"
+              onchange="updateSkillLevel(${id},'weakness',this.value)">
+              ${priorityLevels.map(l => `<option value="${l}">${l}</option>`).join('')}
+            </select>`;
+          wl.appendChild(wd);
+        });
+      });
+    }
+
+    function getMatiereNom(id) {
+      const m = matieresCache.find(x => x.id === id);
+      return m ? (m.nom || m.name || m.libelle || '') : '';
+    }
+
+    function toggleSkill(id, type) {
+      const sid     = safeId(id);
+      const btnId   = `${type}-${sid}`;
+      const lvlId   = `${type}-level-${sid}`;
+      const oppType = type === 'strength' ? 'weakness' : 'strength';
+      const oppBtnId = `${oppType}-${sid}`;
+      const oppLvlId = `${oppType}-level-${sid}`;
+
+      const btn        = document.getElementById(btnId);
+      const lvlSel     = document.getElementById(lvlId);
+      const oppBtn     = document.getElementById(oppBtnId);
+      const oppLvlSel  = document.getElementById(oppLvlId);
+      const nom        = getMatiereNom(id);
+      const checkSvg   = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+
+      const isStrength = type === 'strength';
+      const arr        = isStrength ? userData.strengths : userData.weaknesses;
+      const oppArr     = isStrength ? userData.weaknesses : userData.strengths;
+      const key        = isStrength ? 'mastery' : 'priority';
+      const defaultVal = isStrength ? 'Intermédiaire' : 'Moyenne';
+      const activeColor = isStrength ? 'bg-primary/10 border-primary' : 'bg-warning/10 border-warning';
+      const iconColor   = isStrength ? 'text-primary' : 'text-warning';
+      const hoverClass  = isStrength ? 'hover:border-primary/50' : 'hover:border-warning/50';
+      const oppHover    = isStrength ? 'hover:border-warning/50' : 'hover:border-primary/50';
+
+      const idx = arr.findIndex(x => x.matiere_id === id);
+      if (idx > -1) {
+        // désélection
+        arr.splice(idx, 1);
+        btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted ${hoverClass} transition-colors`;
+        btn.innerHTML = `<div class="flex items-center justify-between"><span>${nom}</span></div>`;
+        lvlSel.classList.add('hidden');
+      } else {
+        // retrait de l'opposé si présent
+        const oppIdx = oppArr.findIndex(x => x.matiere_id === id);
+        if (oppIdx > -1) {
+          oppArr.splice(oppIdx, 1);
+          oppBtn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted ${oppHover} transition-colors`;
+          oppBtn.innerHTML = `<div class="flex items-center justify-between"><span>${nom}</span></div>`;
+          oppLvlSel.classList.add('hidden');
+        }
+        // sélection
+        arr.push({ matiere_id: id, [key]: defaultVal });
+        btn.className = `w-full text-left px-4 py-3 rounded-lg border ${activeColor} text-white transition-colors`;
+        btn.innerHTML = `<div class="flex items-center justify-between"><span>${nom}</span><span class="${iconColor}">${checkSvg}</span></div>`;
+        lvlSel.classList.remove('hidden');
+        lvlSel.value = defaultVal;
+      }
+    }
+
+    function updateSkillLevel(id, type, value) {
+      if (type === 'strength') {
+        const s = userData.strengths.find(x => x.matiere_id === id);
+        if (s) s.mastery = value;
+      } else {
+        const w = userData.weaknesses.find(x => x.matiere_id === id);
+        if (w) w.priority = value;
+      }
+    }
+
+    /* ──────────────────────────────────────────
+       STEP 2 — Compétences/Lacunes → API batch
+       POST /api/profile/competences  (loop)
+       POST /api/profile/lacunes      (loop)
+    ────────────────────────────────────────── */
+    document.getElementById('step2-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideStepError(2);
+
+      if (userData.strengths.length === 0 && userData.weaknesses.length === 0) {
+        showStepError(2, 'Veuillez sélectionner au moins une compétence ou une lacune.');
+        return;
+      }
+
+      setStepLoading('step2-btn', true);
+      try {
+        // Envoi des compétences
+        for (const s of userData.strengths) {
+          await API.profile.addCompetence({ matiere_id: s.matiere_id, niveau: s.mastery });
+        }
+        // Envoi des lacunes
+        for (const w of userData.weaknesses) {
+          await API.profile.addLacune({ matiere_id: w.matiere_id, priorite: w.priority });
+        }
+
+        // Sauvegarde locale
+        const stored = getUserData() || {};
+        saveUserData({ ...stored, strengths: userData.strengths, weaknesses: userData.weaknesses });
+
+        currentStep = 3;
+        updateProgress();
+        initAvailabilityGrid();
+
+      } catch (err) {
+        showStepError(2, err.message || 'Impossible de sauvegarder les compétences.');
+      } finally {
+        setStepLoading('step2-btn', false);
+      }
+    });
+
+    /* ──────────────────────────────────────────
+       Grille de disponibilités
+    ────────────────────────────────────────── */
+    function initAvailabilityGrid() {
+      const grid = document.getElementById('availability-grid');
+      grid.innerHTML = '';
+      hours.forEach((hour, ti) => {
+        const row = document.createElement('tr');
+        const hc = document.createElement('td');
+        hc.className = 'sticky left-0 bg-card border border-border p-2 text-sm text-muted';
+        hc.textContent = hour;
+        row.appendChild(hc);
+        days.forEach((_, di) => {
+          const cell = document.createElement('td');
+          cell.className = 'border border-border p-1';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'w-full h-8 rounded transition-colors bg-input hover:bg-primary/20';
+          btn.onclick = () => toggleSlot(di, ti, btn);
+          cell.appendChild(btn);
+          row.appendChild(cell);
+        });
+        grid.appendChild(row);
+      });
+    }
+
+    function toggleSlot(di, ti, btn) {
+      userData.availability[di][ti] = !userData.availability[di][ti];
+      btn.className = userData.availability[di][ti]
+        ? 'w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80'
+        : 'w-full h-8 rounded transition-colors bg-input hover:bg-primary/20';
+    }
+
+    function setAllSlots(tiFrom, tiTo, value) {
+      for (let ti = tiFrom; ti < tiTo; ti++) {
+        for (let di = 0; di < 7; di++) {
+          userData.availability[di][ti] = value;
+          const btn = document.querySelector(`#availability-grid tr:nth-child(${ti + 1}) td:nth-child(${di + 2}) button`);
+          if (btn) btn.className = value
+            ? 'w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80'
+            : 'w-full h-8 rounded transition-colors bg-input hover:bg-primary/20';
+        }
+      }
+    }
+
+    function selectMornings()   { setAllSlots(0, 4, true);  }
+    function selectAfternoons() { setAllSlots(4, 9, true);  }
+    function clearAll()         { setAllSlots(0, 13, false); }
+
+    /* ──────────────────────────────────────────
+       STEP 3 — Disponibilités → API batch
+       POST /api/profile/disponibilites
+    ────────────────────────────────────────── */
+    document.getElementById('step3-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideStepError(3);
+
+      const slots = [];
+      days.forEach((day, di) => {
+        hours.forEach((hour, ti) => {
+          if (userData.availability[di][ti]) {
+            const creneau = hour.replace('h-', '-').padStart(5, '0').replace(/(\d+)-(\d+)h/, (_, a, b) => 
+            a.padStart(2,'0') + '-' + b.padStart(2,'0'));
+            slots.push({ jour: day, creneau });
+          }
+        });
+      });
+
+      const btn = document.getElementById('finish-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>';
+
+      try {
+        // Envoi de chaque créneau
+        for (const slot of slots) {
+          await API.profile.addDisponibilite(slot);
+        }
+
+        // Sauvegarde locale complète
+        userData.availability = userData.availability;
+        const stored = getUserData() || {};
+        saveUserData({ ...stored, availability: userData.availability });
+        localStorage.setItem('onboardingCompleted', 'true');
+
+        // Prépare le cache dashboard
+        try {
+          const profData = await API.profile.getMe();
+          const prof = profData.profile || profData;
+          localStorage.setItem('mentorlink_profile_cache', JSON.stringify(prof));
+        } catch (_) {}
+
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+
+      } catch (err) {
+        showStepError(3, err.message || 'Impossible de sauvegarder les disponibilités.');
+        btn.disabled = false;
+        btn.innerHTML = `Terminer la configuration
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>`;
+      }
+    });
+
+    /* ── Init ── */
+    updateProgress();
+  </script>
+</body>
+</html>

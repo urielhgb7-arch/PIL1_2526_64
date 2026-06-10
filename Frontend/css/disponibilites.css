@@ -1,0 +1,98 @@
+/* =============================================
+   MentorLink — Grille de disponibilités
+   ============================================= */
+
+/* Cellule de créneau */
+.slot {
+    width: 100%;
+    height: 44px;
+    border-radius: 8px;
+    background-color: #1e2333;
+    border: 1.5px solid #2d3550;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    display: block;
+}
+
+.slot:hover {
+    background-color: #2a3150;
+    border-color: #6366f1;
+}
+
+.slot.selected {
+    background-color: #6366f1;
+    border-color: #818cf8;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
+}
+
+.slot:active {
+    transform: scale(0.93);
+}
+
+/* Ligne de la table */
+#gridBody tr {
+    border-bottom: 1px solid #1e2333;
+    transition: background 0.1s;
+}
+
+#gridBody tr:last-child {
+    border-bottom: none;
+}
+
+#gridBody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Cellule horaire (colonne gauche) */
+.horaire-label {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: #141927;
+}
+
+/* Cellule de la grille */
+.grid-cell {
+    padding: 5px 6px;
+    background-color: #141927;
+}
+
+/* Boutons rapides actifs */
+.quick-btn.active {
+    border-color: #6366f1;
+    color: #a5b4fc;
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Animation d'entrée des cellules */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#gridBody tr {
+    animation: fadeSlideIn 0.2s ease both;
+}
+
+/* Délai progressif par ligne */
+#gridBody tr:nth-child(1)  { animation-delay: 0.03s; }
+#gridBody tr:nth-child(2)  { animation-delay: 0.06s; }
+#gridBody tr:nth-child(3)  { animation-delay: 0.09s; }
+#gridBody tr:nth-child(4)  { animation-delay: 0.12s; }
+#gridBody tr:nth-child(5)  { animation-delay: 0.15s; }
+#gridBody tr:nth-child(6)  { animation-delay: 0.18s; }
+#gridBody tr:nth-child(7)  { animation-delay: 0.21s; }
+#gridBody tr:nth-child(8)  { animation-delay: 0.24s; }
+#gridBody tr:nth-child(9)  { animation-delay: 0.27s; }
+#gridBody tr:nth-child(10) { animation-delay: 0.30s; }
+#gridBody tr:nth-child(11) { animation-delay: 0.33s; }
+#gridBody tr:nth-child(12) { animation-delay: 0.36s; }
+#gridBody tr:nth-child(13) { animation-delay: 0.39s; }

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+  <div class="min-h-screen flex">
+    <!-- Left side - Illustration -->
+    <div class="hidden lg:flex lg:w-1/2 bg-card border-r border-border items-center justify-center p-12 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-success/5"></div>
+
+      <svg viewBox="0 0 600 600" class="w-full max-w-lg relative z-10">
+        <defs>
+          <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7C6FF7" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stop-color="#7C6FF7" stop-opacity="0.8">
+              <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stop-color="#7C6FF7" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="4s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+
+          <linearGradient id="lineGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2DD4A0" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stop-color="#2DD4A0" stop-opacity="0.8">
+              <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stop-color="#2DD4A0" stop-opacity="0">
+              <animate attributeName="offset" values="0;1;0" dur="3.5s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+        </defs>
+
+        <!-- Animated connection lines -->
+        <line x1="150" y1="150" x2="300" y2="300" stroke="url(#lineGrad1)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite" />
+        </line>
+        <line x1="300" y1="300" x2="450" y2="200" stroke="url(#lineGrad1)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3.5s" repeatCount="indefinite" />
+        </line>
+        <line x1="300" y1="300" x2="400" y2="450" stroke="url(#lineGrad2)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="4s" repeatCount="indefinite" />
+        </line>
+        <line x1="150" y1="400" x2="300" y2="300" stroke="url(#lineGrad1)" stroke-width="2">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3.2s" repeatCount="indefinite" />
+        </line>
+
+        <!-- Floating nodes -->
+        <g class="animate-float-1">
+          <circle cx="150" cy="150" r="35" fill="#1F2433" stroke="#7C6FF7" stroke-width="3">
+            <animate attributeName="r" values="35;38;35" dur="4s" repeatCount="indefinite" />
+          </circle>
+          <text x="150" y="158" text-anchor="middle" fill="#fff" font-size="16">GL</text>
+        </g>
+
+        <g class="animate-float-2">
+          <circle cx="450" cy="200" r="35" fill="#1F2433" stroke="#2DD4A0" stroke-width="3">
+            <animate attributeName="r" values="35;39;35" dur="3.5s" repeatCount="indefinite" />
+          </circle>
+          <text x="450" y="208" text-anchor="middle" fill="#fff" font-size="16">RSI</text>
+        </g>
+
+        <g class="animate-float-3">
+          <circle cx="150" cy="400" r="35" fill="#1F2433" stroke="#7C6FF7" stroke-width="3">
+            <animate attributeName="r" values="35;37;35" dur="4.2s" repeatCount="indefinite" />
+          </circle>
+          <text x="150" y="408" text-anchor="middle" fill="#fff" font-size="16">M1</text>
+        </g>
+
+        <g class="animate-float-4">
+          <circle cx="400" cy="450" r="35" fill="#1F2433" stroke="#2DD4A0" stroke-width="3">
+            <animate attributeName="r" values="35;38;35" dur="3.8s" repeatCount="indefinite" />
+          </circle>
+          <text x="400" y="458" text-anchor="middle" fill="#fff" font-size="16">L3</text>
+        </g>
+
+        <!-- Central node -->
+        <g class="animate-pulse-slow">
+          <circle cx="300" cy="300" r="45" fill="#1F2433" stroke="#7C6FF7" stroke-width="4">
+            <animate attributeName="r" values="45;51;45" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <text x="300" y="310" text-anchor="middle" fill="#7C6FF7" font-size="20" font-weight="600">LINK</text>
+        </g>
+      </svg>
+
+      <div class="absolute top-8 left-8">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="text-sm font-bold text-primary">ML</span>
+          </div>
+          <h1 class="text-xl font-bold">
+            <span class="text-primary">IFRI</span> MentorLink
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side - Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+      <div class="w-full max-w-md">
+        <div class="bg-card rounded-xl p-8 border border-border">
+          <div class="mb-8">
+            <h1 class="text-2xl font-semibold mb-2">Connexion</h1>
+            <p class="text-muted">Accédez à votre compte IFRI MentorLink</p>
+          </div>
+
+          <div id="error-message" class="hidden mb-6 p-4 bg-destructive/10 border border-destructive rounded-lg">
+            <p class="text-destructive text-sm" id="error-text"></p>
+          </div>
+          <div id="info-message" class="hidden mb-6 p-4 bg-success/10 border border-success rounded-lg">
+            <p class="text-success text-sm" id="info-text"></p>
+          </div>
+
+          <form id="signin-form" class="space-y-5">
+            <div>
+              <label for="email" class="block text-sm font-medium mb-2">Email académique</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="votre.email@ifri.uac.bj"
+                class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
+              <div class="relative">
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-12"
+                  required
+                />
+                <button title="Afficher/Masquer le mot de passe"
+                  type="button"
+                  onclick="togglePassword('password')"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-white transition-colors"
+                >
+                  <svg id="password-icon-hide" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <svg id="password-icon-show" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4 rounded border-border bg-input text-primary focus:ring-primary focus:ring-offset-0" />
+                <span class="text-sm text-muted">Se souvenir de moi</span>
+              </label>
+              <button id="forgot-password-btn" type="button" class="text-sm text-primary hover:underline">Mot de passe oublié?</button>
+            </div>
+
+            <div id="forgot-password-panel" class="hidden p-4 bg-card border border-border rounded-xl space-y-4">
+              <p class="text-sm text-muted">Entrez votre adresse email pour recevoir un lien de réinitialisation.</p>
+              <div>
+                <label for="forgot-email" class="block text-sm font-medium mb-2">Email</label>
+                <input id="forgot-email" type="email" placeholder="votre.email@ifri.uac.bj"
+                  class="w-full px-4 py-3 bg-input rounded-lg border border-border placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+              </div>
+              <div class="flex items-center justify-between gap-3">
+                <button id="forgot-submit-btn" type="button" class="flex-1 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Envoyer</button>
+                <button id="forgot-cancel-btn" type="button" class="flex-1 py-3 bg-input text-muted rounded-lg border border-border hover:bg-popover transition-colors">Annuler</button>
+              </div>
+              <p class="text-sm text-muted">
+                Vous avez déjà un token ?
+                <a href="reset-password.html" class="text-primary hover:underline">Réinitialiser avec un token</a>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+            >
+              Se connecter
+            </button>
+
+            <div class="text-center pt-4 border-t border-border">
+              <p class="text-sm text-muted">
+                Pas encore de compte?
+                <a href="signup.html" class="text-primary font-medium hover:underline">Créer un compte</a>
+              </p>
+            </div>
+
+            <div class="text-center pt-4 border-t border-border">
+              <p class="text-sm text-muted">
+                <a href="../index.html" class="text-primary font-medium hover:underline">← Retour à l'accueil</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/bundle.js"></script>
+  <script>
+    const form = document.getElementById('signin-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+    const submitBtn = document.getElementById('submit-btn');
+
+    const forgotPasswordBtn = document.getElementById('forgot-password-btn');
+    const forgotPasswordPanel = document.getElementById('forgot-password-panel');
+    const forgotEmailInput = document.getElementById('forgot-email');
+    const forgotSubmitBtn = document.getElementById('forgot-submit-btn');
+    const forgotCancelBtn = document.getElementById('forgot-cancel-btn');
+    const infoMessage = document.getElementById('info-message');
+    const infoText = document.getElementById('info-text');
+
+    function showError(message) {
+      errorText.textContent = message;
+      errorMessage.classList.remove('hidden');
+    }
+
+    function hideError() {
+      errorMessage.classList.add('hidden');
+    }
+
+    function showInfo(message) {
+      infoText.textContent = message;
+      infoMessage.classList.remove('hidden');
+    }
+
+    function hideInfo() {
+      infoMessage.classList.add('hidden');
+    }
+
+    function showForgotPasswordPanel() {
+      hideError();
+      hideInfo();
+      forgotPasswordPanel.classList.remove('hidden');
+      forgotEmailInput.focus();
+    }
+
+    function hideForgotPasswordPanel() {
+      forgotPasswordPanel.classList.add('hidden');
+      forgotEmailInput.value = '';
+    }
+
+    forgotPasswordBtn.addEventListener('click', showForgotPasswordPanel);
+    forgotCancelBtn.addEventListener('click', hideForgotPasswordPanel);
+
+    forgotSubmitBtn.addEventListener('click', async () => {
+      hideError();
+      hideInfo();
+
+      const email = forgotEmailInput.value.trim();
+      if (!email || !email.includes('@')) {
+        showError('Veuillez saisir un email valide.');
+        return;
+      }
+
+      forgotSubmitBtn.disabled = true;
+      const previousLabel = forgotSubmitBtn.innerHTML;
+      forgotSubmitBtn.innerHTML = 'Envoi...';
+
+      try {
+        const res = await API.auth.forgotPassword({ email });
+        const message = res.message || 'Si votre email existe, un lien de réinitialisation a été émis.';
+        showInfo(message);
+
+        if (res.reset_token) {
+          showInfo(`${message} (token de test : ${res.reset_token})`);
+        }
+
+        hideForgotPasswordPanel();
+      } catch (err) {
+        showError(err.message || 'Erreur lors de la demande de réinitialisation.');
+      } finally {
+        forgotSubmitBtn.disabled = false;
+        forgotSubmitBtn.innerHTML = previousLabel;
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      // Basic email validation
+      if (!email.includes('@')) {
+        showError('Email invalide.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const previous = submitBtn.innerHTML;
+      submitBtn.innerHTML = `
+        <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+        Connexion...
+      `;
+
+      try {
+        const res = await API.auth.login({ email, password });
+        // heuristics for token/user
+        const token = res.token || res.access_token || (res.data && res.data.token);
+        const user = res.user || res.profile || res.data || res;
+
+        if (token) localStorage.setItem('mentorlink_token', token);
+        if (user) localStorage.setItem('mentorlink_user', JSON.stringify(user));
+        localStorage.setItem('isAuthenticated', 'true');
+
+        // Pré-charge le profil complet dans le cache pour affichage instantané au dashboard
+        try {
+          const profData = await API.profile.getMe();
+          const prof = profData.profile || profData;
+          localStorage.setItem('mentorlink_profile_cache', JSON.stringify(prof));
+          saveUserData({
+            firstName: prof.prenom,
+            lastName: prof.nom,
+            department: prof.filiere,
+            level: prof.niveau,
+          });
+        } catch (_) { /* cache optionnel, le dashboard fera l'appel */ }
+
+        // redirect according to onboarding flag or profile completeness
+        window.location.href = 'dashboard.html';
+      } catch (err) {
+        console.error('Login error', err);
+        showError(err.message || 'Impossible de se connecter.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = previous;
+      }
+    });
+  </script>
+</body>
+</html>

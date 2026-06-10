@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérification de l'email - IFRI MentorLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/styles.css">  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#08090C',
+            foreground: '#FFFFFF',
+            card: '#0F111A',
+            popover: '#1F2433',
+            primary: '#7C6FF7',
+            success: '#2DD4A0',
+            warning: '#F5A623',
+            destructive: '#F97066',
+            border: 'rgba(255, 255, 255, 0.08)',
+            input: '#1F2433',
+            muted: 'rgba(255, 255, 255, 0.6)',
+          }
+        }
+      }
+    }
+  </script></head>
+<body class="bg-background text-foreground min-h-screen">
+  <div class="min-h-screen flex">
+    <div class="hidden lg:flex lg:w-1/2 bg-card border-r border-border items-center justify-center p-12 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-success/5"></div>
+      <div class="relative z-10 text-center text-white">
+        <h1 class="text-4xl font-bold mb-4">Vérification de l'email</h1>
+        <p class="text-muted max-w-md mx-auto">Confirmez votre adresse email pour activer votre compte MentorLink.</p>
+      </div>
+    </div>
+
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+      <div class="w-full max-w-md">
+        <div class="bg-card rounded-xl p-8 border border-border">
+          <div class="mb-8">
+            <h1 class="text-2xl font-semibold mb-2">Vérification de l'email</h1>
+            <p class="text-muted">Votre email est en cours de vérification...</p>
+          </div>
+
+          <div id="error-message" class="hidden mb-6 p-4 bg-destructive/10 border border-destructive rounded-lg">
+            <p class="text-destructive text-sm" id="error-text"></p>
+          </div>
+          <div id="success-message" class="hidden mb-6 p-4 bg-success/10 border border-success rounded-lg">
+            <p class="text-success text-sm" id="success-text"></p>
+          </div>
+
+          <div id="loading-spinner" class="flex justify-center py-8">
+            <div class="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          </div>
+
+          <div id="redirect-section" class="hidden text-center">
+            <p class="text-muted mb-4">Redirection vers la page de connexion...</p>
+            <a href="signin.html" class="inline-block px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors">
+              Aller à la connexion
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/bundle.js"></script>
+  <script>
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+    const successMessage = document.getElementById('success-message');
+    const successText = document.getElementById('success-text');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const redirectSection = document.getElementById('redirect-section');
+
+    function showError(message) {
+      errorText.textContent = message;
+      errorMessage.classList.remove('hidden');
+      loadingSpinner.classList.add('hidden');
+    }
+
+    function showSuccess(message) {
+      successText.textContent = message;
+      successMessage.classList.remove('hidden');
+      loadingSpinner.classList.add('hidden');
+      redirectSection.classList.remove('hidden');
+    }
+
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name) || '';
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = getQueryParam('token');
+      
+      if (!token) {
+        showError('Token de vérification manquant. Veuillez utiliser le lien fourni dans l\'email.');
+        return;
+      }
+
+      try {
+        const base = (window.API_BASE_URL || 'http://127.0.0.1:5000/api');
+        const response = await fetch(`${base}/auth/verify-email?token=${encodeURIComponent(token)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showSuccess(data.message || 'Email vérifié avec succès !');
+          setTimeout(() => {
+            window.location.href = 'signin.html';
+          }, 3000);
+        } else {
+          showError(data.message || 'Erreur lors de la vérification de l\'email.');
+        }
+      } catch (err) {
+        showError('Erreur de connexion au serveur. Veuillez réessayer.');
+      }
+    });
+  </script>
+</body>
+</html>
