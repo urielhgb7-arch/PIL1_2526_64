@@ -1966,14 +1966,13 @@
                             const payload = {
                                 matiere_id: parseInt(matiere_id),
                                 description,
-                                format: format_pref,
+                                format_preference: format_pref,
                                 urgence,
+                                jour,
+                                creneau,
                             };
                             if (selectedSlots.length > 0) {
-                                payload.disponibilite = selectedSlots;
-                            } else if (jour && creneau) {
-                                payload.jour = jour;
-                                payload.creneau = creneau;
+                                payload.disponibilites = selectedSlots;
                             }
                             await API.demands.create(payload);
                         }

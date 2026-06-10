@@ -292,15 +292,15 @@ def create_demand(current_user):
     jour = data.get('jour')
     creneau = data.get('creneau')
     description = data.get('description', '')
-    disponibilite = data.get('disponibilite') or data.get('disponibilites')
+    disponibilite = data.get('disponibilites') or data.get('disponibilite')
     urgence = data.get('urgence')
-    format_pref = data.get('format')
+    format_pref = data.get('format_preference') or data.get('format')
 
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
 
-    if not disponibilite and (not jour or not creneau):
-        return jsonify({"message": "jour et creneau requis"}), 400
+    if not disponibilite and not (jour and creneau):
+        return jsonify({"message": "Créneau requis : fournissez disponibilites ou jour+creneau"}), 400
 
     if disponibilite:
         if not isinstance(disponibilite, list) or len(disponibilite) == 0:

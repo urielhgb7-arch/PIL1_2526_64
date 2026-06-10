@@ -26,7 +26,7 @@ class Offer(db.Model):
     creneau = db.Column(db.String(10), nullable=True)
     format_preference = db.Column(db.String(20), default='hybride')
     disponibilites = db.Column(db.JSON, default=list)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     matiere = db.relationship('Matiere', back_populates='offers')
 
 class Demand(db.Model):
@@ -40,7 +40,7 @@ class Demand(db.Model):
     urgence = db.Column(db.String(20), default='Moyenne')
     format_preference = db.Column(db.String(20), default='hybride')
     disponibilites = db.Column(db.JSON, default=list)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', back_populates='demands')
 
@@ -76,7 +76,7 @@ class Matching(db.Model):
     matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     status       = db.Column(db.String(20), nullable=False, default='pending')         # pending/accepted/rejected
     score        = db.Column(db.Float, nullable=False)
-    created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at   = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', foreign_keys=[matiere_id])
     demand = db.relationship('Demand', foreign_keys=[demand_id])
