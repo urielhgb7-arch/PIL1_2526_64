@@ -629,6 +629,30 @@
             </div>
         </div>
 
+        <!-- Modal vérification email -->
+        <div id="verif-modal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4">
+            <div class="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl">
+                <div class="text-center mb-6">
+                    <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                        <span class="ti ti-mail-check text-2xl text-primary"></span>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2">Vérifie ton email</h2>
+                    <p class="text-sm text-muted">Clique sur le lien ci-dessous pour vérifier ton adresse email et activer ton compte.</p>
+                </div>
+                <a id="verif-link" href="#" target="_blank"
+                   class="block w-full py-3 bg-primary text-white rounded-lg text-center font-medium hover:bg-primary/90 transition-colors mb-3">
+                    Vérifier mon email
+                </a>
+                <button onclick="checkEmailVerified()"
+                        class="w-full py-3 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">
+                    J'ai vérifié, continuer →
+                </button>
+                <p class="text-xs text-muted text-center mt-3">
+                    Tu peux fermer cette fenêtre après avoir cliqué sur le lien.
+                </p>
+            </div>
+        </div>
+
         <script src="../js/bundle.js"></script>
         <script>
             const form = document.getElementById("signup-form");
@@ -741,10 +765,16 @@
                     localStorage.setItem("isAuthenticated", "true");
                     localStorage.removeItem("onboardingCompleted");
 
-                    showSuccess("Compte créé avec succès ! Redirection…");
-                    setTimeout(() => {
-                        window.location.href = "onboarding.html";
-                    }, 1200);
+                    // Vérification email
+                    const verifUrl = data.verification_url;
+                    if (verifUrl && !data.user.email_verified) {
+                        showVerificationModal(verifUrl);
+                    } else {
+                        showSuccess("Compte créé avec succès ! Redirection…");
+                        setTimeout(() => {
+                            window.location.href = "onboarding.html";
+                        }, 1200);
+                    }
                 } catch (err) {
                     showError(
                         err.message ||
@@ -753,6 +783,37 @@
                     setLoading(false);
                 }
             });
+            // ── Vérification email ────────────────────────────────────
+            let _verifUrl = '';
+
+            function showVerificationModal(url) {
+                _verifUrl = url;
+                const base = (window.API_BASE_URL || 'http://127.0.0.1:5000/api').replace('/api', '');
+                document.getElementById('verif-link').href = base + url;
+                document.getElementById('verif-modal').classList.remove('hidden');
+                document.getElementById('submit-btn').disabled = true;
+            }
+
+            async function checkEmailVerified() {
+                const btn = document.querySelector('#verif-modal button:last-of-type');
+                btn.disabled = true;
+                btn.innerHTML = `<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block mr-2"></div> Vérification...`;
+
+                try {
+                    const data = await API.profile.getMe();
+                    if (data && data.email_verified) {
+                        document.getElementById('verif-modal').classList.add('hidden');
+                        showSuccess('Email vérifié ! Redirection...');
+                        setTimeout(() => { window.location.href = 'onboarding.html'; }, 1000);
+                        return;
+                    }
+                    showError('Email pas encore vérifié. Clique sur le lien puis réessaie.');
+                } catch (err) {
+                    showError('Erreur de vérification. Réessaie.');
+                }
+                btn.disabled = false;
+                btn.textContent = "J'ai vérifié, continuer →";
+            }
         </script>
     </body>
 </html>

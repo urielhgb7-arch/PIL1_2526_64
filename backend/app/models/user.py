@@ -11,6 +11,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     # Cohérent avec schema.sql : CHECK (role IN ('student', 'admin'))
     role = db.Column(db.String(20), nullable=False, default='student')
+    email_verified = db.Column(db.Boolean, default=False, server_default='0')
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Relation 1-to-1 avec le Profil

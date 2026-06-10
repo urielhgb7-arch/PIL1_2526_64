@@ -9,6 +9,7 @@ from app.database import db
 from app.middleware.auth_guard import token_required
 from app.models import (
     Conversation,
+    EmailToken,
     Matching,
     Message,
     Notification,
@@ -147,19 +148,37 @@ def register():
         db.session.commit()  # ← un seul commit pour les deux
         logger.info(f" Profil créé pour user_id={new_user.id}")
 
+        # Génération token de vérification email
+        verif_token_str = None
+        if new_user.email.endswith('@test.ifri.edu'):
+            new_user.email_verified = True
+            db.session.commit()
+            logger.info(f"Email auto-vérifié pour user test user_id={new_user.id}")
+        else:
+            verif_token_str = secrets.token_urlsafe(32)
+            verif_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+            db.session.add(EmailToken(user_id=new_user.id, token=verif_token_str, expires_at=verif_expires))
+            db.session.commit()
+            logger.info(f"Token vérification email généré pour user_id={new_user.id}")
+
         # Retour du token
         access_token = create_access_token(identity=str(new_user.id))
-        return jsonify(
-            {
-                "message": "Compte créé avec succès !",
-                "token": access_token,
-                "user": {
-                    "id": new_user.id,
-                    "email": new_user.email,
-                    "role": new_user.role,
-                },
-            }
-        ), 201
+        response = {
+            "message": "Compte créé avec succès !",
+            "token": access_token,
+            "user": {
+                "id": new_user.id,
+                "email": new_user.email,
+                "role": new_user.role,
+                "email_verified": new_user.email_verified,
+            },
+        }
+        # En dev : retourner le token de vérification pour test
+        if verif_token_str and os.getenv('FLASK_ENV') != 'production':
+            response['verification_token'] = verif_token_str
+            response['verification_url'] = f"/api/auth/verify-email?token={verif_token_str}"
+
+        return jsonify(response), 201
 
     except IntegrityError as e:
         db.session.rollback()
@@ -169,6 +188,38 @@ def register():
         db.session.rollback()
         logger.error(f"Erreur inscription: {str(e)[:500]}", exc_info=True)
         return jsonify({"message": f"Erreur serveur: {str(e)[:500]}"}), 500
+
+
+@auth_bp.route("/verify-email", methods=["GET"])
+def verify_email():
+    """Vérifie l'email d'un utilisateur via un token"""
+    token = request.args.get('token')
+    if not token:
+        return jsonify({"message": "Token requis"}), 400
+
+    email_token = EmailToken.query.filter_by(token=token).first()
+    if not email_token:
+        return jsonify({"message": "Token invalide"}), 400
+
+    now = datetime.now(timezone.utc)
+    expires = email_token.expires_at
+    if expires.tzinfo is None:
+        expires = expires.replace(tzinfo=timezone.utc)
+    if expires < now:
+        db.session.delete(email_token)
+        db.session.commit()
+        return jsonify({"message": "Token expiré"}), 400
+
+    user = db.session.get(User, email_token.user_id)
+    if not user:
+        return jsonify({"message": "Utilisateur introuvable"}), 404
+
+    user.email_verified = True
+    db.session.delete(email_token)
+    db.session.commit()
+
+    logger.info(f"Email vérifié pour user_id={user.id}")
+    return jsonify({"message": "Email vérifié avec succès ! Vous pouvez maintenant vous connecter."}), 200
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -192,6 +243,11 @@ def login():
             logger.warning(f"Login échoué pour: {data['email'][:10]}***")
             return jsonify({"message": "Identifiants invalides"}), 401
 
+        # Vérification email — sauf pour @test.ifri.edu en dev
+        if not user.email_verified and not (user.email.endswith('@test.ifri.edu') and os.getenv('FLASK_ENV') != 'production'):
+            logger.warning(f"Login refusé: email non vérifié pour {data['email'][:10]}***")
+            return jsonify({"message": "Veuillez vérifier votre email avant de vous connecter", "email_verified": False}), 403
+
         profile_id = user.profile.id if user.profile else None
         access_token = create_access_token(identity=str(user.id))
         logger.info(f" Login réussi: {data['email'][:10]}***")
@@ -204,6 +260,7 @@ def login():
                     "email": user.email,
                     "role": user.role,
                     "profile_id": profile_id,
+                    "email_verified": user.email_verified,
                 },
             }
         ), 200

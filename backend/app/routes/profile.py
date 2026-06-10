@@ -90,6 +90,7 @@ def get_my_profile(current_user):
             "id": profile.id,
             "user_id": current_user.id,
             "email": current_user.email,
+            "email_verified": current_user.email_verified,
             "nom": profile.nom,
             "prenom": profile.prenom,
             "filiere": profile.filiere,
