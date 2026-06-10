@@ -160,6 +160,15 @@
                                 </p>
                             </div>
                         </div>
+                        <div>
+                            <label class="text-sm text-muted">Biographie</label>
+                            <p
+                                id="display-bio"
+                                class="text-sm text-foreground/80 mt-0.5 italic"
+                            >
+                                <span class="text-muted">Non renseignée</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -353,6 +362,17 @@
                             <option value="M1">Master 1 (M1)</option>
                             <option value="M2">Master 2 (M2)</option>
                         </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Biographie</label
+                        >
+                        <textarea
+                            id="profile-bio"
+                            rows="3"
+                            placeholder="Quelques mots sur vous…"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm placeholder:text-muted"
+                        ></textarea>
                     </div>
                     <p
                         id="profile-form-error"
@@ -869,6 +889,8 @@
                                 p.filiere || "GL";
                             document.getElementById("profile-niveau").value =
                                 p.niveau || "L1";
+                            document.getElementById("profile-bio").value =
+                                p.bio || "";
                         })
                         .catch(() => {});
                 }
@@ -1052,6 +1074,15 @@
                         filiereLabel(profile.filiere);
                     document.getElementById("display-level").textContent =
                         niveauLabel(profile.niveau);
+                    // Bio
+                    const bioEl = document.getElementById("display-bio");
+                    if (profile.bio && profile.bio.trim()) {
+                        bioEl.textContent = profile.bio;
+                        bioEl.classList.remove("text-muted");
+                    } else {
+                        bioEl.innerHTML =
+                            '<span class="text-muted">Non renseignée</span>';
+                    }
                     // Sauvegarder localement pour les autres pages
                     saveUserData({
                         firstName: profile.prenom,
@@ -1136,13 +1167,16 @@
                         document.getElementById("profile-filiere").value;
                     const niveau =
                         document.getElementById("profile-niveau").value;
+                    const bio = document
+                        .getElementById("profile-bio")
+                        .value.trim();
 
                     if (!prenom || !nom) {
                         errorEl.textContent = "Prénom et nom sont requis.";
                         errorEl.classList.remove("hidden");
                         return;
                     }
-                    const payload = { prenom, nom, filiere, niveau };
+                    const payload = { prenom, nom, filiere, niveau, bio };
 
                     try {
                         await API.profile.updateMe(payload);

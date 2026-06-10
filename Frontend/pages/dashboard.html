@@ -1013,108 +1013,96 @@
                         : '<span class="text-xs text-muted">Aucune disponibilité</span>';
             }
 
+            function renderProfileCard(profile) {
+                const fullName =
+                    `${profile.prenom || ""} ${profile.nom || ""}`.trim();
+                document.getElementById("user-name").textContent = fullName;
+                const topFiliere = document.getElementById("topbar-filiere");
+                const topNiveau = document.getElementById("topbar-niveau");
+                if (profile.filiere) {
+                    topFiliere.textContent = profile.filiere;
+                    topFiliere.classList.remove("hidden");
+                }
+                if (profile.niveau) {
+                    topNiveau.textContent = niveauLabel(profile.niveau);
+                    topNiveau.classList.remove("hidden");
+                }
+                saveUserData({
+                    firstName: profile.prenom,
+                    lastName: profile.nom,
+                    department: profile.filiere,
+                    level: profile.niveau,
+                });
+
+                window._profileData = profile;
+                window._profileComps = profile.competences || [];
+                window._profileLacs = profile.lacunes || [];
+                window._profileAvatarUrl = profile.avatar_url || "";
+
+                const initials =
+                    `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
+                    "?";
+                document.getElementById(
+                    "profile-avatar-initials",
+                ).textContent = initials;
+                document.getElementById(
+                    "profile-fullname-dash",
+                ).textContent = fullName || "—";
+                document.getElementById("profile-email-dash").textContent =
+                    profile.email || "—";
+                document.getElementById(
+                    "profile-filiere-badge",
+                ).textContent = filiereLabel(profile.filiere);
+                document.getElementById(
+                    "profile-niveau-badge",
+                ).textContent = niveauLabel(profile.niveau);
+
+                const compsEl = document.getElementById("profile-comps-dash");
+                const comps = profile.competences || [];
+                compsEl.innerHTML =
+                    comps.length > 0
+                        ? comps.slice(0, 4).map(c =>
+                            `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-success/10 text-success">${c.matiere_nom || ""}</span>`
+                        ).join("")
+                        : '<span class="text-xs text-muted">Aucune</span>';
+
+                const lacsEl = document.getElementById("profile-lacs-dash");
+                const lacs = profile.lacunes || [];
+                lacsEl.innerHTML =
+                    lacs.length > 0
+                        ? lacs.slice(0, 4).map(l =>
+                            `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-warning/10 text-warning">${l.matiere_nom || ""}</span>`
+                        ).join("")
+                        : '<span class="text-xs text-muted">Aucune</span>';
+
+                document.getElementById("profile-preview-loading").classList.add("hidden");
+                document.getElementById("profile-preview-content").classList.remove("hidden");
+
+                localStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile));
+            }
+
             async function loadDashboard() {
+
+                // Cache instant : affiche le profil sans attendre l'API
+                const cached = localStorage.getItem("mentorlink_profile_cache");
+                if (cached) {
+                    try { renderProfileCard(JSON.parse(cached)); } catch (_) {}
+                }
+
+                // Rafraîchissement depuis l'API
                 try {
                     const data = await API.profile.getMe();
                     const profile = data.profile || data;
-                    const fullName =
-                        `${profile.prenom || ""} ${profile.nom || ""}`.trim();
-                    document.getElementById("user-name").textContent = fullName;
-                    // Top bar badges
-                    const topFiliere =
-                        document.getElementById("topbar-filiere");
-                    const topNiveau = document.getElementById("topbar-niveau");
-                    if (profile.filiere) {
-                        topFiliere.textContent = profile.filiere;
-                        topFiliere.classList.remove("hidden");
-                    }
-                    if (profile.niveau) {
-                        topNiveau.textContent = niveauLabel(profile.niveau);
-                        topNiveau.classList.remove("hidden");
-                    }
-                    saveUserData({
-                        firstName: profile.prenom,
-                        lastName: profile.nom,
-                        department: profile.filiere,
-                        level: profile.niveau,
-                    });
-
-                    // Stocker pour le modal profil
-                    window._profileData = profile;
-                    window._profileComps = profile.competences || [];
-                    window._profileLacs = profile.lacunes || [];
-                    window._profileAvatarUrl = profile.avatar_url || "";
-
-                    // Afficher la section profil
-                    const initials =
-                        `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
-                        "?";
-                    document.getElementById(
-                        "profile-avatar-initials",
-                    ).textContent = initials;
-                    document.getElementById(
-                        "profile-fullname-dash",
-                    ).textContent = fullName || "—";
-                    document.getElementById("profile-email-dash").textContent =
-                        profile.email || "—";
-                    document.getElementById(
-                        "profile-filiere-badge",
-                    ).textContent = filiereLabel(profile.filiere);
-                    document.getElementById(
-                        "profile-niveau-badge",
-                    ).textContent = niveauLabel(profile.niveau);
-
-                    const tel = profile.telephone;
-                    if (tel && !tel.startsWith("non-renseigne")) {
-                        const telBadge = document.getElementById(
-                            "profile-telephone-badge",
-                        );
-                        telBadge.textContent = tel;
-                        telBadge.classList.remove("hidden");
-                    }
-
-                    const compsEl =
-                        document.getElementById("profile-comps-dash");
-                    const comps = profile.competences || [];
-                    compsEl.innerHTML =
-                        comps.length > 0
-                            ? comps
-                                  .slice(0, 4)
-                                  .map(
-                                      (c) =>
-                                          `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-success/10 text-success">${c.matiere_nom || ""}</span>`,
-                                  )
-                                  .join("")
-                            : '<span class="text-xs text-muted">Aucune</span>';
-
-                    const lacsEl = document.getElementById("profile-lacs-dash");
-                    const lacs = profile.lacunes || [];
-                    lacsEl.innerHTML =
-                        lacs.length > 0
-                            ? lacs
-                                  .slice(0, 4)
-                                  .map(
-                                      (l) =>
-                                          `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-warning/10 text-warning">${l.matiere_nom || ""}</span>`,
-                                  )
-                                  .join("")
-                            : '<span class="text-xs text-muted">Aucune</span>';
-
-                    document
-                        .getElementById("profile-preview-loading")
-                        .classList.add("hidden");
-                    document
-                        .getElementById("profile-preview-content")
-                        .classList.remove("hidden");
+                    renderProfileCard(profile);
                 } catch (err) {
-                    const userData = getUserData();
-                    if (userData && userData.firstName) {
-                        document.getElementById("user-name").textContent =
-                            `${userData.firstName} ${userData.lastName}`;
+                    if (!cached) {
+                        const userData = getUserData();
+                        if (userData && userData.firstName) {
+                            document.getElementById("user-name").textContent =
+                                `${userData.firstName} ${userData.lastName}`;
+                        }
+                        document.getElementById("profile-preview-loading").textContent = "Profil non disponible.";
                     }
-                    document.getElementById(
-                        "profile-preview-loading",
-                    ).textContent = "Profil non disponible.";
                 }
 
                 // ── Métriques réelles ─────────────────────────────────────────────────
@@ -1192,7 +1180,7 @@
                         selMat.appendChild(opt);
                     });
 
-                    // Afficher par défaut les offres
+                    // Par défaut les offres
                     window._currentTab = "offers";
                     applyFilters();
                 } catch (err) {
