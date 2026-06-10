@@ -367,13 +367,19 @@
                     <div id="profile-preview-content" class="hidden">
                         <div class="flex items-start gap-4">
                             <div
-                                class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0"
+                                class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden relative"
                             >
                                 <span
                                     id="profile-avatar-initials"
                                     class="text-lg font-bold text-primary"
                                     >?</span
                                 >
+                                <img
+                                    id="profile-avatar-img"
+                                    src=""
+                                    alt="avatar"
+                                    class="hidden w-full h-full object-cover absolute inset-0"
+                                />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p
@@ -667,6 +673,31 @@
             </div>
         </div>
 
+        <!-- Modal Détail Offre / Demande -->
+        <div
+            id="modal-detail"
+            class="hidden fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6"
+            >
+                <div class="flex items-center justify-between mb-4">
+                    <h2 id="modal-detail-title" class="text-xl font-semibold">—</h2>
+                    <button
+                        onclick="document.getElementById('modal-detail').classList.add('hidden')"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modal-detail-body" class="space-y-4 text-sm">
+                    <p class="text-muted">Chargement…</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Mobile Bottom Navigation -->
         <div
             class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50"
@@ -846,9 +877,14 @@
                                     (m) => m.id === o.matiere_id,
                                 )?.nom ||
                                 "Matière";
-                            const profil = o.publicateur
-                                ? `${o.publicateur.prenom || ""} ${o.publicateur.nom || ""}`.trim()
+                            const p = o.publicateur;
+                            const profil = p
+                                ? `${p.prenom || ""} ${p.nom || ""}`.trim()
                                 : o.profile_name || "";
+                            const avatarUrl = p?.avatar_url || "";
+                            const avatarHtml = avatarUrl && avatarUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avatarUrl}" alt="" class="w-6 h-6 rounded-full object-cover flex-shrink-0" />`
+                                : `<span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">${profil ? profil.charAt(0) : "?"}</span>`;
                             const dispos = Array.isArray(o.disponibilites)
                                 ? o.disponibilites
                                 : [];
@@ -858,14 +894,14 @@
                                         `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour ? d.jour + " " : ""}${d.creneau || ""}</span>`,
                                 )
                                 .join(" ");
-                            return `<div class="bg-popover border border-border rounded-lg p-4">
+                            return `<div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-card/80 transition-colors" onclick="openDetailModal(${o.id}, 'offer')">
                 <div class="flex items-start justify-between gap-3 mb-2">
                     <div class="flex-1 min-w-0">
                         <p class="font-semibold text-sm">${nom}</p>
-                        ${profil ? `<p class="text-xs text-muted mt-0.5">${profil}</p>` : ""}
+                        ${profil ? `<p class="text-xs text-muted mt-0.5 flex items-center gap-1.5">${avatarHtml}${profil}</p>` : ""}
                         ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
                     </div>
-                    <a href="matching.html" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Voir</a>
+                    <span class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs">Voir</span>
                 </div>
             </div>`;
                         })
@@ -879,6 +915,14 @@
                                     (m) => m.id === d.matiere_id,
                                 )?.nom ||
                                 "Matière";
+                            const p = d.publicateur;
+                            const profil = p
+                                ? `${p.prenom || ""} ${p.nom || ""}`.trim()
+                                : "";
+                            const avatarUrl = p?.avatar_url || "";
+                            const avatarHtml = avatarUrl && avatarUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avatarUrl}" alt="" class="w-6 h-6 rounded-full object-cover flex-shrink-0" />`
+                                : profil ? `<span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">${profil.charAt(0)}</span>` : "";
                             const dispos = Array.isArray(d.disponibilites)
                                 ? d.disponibilites
                                 : [];
@@ -891,14 +935,15 @@
                             const urgBadge = d.urgence
                                 ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : d.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${d.urgence}</span>`
                                 : "";
-                            return `<div class="bg-popover border border-border rounded-lg p-4">
+                            return `<div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-card/80 transition-colors" onclick="openDetailModal(${d.id}, 'demand')">
                 <div class="flex items-start justify-between gap-3 mb-2">
                     <div class="flex-1 min-w-0">
                         <p class="font-semibold text-sm">${nom} ${urgBadge}</p>
                         ${d.description ? `<p class="text-xs text-muted mt-0.5 truncate">${d.description}</p>` : ""}
+                        ${profil ? `<p class="text-xs text-muted mt-0.5 flex items-center gap-1.5">${avatarHtml}${profil}</p>` : ""}
                         ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
                     </div>
-                    <a href="requests.html?open-demand=${d.id}" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Voir</a>
+                    <span class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs">Voir</span>
                 </div>
             </div>`;
                         })
@@ -1013,6 +1058,71 @@
                         : '<span class="text-xs text-muted">Aucune disponibilité</span>';
             }
 
+            function openDetailModal(id, type) {
+                const modal = document.getElementById("modal-detail");
+                const title = document.getElementById("modal-detail-title");
+                const body = document.getElementById("modal-detail-body");
+                modal.classList.remove("hidden");
+                modal.onclick = (e) => { if (e.target === modal) modal.classList.add("hidden"); };
+
+                const items = type === "offer" ? window._allOffers : window._allDemands;
+                const item = items.find(i => i.id === id);
+
+                if (!item) {
+                    body.innerHTML = `<p class="text-muted">Élément introuvable.</p>`;
+                    title.textContent = type === "offer" ? "Offre" : "Demande";
+                    return;
+                }
+
+                const p = item.publicateur || {};
+                const nomPublieur = `${p.prenom || ""} ${p.nom || ""}`.trim() || "Anonyme";
+                const avatarP = p.avatar_url && p.avatar_url !== "https://via.placeholder.com/150"
+                    ? `<img src="${p.avatar_url}" alt="" class="w-10 h-10 rounded-full object-cover" />`
+                    : `<span class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">${nomPublieur.charAt(0)}</span>`;
+
+                const matiereNom = item.matiere_nom ||
+                    ((window._matieres || []).find(m => m.id === item.matiere_id)?.nom) ||
+                    "—";
+                const dispos = Array.isArray(item.disponibilites) ? item.disponibilites : [];
+                const disposHtml = dispos.length
+                    ? dispos.map(d => `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour || ""} ${d.creneau || ""}</span>`).join(" ")
+                    : '<span class="text-xs text-muted">Non spécifié</span>';
+
+                const urgBadge = item.urgence
+                    ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${item.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : item.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${item.urgence}</span>`
+                    : "";
+
+                title.textContent = type === "offer" ? "Offre de mentorat" : "Demande d'aide";
+                body.innerHTML = `
+                    <div class="flex items-center gap-3 p-3 bg-popover rounded-xl mb-2">
+                        ${avatarP}
+                        <div>
+                            <p class="font-medium text-sm">${nomPublieur}</p>
+                            ${p.telephone && !p.telephone.startsWith("non-renseigne") ? `<p class="text-xs text-muted">${p.telephone}</p>` : ""}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-popover rounded-xl p-3">
+                            <p class="text-xs text-muted mb-0.5">Matière</p>
+                            <p class="font-medium text-sm">${matiereNom}</p>
+                        </div>
+                        <div class="bg-popover rounded-xl p-3">
+                            <p class="text-xs text-muted mb-0.5">Format</p>
+                            <p class="font-medium text-sm">${item.format_preference || item.format || "—"}</p>
+                        </div>
+                    </div>
+                    ${item.urgence ? `<div class="flex items-center gap-2">${urgBadge}</div>` : ""}
+                    <div>
+                        <p class="text-xs text-muted mb-1">Description</p>
+                        <p class="text-sm">${item.description || "Aucune description"}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-muted mb-1">Disponibilités</p>
+                        <div class="flex flex-wrap gap-1">${disposHtml}</div>
+                    </div>
+                `;
+            }
+
             function renderProfileCard(profile) {
                 const fullName =
                     `${profile.prenom || ""} ${profile.nom || ""}`.trim();
@@ -1045,6 +1155,17 @@
                 document.getElementById(
                     "profile-avatar-initials",
                 ).textContent = initials;
+                const avatarUrl = profile.avatar_url || "";
+                const avImg = document.getElementById("profile-avatar-img");
+                const avInit = document.getElementById("profile-avatar-initials");
+                if (avatarUrl && avatarUrl !== "https://via.placeholder.com/150") {
+                    avImg.src = avatarUrl;
+                    avImg.classList.remove("hidden");
+                    avInit.classList.add("hidden");
+                } else {
+                    avImg.classList.add("hidden");
+                    avInit.classList.remove("hidden");
+                }
                 document.getElementById(
                     "profile-fullname-dash",
                 ).textContent = fullName || "—";

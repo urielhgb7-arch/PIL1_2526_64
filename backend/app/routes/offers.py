@@ -178,7 +178,7 @@ def get_offers():
         profile = Profile.query.get(o.profile_id)
         publicateur = None
         if profile:
-            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom, "telephone": profile.telephone}
+            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom, "telephone": profile.telephone, "avatar_url": profile.avatar_url}
         result.append({
             "id": o.id,
             "profile_id": o.profile_id,
@@ -370,7 +370,7 @@ def get_demands():
         profile = Profile.query.get(d.profile_id)
         publicateur = None
         if profile:
-            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom, "telephone": profile.telephone}
+            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom, "telephone": profile.telephone, "avatar_url": profile.avatar_url}
         result.append({
             "id": d.id,
             "profile_id": d.profile_id,

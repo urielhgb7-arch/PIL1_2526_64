@@ -17,6 +17,7 @@ function logout() {
   localStorage.removeItem('userEmail');
   localStorage.removeItem('userData');
   localStorage.removeItem('onboardingCompleted');
+  localStorage.removeItem('mentorlink_profile_cache');
   const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
   window.location.href = redirectPath;
 }

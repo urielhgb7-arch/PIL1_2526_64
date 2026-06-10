@@ -1042,6 +1042,10 @@
                     ? `${data.publicateur.prenom || ""} ${data.publicateur.nom || ""}`.trim() ||
                       "Anonyme"
                     : "Anonyme";
+                const pubAv = data.publicateur?.avatar_url || "";
+                const pubAvHtml = pubAv && pubAv !== "https://via.placeholder.com/150"
+                    ? `<img src="${pubAv}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
+                    : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${publisher.charAt(0)}</span>`;
 
                 const createdDate = data.created_at
                     ? new Date(data.created_at).toLocaleDateString("fr-FR", {
@@ -1065,7 +1069,8 @@
           ${slotsHtml ? `<div class="mb-4"><p class="text-xs font-medium text-muted mb-1.5">Disponibilités</p><div class="flex flex-wrap gap-1.5">${slotsHtml}</div></div>` : ""}
           <hr class="border-border my-3">
           <div class="grid grid-cols-2 gap-3 text-xs">
-            <div><span class="text-muted">Publié par</span><p class="font-medium">${publisher}</p></div>
+            <div><span class="text-muted">Publié par</span><p class="font-medium flex items-center gap-1 mt-0.5">${pubAvHtml} ${publisher}</p>
+            ${data.publicateur?.telephone && !data.publicateur.telephone.startsWith("non-renseigne") ? `<p class="text-xs text-muted mt-0.5">📞 ${data.publicateur.telephone}</p>` : ""}</div>
             ${
                 isOffer
                     ? `
@@ -1337,6 +1342,10 @@
                             const name = o.publicateur
                                 ? `${o.publicateur.prenom || ""} ${o.publicateur.nom || ""}`.trim()
                                 : "Anonyme";
+                            const avUrl = o.publicateur?.avatar_url || "";
+                            const avHtml = avUrl && avUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avUrl}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
+                                : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${name.charAt(0)}</span>`;
                             const dispos =
                                 o.disponibilites &&
                                 Array.isArray(o.disponibilites)
@@ -1353,7 +1362,7 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
-                <span class="text-xs text-muted">par ${name}</span>
+                <span class="text-xs text-muted flex items-center gap-1">${avHtml} par ${name}</span>
               </div>
               ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ""}
               ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
@@ -1537,6 +1546,10 @@
                             const name = d.publicateur
                                 ? `${d.publicateur.prenom || ""} ${d.publicateur.nom || ""}`.trim()
                                 : "Anonyme";
+                            const avUrl = d.publicateur?.avatar_url || "";
+                            const avHtml = avUrl && avUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avUrl}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
+                                : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${name.charAt(0)}</span>`;
                             const dispos =
                                 d.disponibilites &&
                                 Array.isArray(d.disponibilites)
@@ -1553,7 +1566,7 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
-                <span class="text-xs text-muted">par ${name}</span>
+                <span class="text-xs text-muted flex items-center gap-1">${avHtml} par ${name}</span>
                 ${d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : d.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${d.urgence}</span>` : ""}
               </div>
               ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ""}
@@ -1941,15 +1954,19 @@
                                 document.querySelector(
                                     'input[name="pub-urgence"]:checked',
                                 )?.value || "Moyenne";
-                            await API.demands.create({
+                            const payload = {
                                 matiere_id: parseInt(matiere_id),
                                 description,
                                 format: format_pref,
-                                jour,
-                                creneau,
-                                disponibilite: selectedSlots,
                                 urgence,
-                            });
+                            };
+                            if (selectedSlots.length > 0) {
+                                payload.disponibilite = selectedSlots;
+                            } else if (jour && creneau) {
+                                payload.jour = jour;
+                                payload.creneau = creneau;
+                            }
+                            await API.demands.create(payload);
                         }
                         closeNewPublicationModal();
                         showToast(
