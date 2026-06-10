@@ -151,17 +151,14 @@
         if (noMatchesFound) {
           profiles = [];
         } else {
-          const allSkills = (u.competences || []).map(c => ({ nom: c.nom, niveau: c.niveau }));
-          const matchedNames = (u.matched_subjects || []).map(s => s.nom);
-          const fallbackBio = (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ');
           profiles = matches.map(u => ({
             id: u.student_id,
             name: `${u.prenom} ${u.nom}`,
             level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
             department: u.filiere || '',
             avatar_url: u.avatar_url,
-            bio: u.bio || fallbackBio || '',
-            skills: allSkills,
+            bio: u.bio || (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || '',
+            skills: (u.competences || []).map(c => ({ nom: c.nom, niveau: c.niveau })),
             matched_subjects: (u.matched_subjects || []).map(s => ({ nom: s.nom, niveau: s.niveau_competence })),
             compatibility: u.score,
             shared_slots: (u.shared_slots || []).map(s =>
