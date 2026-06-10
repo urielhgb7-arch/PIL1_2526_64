@@ -33,13 +33,11 @@ const Logger = {
 // ============================================================
 // API
 // ============================================================
-const API_BASE_URL = (window.API_BASE_URL || (
-    window.location.protocol === 'file:' ||
-    window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === 'localhost'
+var API_BASE_URL = window.API_BASE_URL || (
+    window.location.protocol === 'file:'
         ? 'http://127.0.0.1:5000/api'
-        : 'https://ifri-mentorlink.onrender.com/api'
-));
+        : window.location.origin + '/api'
+);
 
 async function uploadFileAPI(endpoint, method, formData) {
     const url = API_BASE_URL + endpoint;
