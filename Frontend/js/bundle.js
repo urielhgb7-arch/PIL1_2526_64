@@ -165,6 +165,42 @@ const API = {
 };
 
 window.API = API;
+
+// ── Label helpers ─────────────────────────────────────────────────────────────────
+const NIVEAU_LABELS = {
+  L1: "Licence 1",
+  L2: "Licence 2",
+  L3: "Licence 3",
+  M1: "Master 1",
+  M2: "Master 2",
+};
+const FILIERE_LABELS = {
+  GL: "Génie Logiciel",
+  RSI: "Réseaux et Systèmes d'Information",
+  SI: "Systèmes d'Information",
+  IA: "Intelligence Artificielle",
+  IM: "Ingénierie Mathématique",
+  SIRI: "Sécurité Informatique",
+  SEoIT: "Software Engineering",
+};
+
+/** Retourne le libellé complet d'un niveau (ex: "L3" → "Licence 3") */
+function niveauLabel(val) {
+  return NIVEAU_LABELS[val] || val || "—";
+}
+
+/** Retourne le libellé d'une filière.
+ *  Si short=true : juste la valeur brute (ex: "GL")
+ *  Sinon : "Génie Logiciel (GL)" */
+function filiereLabel(val, short = false) {
+  if (!val) return "—";
+  if (short) return val;
+  return FILIERE_LABELS[val] ? `${FILIERE_LABELS[val]} (${val})` : val;
+}
+
+window.niveauLabel = niveauLabel;
+window.filiereLabel = filiereLabel;
+
 // Check authentication
 function checkAuth(redirectTo = "signin.html") {
   const isAuthenticated = localStorage.getItem("isAuthenticated");

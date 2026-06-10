@@ -932,9 +932,9 @@
                         `${profile.prenom || ""} ${profile.nom || ""}`.trim() ||
                         "Profil";
                     document.getElementById("display-department").textContent =
-                        profile.filiere || "—";
+                        filiereLabel(profile.filiere);
                     document.getElementById("display-level").textContent =
-                        profile.niveau || "—";
+                        niveauLabel(profile.niveau);
                     // Sauvegarder localement pour les autres pages
                     saveUserData({
                         firstName: profile.prenom,
@@ -991,11 +991,11 @@
                         if (userData.department)
                             document.getElementById(
                                 "display-department",
-                            ).textContent = userData.department;
+                            ).textContent = filiereLabel(userData.department);
                         if (userData.level)
                             document.getElementById(
                                 "display-level",
-                            ).textContent = userData.level;
+                            ).textContent = niveauLabel(userData.level);
                     }
                 }
             }
@@ -1068,13 +1068,18 @@
                     .getElementById("modal-skills-form")
                     .classList.add("hidden");
 
-                // determine filiere from profile display or local cache
-                let filiere =
-                    document.getElementById("display-department").textContent ||
-                    "";
+                // determine filiere : on utilise le cache localStorage (valeur brute)
+                // plutôt que le texte affiché qui est maintenant un libellé long
                 const saved = getUserData();
-                if ((!filiere || filiere === "—") && saved && saved.department)
-                    filiere = saved.department;
+                let filiere = (saved && saved.department) || "";
+                if (!filiere) {
+                    // dernier recours : tenter d'extraire la valeur entre parenthèses du libellé
+                    const displayed =
+                        document.getElementById("display-department")
+                            .textContent || "";
+                    const match = displayed.match(/\(([^)]+)\)$/);
+                    filiere = match ? match[1] : displayed;
+                }
 
                 try {
                     // ensure global loader has data

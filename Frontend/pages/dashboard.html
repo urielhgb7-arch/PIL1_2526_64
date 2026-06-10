@@ -582,10 +582,10 @@
                         profile.email || "—";
                     document.getElementById(
                         "profile-filiere-badge",
-                    ).textContent = profile.filiere || "—";
+                    ).textContent = filiereLabel(profile.filiere);
                     document.getElementById(
                         "profile-niveau-badge",
-                    ).textContent = profile.niveau || "—";
+                    ).textContent = niveauLabel(profile.niveau);
 
                     const tel = profile.telephone;
                     if (tel && !tel.startsWith("non-renseigne")) {
