@@ -484,48 +484,32 @@
                     <p class="text-sm text-muted">
                         Sélectionnez vos créneaux disponibles
                     </p>
+                    <div class="flex gap-2 text-sm">
+                        <button type="button" onclick="selectMornings()"
+                            class="px-3 py-1.5 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-xs font-medium">
+                            Matin (8h-12h)
+                        </button>
+                        <button type="button" onclick="selectAfternoons()"
+                            class="px-3 py-1.5 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-xs font-medium">
+                            Après-midi (12h-17h)
+                        </button>
+                        <button type="button" onclick="clearAllSlots()"
+                            class="px-3 py-1.5 rounded bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-xs font-medium">
+                            Tout effacer
+                        </button>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full border-collapse">
                             <thead>
                                 <tr>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    ></th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Lun
-                                    </th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Mar
-                                    </th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Mer
-                                    </th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Jeu
-                                    </th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Ven
-                                    </th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Sam
-                                    </th>
-                                    <th
-                                        class="p-2 text-xs font-medium text-muted border border-border bg-popover"
-                                    >
-                                        Dim
-                                    </th>
+                                    <th class="sticky left-0 bg-card border border-border p-2 text-left text-sm font-medium">Horaires</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Lundi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Mardi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Mercredi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Jeudi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Vendredi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Samedi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Dimanche</th>
                                 </tr>
                             </thead>
                             <tbody id="availability-grid-modal"></tbody>
@@ -1002,58 +986,82 @@
                 return `${String(p[0]).padStart(2, "0")}-${String(p[1].replace("h", "")).padStart(2, "0")}`;
             }
 
+            // ── Disponibilités (grille type onboarding) ─────────────────────────────
+            const _AVAIL_HOURS = [
+                "8h-9h", "9h-10h", "10h-11h", "11h-12h", "12h-13h",
+                "13h-14h", "14h-15h", "15h-16h", "16h-17h", "17h-18h",
+                "18h-19h", "19h-20h", "20h-21h",
+            ];
+            const _AVAIL_DAYS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+            let _availSlots = new Set(); // "{di}|{ti}" pour les créneaux sélectionnés
+
+            function _availKey(di, ti) { return `${di}|${ti}`; }
+
+            function _toggleAvailSlot(di, ti, btn) {
+                const key = _availKey(di, ti);
+                if (_availSlots.has(key)) {
+                    _availSlots.delete(key);
+                    btn.className = "w-full h-8 rounded transition-colors bg-input hover:bg-primary/20";
+                } else {
+                    _availSlots.add(key);
+                    btn.className = "w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80";
+                }
+            }
+
+            function _setAvailRange(tiFrom, tiTo, value) {
+                for (let ti = tiFrom; ti < tiTo; ti++) {
+                    for (let di = 0; di < 7; di++) {
+                        const key = _availKey(di, ti);
+                        if (value) _availSlots.add(key); else _availSlots.delete(key);
+                        const btn = document.querySelector(
+                            `#availability-grid-modal tr:nth-child(${ti + 1}) td:nth-child(${di + 2}) button`
+                        );
+                        if (btn) {
+                            btn.className = value
+                                ? "w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80"
+                                : "w-full h-8 rounded transition-colors bg-input hover:bg-primary/20";
+                        }
+                    }
+                }
+            }
+
+            function selectMornings()   { _setAvailRange(0, 4, true);  }
+            function selectAfternoons() { _setAvailRange(4, 9, true);  }
+            function clearAllSlots()    { _setAvailRange(0, 13, false); }
+
             async function initAvailabilityGrid() {
-                const hours = [
-                    "8h-9h",
-                    "9h-10h",
-                    "10h-11h",
-                    "11h-12h",
-                    "12h-13h",
-                    "13h-14h",
-                    "14h-15h",
-                    "15h-16h",
-                    "16h-17h",
-                    "17h-18h",
-                    "18h-19h",
-                    "19h-20h",
-                    "20h-21h",
-                ];
-                const days = ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"];
                 const grid = document.getElementById("availability-grid-modal");
                 grid.innerHTML = "";
+                _availSlots = new Set();
 
-                // Load existing disponibilites
-                let savedDispos = new Set();
+                // Charge les disponibilités existantes
                 try {
                     const data = await API.profile.getMe();
                     const profile = data.profile || data;
                     (profile.disponibilites || []).forEach((d) => {
-                        savedDispos.add(
-                            `${DAY_FULL_TO_SHORT[d.jour]}|${creneauToHour(d.creneau)}`,
-                        );
+                        const di = _AVAIL_DAYS.indexOf(d.jour);
+                        const ti = _AVAIL_HOURS.indexOf(creneauToHour(d.creneau));
+                        if (di !== -1 && ti !== -1) _availSlots.add(_availKey(di, ti));
                     });
                 } catch (_) {}
 
-                hours.forEach((hour) => {
+                _AVAIL_HOURS.forEach((hour, ti) => {
                     const row = document.createElement("tr");
-                    const hourCell = document.createElement("td");
-                    hourCell.className =
-                        "p-2 text-xs text-muted border border-border bg-popover font-medium";
-                    hourCell.textContent = hour;
-                    row.appendChild(hourCell);
-
-                    days.forEach((day) => {
+                    const hc = document.createElement("td");
+                    hc.className = "sticky left-0 bg-card border border-border p-2 text-sm text-muted";
+                    hc.textContent = hour;
+                    row.appendChild(hc);
+                    _AVAIL_DAYS.forEach((_, di) => {
                         const cell = document.createElement("td");
-                        const key = `${day}|${hour}`;
-                        const preFilled = savedDispos.has(key);
-                        cell.className =
-                            "p-2 border border-border cursor-pointer hover:bg-primary/20 transition-colors" +
-                            (preFilled ? " bg-primary" : "");
-                        cell.dataset.day = day;
-                        cell.dataset.hour = hour;
-                        cell.onclick = () => {
-                            cell.classList.toggle("bg-primary");
-                        };
+                        cell.className = "border border-border p-1";
+                        const btn = document.createElement("button");
+                        btn.type = "button";
+                        const active = _availSlots.has(_availKey(di, ti));
+                        btn.className = active
+                            ? "w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80"
+                            : "w-full h-8 rounded transition-colors bg-input hover:bg-primary/20";
+                        btn.onclick = () => _toggleAvailSlot(di, ti, btn);
+                        cell.appendChild(btn);
                         row.appendChild(cell);
                     });
                     grid.appendChild(row);
@@ -1065,17 +1073,13 @@
                 .querySelector("#modal-availability form")
                 .addEventListener("submit", async (e) => {
                     e.preventDefault();
-                    const cells = document.querySelectorAll(
-                        "#availability-grid-modal td",
-                    );
                     const selected = [];
-                    cells.forEach((cell) => {
-                        if (cell.classList.contains("bg-primary")) {
-                            selected.push({
-                                jour: DAY_SHORT_TO_FULL[cell.dataset.day],
-                                creneau: hourToCreneau(cell.dataset.hour),
-                            });
-                        }
+                    _availSlots.forEach((key) => {
+                        const [di, ti] = key.split("|").map(Number);
+                        selected.push({
+                            jour: _AVAIL_DAYS[di],
+                            creneau: hourToCreneau(_AVAIL_HOURS[ti]),
+                        });
                     });
                     try {
                         const data = await API.profile.getMe();
@@ -1107,6 +1111,7 @@
                             });
 
                         closeModal("availability");
+                        loadProfile();
                     } catch (err) {
                         alert(
                             "Erreur lors de la sauvegarde : " +
