@@ -71,9 +71,9 @@ class Matching(db.Model):
     user_one_id  = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # demandeur
     user_two_id  = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # candidat
     initiator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)   # qui a swipé
-    demand_id    = db.Column(db.Integer, db.ForeignKey('demands.id'), nullable=False)
+    demand_id    = db.Column(db.Integer, db.ForeignKey('demands.id'), nullable=True)
     offer_id     = db.Column(db.Integer, db.ForeignKey('offers.id'), nullable=True)
-    matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
+    matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=True)
     status       = db.Column(db.String(20), nullable=False, default='pending')         # pending/accepted/rejected
     score        = db.Column(db.Float, nullable=False)
     created_at   = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

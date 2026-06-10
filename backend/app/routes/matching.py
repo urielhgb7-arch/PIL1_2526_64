@@ -77,6 +77,7 @@ def request_match(student_id):
 
     data = request.get_json(force=True, silent=True) or {}
     demand_id = data.get('demand_id')
+    matiere_id = data.get('matiere_id')
     score     = data.get('score', 0.0)
 
     candidate = db.session.get(User, student_id)
@@ -84,7 +85,6 @@ def request_match(student_id):
         return jsonify({"message": "Candidat introuvable"}), 404
 
     profile = Profile.query.filter_by(user_id=current_user_id).first()
-    matiere_id = None
 
     # Vérifications liées à la demande (optionnel)
     if demand_id:
@@ -120,6 +120,20 @@ def request_match(student_id):
         ).first()
         if not candidate_slot:
             return jsonify({"message": "Le candidat n'est pas disponible sur ce créneau"}), 400
+    else:
+        # Matching général (sans demande spécifique) : éviter les doublons
+        existing = Matching.query.filter_by(
+            user_one_id=current_user_id,
+            user_two_id=student_id,
+            initiator_id=current_user_id,
+            status='pending'
+        ).first()
+        if existing:
+            return jsonify({
+                "message": "Demande déjà envoyée",
+                "matching_id": existing.id,
+                "status": existing.status
+            }), 200
 
     new_match = Matching(
         user_one_id=current_user_id,
@@ -134,10 +148,12 @@ def request_match(student_id):
     db.session.flush()
 
     demandeur_profile = profile or Profile.query.filter_by(user_id=current_user_id).first()
+    matiere_nom = Matiere.query.get(matiere_id).nom if matiere_id else None
+    sujet = f" en {matiere_nom}" if matiere_nom else ""
     notif = Notification(
         user_id=student_id,
         titre="Nouvelle demande de mentorat",
-        contenu=f"{demandeur_profile.prenom} {demandeur_profile.nom} souhaite que vous le mentoriez en {Matiere.query.get(matiere_id).nom if matiere_id else 'une matière'}.",
+        contenu=f"{demandeur_profile.prenom} {demandeur_profile.nom} souhaite que vous le mentoriez{sujet}.",
         type='matching'
     )
     db.session.add(notif)

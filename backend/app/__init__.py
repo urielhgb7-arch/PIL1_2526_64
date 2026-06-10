@@ -75,6 +75,38 @@ def create_app(config_name=None):
         except Exception as db_err:
             logger.warning(f"db.create_all(): {db_err}")
 
+        # Auto-migration des colonnes manquantes (PostgreSQL)
+        try:
+            from sqlalchemy import inspect, text as _text
+            inspector = inspect(db.engine)
+            user_cols = [c['name'] for c in inspector.get_columns('users')]
+            if 'email_verified' not in user_cols:
+                db.session.execute(_text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE"))
+                logger.info("Colonne email_verified ajoutée à users")
+            if 'email_tokens' not in inspector.get_table_names():
+                db.session.execute(_text("""
+                    CREATE TABLE email_tokens (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        token VARCHAR(128) NOT NULL UNIQUE,
+                        expires_at TIMESTAMPTZ NOT NULL,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                """))
+                logger.info("Table email_tokens créée")
+            match_cols = inspector.get_columns('matching')
+            match_nulls = {c['name']: c.get('nullable', True) for c in match_cols}
+            if match_nulls.get('demand_id') is False:
+                db.session.execute(_text("ALTER TABLE matching ALTER COLUMN demand_id DROP NOT NULL"))
+                logger.info("matching.demand_id devenu nullable")
+            if match_nulls.get('matiere_id') is False:
+                db.session.execute(_text("ALTER TABLE matching ALTER COLUMN matiere_id DROP NOT NULL"))
+                logger.info("matching.matiere_id devenu nullable")
+            db.session.commit()
+        except Exception as alter_err:
+            db.session.rollback()
+            logger.warning(f"Auto-migration ignorée: {alter_err}")
+
     # Initialisation Cloudinary
     from app.services.cloudinary_service import init_cloudinary
     init_cloudinary(flask_app)
