@@ -141,14 +141,18 @@
         if (noMatchesFound) {
           profiles = [];
         } else {
+          const allSkills = (u.competences || []).map(c => ({ nom: c.nom, niveau: c.niveau }));
+          const matchedNames = (u.matched_subjects || []).map(s => s.nom);
+          const fallbackBio = (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ');
           profiles = matches.map(u => ({
             id: u.student_id,
             name: `${u.prenom} ${u.nom}`,
             level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
             department: u.filiere || '',
             avatar_url: u.avatar_url,
-            bio: u.bio || (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || '',
-            skills: (u.matched_subjects || []).map(s => s.nom),
+            bio: u.bio || fallbackBio || '',
+            skills: allSkills,
+            matched_subjects: (u.matched_subjects || []).map(s => ({ nom: s.nom, niveau: s.niveau_competence })),
             compatibility: u.score,
             shared_slots: (u.shared_slots || []).map(s =>
               Array.isArray(s) ? { jour: s[0], creneau: s[1] } : s
@@ -161,10 +165,10 @@
       } catch (err) {
         console.warn('API non disponible, utilisation des données de démo.', err);
         profiles = [
-          { name: 'Sarah Mensah', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Passionnée par le développement web et mobile.', skills: ['React', 'Node.js', 'MongoDB', 'Docker'], compatibility: 92 },
-          { name: 'Karim Diallo', level: 'M1 RSI', department: 'Réseaux et SI', bio: 'Expert en cybersécurité et architecture réseau.', skills: ['Cybersécurité', 'Cisco', 'Linux', 'Python'], compatibility: 88 },
-          { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', skills: ['Python', 'TensorFlow', 'Scikit-learn', 'Pandas'], compatibility: 85 },
-          { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', skills: ['Vue.js', 'Laravel', 'PostgreSQL', 'AWS'], compatibility: 90 }
+          { name: 'Sarah Mensah', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Passionnée par le développement web et mobile.', matched_subjects: [{nom:'React',niveau:'Avancé'},{nom:'Node.js',niveau:'Intermédiaire'}], skills: [{nom:'React',niveau:'Avancé'},{nom:'Node.js',niveau:'Intermédiaire'},{nom:'MongoDB',niveau:'Débutant'},{nom:'Docker',niveau:'Intermédiaire'}], compatibility: 92 },
+          { name: 'Karim Diallo', level: 'M1 RSI', department: 'Réseaux et SI', bio: 'Expert en cybersécurité et architecture réseau.', matched_subjects: [{nom:'Cybersécurité',niveau:'Expert'}], skills: [{nom:'Cybersécurité',niveau:'Expert'},{nom:'Cisco',niveau:'Avancé'},{nom:'Linux',niveau:'Intermédiaire'},{nom:'Python',niveau:'Débutant'}], compatibility: 88 },
+          { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', matched_subjects: [{nom:'Python',niveau:'Avancé'}], skills: [{nom:'Python',niveau:'Avancé'},{nom:'TensorFlow',niveau:'Intermédiaire'},{nom:'Scikit-learn',niveau:'Débutant'},{nom:'Pandas',niveau:'Intermédiaire'}], compatibility: 85 },
+          { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', matched_subjects: [{nom:'Vue.js',niveau:'Avancé'},{nom:'PostgreSQL',niveau:'Intermédiaire'}], skills: [{nom:'Vue.js',niveau:'Avancé'},{nom:'Laravel',niveau:'Avancé'},{nom:'PostgreSQL',niveau:'Intermédiaire'},{nom:'AWS',niveau:'Intermédiaire'}], compatibility: 90 }
         ];
         noMatchesFound = false;
       }
@@ -241,11 +245,20 @@
               <p class="text-sm text-foreground/80">${profile.bio}</p>
             </div>` : ''}
 
-            ${profile.skills && profile.skills.length > 0 ? `<div>
-              <h3 class="text-xs font-semibold text-muted mb-2 tracking-wider">COMPÉTENCES CORRESPONDANTES</h3>
+            ${profile.matched_subjects && profile.matched_subjects.length > 0 ? `<div>
+              <h3 class="text-xs font-semibold text-muted mb-2 tracking-wider">MATIÈRES CORRESPONDANTES</h3>
               <div class="flex flex-wrap gap-1.5">
-                ${profile.skills.map(skill => `
-                  <span class="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs">${skill}</span>
+                ${profile.matched_subjects.map(s => `
+                  <span class="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs flex items-center gap-1">${s.nom} <span class="text-[10px] text-primary/60">${s.niveau}</span></span>
+                `).join('')}
+              </div>
+            </div>` : ''}
+
+            ${profile.skills && profile.skills.length > (profile.matched_subjects || []).length ? `<div>
+              <h3 class="text-xs font-semibold text-muted mb-2 tracking-wider">AUTRES COMPÉTENCES</h3>
+              <div class="flex flex-wrap gap-1.5">
+                ${profile.skills.filter(s => !(profile.matched_subjects || []).some(ms => ms.nom === s.nom)).map(s => `
+                  <span class="px-2.5 py-1 bg-popover border border-border rounded-full text-xs flex items-center gap-1">${s.nom} <span class="text-[10px] text-muted">${s.niveau}</span></span>
                 `).join('')}
               </div>
             </div>` : ''}

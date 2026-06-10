@@ -187,42 +187,46 @@ def accept_match(matching_id):
     # Mettre à jour le statut
     match.status = 'accepted'
 
-    # Créer la conversation automatiquement (Section 14 du PDF)
-    existing_conv = Conversation.query.filter_by(
-        user_one_id=match.user_one_id,
-        user_two_id=match.user_two_id
-    ).first() or Conversation.query.filter_by(
-        user_one_id=match.user_two_id,
-        user_two_id=match.user_one_id
-    ).first()
-
-    if not existing_conv:
-        conv = Conversation(
+    # --- Créer la conversation (fallback si échec) ---
+    conversation_id = None
+    try:
+        existing_conv = Conversation.query.filter_by(
             user_one_id=match.user_one_id,
             user_two_id=match.user_two_id
-        )
-        db.session.add(conv)
-        db.session.flush()  # Pour obtenir conv.id avant le commit
-        conversation_id = conv.id
-    else:
-        conversation_id = existing_conv.id
-
-    # --- Réserver le créneau de l'aidant pour cette demande ---
-    demand = db.session.get(Demand, match.demand_id)
-    if not demand:
-        return jsonify({"message": "Demande associée introuvable"}), 404
-
-    helper_profile = Profile.query.filter_by(user_id=match.user_two_id).first()
-    if helper_profile:
-        helper_slot = Disponible.query.filter_by(
-            profile_id=helper_profile.id,
-            jour=demand.jour,
-            creneau=demand.creneau,
-            is_reserved=False
+        ).first() or Conversation.query.filter_by(
+            user_one_id=match.user_two_id,
+            user_two_id=match.user_one_id
         ).first()
-        if not helper_slot:
-            return jsonify({"message": "Ce créneau n'est plus disponible"}), 400
-        helper_slot.is_reserved = True
+
+        if not existing_conv:
+            conv = Conversation(
+                user_one_id=match.user_one_id,
+                user_two_id=match.user_two_id
+            )
+            db.session.add(conv)
+            db.session.flush()
+            conversation_id = conv.id
+        else:
+            conversation_id = existing_conv.id
+    except Exception as e:
+        logger.warning(f"Conversation creation skipped (match {matching_id}): {e}")
+
+    # --- Réserver le créneau de l'aidant (fallback si absent) ---
+    try:
+        demand = db.session.get(Demand, match.demand_id)
+        if demand:
+            helper_profile = Profile.query.filter_by(user_id=match.user_two_id).first()
+            if helper_profile:
+                helper_slot = Disponible.query.filter_by(
+                    profile_id=helper_profile.id,
+                    jour=demand.jour,
+                    creneau=demand.creneau,
+                    is_reserved=False
+                ).first()
+                if helper_slot:
+                    helper_slot.is_reserved = True
+    except Exception as e:
+        logger.warning(f"Slot reservation skipped (match {matching_id}): {e}")
 
     # Notifier le demandeur que sa demande a été acceptée
     accepteur_profile = Profile.query.filter_by(user_id=current_user_id).first()
@@ -252,8 +256,9 @@ def accept_match(matching_id):
     except Exception as e:
         logger.warning(f"Email accept notif skipped: {e}")
 
+    msg = "Match accepté ! Vous pouvez maintenant discuter." if conversation_id else "Match accepté !"
     return jsonify({
-        "message": "Match accepté ! Vous pouvez maintenant discuter.",
+        "message": msg,
         "status": "accepted",
         "conversation_id": conversation_id
     }), 200

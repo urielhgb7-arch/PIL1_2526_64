@@ -75,7 +75,7 @@ def _get_excluded_user_ids(current_user_id: int) -> tuple:
     return blocked, rejected_set
 
 
-def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_slots, same_filiere, same_niveau, same_format, score_matiere, score_niveau, score_dispos, score_niveau_acad, score_filiere, score_format, penalty, total_score):
+def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_slots, same_filiere, same_niveau, same_format, score_matiere, score_niveau, score_dispos, score_niveau_acad, score_filiere, score_format, penalty, total_score, competences_list=None):
     explication = _build_explanation(
         matched_subjects=matched_subjects,
         shared_slots_count=len(shared_slots),
@@ -84,6 +84,7 @@ def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_s
         same_format=same_format,
         score=total_score
     )
+
     return {
         "student_id":      candidate_user.id,
         "profile_id":      candidate.id,
@@ -96,6 +97,7 @@ def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_s
         "format_preference": candidate.format_preference,
         "score":           total_score,
         "matched_subjects": matched_subjects,
+        "competences":     competences_list or [],
         "shared_slots":    [{"jour": s[0], "creneau": s[1]} for s in shared_slots],
         "explication":     explication,
         "score_detail": {
@@ -139,6 +141,7 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
     ).distinct().all()
 
     matiere_obj = db.session.get(Matiere, matiere_id)
+    matieres_map = {m.id: m.nom for m in Matiere.query.all()}
     lacune = ProfilLacune.query.filter_by(
         profile_id=demandeur_profile.id, matiere_id=matiere_id
     ).first()
@@ -179,6 +182,14 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
         ProfilCompetence.matiere_id != matiere_id
     ).all():
         autres_comps_map.add(c.profile_id)
+
+    # Pré-chargement de toutes les compétences pour chaque candidat
+    all_candidate_comps = {}
+    for c in ProfilCompetence.query.filter(
+        ProfilCompetence.profile_id.in_(candidate_ids),
+        ProfilCompetence.is_available_to_help == True
+    ).all():
+        all_candidate_comps.setdefault(c.profile_id, []).append(c)
 
     dispos_map = {}
     for d in Disponible.query.filter(
@@ -240,12 +251,15 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
 
         total_score = round(min(100.0, score_matiere + score_niveau + score_dispos + score_niveau_acad + score_filiere + score_format + penalty), 2)
 
+        candidate_comps = all_candidate_comps.get(candidate.id, [])
+        competences_list = [{"matiere_id": c.matiere_id, "nom": matieres_map.get(c.matiere_id, ""), "niveau": c.niveau} for c in candidate_comps]
+
         resultats.append(_make_candidate_result(
             candidate, candidate_user, matched_subjects, shared_slots,
             same_filiere, same_niveau, same_format,
             score_matiere, score_niveau, score_dispos,
             score_niveau_acad, score_filiere, score_format,
-            penalty, total_score
+            penalty, total_score, competences_list
         ))
 
     return _limit_results(resultats)
@@ -299,6 +313,14 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
         dispos_map.setdefault(d.profile_id, []).append(d)
 
     matieres_map = {m.id: m for m in Matiere.query.all()}
+
+    # Pré-chargement de toutes les compétences pour chaque candidat
+    all_candidate_comps = {}
+    for c in ProfilCompetence.query.filter(
+        ProfilCompetence.profile_id.in_(candidate_ids),
+        ProfilCompetence.is_available_to_help == True
+    ).all():
+        all_candidate_comps.setdefault(c.profile_id, []).append(c)
 
     # ── Boucle principale (0 requête DB) ──
     resultats = []
@@ -357,12 +379,15 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
         if not candidate_user:
             continue
 
+        candidate_comps = all_candidate_comps.get(candidate.id, [])
+        competences_list = [{"matiere_id": c.matiere_id, "nom": matieres_map.get(c.matiere_id).nom if matieres_map.get(c.matiere_id) else "", "niveau": c.niveau} for c in candidate_comps]
+
         resultats.append(_make_candidate_result(
             candidate, candidate_user, matched_subjects, shared_slots,
             same_filiere, same_niveau, same_format,
             score_matiere, score_niveau, score_dispos,
             score_niveau_acad, score_filiere, score_format,
-            penalty, total_score
+            penalty, total_score, competences_list
         ))
 
     return _limit_results(resultats)
