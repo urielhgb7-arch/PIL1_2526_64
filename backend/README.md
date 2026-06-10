@@ -129,6 +129,28 @@ Naviguer vers `http://127.0.0.1:5500/` dans un navigateur.
 
 ---
 
+## Sécurité — Hachage des mots de passe
+
+Le hachage est centralisé dans `app/models/user.py` via **Werkzeug** (`werkzeug.security`).
+
+```python
+from werkzeug.security import generate_password_hash, check_password_hash
+
+class User(db.Model):
+    password_hash = db.Column(db.String(255), nullable=False)
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+```
+
+**Algorithme** : `pbkdf2:sha256` (défaut Werkzeug), 260 000 itérations, sel aléatoire intégré au hash.  
+Stocké en colonne `password_hash` sous forme `pbkdf2:sha256:<iterations>$<salt>$<hash>`.
+
+**Points d'appel** — `app/routes/auth.py` : inscription (L127), connexion (L191), réinitialisation (L301), changement (L320–327), suppression compte (L347).
+
+---
+
 ## Tests
 
 ```bash

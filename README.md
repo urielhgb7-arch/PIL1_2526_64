@@ -230,13 +230,27 @@ Score sur **100 points**, calculé pour chaque candidat :
 | **Même format** | 10 | Si `format_preference` identique |
 | **Pénalité rejet** | -5 | Si l'utilisateur a déjà rejeté ce candidat |
 
-Résultats triés par score décroissant. Deux variantes :
-- **Général** (`calculate_matches_general`) — parcourt toutes les lacunes de l'utilisateur, trouve les candidats compétents sur au moins une matière.
-- **Par demande** (`calculate_matches_demand`) — trouve des candidats pour une demande spécifique : vérifie la matière (35 pts si correspond, 10 si autres compétences uniquement) et calcule la disponibilité sur les créneaux de la demande.
-
 ```
 score = min(100, matiere + niveau + dispos + meme_niveau + meme_filiere + format + penalite)
 ```
+
+### Variantes
+
+- **Général** — `calculate_matches_general()` : parcourt toutes les lacunes de l'utilisateur et trouve les candidats compétents sur au moins une matière recherchée. Score matière = 35 × (matières matchées / total lacunes).
+- **Par demande** — `calculate_matches_demand()` : trouve des candidats pour une demande spécifique (jour + créneau). Vérifie la matière (35 pts si correspond, 10 si autres compétences uniquement). Exclut les candidats sans créneau disponible correspondant à celui de la demande.
+
+### Réservations de créneaux
+
+Quand un matching est **accepté**, le créneau de l'aidant est marqué `is_reserved = True`. Il n'apparaît plus dans les futures suggestions (les disponibilités réservées sont exclues de la requête SQL via le filtre `is_reserved = False`).
+
+### Seuil et limite
+
+- **Score minimum** : 55 / 100 — les candidats en dessous sont exclus des résultats.
+- **Nombre maximum** : 50 résultats — au-delà, seuls les 50 meilleurs sont renvoyés.
+
+### Optimisation N+1
+
+Pour éviter une explosion de requêtes SQL, toutes les données liées (utilisateurs, compétences, disponibilités) sont pré-chargées en **3 requêtes massives** avant la boucle de scoring (via `filter(…id.in_(…))` et stockées dans des dictionnaires indexés par `profile_id`). La boucle principale n'effectue **aucune requête DB** par candidat.
 
 ---
 
