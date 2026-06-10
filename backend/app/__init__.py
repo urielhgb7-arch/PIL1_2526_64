@@ -133,6 +133,7 @@ def create_app(config_name=None):
 
         if db.session.query(Matiere).count() == 0:
             default_matieres = [
+                # GL - Genie Logiciel
                 Matiere(nom="Algorithmique", filiere="GL", annee="L1"),
                 Matiere(nom="Structures de données", filiere="GL", annee="L2"),
                 Matiere(nom="Base de données SQL", filiere="GL", annee="L1"),
@@ -141,28 +142,34 @@ def create_app(config_name=None):
                 Matiere(nom="Architecture des ordinateurs", filiere="GL", annee="L1"),
                 Matiere(nom="Systèmes d'exploitation", filiere="GL", annee="L2"),
                 Matiere(nom="Web Development", filiere="GL", annee="L2"),
-                Matiere(nom="Réseaux informatiques", filiere="RSI", annee="L1"),
-                Matiere(nom="Sécurité des réseaux", filiere="RSI", annee="L2"),
-                Matiere(nom="Télécommunications", filiere="RSI", annee="L2"),
-                Matiere(nom="Administration système", filiere="RSI", annee="L3"),
-                Matiere(nom="Cyberdéfense", filiere="Sécurité", annee="L3"),
-                Matiere(nom="Cryptographie", filiere="Sécurité", annee="L2"),
-                Matiere(
-                    nom="Sécurité des applications", filiere="Sécurité", annee="L3"
-                ),
-                Matiere(nom="Audit de sécurité", filiere="Sécurité", annee="L3"),
                 Matiere(nom="Intelligence artificielle", filiere="GL", annee="L3"),
                 Matiere(nom="Machine Learning", filiere="GL", annee="M1"),
-                Matiere(nom="Big Data", filiere="RSI", annee="M1"),
                 Matiere(nom="Cloud Computing", filiere="GL", annee="M1"),
                 Matiere(nom="Développement mobile", filiere="GL", annee="L3"),
                 Matiere(nom="Gestion de projet informatique", filiere="GL", annee="M2"),
-                Matiere(nom="Langage SQL avancé", filiere="RSI", annee="L3"),
-                Matiere(
-                    nom="Administration de bases de données", filiere="RSI", annee="M1"
-                ),
-                Matiere(nom="Sécurité web", filiere="Sécurité", annee="L3"),
-                Matiere(nom="Ethical Hacking", filiere="Sécurité", annee="M1"),
+                # SIRI - Sciences et Ingénierie des Réseaux
+                Matiere(nom="Réseaux informatiques", filiere="SIRI", annee="L1"),
+                Matiere(nom="Sécurité des réseaux", filiere="SIRI", annee="L2"),
+                Matiere(nom="Télécommunications", filiere="SIRI", annee="L2"),
+                Matiere(nom="Administration système", filiere="SIRI", annee="L3"),
+                Matiere(nom="Cyberdéfense", filiere="SIRI", annee="L3"),
+                Matiere(nom="Cryptographie", filiere="SIRI", annee="L2"),
+                Matiere(nom="Sécurité des applications", filiere="SIRI", annee="L3"),
+                Matiere(nom="Audit de sécurité", filiere="SIRI", annee="L3"),
+                Matiere(nom="Big Data", filiere="SIRI", annee="M1"),
+                Matiere(nom="Langage SQL avancé", filiere="SIRI", annee="L3"),
+                Matiere(nom="Administration de bases de données", filiere="SIRI", annee="M1"),
+                Matiere(nom="Sécurité web", filiere="SIRI", annee="L3"),
+                Matiere(nom="Ethical Hacking", filiere="SIRI", annee="M1"),
+                # IM - Internet et Multimédia
+                Matiere(nom="Design graphique", filiere="IM", annee="L1"),
+                Matiere(nom="Infographie", filiere="IM", annee="L1"),
+                Matiere(nom="Développement Web Frontend", filiere="IM", annee="L2"),
+                Matiere(nom="Création de contenu multimédia", filiere="IM", annee="L2"),
+                Matiere(nom="Marketing digital", filiere="IM", annee="L2"),
+                Matiere(nom="Animation 2D/3D", filiere="IM", annee="L3"),
+                Matiere(nom="Production audiovisuelle", filiere="IM", annee="L3"),
+                Matiere(nom="UI/UX Design", filiere="IM", annee="L3"),
             ]
             for m in default_matieres:
                 db.session.add(m)
