@@ -75,6 +75,29 @@ def create_app(config_name=None):
         except Exception as db_err:
             logger.warning(f"db.create_all(): {db_err}")
 
+        try:
+            from sqlalchemy import inspect
+            inspector = inspect(db.engine)
+            columns = [c['name'] for c in inspector.get_columns('users')]
+            if 'email_verified' not in columns:
+                db.session.execute("ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE")
+                logger.info("Colonne email_verified ajoutée à users")
+            if 'email_tokens' not in inspector.get_table_names():
+                db.session.execute("""
+                    CREATE TABLE email_tokens (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        token VARCHAR(128) NOT NULL UNIQUE,
+                        expires_at TIMESTAMPTZ NOT NULL,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                """)
+                logger.info("Table email_tokens créée")
+            db.session.commit()
+        except Exception as alter_err:
+            db.session.rollback()
+            logger.warning(f"Mise à jour schéma ignorée: {alter_err}")
+
         # Seed matières par défaut si la table est vide (uniquement si DB existe)
         try:
             from app.models import Matiere
