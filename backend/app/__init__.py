@@ -147,17 +147,11 @@ def create_app(config_name=None):
             "swagger_ui": True,
             "specs_route": "/docs/",
         }
-        Swagger(flask_app, config={
-            "title": "IFRI MentorLink API",
-            "description": "API de la plateforme de mentorat académique. Routes documentées avec Swagger.",
-            "version": "1.0.0",
-            "termsOfService": "",
-            "swagger": "2.0",
-        }, template={
+        Swagger(flask_app, config=swagger_config, template={
             "swagger": "2.0",
             "info": {
                 "title": "IFRI MentorLink API",
-                "description": "Plateforme de mentorat académique — API REST complète.",
+                "description": "API de la plateforme de mentorat académique. Routes documentées avec Swagger.",
                 "version": "1.0.0",
                 "contact": {
                     "name": "Équipe MentorLink",

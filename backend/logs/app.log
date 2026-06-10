@@ -6034,258 +6034,2601 @@ with app.app_context(). See the documentation for more information.
 [2026-06-09 18:36:39] INFO     [app.sockets.chat:on_join:84] Socket : user 1 a rejoint conv_1
 [2026-06-09 18:36:39] INFO     [app.sockets.chat:on_leave:162] Socket : user 1 a quitté conv_1
 [2026-06-09 18:36:39] INFO     [app.sockets.chat:on_leave:162] Socket : user 1 a quitté conv_1
-[2026-06-10 23:19:54] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:19:54] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:19:55] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:19:55] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:19:55] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:19:55] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+[2026-06-10 23:43:03] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-10 23:43:03] INFO     [app:create_app:29] Configuration: production
+[2026-06-10 23:43:04] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:43:04] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:04] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-10 23:43:04] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:19:56] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:19:56] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:19:56] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:19:56] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:19:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:19:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:19:56] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:19:56] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:19:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+[2026-06-10 23:43:04] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-10 23:43:04] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-10 23:43:04] INFO     [app:create_app:29] Configuration: production
+[2026-06-10 23:43:04] INFO     [app:create_app:29] Configuration: production
+[2026-06-10 23:43:04] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:04] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:43:04] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-10 23:43:04] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-10 23:43:04] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:19:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+[2026-06-10 23:43:04] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:23:32] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:23:32] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:23:33] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:23:33] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:23:33] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:23:33] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+[2026-06-10 23:45:48] INFO     [app:_dispose_engine_once:213] SQLite detected, skipping engine dispose
+[2026-06-10 23:45:48] INFO     [app:_dispose_engine_once:213] SQLite detected, skipping engine dispose
+[2026-06-10 23:45:48] WARNING  [app.routes.auth:login:250] Login Ã©chouÃ© pour: urielhgb1@***
+[2026-06-10 23:45:48] WARNING  [app.routes.auth:login:250] Login Ã©chouÃ© pour: urielhgb1@***
+[2026-06-10 23:46:02] WARNING  [app.routes.auth:login:250] Login Ã©chouÃ© pour: urielhgb7@***
+[2026-06-10 23:46:02] WARNING  [app.routes.auth:login:250] Login Ã©chouÃ© pour: urielhgb7@***
+[2026-06-10 23:47:46] INFO     [app.routes.auth:register:131]  Utilisateur crÃ©Ã©: urielhgb1@***
+[2026-06-10 23:47:46] INFO     [app.routes.auth:register:131]  Utilisateur crÃ©Ã©: urielhgb1@***
+[2026-06-10 23:47:46] INFO     [app.routes.auth:register:149]  Profil crÃ©Ã© pour user_id=1
+[2026-06-10 23:47:46] INFO     [app.routes.auth:register:149]  Profil crÃ©Ã© pour user_id=1
+[2026-06-10 23:47:46] INFO     [app.routes.auth:register:162] Token vÃ©rification email gÃ©nÃ©rÃ© pour user_id=1
+[2026-06-10 23:47:46] INFO     [app.routes.auth:register:162] Token vÃ©rification email gÃ©nÃ©rÃ© pour user_id=1
+[2026-06-10 23:47:49] INFO     [app.services.email_service:_send_email:35] Email envoyÃ© Ã  urielhgb1@*** â€” VÃ©rification de votre email - MentorLink
+[2026-06-10 23:47:49] INFO     [app.services.email_service:_send_email:35] Email envoyÃ© Ã  urielhgb1@*** â€” VÃ©rification de votre email - MentorLink
+[2026-06-10 23:47:49] INFO     [app.routes.auth:register:167] Email de vÃ©rification envoyÃ© Ã  user_id=1 (urielhgb1@***)
+[2026-06-10 23:47:49] INFO     [app.routes.auth:register:167] Email de vÃ©rification envoyÃ© Ã  user_id=1 (urielhgb1@***)
+[2026-06-10 23:47:51] INFO     [app.routes.notifications:lister_notifications:46]  Notifications listÃ©es: 0 sur 0 pour user=1
+[2026-06-10 23:47:51] INFO     [app.routes.notifications:lister_notifications:46]  Notifications listÃ©es: 0 sur 0 pour user=1
+[2026-06-10 23:48:22] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:48:22] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:48:55] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:48:55] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:49:28] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:49:28] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:50:01] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:50:01] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:50:34] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:50:34] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:51:07] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:51:07] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:51:41] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:51:41] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:52:14] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:52:14] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:52:47] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:52:47] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:53:20] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-10 23:53:20] ERROR    [app.routes.notifications:lister_notifications:58] Erreur listing notifications: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notificatio
+Traceback (most recent call last):
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: notifications
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\IFRI-MentorLink\backend\app\routes\notifications.py", line 28, in lister_notifications
+    pagination = query.order_by(Notification.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\query.py", line 98, in paginate
+    return QueryPagination(
+        query=self,
+    ...<4 lines>...
+        count=count,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 72, in __init__
+    items = self._query_items()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_sqlalchemy\pagination.py", line 358, in _query_items
+    out = query.limit(self.per_page).offset(self._query_offset).all()
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: notifications
+[SQL: SELECT notifications.id AS notifications_id, notifications.user_id AS notifications_user_id, notifications.titre AS notifications_titre, notifications.contenu AS notifications_contenu, notifications.type AS notifications_type, notifications.is_read AS notifications_is_read, notifications.created_at AS notifications_created_at 
+FROM notifications 
+WHERE notifications.user_id = ? AND notifications.is_read = 0 ORDER BY notifications.created_at DESC
+ LIMIT ? OFFSET ?]
+[parameters: (1, 20, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-11 01:32:56] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:32:56] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:32:57] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-11 01:32:57] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:32:57] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:32:57] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:23:33] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:23:33] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:23:33] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:23:33] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:23:33] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:23:33] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:23:33] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:23:33] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:23:33] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:32:57] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:32:57] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:32:57] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:32:57] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:32:57] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:32:57] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:32:57] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:32:57] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:32:57] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:23:33] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:32:57] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:39:46] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:39:46] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:39:47] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:39:47] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:39:47] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:39:47] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:37:56] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:37:56] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:37:56] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-11 01:37:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:37:56] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:37:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:39:47] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:39:47] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:39:47] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:39:47] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:39:47] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:39:47] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:39:47] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:39:47] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:39:47] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:37:56] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:37:56] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:37:56] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:37:56] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:37:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:37:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:37:56] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:37:56] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:37:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:39:47] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:37:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:39:50] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:39:50] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:39:50] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:39:50] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:39:50] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:39:50] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:38:18] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:38:18] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:38:18] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-11 01:38:18] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:38:18] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:38:18] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:39:51] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:39:51] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:39:51] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:39:51] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:39:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:39:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:39:51] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:39:51] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:39:51] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:38:18] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:38:18] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 01:38:18] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:38:18] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 01:38:18] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:38:18] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 01:38:18] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:38:18] WARNING  [app:create_app:128] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 01:38:18] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:39:51] WARNING  [app:create_app:179] Seed matieres ignore: Working outside of application context.
+[2026-06-11 01:38:18] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
 
 This typically means that you attempted to use functionality that needed
 the current application. To solve this, set up an application context
 with app.app_context(). See the documentation for more information.
-[2026-06-10 23:40:50] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:40:50] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:40:51] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:40:51] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:40:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:40:51] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:40:51] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:40:51] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:40:51] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:40:51] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:40:51] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:40:51] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:40:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:40:51] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:40:51] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:40:51] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:40:53] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:40:53] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:40:53] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:40:53] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:40:53] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:40:53] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:40:53] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:40:53] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:40:53] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:40:53] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:40:53] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:40:53] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:40:53] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:40:53] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:40:53] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:40:53] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:41:39] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:41:39] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:41:39] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:41:39] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:41:39] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:41:39] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:41:39] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:41:39] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:41:39] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:41:39] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:41:39] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:41:39] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:41:39] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:41:39] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:41:39] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:41:39] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:41:41] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:41:41] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:41:41] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:41:41] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:41:41] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:41:41] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:41:41] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:41:41] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:41:41] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:41:41] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:41:41] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:41:41] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:41:41] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:41:41] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:41:41] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:41:41] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:42:14] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:42:14] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:42:15] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:42:15] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:42:15] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:42:15] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:42:15] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:42:15] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:42:15] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:42:15] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:42:15] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:42:15] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:42:15] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:42:15] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:42:15] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:42:15] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:42:16] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:42:16] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:42:17] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:42:17] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:42:17] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:42:17] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:42:17] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:42:17] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:42:17] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:42:17] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:42:17] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:42:17] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:42:17] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:42:17] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:42:17] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:42:17] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:43:21] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:43:21] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:43:22] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:43:22] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:43:22] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:43:22] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:43:22] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:43:22] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:43:22] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:43:22] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:43:22] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:43:22] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:43:22] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:43:22] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:43:22] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:43:22] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:43:23] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:43:23] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:43:24] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:43:24] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:43:24] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:43:24] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:43:24] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:43:24] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:43:24] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:43:24] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:43:24] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:43:24] INFO     [app:create_app:125] 34 matieres inserees par defaut.
-[2026-06-10 23:43:24] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:43:24] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:43:24] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:43:24] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:44:33] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:44:33] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:44:34] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
-[2026-06-10 23:44:34] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:44:34] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:44:34] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:44:34] INFO     [app:setup_logging:47] Logging configuré
-[2026-06-10 23:44:34] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:44:34] INFO     [app:create_app:29] Configuration: development
-[2026-06-10 23:44:34] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:44:34] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
-[2026-06-10 23:44:34] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:44:34] WARNING  [app:create_app:179] flasgger not installed — Swagger UI disabled
-[2026-06-10 23:44:34] INFO     [app:_dispose_engine_once:224] Engine disposed (post-fork cleanup)
-[2026-06-10 23:44:34] INFO     [app:_dispose_engine_once:224] Engine disposed (post-fork cleanup)
+[2026-06-11 09:50:08] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 09:50:08] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 09:50:09] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-11 09:50:09] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 09:50:09] WARNING  [app:create_app:122] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 09:50:09] WARNING  [app:create_app:166] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-11 09:50:10] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 09:50:10] INFO     [app:setup_logging:47] Logging configurÃ©
+[2026-06-11 09:50:10] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 09:50:10] INFO     [app:create_app:29] Configuration: development
+[2026-06-11 09:50:10] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 09:50:10] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-11 09:50:10] WARNING  [app:create_app:122] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 09:50:10] WARNING  [app:create_app:122] flasgger not installed â€” Swagger UI disabled
+[2026-06-11 09:50:10] WARNING  [app:create_app:166] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-11 09:50:10] WARNING  [app:create_app:166] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
