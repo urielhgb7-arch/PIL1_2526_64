@@ -821,34 +821,6 @@
         <script>
             checkAuth();
 
-            // ── Fonctions de label locales (aussi dans bundle.js) ────────────────
-            const _NIVEAU_LABELS = {
-                L1: "Licence 1",
-                L2: "Licence 2",
-                L3: "Licence 3",
-                M1: "Master 1",
-                M2: "Master 2",
-            };
-            const _FILIERE_LABELS = {
-                GL: "Génie Logiciel",
-                RSI: "Réseaux et Systèmes d'Information",
-                SI: "Systèmes d'Information",
-                IA: "Intelligence Artificielle",
-                IM: "Ingénierie Mathématique",
-                SIRI: "Sécurité Informatique",
-                SEoIT: "Software Engineering",
-            };
-            function niveauLabel(val) {
-                return _NIVEAU_LABELS[val] || val || "—";
-            }
-            function filiereLabel(val, short = false) {
-                if (!val) return "—";
-                if (short) return val;
-                return _FILIERE_LABELS[val]
-                    ? `${_FILIERE_LABELS[val]} (${val})`
-                    : val;
-            }
-
             // ── Avatar ────────────────────────────────────────────────────────────────
             function displayAvatar(url, initials) {
                 const img = document.getElementById("settings-avatar-img");
@@ -900,7 +872,7 @@
                 const file = event.target.files[0];
                 if (!file) return;
                 if (file.size > 2 * 1024 * 1024) {
-                    alert("Image trop grande. Maximum 2 Mo.");
+                    showToast("Image trop grande. Maximum 2 Mo.", "error");
                     return;
                 }
                 const reader = new FileReader();
@@ -1113,10 +1085,7 @@
                         closeModal("availability");
                         loadProfile();
                     } catch (err) {
-                        alert(
-                            "Erreur lors de la sauvegarde : " +
-                                (err.message || err),
-                        );
+                        showToast("Erreur lors de la sauvegarde : " + (err.message || err), "error");
                     }
                 });
 
@@ -1615,10 +1584,7 @@
                         closeModal("skills");
                         loadProfile();
                     } catch (err) {
-                        alert(
-                            "Erreur lors de la sauvegarde des compétences: " +
-                                (err.message || err),
-                        );
+                        showToast("Erreur lors de la sauvegarde des compétences: " + (err.message || err), "error");
                     }
                 });
 
@@ -1634,13 +1600,11 @@
                     const newPwd = inputs[1].value;
                     const confirmPwd = inputs[2].value;
                     if (newPwd !== confirmPwd) {
-                        alert("Les mots de passe ne correspondent pas.");
+                        showToast("Les mots de passe ne correspondent pas.", "error");
                         return;
                     }
                     if (newPwd.length < 8) {
-                        alert(
-                            "Le mot de passe doit contenir au moins 8 caractères.",
-                        );
+                        showToast("Le mot de passe doit contenir au moins 8 caractères.", "error");
                         return;
                     }
                     try {
@@ -1648,11 +1612,11 @@
                             ancien_mot_de_passe: currentPwd,
                             nouveau_mot_de_passe: newPwd,
                         });
-                        alert("Mot de passe modifié avec succès.");
+                        showToast("Mot de passe modifié avec succès.", "success");
                         closeModal("password");
                         e.target.reset();
                     } catch (err) {
-                        alert("Erreur : " + err.message);
+                        showToast("Erreur : " + err.message, "error");
                     }
                 });
 
@@ -1701,11 +1665,10 @@
                 const el = document.getElementById("toast");
                 if (!el) return;
                 el.textContent = msg;
-                el.className = "fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all";
                 const bg = type === "success" ? "bg-success/20 text-success border border-success/30"
                     : type === "error" ? "bg-destructive/20 text-destructive border border-destructive/30"
                     : "bg-popover text-white border border-border";
-                el.className += " " + bg;
+                el.className = "fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all " + bg;
                 el.classList.remove("hidden");
                 clearTimeout(el._timeout);
                 el._timeout = setTimeout(() => el.classList.add("hidden"), 3500);
