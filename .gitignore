@@ -37,3 +37,4 @@ instance/
 node_modules/
 
 .env.local
+logs/

@@ -29,15 +29,16 @@ def _parse_iso_slot(slot_iso):
     if not slot_iso or not isinstance(slot_iso, str):
         return None, None
 
-    # Try "Jour-hH-hH" format (e.g. "Lundi-8h-9h")
+    # Try "Jour-hH-hH" format (e.g. "Lundi-8h-9h" or "Lundi-14h-16h")
     match = re.match(r'^(\w+)-(\d+)h-(\d+)h$', slot_iso.strip())
     if match:
         jour = match.group(1)
         debut = int(match.group(2))
         fin = int(match.group(3))
-        if jour not in VALID_DAYS or debut < 0 or fin > 24 or fin - debut != 1:
+        if jour not in VALID_DAYS or debut < 0 or fin > 24 or debut >= fin:
             return None, None
-        creneau = f'{debut:02d}-{fin:02d}'
+        # Prendre le premier créneau d'1h de la plage
+        creneau = f'{debut:02d}-{debut+1:02d}'
         return jour, creneau
 
     # Try ISO datetime format
