@@ -323,6 +323,7 @@
 
     function swipeCard(direction) {
       if (!currentCard) return;
+      const card = currentCard;
 
       const profile = profiles[currentIndex];
       const rotation = direction === 'right' ? 30 : -30;
@@ -339,12 +340,12 @@
         }
       }
 
-      currentCard.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      currentCard.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
-      currentCard.style.opacity = '0';
+      card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      card.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
+      card.style.opacity = '0';
 
       setTimeout(() => {
-        currentCard.remove();
+        card.remove();
         currentIndex++;
         if (currentIndex < profiles.length) {
           loadNextCard();
