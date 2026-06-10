@@ -88,7 +88,8 @@ def mes_conversations():
                 "avec": {
                     "user_id": autre_id,
                     "nom": autre_profile.nom if autre_profile else "Inconnu",
-                    "prenom": autre_profile.prenom if autre_profile else ""
+                    "prenom": autre_profile.prenom if autre_profile else "",
+                    "avatar_url": autre_profile.avatar_url if autre_profile else None
                 }
             })
 
@@ -191,11 +192,24 @@ def lire_messages(conv_id: int):
             page=page, per_page=per_page, error_out=False
         )
 
+        sender_profiles = {}
+        def get_sender_info(sender_id):
+            if sender_id not in sender_profiles:
+                p = Profile.query.filter_by(user_id=sender_id).first()
+                sender_profiles[sender_id] = p
+            p = sender_profiles[sender_id]
+            return {
+                "prenom": p.prenom if p else "",
+                "nom": p.nom if p else "",
+                "avatar_url": p.avatar_url if p else None
+            }
+
         result = [{
             "id": m.id,
             "sender_id": m.sender_id,
             "contenu": m.contenu,
-            "date_envoi": m.date_envoi.isoformat()
+            "date_envoi": m.date_envoi.isoformat(),
+            "sender": get_sender_info(m.sender_id)
         } for m in pagination.items]
 
         logger.info(f" {len(result)} messages listés pour conv={conv_id} (page {page}/{pagination.pages})")

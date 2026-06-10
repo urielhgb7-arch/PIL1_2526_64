@@ -387,17 +387,26 @@ function filiereLabel(val, short) {
 }
 
 // ============================================================
-// NOTIFICATIONS-BADGE
+// NOTIFICATIONS-BADGE — petit point jaune sur la cloche
 // ============================================================
-(async function initNotificationsBadge() {
+function toggleBellDot(show) {
+    document.querySelectorAll('.site-bell').forEach(el => {
+        el.classList.toggle('has-unread', show);
+    });
+}
+
+async function updateNotificationsBadge() {
     if (!localStorage.getItem('mentorlink_token')) return;
     try {
         const data = await API.notifications.getAll(true);
         const count = (data && data.notifications) ? data.notifications.length : 0;
-        const badge = document.getElementById('notifications-badge');
-        if (badge) {
-            badge.textContent = count;
-            badge.classList.toggle('hidden', count === 0);
-        }
+        toggleBellDot(count > 0);
     } catch (_) {}
+}
+
+(async function initNotificationsBadge() {
+    await updateNotificationsBadge();
+    if (localStorage.getItem('mentorlink_token')) {
+        setInterval(updateNotificationsBadge, 30000);
+    }
 })();
