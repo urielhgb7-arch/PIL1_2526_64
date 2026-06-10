@@ -92,8 +92,11 @@ def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_s
         "filiere":         candidate.filiere,
         "niveau":          candidate.niveau,
         "avatar_url":      candidate.avatar_url,
+        "bio":             candidate.bio,
+        "format_preference": candidate.format_preference,
         "score":           total_score,
         "matched_subjects": matched_subjects,
+        "shared_slots":    [{"jour": s[0], "creneau": s[1]} for s in shared_slots],
         "explication":     explication,
         "score_detail": {
             "matiere":           score_matiere,
