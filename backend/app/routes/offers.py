@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
-from app.models import Profile
+from app.models import Profile, Notification
 from app.models.services import Matching, Offer, Demand, ProfilLacune, ProfilCompetence
 from app.middleware.auth_guard import token_required
 from app.validators import normalize_format_preference, matiere_exists, is_valid_day, is_valid_creneau, VALID_DAYS
@@ -465,6 +465,16 @@ def respond_to_offer(current_user, offer_id):
         status='pending'
     )
     db.session.add(new_match)
+    db.session.flush()
+
+    current_user_profile = Profile.query.filter_by(user_id=current_user.id).first()
+    notif = Notification(
+        user_id=offrant_user_id,
+        titre="Nouvelle réponse à votre offre",
+        contenu=f"{current_user_profile.prenom} {current_user_profile.nom} a répondu à votre offre de mentorat.",
+        type='matching'
+    )
+    db.session.add(notif)
     db.session.commit()
 
     _notify_user(offrant_user_id, {
@@ -526,6 +536,16 @@ def offer_help_on_demand(current_user, demand_id):
             status='pending'
         )
         db.session.add(new_match)
+        db.session.flush()
+
+        current_user_profile = Profile.query.filter_by(user_id=current_user.id).first()
+        notif = Notification(
+            user_id=demandeur_profile.user_id,
+            titre="Nouvelle proposition d'aide",
+            contenu=f"{current_user_profile.prenom} {current_user_profile.nom} propose son aide sur votre demande.",
+            type='matching'
+        )
+        db.session.add(notif)
         db.session.commit()
 
         _notify_user(demandeur_profile.user_id, {

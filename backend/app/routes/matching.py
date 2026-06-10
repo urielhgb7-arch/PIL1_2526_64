@@ -79,80 +79,76 @@ def request_match(student_id):
     demand_id = data.get('demand_id')
     score     = data.get('score', 0.0)
 
-    if not demand_id:
-        return jsonify({"message": "demand_id requis"}), 400
-
-    demand = db.session.get(Demand, demand_id)
-    if not demand:
-        return jsonify({"message": "Demande introuvable"}), 404
-    profile = Profile.query.filter_by(user_id=current_user_id).first()
-    if not profile or demand.profile_id != profile.id:
-        return jsonify({"message": "Non autorisé sur cette demande"}), 403
-
-    # Vérifier que le candidat existe
     candidate = db.session.get(User, student_id)
     if not candidate:
         return jsonify({"message": "Candidat introuvable"}), 404
 
-    # Vérifier qu'un matching n'existe pas déjà entre ces deux sur cette demande
-    existing = Matching.query.filter_by(
-        user_one_id=current_user_id,
-        user_two_id=student_id,
-        demand_id=demand_id
-    ).first()
-    if existing:
-        return jsonify({
-            "message": "Demande déjà envoyée",
-            "matching_id": existing.id,
-            "status": existing.status
-        }), 200
+    profile = Profile.query.filter_by(user_id=current_user_id).first()
+    matiere_id = None
 
-    # Vérifier que le candidat dispose bien du créneau demandé et qu'il n'est pas réservé
-    candidate_profile = Profile.query.filter_by(user_id=student_id).first()
-    if not candidate_profile:
-        return jsonify({"message": "Profil du candidat introuvable"}), 404
+    # Vérifications liées à la demande (optionnel)
+    if demand_id:
+        demand = db.session.get(Demand, demand_id)
+        if not demand:
+            return jsonify({"message": "Demande introuvable"}), 404
+        if not profile or demand.profile_id != profile.id:
+            return jsonify({"message": "Non autorisé sur cette demande"}), 403
 
-    candidate_slot = Disponible.query.filter_by(
-        profile_id=candidate_profile.id,
-        jour=demand.jour,
-        creneau=demand.creneau,
-        is_reserved=False
-    ).first()
-    if not candidate_slot:
-        return jsonify({"message": "Le candidat n'est pas disponible sur ce créneau"}), 400
+        matiere_id = demand.matiere_id
 
-    # Créer le matching en statut 'pending'
+        existing = Matching.query.filter_by(
+            user_one_id=current_user_id,
+            user_two_id=student_id,
+            demand_id=demand_id
+        ).first()
+        if existing:
+            return jsonify({
+                "message": "Demande déjà envoyée",
+                "matching_id": existing.id,
+                "status": existing.status
+            }), 200
+
+        candidate_profile = Profile.query.filter_by(user_id=student_id).first()
+        if not candidate_profile:
+            return jsonify({"message": "Profil du candidat introuvable"}), 404
+
+        candidate_slot = Disponible.query.filter_by(
+            profile_id=candidate_profile.id,
+            jour=demand.jour,
+            creneau=demand.creneau,
+            is_reserved=False
+        ).first()
+        if not candidate_slot:
+            return jsonify({"message": "Le candidat n'est pas disponible sur ce créneau"}), 400
+
     new_match = Matching(
         user_one_id=current_user_id,
         user_two_id=student_id,
         initiator_id=current_user_id,
         demand_id=demand_id,
-        matiere_id=demand.matiere_id,
+        matiere_id=matiere_id,
         score=score,
         status='pending'
     )
     db.session.add(new_match)
-    db.session.flush()  # obtenir new_match.id avant commit
-    # Notifier le candidat (Section 13 du PDF)
-    demandeur = db.session.get(User, current_user_id)
-    demandeur_profile = Profile.query.filter_by(user_id=current_user_id).first()
+    db.session.flush()
+
+    demandeur_profile = profile or Profile.query.filter_by(user_id=current_user_id).first()
     notif = Notification(
         user_id=student_id,
-        titre="Nouvelle demande d'accompagnement",
-        contenu=f"{demandeur_profile.prenom} {demandeur_profile.nom} souhaite votre aide. Compatibilité : {score}%",
-        type='match_system'
+        titre="Nouvelle demande de mentorat",
+        contenu=f"{demandeur_profile.prenom} {demandeur_profile.nom} souhaite que vous le mentoriez en {Matiere.query.get(matiere_id).nom if matiere_id else 'une matière'}.",
+        type='matching'
     )
     db.session.add(notif)
     db.session.commit()
 
-    # Email au candidat
     try:
         from app.services.email_service import send_match_notification_email
         from flask import current_app as app
-        candidat_user = db.session.get(User, student_id)
-        if candidat_user and candidat_user.email:
+        if candidate and candidate.email:
             send_match_notification_email(
-                recipient_email=candidat_user.email,
+                recipient_email=candidate.email,
                 subject="Nouvelle demande d'accompagnement",
                 sender_name=f"{demandeur_profile.prenom} {demandeur_profile.nom}",
                 score=score,
@@ -231,9 +227,9 @@ def accept_match(matching_id):
     accepteur_profile = Profile.query.filter_by(user_id=current_user_id).first()
     notif = Notification(
         user_id=match.user_one_id,
-        titre="Demande acceptée !",
-        contenu=f"{accepteur_profile.prenom} {accepteur_profile.nom} a accepté votre demande d'aide.",
-        type='match_system'
+        titre="Demande de mentorat acceptée !",
+        contenu=f"{accepteur_profile.prenom} {accepteur_profile.nom} a accepté votre demande de mentorat.",
+        type='matching'
     )
     db.session.add(notif)
     db.session.commit()
@@ -286,9 +282,9 @@ def reject_match(matching_id):
     refuseur_profile = Profile.query.filter_by(user_id=current_user_id).first()
     notif = Notification(
         user_id=match.user_one_id,
-        titre="Demande refusée",
+        titre="Demande de mentorat refusée",
         contenu=f"{refuseur_profile.prenom} {refuseur_profile.nom} n'est pas disponible pour le moment.",
-        type='match_system'
+        type='matching'
     )
     db.session.add(notif)
     db.session.commit()
@@ -339,6 +335,10 @@ def get_received_matches():
                 "user_id": m.user_one_id,
                 "nom":     initiator_profile.nom if initiator_profile else "",
                 "prenom":  initiator_profile.prenom if initiator_profile else "",
+                "filiere": initiator_profile.filiere if initiator_profile else "",
+                "niveau":  initiator_profile.niveau if initiator_profile else "",
+                "bio":     initiator_profile.bio if initiator_profile else "",
+                "avatar_url": initiator_profile.avatar_url if initiator_profile else "",
             },
             "matiere_id": m.matiere_id,
             "matiere_nom": matiere_obj.nom if matiere_obj else "",

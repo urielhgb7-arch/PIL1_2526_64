@@ -344,13 +344,21 @@
 
       // Swipe droit = envoi d'une demande de match
       if (profile && profile.id && direction === 'right') {
+        const body = { score: profile.compatibility };
         const demandId = getDemandId();
-        if (demandId) {
-          API.matching.requestMatch(profile.id, { demand_id: parseInt(demandId), score: profile.compatibility })
-            .catch(err => console.warn('API requestMatch error:', err));
-        } else {
-          console.warn('demand_id manquant dans l\'URL');
-        }
+        if (demandId) body.demand_id = parseInt(demandId);
+        API.matching.requestMatch(profile.id, body)
+          .then(() => {
+            if (typeof showToast === 'function') {
+              showToast(`Demande envoyée à ${profile.name} !`, 'success');
+            }
+          })
+          .catch(err => {
+            const msg = err?.message || 'Erreur lors de l\'envoi';
+            if (typeof showToast === 'function') {
+              showToast(msg, 'error');
+            }
+          });
       }
 
       card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
