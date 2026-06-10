@@ -13,7 +13,7 @@ Présentation de la plateforme. Boutons **Connexion** → `signin.html` et **Ins
 ## 3. Onboarding (`onboarding.html`)
 
 Questionnaire pour compléter le profil :
-1. **Filière** (GL, SIRI, IM) et **niveau** (L1–M2)
+1. **Filière** (GL, SIRI, IM) et **niveau** (L1–L3)
 2. **Compétences** (matières où l'utilisateur est à l'aise)
 3. **Lacunes** (matières où il a besoin d'aide)
 4. **Disponibilités** (créneaux horaires)
