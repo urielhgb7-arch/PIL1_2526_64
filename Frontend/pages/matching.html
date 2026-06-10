@@ -103,6 +103,20 @@
     </div>
   </div>
 
+  <!-- Match Info Modal -->
+  <div id="matchInfoModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);">
+    <div class="bg-card border border-border rounded-2xl max-w-sm w-full max-h-[80vh] overflow-y-auto shadow-2xl">
+      <div class="sticky top-0 bg-card border-b border-border p-4 flex items-center justify-between">
+        <h3 class="font-bold text-lg" id="matchInfoTitle">Raisons du match</h3>
+        <button onclick="closeMatchInfo()" class="w-8 h-8 rounded-full bg-popover flex items-center justify-center hover:bg-primary/20 transition-colors">
+          <span class="ti ti-x"></span>
+        </button>
+      </div>
+      <div class="p-5 space-y-4" id="matchInfoBody">
+      </div>
+    </div>
+  </div>
+
   <script src="../js/bundle.js"></script>
   <script>
     checkAuth();
@@ -132,9 +146,11 @@
             name: `${u.prenom} ${u.nom}`,
             level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
             department: u.filiere || '',
-            bio: (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || 'Aucune bio disponible.',
+            avatar_url: u.avatar_url,
+            bio: u.bio || (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || '',
             skills: (u.matched_subjects || []).map(s => s.nom),
             compatibility: u.score,
+            shared_slots: u.shared_slots || [],
             score_detail: u.score_detail,
             explication: u.explication,
             rejected_before: u.rejected_before
@@ -163,15 +179,38 @@
       const card = document.createElement('div');
       card.className = 'swipe-card absolute inset-0 bg-card border border-border rounded-3xl overflow-hidden shadow-2xl';
       card.style.zIndex = profiles.length - index;
+      const initials = profile.name.split(' ').map(n => n[0]).join('');
+      const sharedSlotsHtml = profile.shared_slots.length > 0
+        ? `<div>
+            <h3 class="text-sm font-semibold text-muted mb-3">DISPOSITIONS COMMUNES</h3>
+            <div class="flex flex-wrap gap-2">
+              ${profile.shared_slots.map(s => `
+                <span class="px-3 py-1 bg-popover border border-border text-foreground rounded-lg text-sm flex items-center gap-1">
+                  <span class="ti ti-calendar-time text-primary"></span>
+                  ${s.jour} ${s.creneau}
+                </span>
+              `).join('')}
+            </div>
+           </div>`
+        : '';
+
       card.innerHTML = `
         <div class="h-full flex flex-col">
           <!-- Profile Header -->
-          <div class="bg-gradient-to-br from-primary/20 to-success/20 p-8 text-center">
-            <div class="w-24 h-24 rounded-full bg-primary/30 flex items-center justify-center mx-auto mb-4">
-              <span class="text-4xl font-bold text-primary">${profile.name.split(' ').map(n => n[0]).join('')}</span>
-            </div>
+          <div class="bg-gradient-to-br from-primary/20 to-success/20 p-8 text-center relative">
+            <button onclick="showMatchInfo(event, ${index})" title="Raisons du match" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-popover border border-border flex items-center justify-center hover:bg-primary/20 transition-colors z-10">
+              <span class="ti ti-alert-circle" style="font-size:1.1rem;color:var(--color-primary,#7C6FF7)"></span>
+            </button>
+            ${profile.avatar_url
+              ? `<div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 ring-2 ring-primary/30">
+                   <img src="${profile.avatar_url}" alt="${profile.name}" class="w-full h-full object-cover" onerror="this.style.display='none';this.parentElement.classList.add('bg-primary/30','flex','items-center','justify-center');this.parentElement.innerHTML='<span class=\\'text-4xl font-bold text-primary\\'>${initials}</span>'">
+                 </div>`
+              : `<div class="w-24 h-24 rounded-full bg-primary/30 flex items-center justify-center mx-auto mb-4">
+                   <span class="text-4xl font-bold text-primary">${initials}</span>
+                 </div>`
+            }
             <h2 class="text-2xl font-bold mb-1">${profile.name}</h2>
-            <p class="text-muted">${profile.level} - ${profile.department}</p>
+            <p class="text-muted">${profile.level}</p>
             <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-success/20 text-success rounded-full">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -195,6 +234,8 @@
                 `).join('')}
               </div>
             </div>
+
+            ${sharedSlotsHtml}
           </div>
 
           <!-- Swipe Overlays -->
@@ -282,6 +323,7 @@
 
     function swipeCard(direction) {
       if (!currentCard) return;
+      const card = currentCard;
 
       const profile = profiles[currentIndex];
       const rotation = direction === 'right' ? 30 : -30;
@@ -298,12 +340,12 @@
         }
       }
 
-      currentCard.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      currentCard.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
-      currentCard.style.opacity = '0';
+      card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      card.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
+      card.style.opacity = '0';
 
       setTimeout(() => {
-        currentCard.remove();
+        card.remove();
         currentIndex++;
         if (currentIndex < profiles.length) {
           loadNextCard();
@@ -379,6 +421,82 @@
       }
       if (profiles.length === 0) showNoMoreCards(noMatchesFound);
     }
+
+    // ── Match Info Modal ──
+    function showMatchInfo(e, index) {
+      e.stopPropagation();
+      const p = profiles[index];
+      if (!p) return;
+      document.getElementById('matchInfoTitle').textContent = `${p.name} — Détails du match`;
+      const sd = p.score_detail || {};
+      const body = document.getElementById('matchInfoBody');
+      body.innerHTML = `
+        <div class="space-y-3">
+          <h4 class="font-semibold text-sm text-muted">RAISONS</h4>
+          <ul class="space-y-2">
+            ${(p.explication?.raisons || ['Aucune raison spécifique']).map(r => `
+              <li class="flex items-start gap-2 text-sm">
+                <span class="ti ti-circle-check text-success mt-0.5"></span>
+                <span>${r}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        <div class="border-t border-border pt-3">
+          <h4 class="font-semibold text-sm text-muted mb-3">DÉTAIL DU SCORE</h4>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between">
+              <span>Matière</span>
+              <span class="font-semibold text-primary">${sd.matiere || 0}/35</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Niveau vs urgence</span>
+              <span class="font-semibold text-primary">${sd.niveau_vs_gravite || 0}/20</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Disponibilités</span>
+              <span class="font-semibold text-primary">${sd.disponibilites || 0}/25</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Même année</span>
+              <span class="font-semibold text-primary">${sd.meme_niveau || 0}/10</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Même filière</span>
+              <span class="font-semibold text-primary">${sd.meme_filiere || 0}/10</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Format</span>
+              <span class="font-semibold text-primary">${sd.format_preference || 0}/10</span>
+            </div>
+            ${sd.penalite_rejet < 0 ? `
+            <div class="flex items-center justify-between text-destructive">
+              <span>Pénalité rejet</span>
+              <span class="font-semibold">${sd.penalite_rejet}</span>
+            </div>` : ''}
+            <div class="flex items-center justify-between pt-2 border-t border-border font-bold">
+              <span>Total</span>
+              <span class="text-success">${p.compatibility}%</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('matchInfoModal').classList.remove('hidden');
+    }
+
+    function closeMatchInfo() {
+      document.getElementById('matchInfoModal').classList.add('hidden');
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('matchInfoModal').addEventListener('click', function(e) {
+      if (e.target === this) closeMatchInfo();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMatchInfo();
+    });
 
     // Lancement : charger les suggestions depuis l'API
     loadSuggestions();
