@@ -17,6 +17,10 @@ LACUNE_LEVELS = {
     'Urgente':  4
 }
 
+SCORE_MINIMUM = 55
+MAX_RESULTS = 50
+
+
 def _score_niveau_vs_gravite(niveau_competence: str, priorite_lacune: str) -> float:
     comp_val   = COMPETENCE_LEVELS.get(niveau_competence, 1)
     lacune_val = LACUNE_LEVELS.get(priorite_lacune, 1)
@@ -104,6 +108,12 @@ def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_s
     }
 
 
+def _limit_results(resultats: list) -> list:
+    resultats.sort(key=lambda x: x["score"], reverse=True)
+    resultats = [r for r in resultats if r["score"] >= SCORE_MINIMUM]
+    return resultats[:MAX_RESULTS]
+
+
 def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
     demandeur_profile = Profile.query.filter_by(user_id=current_user_id).first()
     if not demandeur_profile:
@@ -118,7 +128,6 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
 
     blocked_ids, rejected_ids = _get_excluded_user_ids(current_user_id)
 
-    # Tous les profils avec au moins une competence (sans filtrer par matiere)
     candidates = db.session.query(Profile).join(
         ProfilCompetence, ProfilCompetence.profile_id == Profile.id
     ).filter(
@@ -131,7 +140,6 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
         profile_id=demandeur_profile.id, matiere_id=matiere_id
     ).first()
 
-    # Recuperer tous les creneaux de la demande (disponibilites JSON + jour/creneau)
     demand_slots = set()
     if demande.disponibilites and isinstance(demande.disponibilites, list):
         for slot in demande.disponibilites:
@@ -144,49 +152,71 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
     if not demand_slots:
         demand_slots.add(demand_slot)
 
+    if not candidates:
+        return []
+
+    # ── Pre-load en masse (3 requêtes au lieu de 3N) ──
+    candidate_ids = [c.id for c in candidates]
+    candidate_user_ids = [c.user_id for c in candidates]
+
+    users_map = {u.id: u for u in User.query.filter(User.id.in_(candidate_user_ids)).all()}
+
+    comps_map = {}
+    for c in ProfilCompetence.query.filter(
+        ProfilCompetence.profile_id.in_(candidate_ids),
+        ProfilCompetence.matiere_id == matiere_id,
+        ProfilCompetence.is_available_to_help == True
+    ).all():
+        comps_map[c.profile_id] = c
+
+    autres_comps_map = set()
+    for c in ProfilCompetence.query.filter(
+        ProfilCompetence.profile_id.in_(candidate_ids),
+        ProfilCompetence.is_available_to_help == True,
+        ProfilCompetence.matiere_id != matiere_id
+    ).all():
+        autres_comps_map.add(c.profile_id)
+
+    dispos_map = {}
+    for d in Disponible.query.filter(
+        Disponible.profile_id.in_(candidate_ids),
+        Disponible.is_reserved == False
+    ).all():
+        dispos_map.setdefault(d.profile_id, []).append(d)
+
+    # ── Boucle principale (0 requête DB) ──
     resultats = []
     for candidate in candidates:
         if candidate.user_id in blocked_ids:
             continue
 
-        candidate_user = db.session.get(User, candidate.user_id)
+        candidate_user = users_map.get(candidate.user_id)
         if not candidate_user:
             continue
 
-        # Verifier si le candidat a la competence dans la matiere de la demande
-        comp = ProfilCompetence.query.filter_by(
-            profile_id=candidate.id, matiere_id=matiere_id, is_available_to_help=True
-        ).first()
+        comp = comps_map.get(candidate.id)
 
         if comp:
             score_matiere = 35.0
             score_niveau = _score_niveau_vs_gravite(
-                comp.niveau if comp else 'Intermédiaire',
-                lacune.priorite if lacune else 'Moyenne'
+                comp.niveau, lacune.priorite if lacune else 'Moyenne'
             )
             matched_subjects = []
             if matiere_obj:
                 matched_subjects.append({
                     "matiere_id": matiere_id,
                     "nom": matiere_obj.nom,
-                    "niveau_competence": comp.niveau if comp else 'Intermédiaire',
+                    "niveau_competence": comp.niveau,
                     "priorite_lacune": lacune.priorite if lacune else 'Moyenne'
                 })
         else:
-            # Verifier si le candidat a d'autres competences (pas la matiere demande)
-            autres_comp = ProfilCompetence.query.filter(
-                ProfilCompetence.profile_id == candidate.id,
-                ProfilCompetence.is_available_to_help == True,
-                ProfilCompetence.matiere_id != matiere_id
-            ).first()
-            if not autres_comp:
-                continue  # Aucune competence utile
+            if candidate.id not in autres_comps_map:
+                continue
             score_matiere = 10.0
             score_niveau = 0.0
             matched_subjects = []
 
-        # Disponibilites : creneaux du candidat
-        candidate_dispos = Disponible.query.filter_by(profile_id=candidate.id, is_reserved=False).all()
+        candidate_dispos = dispos_map.get(candidate.id) or []
         candidate_slots = {(d.jour, d.creneau) for d in candidate_dispos}
 
         shared_slots = demand_slots.intersection(candidate_slots)
@@ -215,8 +245,7 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
             penalty, total_score
         ))
 
-    resultats.sort(key=lambda x: x["score"], reverse=True)
-    return resultats
+    return _limit_results(resultats)
 
 
 def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> list:
@@ -242,16 +271,39 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
 
     candidates = Profile.query.filter(Profile.user_id != current_user_id).all()
 
+    if not candidates:
+        return []
+
+    # ── Pre-load en masse ──
+    candidate_ids = [c.id for c in candidates]
+    candidate_user_ids = [c.user_id for c in candidates]
+
+    users_map = {u.id: u for u in User.query.filter(User.id.in_(candidate_user_ids)).all()}
+
+    competences_map = {}
+    for comp in ProfilCompetence.query.filter(
+        ProfilCompetence.profile_id.in_(candidate_ids),
+        ProfilCompetence.matiere_id.in_(matiere_ids_cherchees),
+        ProfilCompetence.is_available_to_help == True
+    ).all():
+        competences_map.setdefault(comp.profile_id, []).append(comp)
+
+    dispos_map = {}
+    for d in Disponible.query.filter(
+        Disponible.profile_id.in_(candidate_ids),
+        Disponible.is_reserved == False
+    ).all():
+        dispos_map.setdefault(d.profile_id, []).append(d)
+
+    matieres_map = {m.id: m for m in Matiere.query.all()}
+
+    # ── Boucle principale (0 requête DB) ──
     resultats = []
     for candidate in candidates:
         if candidate.user_id in blocked_ids:
             continue
 
-        competences_candidates = ProfilCompetence.query.filter(
-            ProfilCompetence.profile_id == candidate.id,
-            ProfilCompetence.matiere_id.in_(matiere_ids_cherchees),
-            ProfilCompetence.is_available_to_help == True
-        ).all()
+        competences_candidates = competences_map.get(candidate.id) or []
         if not competences_candidates:
             continue
 
@@ -265,7 +317,7 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
             priorite_lacune = lacunes_dict.get(comp.matiere_id, 'Moyenne')
             s = _score_niveau_vs_gravite(comp.niveau, priorite_lacune)
             scores_niveau.append(s)
-            matiere_obj = db.session.get(Matiere, comp.matiere_id)
+            matiere_obj = matieres_map.get(comp.matiere_id)
             if matiere_obj:
                 matched_subjects.append({
                     "matiere_id": comp.matiere_id,
@@ -276,7 +328,7 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
 
         score_niveau = round(sum(scores_niveau) / len(scores_niveau), 2) if scores_niveau else 0
 
-        candidate_dispos = Disponible.query.filter_by(profile_id=candidate.id, is_reserved=False).all()
+        candidate_dispos = dispos_map.get(candidate.id) or []
         candidate_slots = {(d.jour, d.creneau) for d in candidate_dispos}
 
         shared_slots = mes_slots.intersection(candidate_slots)
@@ -298,7 +350,7 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
             2
         )
 
-        candidate_user = db.session.get(User, candidate.user_id)
+        candidate_user = users_map.get(candidate.user_id)
         if not candidate_user:
             continue
 
@@ -310,8 +362,7 @@ def calculate_matches_general(current_user_id: int, matiere_id: int = None) -> l
             penalty, total_score
         ))
 
-    resultats.sort(key=lambda x: x["score"], reverse=True)
-    return resultats
+    return _limit_results(resultats)
 
 
 def calculate_matches(current_user_id: int, matiere_id: int = None, demand_id: int = None) -> list:
