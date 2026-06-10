@@ -141,6 +141,23 @@ def request_match(student_id):
     db.session.add(notif)
     db.session.commit()
 
+    # Email au candidat
+    try:
+        from app.services.email_service import send_match_notification_email
+        from flask import current_app as app
+        candidat_user = db.session.get(User, student_id)
+        if candidat_user and candidat_user.email:
+            send_match_notification_email(
+                recipient_email=candidat_user.email,
+                subject="Nouvelle demande d'accompagnement",
+                sender_name=f"{demandeur_profile.prenom} {demandeur_profile.nom}",
+                score=score,
+                match_type="request",
+                accept_url=f"{app.config.get('FRONTEND_URL', 'http://localhost:5500')}/pages/dashboard.html",
+            )
+    except Exception as e:
+        logger.warning(f"Email request notif skipped: {e}")
+
     return jsonify({
         "message": "Demande envoyée avec succès",
         "matching_id": new_match.id,
@@ -217,6 +234,23 @@ def accept_match(matching_id):
     db.session.add(notif)
     db.session.commit()
 
+    # Email au demandeur
+    try:
+        from app.services.email_service import send_match_notification_email
+        from flask import current_app as app
+        demandeur_user = db.session.get(User, match.user_one_id)
+        if demandeur_user and demandeur_user.email:
+            send_match_notification_email(
+                recipient_email=demandeur_user.email,
+                subject="Demande acceptée !",
+                sender_name=f"{accepteur_profile.prenom} {accepteur_profile.nom}",
+                score=match.score,
+                match_type="accept",
+                accept_url=f"{app.config.get('FRONTEND_URL', 'http://localhost:5500')}/pages/dashboard.html",
+            )
+    except Exception as e:
+        logger.warning(f"Email accept notif skipped: {e}")
+
     return jsonify({
         "message": "Match accepté ! Vous pouvez maintenant discuter.",
         "status": "accepted",
@@ -254,6 +288,23 @@ def reject_match(matching_id):
     )
     db.session.add(notif)
     db.session.commit()
+
+    # Email au demandeur
+    try:
+        from app.services.email_service import send_match_notification_email
+        from flask import current_app as app
+        demandeur_user = db.session.get(User, match.user_one_id)
+        if demandeur_user and demandeur_user.email:
+            send_match_notification_email(
+                recipient_email=demandeur_user.email,
+                subject="Demande refusée",
+                sender_name=f"{refuseur_profile.prenom} {refuseur_profile.nom}",
+                score=match.score,
+                match_type="reject",
+                accept_url=None,
+            )
+    except Exception as e:
+        logger.warning(f"Email reject notif skipped: {e}")
 
     return jsonify({
         "message": "Match refusé.",

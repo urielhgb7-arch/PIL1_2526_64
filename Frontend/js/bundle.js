@@ -1,73 +1,134 @@
 /**
- * MentorLink — Configuration & Client API Centralisé
- * Rôle : Gérer l'URL du serveur, joindre automatiquement le token JWT,
- * et intercepter les erreurs globales.
+ * MentorLink — Bundle JS unique
+ * Regroupe : api.js / script.js / matieres-loader.js / notifications-badge.js / logger.js
+ * Généré le 10/06/2026
  */
+// ============================================================
+// LOGGER
+// ============================================================
+const Logger = {
+    _injectToastStyles() {
+        if (document.getElementById("mentorlink-toast-styles")) return;
+        const style = document.createElement("style");
+        style.id = "mentorlink-toast-styles";
+        style.textContent = `
+.mentorlink-toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 99999;
+  padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #fff;
+  font-size: 0.875rem; font-weight: 500; max-width: 24rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  transform: translateY(1rem); opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none;
+}
+.mentorlink-toast.show { transform: translateY(0); opacity: 1; }
+.mentorlink-toast.success { background: #10b981; }
+.mentorlink-toast.error { background: #ef4444; }
+.mentorlink-toast.info { background: #6366f1; }
+.mentorlink-toast.warning { background: #f59e0b; }
+`;
+        document.head.appendChild(style);
+    },
 
+    _toast(message, type = "info") {
+        this._injectToastStyles();
+        const existing = document.querySelector(".mentorlink-toast");
+        if (existing) existing.remove();
+        const div = document.createElement("div");
+        div.className = `mentorlink-toast ${type}`;
+        div.textContent = message;
+        document.body.appendChild(div);
+        requestAnimationFrame(() => div.classList.add("show"));
+        setTimeout(() => {
+            div.classList.remove("show");
+            setTimeout(() => div.remove(), 300);
+        }, 4000);
+    },
+
+    info(msg) { this._toast(msg, "info"); },
+    warn(msg) { this._toast(msg, "warning"); console.warn(msg); },
+    error(msg) { this._toast(msg, "error"); console.error(msg); },
+    success(msg) { this._toast(msg, "success"); }
+};
+
+// ============================================================
+// API
+// ============================================================
 const API_BASE_URL = (window.API_BASE_URL || (
     window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
         ? 'http://127.0.0.1:5000/api'
         : 'https://ifri-mentorlink.onrender.com/api'
 ));
 
-console.log('[API] Using base URL:', API_BASE_URL);
-
-async function fetchAPI(endpoint, method = 'GET', body = null) {
+async function uploadFileAPI(endpoint, method = 'POST', formData = null) {
     const url = `${API_BASE_URL}${endpoint}`;
     const token = localStorage.getItem('mentorlink_token');
-
-    const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const config = { method, headers };
-
-    if (body && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
-        config.body = JSON.stringify(body);
-    }
+    const headers = { 'Accept': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
     function getLoginRedirectPath() {
-        const path = window.location.pathname;
-        if (path.includes('/pages/')) {
-            return 'signin.html';
-        }
-        return 'pages/signin.html';
+        return window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
     }
 
     try {
-        const response = await fetch(url, config);
-
+        const response = await fetch(url, { method, headers, body: formData });
         if (response.status === 401) {
             const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
-            if (pub) {
-                throw new Error('Non authentifié');
-            }
-            console.warn('Session expirée. Redirection vers login.');
+            if (pub) throw new Error('Non authentifié');
             localStorage.removeItem('mentorlink_token');
             localStorage.removeItem('mentorlink_user');
             window.location.href = getLoginRedirectPath();
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
-
-        // Tente de parser le JSON ; si la réponse n'est pas du JSON, on utilise le texte
         let data;
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
+        const ct = response.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
             data = await response.json();
         } else {
             const text = await response.text();
             try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
         }
+        if (!response.ok) throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
+        return data;
+    } catch (error) {
+        console.error(`[API Upload Error] ${endpoint}:`, error);
+        throw error;
+    }
+}
 
-        if (!response.ok) {
-            throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
+async function fetchAPI(endpoint, method = 'GET', body = null) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const token = localStorage.getItem('mentorlink_token');
+    const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const config = { method, headers };
+    if (body && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
+        config.body = JSON.stringify(body);
+    }
+
+    function getLoginRedirectPath() {
+        return window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
+    }
+
+    try {
+        const response = await fetch(url, config);
+        if (response.status === 401) {
+            const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            if (pub) throw new Error('Non authentifié');
+            localStorage.removeItem('mentorlink_token');
+            localStorage.removeItem('mentorlink_user');
+            window.location.href = getLoginRedirectPath();
+            throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
-
+        let data;
+        const ct = response.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
+        if (!response.ok) throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
         return data;
     } catch (error) {
         console.error(`[API Error] ${endpoint}:`, error);
@@ -89,7 +150,6 @@ const API = {
             return fetchAPI('/auth/change-password', 'PUT', payload);
         }
     },
-
     profile: {
         getMe: () => fetchAPI('/profile/me', 'GET'),
         updateMe: (data) => fetchAPI('/profile/me', 'PUT', data),
@@ -101,9 +161,9 @@ const API = {
         removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
         activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
         deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT'),
-        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data)
+        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data),
+        uploadAvatar: (formData) => uploadFileAPI('/profile/avatar/upload', 'POST', formData)
     },
-
     matching: {
         getSuggestions: (filters = {}) => {
             const params = new URLSearchParams(filters).toString();
@@ -115,21 +175,18 @@ const API = {
         getReceived: () => fetchAPI('/matches/received', 'GET'),
         getSent: () => fetchAPI('/matches/sent', 'GET')
     },
-
     messages: {
         getConversations: () => fetchAPI('/conversations', 'GET'),
         create: (userId) => fetchAPI('/conversations', 'POST', { user_id: userId }),
         getHistory: (convId) => fetchAPI(`/conversations/${convId}/messages`, 'GET'),
         send: (convId, text) => fetchAPI(`/conversations/${convId}/messages`, 'POST', { contenu: text })
     },
-
     notifications: {
         getAll: (unreadOnly = false) => fetchAPI(`/notifications${unreadOnly ? '?unread_only=true' : ''}`, 'GET'),
         markRead: (id) => fetchAPI(`/notifications/${id}/read`, 'PUT'),
         markAllRead: () => fetchAPI('/notifications/read-all', 'PUT'),
         delete: (id) => fetchAPI(`/notifications/${id}`, 'DELETE')
     },
-
     offers: {
         getAll: () => fetchAPI('/offers', 'GET'),
         getMine: () => fetchAPI('/offers/mine', 'GET'),
@@ -137,7 +194,6 @@ const API = {
         delete: (id) => fetchAPI(`/offers/${id}`, 'DELETE'),
         respond: (id) => fetchAPI(`/offers/${id}/respond`, 'POST')
     },
-
     demands: {
         getAll: () => fetchAPI('/demands', 'GET'),
         getMine: () => fetchAPI('/demands/mine', 'GET'),
@@ -145,220 +201,127 @@ const API = {
         delete: (id) => fetchAPI(`/demands/${id}`, 'DELETE'),
         offerHelp: (id) => fetchAPI(`/demands/${id}/offer-help`, 'POST')
     },
-
-
     matieres: {
         getAll: () => fetchAPI('/matieres', 'GET')
     }
 };
 
-window.API = API;
-// Check authentication
-function checkAuth(redirectTo = 'signin.html') {
-  const isAuthenticated = localStorage.getItem('isAuthenticated');
-  if (!isAuthenticated && window.location.pathname.includes('dashboard')) {
-    window.location.href = redirectTo;
+// ============================================================
+// SCRIPT.JS — Utilitaires partagés
+// ============================================================
+const API_BASE = API_BASE_URL;
+
+function checkAuth(redirectTo) {
+  if (!redirectTo) {
+    redirectTo = window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
+  }
+  const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/;
+  if (!pub.test(window.location.pathname) && !localStorage.getItem('mentorlink_token')) {
+    window.location.replace(redirectTo);
   }
 }
-
-// Navigate to page
-function navigateTo(page) {
-  window.location.href = page;
-}
-
-// Logout
+function navigateTo(page) { window.location.href = page; }
 function logout() {
   localStorage.removeItem('isAuthenticated');
   localStorage.removeItem('userEmail');
   localStorage.removeItem('userData');
   localStorage.removeItem('onboardingCompleted');
+  localStorage.removeItem('mentorlink_token');
+  localStorage.removeItem('mentorlink_user');
   localStorage.removeItem('mentorlink_profile_cache');
-  const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
-  window.location.href = redirectPath;
+  const p = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
+  window.location.href = p;
 }
-
-// Get user data
 function getUserData() {
-  const userData = localStorage.getItem('userData');
-  return userData ? JSON.parse(userData) : null;
+  const d = localStorage.getItem('userData');
+  return d ? JSON.parse(d) : null;
 }
-
-// Save user data
-function saveUserData(data) {
-  localStorage.setItem('userData', JSON.stringify(data));
-}
-
-// Toggle password visibility
+function saveUserData(data) { localStorage.setItem('userData', JSON.stringify(data)); }
 function togglePassword(inputId) {
   const input = document.getElementById(inputId);
-  const iconHide = document.getElementById(`${inputId}-icon-hide`);
-  const iconShow = document.getElementById(`${inputId}-icon-show`);
-  
-  if (input.type === 'password') {
-    input.type = 'text';
-    iconHide.classList.add('hidden');
-    iconShow.classList.remove('hidden');
-  } else {
-    input.type = 'password';
-    iconHide.classList.remove('hidden');
-    iconShow.classList.add('hidden');
-  }
+  const hide = document.getElementById(inputId+'-icon-hide');
+  const show = document.getElementById(inputId+'-icon-show');
+  if (input.type === 'password') { input.type = 'text'; hide.classList.add('hidden'); show.classList.remove('hidden'); }
+  else { input.type = 'password'; hide.classList.remove('hidden'); show.classList.add('hidden'); }
 }
+// Legacy formatDate/formatTime (override originaux du bundle)
+function formatDate(date) { return new Date(date).toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'}); }
+function formatTime(date) { return new Date(date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
 
-// Format date
-function formatDate(date) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(date).toLocaleDateString('fr-FR', options);
-}
-
-// Format time
-function formatTime(date) {
-  const options = { hour: '2-digit', minute: '2-digit' };
-  return new Date(date).toLocaleTimeString('fr-FR', options);
-}
-// Load matieres from API and cache locally with filiere + niveau filtering
-let _matieresCache = null;
-
-const DEFAULT_MATIERES = [
-  { id: 1, nom: 'Algorithmique', filiere: 'GL', annee: 'L1' },
-  { id: 2, nom: 'Structures de données', filiere: 'GL', annee: 'L2' },
-  { id: 3, nom: 'Base de données SQL', filiere: 'GL', annee: 'L1' },
-  { id: 4, nom: 'Programmation Orientée Objet', filiere: 'GL', annee: 'L2' },
-  { id: 5, nom: 'Génie logiciel', filiere: 'GL', annee: 'L3' },
-  { id: 6, nom: 'Architecture des ordinateurs', filiere: 'GL', annee: 'L1' },
-  { id: 7, nom: 'Systèmes d\'exploitation', filiere: 'GL', annee: 'L2' },
-  { id: 8, nom: 'Web Development', filiere: 'GL', annee: 'L2' },
-  { id: 9, nom: 'Réseaux informatiques', filiere: 'RSI', annee: 'L1' },
-  { id: 10, nom: 'Sécurité des réseaux', filiere: 'RSI', annee: 'L2' },
-  { id: 11, nom: 'Télécommunications', filiere: 'RSI', annee: 'L2' },
-  { id: 12, nom: 'Administration système', filiere: 'RSI', annee: 'L3' },
-  { id: 13, nom: 'Cyberdéfense', filiere: 'Sécurité', annee: 'L3' },
-  { id: 14, nom: 'Cryptographie', filiere: 'Sécurité', annee: 'L2' },
-  { id: 15, nom: 'Sécurité des applications', filiere: 'Sécurité', annee: 'L3' },
-  { id: 16, nom: 'Audit de sécurité', filiere: 'Sécurité', annee: 'L3' },
-  { id: 17, nom: 'Intelligence artificielle', filiere: 'GL', annee: 'L3' },
-  { id: 18, nom: 'Machine Learning', filiere: 'GL', annee: 'M1' },
-  { id: 19, nom: 'Big Data', filiere: 'RSI', annee: 'M1' },
-  { id: 20, nom: 'Cloud Computing', filiere: 'GL', annee: 'M1' },
-  { id: 21, nom: 'Développement mobile', filiere: 'GL', annee: 'L3' },
-  { id: 22, nom: 'Gestion de projet informatique', filiere: 'GL', annee: 'M2' },
-  { id: 23, nom: 'Langage SQL avancé', filiere: 'RSI', annee: 'L3' },
-  { id: 24, nom: 'Administration de bases de données', filiere: 'RSI', annee: 'M1' },
-  { id: 25, nom: 'Sécurité web', filiere: 'Sécurité', annee: 'L3' },
-  { id: 26, nom: 'Ethical Hacking', filiere: 'Sécurité', annee: 'M1' }
-];
-
-async function loadMatieresFromAPI() {
-  if (_matieresCache) return _matieresCache;
-  try {
-    const data = await API.matieres.getAll();
-    const matieres = data.matieres || data;
-    if (Array.isArray(matieres) && matieres.length > 0) {
-      _matieresCache = matieres;
-      localStorage.setItem('matieres_cache', JSON.stringify(matieres));
-      return matieres;
+// Redirection si non connecté
+(function guardRoute() {
+    const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/;
+    if (!pub.test(window.location.pathname) && !localStorage.getItem('mentorlink_token')) {
+        const loginPage = window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
+        window.location.replace(loginPage);
     }
-  } catch (e) {
-    console.warn('Failed to load matieres from API:', e);
-  }
+})();
 
-  const cached = localStorage.getItem('matieres_cache');
-  if (cached) {
+function showToast(message, type) {
+    Logger._toast(message, type);
+}
+
+function formatDate(isoString) {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+// ============================================================
+// MATIERES-LOADER
+// ============================================================
+(async function loadMatieres() {
     try {
-      _matieresCache = JSON.parse(cached);
-      return _matieresCache;
-    } catch (e) {
-      console.warn('Invalid matieres cache:', e);
-    }
-  }
+        const data = await API.matieres.getAll();
+        if (data && data.matieres) {
+            window._matieresList = data.matieres;
+        }
+    } catch (_) {}
+})();
 
-  _matieresCache = DEFAULT_MATIERES;
-  return _matieresCache;
+function getMatieresList() {
+    return window._matieresList || [];
 }
 
-function getMatiersByFiliere(filiere = null) {
-  if (!_matieresCache) return [];
-  if (!filiere) return _matieresCache;
-  return _matieresCache.filter(m => {
-    const mFiliere = m.filiere || m.filiere_nom || m.departement || '';
-    return mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
-           filiere.toLowerCase().includes(mFiliere.toLowerCase());
-  });
+function getMatiereLabel(matiereId) {
+    if (!window._matieresList) return matiereId;
+    const found = window._matieresList.find(m => String(m.id) === String(matiereId));
+    return found ? found.nom : matiereId;
 }
 
-function getMatieresByFiliereAndNiveau(filiere = null, niveau = null) {
-  if (!_matieresCache) return [];
-  return _matieresCache.filter(m => {
-    if (filiere) {
-      const mFiliere = m.filiere || m.filiere_nom || m.departement || '';
-      const matchFiliere = mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
-                           filiere.toLowerCase().includes(mFiliere.toLowerCase());
-      if (!matchFiliere) return false;
-    }
-    if (niveau) {
-      const mNiveau = m.annee || m.niveau || m.annee_scolaire || '';
-      if (mNiveau.toLowerCase() !== niveau.toLowerCase()) return false;
-    }
-    return true;
-  });
-}
-
-async function initMatieresLoader() {
-  if (/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) return;
-  await loadMatieresFromAPI();
-}
-
-// Initialize on DOM ready
-if (typeof window !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', initMatieresLoader);
-}
-
-window.loadMatieresFromAPI = loadMatieresFromAPI;
-window.getMatiersByFiliere = getMatiersByFiliere;
-window.getMatieresByFiliereAndNiveau = getMatieresByFiliereAndNiveau;
-window.initMatieresLoader = initMatieresLoader;
-// Centralized notifications badge updater
-async function fetchUnreadCount() {
-  try {
-    const d = await API.notifications.getAll(true);
-    const unread = d.unread_count ?? ((d.notifications || []).filter(n => !n.is_read && !n.lu).length);
-    return unread;
-  } catch (e) {
-    console.warn('fetchUnreadCount', e);
-    return 0;
-  }
-}
-
-async function updateNotificationsBadge() {
-  const unread = await fetchUnreadCount();
-  const has = unread > 0;
-  // find all bell elements we added
-  const selectors = ['.site-bell', '.notif-bell', '.notification-btn'];
-  selectors.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      if (has) el.classList.add('has-unread'); else el.classList.remove('has-unread');
-      // update accessible label if present
-      const label = el.getAttribute('aria-label') || '';
-      el.setAttribute('aria-label', has ? `${label} — ${unread} non lue(s)` : label.replace(/ ?—.*$/, ''));
+function renderMatiereOptions(selectEl, selectedId) {
+    if (!window._matieresList) return;
+    selectEl.innerHTML = '<option value="">Sélectionnez une matière</option>';
+    window._matieresList.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.nom;
+        if (String(m.id) === String(selectedId)) opt.selected = true;
+        selectEl.appendChild(opt);
     });
-  });
 }
 
-// Polling option to keep badge updated
-let _notifInterval = null;
-function startNotificationsBadgePoll(intervalMs = 30000) {
-  updateNotificationsBadge();
-  if (_notifInterval) clearInterval(_notifInterval);
-  _notifInterval = setInterval(updateNotificationsBadge, intervalMs);
-}
-
-// Init on DOM ready
-if (typeof window !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', () => {
-    if (!/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) startNotificationsBadgePoll();
-  });
-}
-
-// expose for manual control
-window.updateNotificationsBadge = updateNotificationsBadge;
-window.startNotificationsBadgePoll = startNotificationsBadgePoll;
+// ============================================================
+// NOTIFICATIONS-BADGE
+// ============================================================
+(async function initNotificationsBadge() {
+    if (!localStorage.getItem('mentorlink_token')) return;
+    try {
+        const data = await API.notifications.getAll(true);
+        const unreadCount = (data && data.notifications) ? data.notifications.length : 0;
+        const badge = document.getElementById('notifications-badge');
+        const link = document.querySelector('a[href*="notifications"]');
+        if (badge) {
+            badge.textContent = unreadCount;
+            badge.classList.toggle('hidden', unreadCount === 0);
+        }
+        if (link && unreadCount > 0) {
+            link.innerHTML += ` <span id="notifications-badge-alt" class="bg-red-500 text-white text-xs rounded-full px-1.5">${unreadCount}</span>`;
+        }
+    } catch (_) {}
+})();

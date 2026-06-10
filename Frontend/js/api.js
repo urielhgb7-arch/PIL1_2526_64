@@ -12,6 +12,60 @@ const API_BASE_URL = (window.API_BASE_URL || (
 
 console.log('[API] Using base URL:', API_BASE_URL);
 
+async function uploadFileAPI(endpoint, method = 'POST', formData = null) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const token = localStorage.getItem('mentorlink_token');
+
+    const headers = { 'Accept': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const config = { method, headers, body: formData };
+
+    function getLoginRedirectPath() {
+        const path = window.location.pathname;
+        if (path.includes('/pages/')) {
+            return 'signin.html';
+        }
+        return 'pages/signin.html';
+    }
+
+    try {
+        const response = await fetch(url, config);
+
+        if (response.status === 401) {
+            const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            if (pub) {
+                throw new Error('Non authentifié');
+            }
+            console.warn('Session expirée. Redirection vers login.');
+            localStorage.removeItem('mentorlink_token');
+            localStorage.removeItem('mentorlink_user');
+            window.location.href = getLoginRedirectPath();
+            throw new Error('Session expirée. Veuillez vous reconnecter.');
+        }
+
+        let data;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
+
+        if (!response.ok) {
+            throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
+        }
+
+        return data;
+    } catch (error) {
+        console.error(`[API Upload Error] ${endpoint}:`, error);
+        throw error;
+    }
+}
+
 async function fetchAPI(endpoint, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${endpoint}`;
     const token = localStorage.getItem('mentorlink_token');
@@ -101,7 +155,8 @@ const API = {
         removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
         activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
         deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT'),
-        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data)
+        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data),
+        uploadAvatar: (formData) => uploadFileAPI('/profile/avatar/upload', 'POST', formData)
     },
 
     matching: {

@@ -75,6 +75,58 @@ def create_app(config_name=None):
         except Exception as db_err:
             logger.warning(f"db.create_all(): {db_err}")
 
+    # Initialisation Cloudinary
+    from app.services.cloudinary_service import init_cloudinary
+    init_cloudinary(flask_app)
+
+    # Swagger / OpenAPI
+    try:
+        from flasgger import Swagger
+        swagger_config = {
+            "headers": [],
+            "specs": [
+                {
+                    "endpoint": "apispec",
+                    "route": "/apispec.json",
+                    "rule_filter": lambda rule: rule.rule.startswith("/api/"),
+                    "model_filter": lambda tag: True,
+                }
+            ],
+            "static_url_path": "/flasgger_static",
+            "swagger_ui": True,
+            "specs_route": "/docs/",
+        }
+        Swagger(flask_app, config={
+            "title": "IFRI MentorLink API",
+            "description": "API de la plateforme de mentorat académique. Routes documentées avec Swagger.",
+            "version": "1.0.0",
+            "termsOfService": "",
+            "swagger": "2.0",
+        }, template={
+            "swagger": "2.0",
+            "info": {
+                "title": "IFRI MentorLink API",
+                "description": "Plateforme de mentorat académique — API REST complète.",
+                "version": "1.0.0",
+                "contact": {
+                    "name": "Équipe MentorLink",
+                },
+            },
+            "basePath": "/api",
+            "schemes": ["http", "https"],
+            "securityDefinitions": {
+                "Bearer": {
+                    "type": "apiKey",
+                    "name": "Authorization",
+                    "in": "header",
+                    "description": "JWT Token. Exemple: 'Bearer <token>'"
+                }
+            },
+        })
+        logger.info("Swagger UI disponible sur /docs/")
+    except ImportError:
+        logger.warning("flasgger not installed — Swagger UI disabled")
+
     # Seed matières par défaut si la table est vide (uniquement si DB existe)
     try:
         from app.models import Matiere

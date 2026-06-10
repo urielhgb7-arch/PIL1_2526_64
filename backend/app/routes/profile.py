@@ -233,7 +233,69 @@ def update_my_profile(current_user):
     return jsonify({"message": "Profil mis à jour avec succès"}), 200
 
 
-# ─── POST /api/profile/avatar ────────────────────────────────────────────────
+# ─── PUT /api/profile/avatar/upload ──────────────────────────────────────────
+@profile_bp.route("/profile/avatar/upload", methods=["POST"])
+@token_required
+def upload_avatar_file(current_user):
+    """Upload un fichier image vers Cloudinary (ou fallback base64).
+
+    Accepte multipart/form-data avec un champ 'file' (image).
+    Retourne l'URL de l'avatar (Cloudinary ou base64 si fallback).
+    ---
+    tags: [Profil]
+    consumes: [multipart/form-data]
+    parameters:
+      - in: formData
+        name: file
+        type: file
+        required: true
+        description: Fichier image (max 2 Mo)
+    responses:
+      200:
+        description: URL de l'avatar
+      400:
+        description: Fichier manquant ou invalide
+    """
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
+
+    if "file" not in request.files:
+        return jsonify({"message": "Fichier requis (champ 'file')"}), 400
+
+    file = request.files["file"]
+    if not file.filename:
+        return jsonify({"message": "Fichier vide"}), 400
+
+    file_data = file.read()
+    if len(file_data) > 2 * 1024 * 1024:
+        return jsonify({"message": "Image trop grande. Maximum 2 Mo."}), 400
+
+    from app.services.cloudinary_service import upload_avatar as cloud_upload
+    public_id = f"user_{current_user.id}"
+    url = cloud_upload(file_data, public_id=public_id)
+
+    if url:
+        profile.avatar_url = url
+    else:
+        import base64
+        b64 = base64.b64encode(file_data).decode("utf-8")
+        ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "jpg"
+        mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png", "gif": "image/gif"}.get(ext, "image/jpeg")
+        profile.avatar_url = f"data:{mime};base64,{b64}"
+
+    db.session.commit()
+
+    competences = ProfilCompetence.query.filter_by(profile_id=profile.id).all()
+    lacunes = ProfilLacune.query.filter_by(profile_id=profile.id).all()
+    return jsonify({
+        "message": "Avatar enregistré avec succès",
+        "avatar_url": profile.avatar_url,
+        "storage": "cloudinary" if url else "base64",
+    }), 200
+
+
+# ─── PUT /api/profile/avatar ────────────────────────────────────────────────
 @profile_bp.route("/profile/avatar", methods=["PUT"])
 @token_required
 def update_avatar(current_user):

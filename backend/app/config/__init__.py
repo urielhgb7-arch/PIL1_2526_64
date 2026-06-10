@@ -38,6 +38,11 @@ class Config:
     MAIL_FROM = os.environ.get("MAIL_FROM", "noreply@mentorlink.com")
     FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5500")
 
+    # Cloudinary (optionnel — si non défini, fallback stockage base64 en DB)
+    CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME", "")
+    CLOUDINARY_API_KEY = os.environ.get("CLOUDINARY_API_KEY", "")
+    CLOUDINARY_API_SECRET = os.environ.get("CLOUDINARY_API_SECRET", "")
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

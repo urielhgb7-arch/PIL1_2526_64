@@ -1171,7 +1171,8 @@
                             tagsEl.appendChild(tag);
                         });
                     }
-                    // Afficher les compétences depuis l'API
+                    try {
+                        // Afficher les compétences depuis l'API
                     const comps =
                         profile.competences || profile.competences_list || [];
                     renderTags(
@@ -1710,30 +1711,44 @@
                 btn.innerHTML = '<span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle"></span>Enregistrement...';
                 btn.disabled = true;
                 const canvas = _cropper.getCroppedCanvas({ width: 256, height: 256 });
-                const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-                displayAvatar(dataUrl, "");
-                closeCropModal();
+
+                // 1) Tente l'upload Cloudinary (multipart)
+                let savedUrl = null;
+                let storageType = "base64";
                 try {
-                    // Essaie d'abord l'endpoint dédié (plus récent)
-                    let savedUrl = null;
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.9));
+                    const formData = new FormData();
+                    formData.append("file", blob, "avatar.jpg");
+                    const res = await API.profile.uploadAvatar(formData);
+                    savedUrl = res.avatar_url || null;
+                    storageType = res.storage || "base64";
+                } catch (_) {
+                    // 2) Fallback : envoi en base64 via JSON
                     try {
-                        const result = await API.profile.updateAvatar({ avatar_url: dataUrl });
-                        savedUrl = result?.profile?.avatar_url || null;
-                    } catch (_) {
-                        // Fallback vers updateMe si l'endpoint dédié n'existe pas (backend pas à jour)
+                        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+                        const res = await API.profile.updateAvatar({ avatar_url: dataUrl });
+                        savedUrl = res?.profile?.avatar_url || dataUrl;
+                    } catch (_2) {
+                        // 3) Dernier fallback : updateMe
+                        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
                         await API.profile.updateMe({ avatar_url: dataUrl });
                         savedUrl = dataUrl;
                     }
-                    // Mise à jour du cache dashboard
+                }
+
+                displayAvatar(savedUrl || canvas.toDataURL("image/jpeg", 0.9), "");
+                closeCropModal();
+
+                if (savedUrl) {
                     try {
                         const cached = JSON.parse(localStorage.getItem("mentorlink_profile_cache") || "{}");
-                        cached.avatar_url = savedUrl || dataUrl;
+                        cached.avatar_url = savedUrl;
                         localStorage.setItem("mentorlink_profile_cache", JSON.stringify(cached));
                     } catch (_) {}
-                    showToast("Photo de profil enregistrée avec succès", "success");
-                } catch (err) {
-                    showToast("Erreur lors de l'enregistrement de la photo : " + (err.message || "réessayez"), "error");
-                    console.warn("Erreur sauvegarde avatar:", err);
+                    const label = storageType === "cloudinary" ? "☁️" : "💾";
+                    showToast(`Photo enregistrée ${label}`, "success");
+                } else {
+                    showToast("Erreur lors de l'enregistrement de la photo", "error");
                 }
                 btn.innerHTML = 'Enregistrer';
                 btn.disabled = false;
