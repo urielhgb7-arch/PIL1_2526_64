@@ -6034,3 +6034,59 @@ with app.app_context(). See the documentation for more information.
 [2026-06-09 18:36:39] INFO     [app.sockets.chat:on_join:84] Socket : user 1 a rejoint conv_1
 [2026-06-09 18:36:39] INFO     [app.sockets.chat:on_leave:162] Socket : user 1 a quitté conv_1
 [2026-06-09 18:36:39] INFO     [app.sockets.chat:on_leave:162] Socket : user 1 a quitté conv_1
+[2026-06-10 23:19:54] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:19:54] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:19:55] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:19:55] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:19:55] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:19:55] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:19:56] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:19:56] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:19:56] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:19:56] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:19:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:19:56] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:19:56] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:19:56] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:19:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:19:56] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:23:32] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:23:32] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:23:33] INFO     [app.services.cloudinary_service:<module>:16] cloudinary package not installed; avatar uploads will fall back to DB storage.
+[2026-06-10 23:23:33] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:23:33] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:23:33] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:23:33] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:23:33] INFO     [app:setup_logging:47] Logging configuré
+[2026-06-10 23:23:33] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:23:33] INFO     [app:create_app:29] Configuration: development
+[2026-06-10 23:23:33] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:23:33] WARNING  [app.services.cloudinary_service:init_cloudinary:39] Cloudinary not configured (missing: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, cloudinary package). Falling back to DB storage.
+[2026-06-10 23:23:33] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:23:33] WARNING  [app:create_app:128] flasgger not installed — Swagger UI disabled
+[2026-06-10 23:23:33] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.
+[2026-06-10 23:23:33] WARNING  [app:create_app:172] Seed matieres ignore: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information.

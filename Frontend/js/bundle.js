@@ -258,24 +258,34 @@ var DEFAULT_MATIERES = [
   { id: 6, nom: 'Architecture des ordinateurs', filiere: 'GL', annee: 'L1' },
   { id: 7, nom: "Syst\u00e8mes d'exploitation", filiere: 'GL', annee: 'L2' },
   { id: 8, nom: 'Web Development', filiere: 'GL', annee: 'L2' },
-  { id: 9, nom: 'R\u00e9seaux informatiques', filiere: 'RSI', annee: 'L1' },
-  { id: 10, nom: 'S\u00e9curit\u00e9 des r\u00e9seaux', filiere: 'RSI', annee: 'L2' },
-  { id: 11, nom: 'T\u00e9l\u00e9communications', filiere: 'RSI', annee: 'L2' },
-  { id: 12, nom: 'Administration syst\u00e8me', filiere: 'RSI', annee: 'L3' },
-  { id: 13, nom: 'Cyberd\u00e9fense', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
-  { id: 14, nom: 'Cryptographie', filiere: 'S\u00e9curit\u00e9', annee: 'L2' },
-  { id: 15, nom: 'S\u00e9curit\u00e9 des applications', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
-  { id: 16, nom: 'Audit de s\u00e9curit\u00e9', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
   { id: 17, nom: 'Intelligence artificielle', filiere: 'GL', annee: 'L3' },
   { id: 18, nom: 'Machine Learning', filiere: 'GL', annee: 'M1' },
-  { id: 19, nom: 'Big Data', filiere: 'RSI', annee: 'M1' },
   { id: 20, nom: 'Cloud Computing', filiere: 'GL', annee: 'M1' },
   { id: 21, nom: 'D\u00e9veloppement mobile', filiere: 'GL', annee: 'L3' },
   { id: 22, nom: 'Gestion de projet informatique', filiere: 'GL', annee: 'M2' },
-  { id: 23, nom: 'Langage SQL avanc\u00e9', filiere: 'RSI', annee: 'L3' },
-  { id: 24, nom: 'Administration de bases de donn\u00e9es', filiere: 'RSI', annee: 'M1' },
-  { id: 25, nom: 'S\u00e9curit\u00e9 web', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
-  { id: 26, nom: 'Ethical Hacking', filiere: 'S\u00e9curit\u00e9', annee: 'M1' }
+  // SIRI - Sciences et Ing\u00e9nierie des R\u00e9seaux
+  { id: 9, nom: 'R\u00e9seaux informatiques', filiere: 'SIRI', annee: 'L1' },
+  { id: 10, nom: 'S\u00e9curit\u00e9 des r\u00e9seaux', filiere: 'SIRI', annee: 'L2' },
+  { id: 11, nom: 'T\u00e9l\u00e9communications', filiere: 'SIRI', annee: 'L2' },
+  { id: 12, nom: 'Administration syst\u00e8me', filiere: 'SIRI', annee: 'L3' },
+  { id: 13, nom: 'Cyberd\u00e9fense', filiere: 'SIRI', annee: 'L3' },
+  { id: 14, nom: 'Cryptographie', filiere: 'SIRI', annee: 'L2' },
+  { id: 15, nom: 'S\u00e9curit\u00e9 des applications', filiere: 'SIRI', annee: 'L3' },
+  { id: 16, nom: 'Audit de s\u00e9curit\u00e9', filiere: 'SIRI', annee: 'L3' },
+  { id: 19, nom: 'Big Data', filiere: 'SIRI', annee: 'M1' },
+  { id: 23, nom: 'Langage SQL avanc\u00e9', filiere: 'SIRI', annee: 'L3' },
+  { id: 24, nom: 'Administration de bases de donn\u00e9es', filiere: 'SIRI', annee: 'M1' },
+  { id: 25, nom: 'S\u00e9curit\u00e9 web', filiere: 'SIRI', annee: 'L3' },
+  { id: 26, nom: 'Ethical Hacking', filiere: 'SIRI', annee: 'M1' },
+  // IM - Internet et Multim\u00e9dia
+  { id: 27, nom: 'Design graphique', filiere: 'IM', annee: 'L1' },
+  { id: 28, nom: 'Infographie', filiere: 'IM', annee: 'L1' },
+  { id: 29, nom: 'D\u00e9veloppement Web Frontend', filiere: 'IM', annee: 'L2' },
+  { id: 30, nom: 'Cr\u00e9ation de contenu multim\u00e9dia', filiere: 'IM', annee: 'L2' },
+  { id: 31, nom: 'Marketing digital', filiere: 'IM', annee: 'L2' },
+  { id: 32, nom: 'Animation 2D/3D', filiere: 'IM', annee: 'L3' },
+  { id: 33, nom: 'Production audiovisuelle', filiere: 'IM', annee: 'L3' },
+  { id: 34, nom: 'UI/UX Design', filiere: 'IM', annee: 'L3' },
 ];
 
 async function loadMatieresFromAPI() {
@@ -307,13 +317,19 @@ async function loadMatieresFromAPI() {
   return _matieresCache;
 }
 
+var FILIERE_ALIASES = {
+  'SIRI': ['SIRI', 'RSI', 'S\u00e9curit\u00e9', 'SECURITE'],
+  'GL': ['GL', 'GENIE_LOGICIEL', 'GENIE LOGICIEL'],
+  'IM': ['IM', 'INTERNET_MULTIMEDIA'],
+};
+
 function getMatiersByFiliere(filiere) {
   if (!_matieresCache) return [];
   if (!filiere) return _matieresCache;
+  var aliases = FILIERE_ALIASES[filiere] || [filiere];
   return _matieresCache.filter(function(m) {
     var mFiliere = m.filiere || m.filiere_nom || m.departement || '';
-    return mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
-           filiere.toLowerCase().includes(mFiliere.toLowerCase());
+    return aliases.some(function(a) { return mFiliere.toLowerCase() === a.toLowerCase(); });
   });
 }
 
