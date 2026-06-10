@@ -153,6 +153,7 @@
         } else {
           profiles = matches.map(u => ({
             id: u.student_id,
+            matiere_id: u.matiere_id,
             name: `${u.prenom} ${u.nom}`,
             level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
             department: u.filiere || '',
@@ -362,7 +363,11 @@
       if (profile && profile.id) {
         if (direction === 'right') {
           const body = { score: profile.compatibility };
-          if (demandId) body.demand_id = parseInt(demandId);
+          if (demandId) {
+            body.demand_id = parseInt(demandId);
+          } else if (profile.matiere_id) {
+            body.matiere_id = profile.matiere_id;
+          }
           API.matching.requestMatch(profile.id, body)
             .then(() => {
               if (typeof showToast === 'function') {

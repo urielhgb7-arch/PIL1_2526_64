@@ -88,9 +88,12 @@ def _make_candidate_result(candidate, candidate_user, matched_subjects, shared_s
         score=total_score
     )
 
+    matiere_id = matched_subjects[0]["matiere_id"] if matched_subjects else None
+
     return {
         "student_id":      candidate_user.id,
         "profile_id":      candidate.id,
+        "matiere_id":      matiere_id,
         "nom":             candidate.nom,
         "prenom":          candidate.prenom,
         "filiere":         candidate.filiere,
