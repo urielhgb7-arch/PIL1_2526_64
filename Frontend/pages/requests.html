@@ -1717,7 +1717,7 @@
                 }
             }
 
-            function openNewPublicationModal() {
+            async function openNewPublicationModal() {
                 document
                     .getElementById("modal-new-publication")
                     .classList.remove("hidden");
@@ -1736,7 +1736,11 @@
                 populateMatieresDropdown(selectedType);
 
                 // Render availability grid with user's saved slots pre-selected
-                renderAvailabilityGrid();
+                try {
+                    await renderAvailabilityGrid();
+                } catch (_) {
+                    // grid errors are handled internally with toasts
+                }
             }
 
             function closeNewPublicationModal() {
@@ -1794,6 +1798,7 @@
                     "pub-availability-grid",
                 );
                 const hidden = document.getElementById("pub-availability");
+                if (!container || !hidden) return;
                 container.innerHTML = "";
 
                 let savedSlots = [];
@@ -1979,10 +1984,13 @@
                                 : "Demande publiée avec succès !",
                             "success",
                         );
-                        loadMyOffers();
-                        loadAvailableOffers();
-                        loadMyDemands();
-                        loadAvailableDemands();
+                        await Promise.all([
+                            loadMyOffers(),
+                            loadAvailableOffers(),
+                            loadMyDemands(),
+                            loadAvailableDemands(),
+                            loadReceivedMatchings(),
+                        ]);
                     } catch (err) {
                         errTxt.textContent =
                             err.message || "Erreur lors de la publication.";
@@ -2022,11 +2030,12 @@
             /* ─── Init ─── */
             (async function init() {
                 await loadInitialData();
+                // Load matchings FIRST so render functions have data
+                await loadReceivedMatchings();
                 loadMyOffers();
                 loadAvailableOffers();
                 loadMyDemands();
                 loadAvailableDemands();
-                loadReceivedMatchings();
                 handleUrlParams();
 
                 // Initial format styling

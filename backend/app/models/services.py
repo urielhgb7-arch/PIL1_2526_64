@@ -38,6 +38,7 @@ class Demand(db.Model):
     creneau = db.Column(db.String(10), nullable=True)
     description = db.Column(db.Text)
     urgence = db.Column(db.String(20), default='Moyenne')
+    format_preference = db.Column(db.String(20), default='hybride')
     disponibilites = db.Column(db.JSON, default=list)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 

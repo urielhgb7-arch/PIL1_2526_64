@@ -57,6 +57,14 @@ class NotificationType(str, Enum):
     GENERAL = "general"
 
 VALID_FORMAT_PREFERENCES = {e.value for e in FormatPreference}
+FORMAT_PREFERENCE_MAP = {
+    'En ligne': 'en_ligne',
+    'en ligne': 'en_ligne',
+    'Présentiel': 'presentiel',
+    'présentiel': 'presentiel',
+    'Hybride': 'hybride',
+    'hybride': 'hybride'
+}
 VALID_NIVEAUX = {e.value for e in Niveau}
 VALID_COMPETENCE_LEVELS = {e.value for e in NiveauCompetence}
 VALID_PRIORITY_LEVELS = {e.value for e in PriorityLevel}
@@ -77,6 +85,17 @@ def is_valid_email(email: str) -> bool:
 def is_valid_format_preference(value: str) -> bool:
     """Valide format d'apprentissage"""
     return bool(value and value in VALID_FORMAT_PREFERENCES)
+
+
+def normalize_format_preference(value):
+    """Normalise les variantes (ex: 'En ligne' → 'en_ligne')"""
+    if not value:
+        return 'hybride'
+    if value in FORMAT_PREFERENCE_MAP:
+        return FORMAT_PREFERENCE_MAP[value]
+    if is_valid_format_preference(value):
+        return value
+    return None
 
 
 def is_valid_niveau(value: str) -> bool:

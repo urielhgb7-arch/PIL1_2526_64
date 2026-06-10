@@ -135,7 +135,7 @@ def on_message(data):
 
     # Notification pour le destinataire
     try:
-        from app.models.users import User
+        from app.models.user import User
         sender = db.session.get(User, user_id)
         sender_name = f"{sender.prenom} {sender.nom}" if sender else "Quelqu'un"
         other_user_id = conv.user_one_id if conv.user_two_id == user_id else conv.user_two_id

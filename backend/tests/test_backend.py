@@ -36,7 +36,7 @@ def create_profile(user, nom='Test', prenom='User', filiere='STI2D', niveau='L1'
         niveau=niveau,
         format_preference=format_preference,
         bio='Bio',
-        telephone=None
+        telephone=f'014{str(user.id).zfill(7)}'
     )
     db.session.add(profile)
     db.session.commit()

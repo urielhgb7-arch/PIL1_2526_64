@@ -16,8 +16,8 @@ def test_request_creates_conversation(client, app_context):
     db.session.commit()
 
     # Profiles
-    seeker_profile = Profile(user_id=seeker.id, nom='Seeker', prenom='One', filiere='INFO', niveau='L1')
-    helper_profile = Profile(user_id=helper.id, nom='Helper', prenom='Two', filiere='INFO', niveau='L3')
+    seeker_profile = Profile(user_id=seeker.id, nom='Seeker', prenom='One', filiere='INFO', niveau='L1', telephone=f'014{str(seeker.id).zfill(7)}')
+    helper_profile = Profile(user_id=helper.id, nom='Helper', prenom='Two', filiere='INFO', niveau='L3', telephone=f'014{str(helper.id).zfill(7)}')
     db.session.add_all([seeker_profile, helper_profile])
     db.session.commit()
 

@@ -16,7 +16,7 @@ from app.models import (
 from app.validators import (
     is_valid_competence_level,
     is_valid_day,
-    is_valid_format_preference,
+    normalize_format_preference,
     is_valid_priority_level,
     matiere_exists,
 )
@@ -211,16 +211,6 @@ def update_my_profile(current_user):
         profile.bio = data["bio"]
     if "avatar_url" in data:
         profile.avatar_url = data["avatar_url"]
-    if "telephone" in data:
-        profile.telephone = data["telephone"]
-    if "disponible" in data:
-        profile.disponible = data["disponible"]
-    if "format_preference" in data:
-        format_preference = data["format_preference"]
-        if not is_valid_format_preference(format_preference):
-            return jsonify({"message": "Format d'apprentissage invalide"}), 400
-        profile.format_preference = format_preference
-    # backend/app/routes/profile.py — dans update_my_profile()
     if "telephone" in data and data["telephone"]:
         existing = Profile.query.filter(
             Profile.telephone == data["telephone"], Profile.id != profile.id
@@ -228,6 +218,13 @@ def update_my_profile(current_user):
         if existing:
             return jsonify({"message": "Ce numéro est déjà utilisé"}), 400
         profile.telephone = data["telephone"]
+    if "disponible" in data:
+        profile.disponible = data["disponible"]
+    if "format_preference" in data:
+        format_preference = normalize_format_preference(data["format_preference"])
+        if not format_preference:
+            return jsonify({"message": "Format d'apprentissage invalide"}), 400
+        profile.format_preference = format_preference
 
     db.session.commit()
     return jsonify({"message": "Profil mis à jour avec succès"}), 200
@@ -402,6 +399,8 @@ def remove_disponibilite(current_user):
 @token_required
 def add_competence(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
     data = request.get_json()
     matiere_id = data.get("matiere_id")
 
@@ -458,6 +457,8 @@ def add_competence(current_user):
 @token_required
 def remove_competence(current_user):
     profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return jsonify({"message": "Profil introuvable"}), 404
     data = request.get_json()
     matiere_id = data.get("matiere_id")
 

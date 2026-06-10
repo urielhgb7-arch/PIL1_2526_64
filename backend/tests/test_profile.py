@@ -22,7 +22,8 @@ def test_get_my_profile(client, app_context):
     db.session.commit()
     
     profile = Profile(user_id=user.id, nom='Test', prenom='User',
-                     filiere='INFO', niveau='L1')
+                     filiere='INFO', niveau='L1',
+                     telephone=f'014{str(user.id).zfill(7)}')
     db.session.add(profile)
     db.session.commit()
     
@@ -49,7 +50,8 @@ def test_update_profile(client, app_context):
     db.session.commit()
     
     profile = Profile(user_id=user.id, nom='Test', prenom='User',
-                     filiere='INFO', niveau='L1')
+                     filiere='INFO', niveau='L1',
+                     telephone=f'014{str(user.id).zfill(7)}')
     db.session.add(profile)
     db.session.commit()
     
@@ -81,7 +83,8 @@ def test_add_competence(client, app_context):
     db.session.commit()
     
     profile = Profile(user_id=user.id, nom='Test', prenom='User',
-                     filiere='INFO', niveau='L1')
+                     filiere='INFO', niveau='L1',
+                     telephone=f'014{str(user.id).zfill(7)}')
     db.session.add(profile)
     db.session.commit()
     
@@ -112,7 +115,8 @@ def test_add_lacune(client, app_context):
     db.session.commit()
     
     profile = Profile(user_id=user.id, nom='Test', prenom='User',
-                     filiere='INFO', niveau='L1')
+                     filiere='INFO', niveau='L1',
+                     telephone=f'014{str(user.id).zfill(7)}')
     db.session.add(profile)
     db.session.commit()
     
@@ -142,7 +146,8 @@ def test_add_disponibilite(client, app_context):
     db.session.commit()
     
     profile = Profile(user_id=user.id, nom='Test', prenom='User',
-                     filiere='INFO', niveau='L1')
+                     filiere='INFO', niveau='L1',
+                     telephone=f'014{str(user.id).zfill(7)}')
     db.session.add(profile)
     db.session.commit()
     
@@ -168,7 +173,8 @@ def test_delete_lacune(client, app_context):
     db.session.commit()
 
     profile = Profile(user_id=user.id, nom='Test2', prenom='User2',
-                     filiere='INFO', niveau='L1')
+                     filiere='INFO', niveau='L1',
+                     telephone=f'014{str(user.id).zfill(7)}')
     db.session.add(profile)
     db.session.commit()
 

@@ -1669,6 +1669,8 @@
                     );
                     const btn = document.getElementById("delete-account-btn");
 
+                    if (!btn) return;
+
                     if (!password) {
                         errorEl.textContent =
                             "Veuillez saisir votre mot de passe.";

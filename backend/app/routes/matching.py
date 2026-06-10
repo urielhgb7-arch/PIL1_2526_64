@@ -5,6 +5,8 @@
 # Conforme à : IFRI_Mentorlink_Vision_du_Système_de_Matching.pdf
 # ============================================================
 
+import logging
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
@@ -13,6 +15,8 @@ from app.models.profile import Disponible
 from app.models.services import Matching, ProfilCompetence, Demand, Matiere
 from app.services.matching import calculate_matches
 from app.validators import matiere_exists
+
+logger = logging.getLogger(__name__)
 
 matching_bp = Blueprint('matching', __name__)
 

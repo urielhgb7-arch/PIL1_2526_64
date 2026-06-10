@@ -190,7 +190,9 @@ def calculate_matches_demand(current_user_id: int, demand_id: int) -> list:
         candidate_slots = {(d.jour, d.creneau) for d in candidate_dispos}
 
         shared_slots = demand_slots.intersection(candidate_slots)
-        score_dispos = _score_disponibilites(demand_slots, candidate_slots) if shared_slots else 0
+        if not shared_slots:
+            continue
+        score_dispos = _score_disponibilites(demand_slots, candidate_slots)
 
         same_niveau = demandeur_profile.niveau == candidate.niveau
         score_niveau_acad = 10 if same_niveau else 0

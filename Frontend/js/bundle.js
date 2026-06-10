@@ -116,6 +116,10 @@ const API = {
                 new_password: d.new_password || d.nouveau_mot_de_passe || d.newPassword
             };
             return fetchAPI('/auth/change-password', 'PUT', p);
+        },
+        deleteAccount: (d) => {
+            const password = typeof d === 'string' ? d : d.password;
+            return fetchAPI('/auth/delete-account', 'DELETE', { password });
         }
     },
     profile: {
@@ -240,22 +244,100 @@ function showToast(message, type) { Logger._toast(message, type); }
 // ============================================================
 // MATIERES-LOADER
 // ============================================================
-(async function loadMatieres() {
-    if (!localStorage.getItem('mentorlink_token')) return;
+var _matieresCache = null;
+
+var DEFAULT_MATIERES = [
+  { id: 1, nom: 'Algorithmique', filiere: 'GL', annee: 'L1' },
+  { id: 2, nom: 'Structures de donn\u00e9es', filiere: 'GL', annee: 'L2' },
+  { id: 3, nom: 'Base de donn\u00e9es SQL', filiere: 'GL', annee: 'L1' },
+  { id: 4, nom: 'Programmation Orient\u00e9e Objet', filiere: 'GL', annee: 'L2' },
+  { id: 5, nom: 'G\u00e9nie logiciel', filiere: 'GL', annee: 'L3' },
+  { id: 6, nom: 'Architecture des ordinateurs', filiere: 'GL', annee: 'L1' },
+  { id: 7, nom: "Syst\u00e8mes d'exploitation", filiere: 'GL', annee: 'L2' },
+  { id: 8, nom: 'Web Development', filiere: 'GL', annee: 'L2' },
+  { id: 9, nom: 'R\u00e9seaux informatiques', filiere: 'RSI', annee: 'L1' },
+  { id: 10, nom: 'S\u00e9curit\u00e9 des r\u00e9seaux', filiere: 'RSI', annee: 'L2' },
+  { id: 11, nom: 'T\u00e9l\u00e9communications', filiere: 'RSI', annee: 'L2' },
+  { id: 12, nom: 'Administration syst\u00e8me', filiere: 'RSI', annee: 'L3' },
+  { id: 13, nom: 'Cyberd\u00e9fense', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 14, nom: 'Cryptographie', filiere: 'S\u00e9curit\u00e9', annee: 'L2' },
+  { id: 15, nom: 'S\u00e9curit\u00e9 des applications', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 16, nom: 'Audit de s\u00e9curit\u00e9', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 17, nom: 'Intelligence artificielle', filiere: 'GL', annee: 'L3' },
+  { id: 18, nom: 'Machine Learning', filiere: 'GL', annee: 'M1' },
+  { id: 19, nom: 'Big Data', filiere: 'RSI', annee: 'M1' },
+  { id: 20, nom: 'Cloud Computing', filiere: 'GL', annee: 'M1' },
+  { id: 21, nom: 'D\u00e9veloppement mobile', filiere: 'GL', annee: 'L3' },
+  { id: 22, nom: 'Gestion de projet informatique', filiere: 'GL', annee: 'M2' },
+  { id: 23, nom: 'Langage SQL avanc\u00e9', filiere: 'RSI', annee: 'L3' },
+  { id: 24, nom: 'Administration de bases de donn\u00e9es', filiere: 'RSI', annee: 'M1' },
+  { id: 25, nom: 'S\u00e9curit\u00e9 web', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 26, nom: 'Ethical Hacking', filiere: 'S\u00e9curit\u00e9', annee: 'M1' }
+];
+
+async function loadMatieresFromAPI() {
+  if (_matieresCache) return _matieresCache;
+  try {
+    var data = await API.matieres.getAll();
+    var matieres = data.matieres || data;
+    if (Array.isArray(matieres) && matieres.length > 0) {
+      _matieresCache = matieres;
+      window._matieresList = matieres;
+      localStorage.setItem('matieres_cache', JSON.stringify(matieres));
+      return matieres;
+    }
+  } catch (e) {
+    console.warn('Failed to load matieres from API:', e);
+  }
+  var cached = localStorage.getItem('matieres_cache');
+  if (cached) {
     try {
-        const data = await API.matieres.getAll();
-        if (data && data.matieres) window._matieresList = data.matieres;
-    } catch (_) {}
-})();
-
-function getMatieresList() { return window._matieresList || []; }
-
-function getMatiereLabel(id) {
-    if (!window._matieresList) return id;
-    const found = window._matieresList.find(function(m) { return String(m.id) === String(id); });
-    return found ? found.nom : id;
+      _matieresCache = JSON.parse(cached);
+      window._matieresList = _matieresCache;
+      return _matieresCache;
+    } catch (e) {
+      console.warn('Invalid matieres cache:', e);
+    }
+  }
+  _matieresCache = DEFAULT_MATIERES;
+  window._matieresList = DEFAULT_MATIERES;
+  return _matieresCache;
 }
 
+function getMatiersByFiliere(filiere) {
+  if (!_matieresCache) return [];
+  if (!filiere) return _matieresCache;
+  return _matieresCache.filter(function(m) {
+    var mFiliere = m.filiere || m.filiere_nom || m.departement || '';
+    return mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
+           filiere.toLowerCase().includes(mFiliere.toLowerCase());
+  });
+}
+
+function getMatieresByFiliereAndNiveau(filiere, niveau) {
+  if (!_matieresCache) return [];
+  return _matieresCache.filter(function(m) {
+    if (filiere) {
+      var mFiliere = m.filiere || m.filiere_nom || m.departement || '';
+      var matchFiliere = mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
+                         filiere.toLowerCase().includes(mFiliere.toLowerCase());
+      if (!matchFiliere) return false;
+    }
+    if (niveau) {
+      var mNiveau = m.annee || m.niveau || m.annee_scolaire || '';
+      if (mNiveau.toLowerCase() !== niveau.toLowerCase()) return false;
+    }
+    return true;
+  });
+}
+
+// Keep existing helpers for backward compat
+function getMatieresList() { return window._matieresList || []; }
+function getMatiereLabel(id) {
+    if (!window._matieresList) return id;
+    var found = window._matieresList.find(function(m) { return String(m.id) === String(id); });
+    return found ? found.nom : id;
+}
 function renderMatiereOptions(sel, selectedId) {
     if (!window._matieresList) return;
     sel.innerHTML = '<option value="">S\u00e9lectionnez une mati\u00e8re</option>';
@@ -266,6 +348,40 @@ function renderMatiereOptions(sel, selectedId) {
         if (String(m.id) === String(selectedId)) opt.selected = true;
         sel.appendChild(opt);
     });
+}
+
+// Auto-load matieres on page load if authenticated
+(async function initMatieres() {
+    if (!localStorage.getItem('mentorlink_token')) return;
+    try { await loadMatieresFromAPI(); } catch (_) {}
+})();
+
+// ============================================================
+// NIVEAU / FILIERE LABELS
+// ============================================================
+var _NIVEAU_LABELS = {
+    L1: "Licence 1",
+    L2: "Licence 2",
+    L3: "Licence 3",
+    M1: "Master 1",
+    M2: "Master 2",
+};
+var _FILIERE_LABELS = {
+    GL: "G\u00e9nie Logiciel",
+    RSI: "R\u00e9seaux et Syst\u00e8mes d'Information",
+    SI: "Syst\u00e8mes d'Information",
+    IA: "Intelligence Artificielle",
+    IM: "Ing\u00e9nierie Math\u00e9matique",
+    SIRI: "S\u00e9curit\u00e9 Informatique",
+    SEoIT: "Software Engineering",
+};
+function niveauLabel(val) {
+    return _NIVEAU_LABELS[val] || val || "\u2014";
+}
+function filiereLabel(val, short) {
+    if (!val) return "\u2014";
+    if (short) return val;
+    return _FILIERE_LABELS[val] ? _FILIERE_LABELS[val] + " (" + val + ")" : val;
 }
 
 // ============================================================

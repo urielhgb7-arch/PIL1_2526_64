@@ -112,7 +112,6 @@ def register():
                     }
                 ),
                 400,
-                400,
             )
 
         # backend/app/routes/auth.py — dans register()
