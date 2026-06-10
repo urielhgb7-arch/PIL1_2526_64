@@ -5,22 +5,14 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
-from app.models import Profile
+from app.models import Profile, Notification
 from app.models.services import Matching, Offer, Demand, ProfilLacune, ProfilCompetence
 from app.middleware.auth_guard import token_required
-from app.validators import is_valid_format_preference, matiere_exists, is_valid_day, is_valid_creneau, VALID_DAYS
+from app.validators import normalize_format_preference, matiere_exists, is_valid_day, is_valid_creneau, VALID_DAYS
 
 logger = logging.getLogger(__name__)
 offers_bp = Blueprint('offers', __name__)
 
-FORMAT_PREFERENCE_MAP = {
-    'En ligne': 'en_ligne',
-    'en ligne': 'en_ligne',
-    'Présentiel': 'presentiel',
-    'présentiel': 'presentiel',
-    'Hybride': 'hybride',
-    'hybride': 'hybride'
-}
 VALID_URGENCIES = {'Légère', 'Moyenne', 'Haute', 'Urgente'}
 DAY_INDEX_TO_NAME = {
     0: 'Lundi',
@@ -62,16 +54,6 @@ def _parse_iso_slot(slot_iso):
     return jour, creneau
 
 
-def _normalize_format_preference(value):
-    if not value:
-        return 'hybride'
-    if value in FORMAT_PREFERENCE_MAP:
-        return FORMAT_PREFERENCE_MAP[value]
-    if is_valid_format_preference(value):
-        return value
-    return None
-
-
 def _notify_user(user_id, data):
     try:
         from app.sockets.chat import socketio
@@ -92,8 +74,11 @@ def _get_profile_or_404(user_id: int):
 @offers_bp.route('/offers', methods=['POST'])
 @token_required
 def create_offer(current_user):
-    data = request.get_json(force=True, silent=True) or {}
-    
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+    except Exception as e:
+        return jsonify({"message": "Erreur de lecture des données", "error": str(e)}), 400
+
     matiere_id = data.get('matiere_id')
     description = data.get('description', '')
     jour = data.get('jour')
@@ -115,11 +100,11 @@ def create_offer(current_user):
         for slot in disponibilites:
             slot_jour, slot_creneau = _parse_iso_slot(slot)
             if not slot_jour or not slot_creneau:
-                return jsonify({"message": "disponibilite invalide"}), 400
+                return jsonify({"message": f"Créneau invalide: {slot}"}), 400
             if not is_valid_day(slot_jour):
-                return jsonify({"message": "jour invalide"}), 400
+                return jsonify({"message": f"Jour invalide: {slot_jour}"}), 400
             if not is_valid_creneau(slot_creneau):
-                return jsonify({"message": "creneau invalide"}), 400
+                return jsonify({"message": f"Créneau horaire invalide: {slot_creneau}"}), 400
             all_slots.append({"jour": slot_jour, "creneau": slot_creneau})
     else:
         if jour and not is_valid_day(jour):
@@ -129,7 +114,8 @@ def create_offer(current_user):
         if jour and creneau:
             all_slots.append({"jour": jour, "creneau": creneau})
 
-    if not is_valid_format_preference(format_preference):
+    format_preference = normalize_format_preference(format_preference)
+    if not format_preference:
         return jsonify({"message": "format invalide"}), 400
 
     profile, error_response, error_status = _get_profile_or_404(current_user.id)
@@ -138,17 +124,23 @@ def create_offer(current_user):
 
     first_slot = all_slots[0] if all_slots else {}
 
-    offer = Offer(
-        profile_id=profile.id,
-        matiere_id=matiere_id,
-        description=description,
-        jour=first_slot.get('jour'),
-        creneau=first_slot.get('creneau'),
-        format_preference=format_preference,
-        disponibilites=all_slots
-    )
-    db.session.add(offer)
-    db.session.commit()
+    try:
+        offer = Offer(
+            profile_id=profile.id,
+            matiere_id=matiere_id,
+            description=description,
+            jour=first_slot.get('jour'),
+            creneau=first_slot.get('creneau'),
+            format_preference=format_preference,
+            disponibilites=all_slots
+        )
+        db.session.add(offer)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Erreur création offre: {e}", exc_info=True)
+        return jsonify({"message": f"Erreur lors de l'enregistrement: {str(e)}"}), 500
+
     logger.info(f"Offre créée: profile_id={profile.id} matiere_id={matiere_id}")
     return jsonify({"message": "Offre créée avec succès", "id": offer.id}), 201
 
@@ -178,7 +170,7 @@ def get_offers():
         profile = Profile.query.get(o.profile_id)
         publicateur = None
         if profile:
-            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom}
+            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom, "telephone": profile.telephone, "avatar_url": profile.avatar_url, "filiere": profile.filiere, "niveau": profile.niveau}
         result.append({
             "id": o.id,
             "profile_id": o.profile_id,
@@ -188,6 +180,7 @@ def get_offers():
             "jour": o.jour,
             "creneau": o.creneau,
             "format_preference": o.format_preference,
+            "disponibilites": o.disponibilites,
             "created_at": o.created_at.isoformat() if o.created_at else None,
             "publicateur": publicateur
         })
@@ -220,6 +213,7 @@ def get_my_offers(current_user):
             "jour": o.jour,
             "creneau": o.creneau,
             "format_preference": o.format_preference,
+            "disponibilites": o.disponibilites,
             "created_at": o.created_at.isoformat() if o.created_at else None
         })
     return jsonify({
@@ -251,6 +245,8 @@ def get_my_demands(current_user):
             "creneau": d.creneau,
             "description": d.description,
             "urgence": d.urgence or 'Moyenne',
+            "format_preference": d.format_preference or 'hybride',
+            "disponibilites": d.disponibilites,
             "created_at": d.created_at.isoformat() if d.created_at else None
         })
     return jsonify({
@@ -287,20 +283,24 @@ def delete_offer(current_user, offer_id):
 @offers_bp.route('/demands', methods=['POST'])
 @token_required
 def create_demand(current_user):
-    data = request.get_json(force=True, silent=True) or {}
+    try:
+        data = request.get_json(force=True, silent=True) or {}
+    except Exception as e:
+        return jsonify({"message": "Erreur de lecture des données", "error": str(e)}), 400
+
     matiere_id = data.get('matiere_id')
     jour = data.get('jour')
     creneau = data.get('creneau')
     description = data.get('description', '')
-    disponibilite = data.get('disponibilite') or data.get('disponibilites')
+    disponibilite = data.get('disponibilites') or data.get('disponibilite')
     urgence = data.get('urgence')
-    format_pref = data.get('format')
+    format_pref = data.get('format_preference') or data.get('format')
 
     if not matiere_id:
         return jsonify({"message": "matiere_id requis"}), 400
 
-    if not disponibilite and (not jour or not creneau):
-        return jsonify({"message": "jour et creneau requis"}), 400
+    if not disponibilite and not (jour and creneau):
+        return jsonify({"message": "Créneau requis : fournissez disponibilites ou jour+creneau"}), 400
 
     if disponibilite:
         if not isinstance(disponibilite, list) or len(disponibilite) == 0:
@@ -310,7 +310,7 @@ def create_demand(current_user):
         return jsonify({"message": "Matière introuvable"}), 404
 
     if format_pref:
-        format_pref = _normalize_format_preference(format_pref)
+        format_pref = normalize_format_preference(format_pref)
         if not format_pref:
             return jsonify({"message": "format invalide"}), 400
 
@@ -323,16 +323,14 @@ def create_demand(current_user):
 
     all_slots = []
     if disponibilite:
-        if not isinstance(disponibilite, list) or len(disponibilite) == 0:
-            return jsonify({"message": "disponibilite doit être une liste non vide"}), 400
         for slot_iso in disponibilite:
             slot_jour, slot_creneau = _parse_iso_slot(slot_iso)
             if not slot_jour or not slot_creneau:
-                return jsonify({"message": "disponibilite invalide"}), 400
+                return jsonify({"message": f"Créneau invalide: {slot_iso}"}), 400
             if not is_valid_day(slot_jour):
-                return jsonify({"message": "jour invalide"}), 400
+                return jsonify({"message": f"Jour invalide: {slot_jour}"}), 400
             if not is_valid_creneau(slot_creneau):
-                return jsonify({"message": "creneau invalide"}), 400
+                return jsonify({"message": f"Créneau horaire invalide: {slot_creneau}"}), 400
             all_slots.append({"jour": slot_jour, "creneau": slot_creneau})
     else:
         if jour and not is_valid_day(jour):
@@ -344,17 +342,24 @@ def create_demand(current_user):
 
     first_slot = all_slots[0] if all_slots else {}
 
-    demand = Demand(
-        profile_id=profile.id,
-        matiere_id=matiere_id,
-        jour=first_slot.get('jour'),
-        creneau=first_slot.get('creneau'),
-        description=description,
-        urgence=urgence or 'Moyenne',
-        disponibilites=all_slots
-    )
-    db.session.add(demand)
-    db.session.commit()
+    try:
+        demand = Demand(
+            profile_id=profile.id,
+            matiere_id=matiere_id,
+            jour=first_slot.get('jour'),
+            creneau=first_slot.get('creneau'),
+            description=description,
+            urgence=urgence or 'Moyenne',
+            format_preference=format_pref or 'hybride',
+            disponibilites=all_slots
+        )
+        db.session.add(demand)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Erreur création demande: {e}", exc_info=True)
+        return jsonify({"message": f"Erreur lors de l'enregistrement: {str(e)}"}), 500
+
     logger.info(f"Demande créée: profile_id={profile.id} matiere_id={matiere_id} id={demand.id}")
     return jsonify({"message": "Demande créée avec succès", "id": demand.id}), 201
 
@@ -370,7 +375,7 @@ def get_demands():
         profile = Profile.query.get(d.profile_id)
         publicateur = None
         if profile:
-            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom}
+            publicateur = {"user_id": profile.user_id, "nom": profile.nom, "prenom": profile.prenom, "telephone": profile.telephone, "avatar_url": profile.avatar_url, "filiere": profile.filiere, "niveau": profile.niveau}
         result.append({
             "id": d.id,
             "profile_id": d.profile_id,
@@ -380,6 +385,8 @@ def get_demands():
             "creneau": d.creneau,
             "description": d.description,
             "urgence": d.urgence or 'Moyenne',
+            "format_preference": d.format_preference or 'hybride',
+            "disponibilites": d.disponibilites,
             "created_at": d.created_at.isoformat(),
             "publicateur": publicateur
         })
@@ -458,6 +465,16 @@ def respond_to_offer(current_user, offer_id):
         status='pending'
     )
     db.session.add(new_match)
+    db.session.flush()
+
+    current_user_profile = Profile.query.filter_by(user_id=current_user.id).first()
+    notif = Notification(
+        user_id=offrant_user_id,
+        titre="Nouvelle réponse à votre offre",
+        contenu=f"{current_user_profile.prenom} {current_user_profile.nom} a répondu à votre offre de mentorat.",
+        type='matching'
+    )
+    db.session.add(notif)
     db.session.commit()
 
     _notify_user(offrant_user_id, {
@@ -519,6 +536,16 @@ def offer_help_on_demand(current_user, demand_id):
             status='pending'
         )
         db.session.add(new_match)
+        db.session.flush()
+
+        current_user_profile = Profile.query.filter_by(user_id=current_user.id).first()
+        notif = Notification(
+            user_id=demandeur_profile.user_id,
+            titre="Nouvelle proposition d'aide",
+            contenu=f"{current_user_profile.prenom} {current_user_profile.nom} propose son aide sur votre demande.",
+            type='matching'
+        )
+        db.session.add(notif)
         db.session.commit()
 
         _notify_user(demandeur_profile.user_id, {

@@ -76,9 +76,9 @@
             <select id="department" required name="department" title="Département"
               class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
               <option value="">Sélectionnez votre département</option>
-              <option value="GL">GL</option>
-              <option value="RSI">RSI</option>
-              <option value="Sécurité">Sécurité</option>
+              <option value="GL">GL(Génie Logiciel)</option>
+              <option value="SIRI">SIRI(Sciences et Ingénierie des Réseaux)</option>
+              <option value="IM">IM(Internet et Multimédia)</option>
             </select>
           </div>
           <div>
@@ -650,6 +650,13 @@
         const stored = getUserData() || {};
         saveUserData({ ...stored, availability: userData.availability });
         localStorage.setItem('onboardingCompleted', 'true');
+
+        // Prépare le cache dashboard
+        try {
+          const profData = await API.profile.getMe();
+          const prof = profData.profile || profData;
+          localStorage.setItem('mentorlink_profile_cache', JSON.stringify(prof));
+        } catch (_) {}
 
         setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
 

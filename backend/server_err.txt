@@ -1,0 +1,13 @@
+C:\Users\uriel\AppData\Local\Programs\Python\Python313\Lib\site-packages\engineio\async_drivers\eventlet.py:1: EventletDeprecationWarning: 
+Eventlet is deprecated. It is currently being maintained in bugfix mode, and
+we strongly recommend against using it for new projects.
+
+If you are already using Eventlet, we recommend migrating to a different
+framework.  For more detail see
+https://eventlet.readthedocs.io/en/latest/asyncio/migration.html
+
+  from eventlet.green.threading import Event
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> bb61556b3a65, initial
+INFO  [alembic.runtime.migration] Running upgrade bb61556b3a65 -> ee58746572c1, add disponibilites format_preference

@@ -3,6 +3,7 @@
 -- ============================================================================
 
 -- Suppression ordonnée des tables si elles existent (pour les réinitialisations de test)
+DROP TABLE IF EXISTS password_reset_tokens CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS conversations CASCADE;
@@ -37,7 +38,7 @@ CREATE TABLE profiles (
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     filiere VARCHAR(50) NOT NULL CHECK (filiere IN ('GL', 'SIRI', 'IM')),
-    niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3', 'M1', 'M2')),
+    niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3')),
     format_preference VARCHAR(20) NOT NULL DEFAULT 'hybride' CHECK (format_preference IN ('presentiel', 'en_ligne', 'hybride')),
     bio TEXT,
     telephone VARCHAR(20) UNIQUE NOT NULL,
@@ -71,7 +72,7 @@ CREATE TABLE matieres (
     id SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     filiere VARCHAR(50) NOT NULL CHECK (filiere IN ('GL', 'SIRI', 'IM')),
-    annee VARCHAR(10) NOT NULL CHECK (annee IN ('L1', 'L2', 'L3', 'M1', 'M2'))
+    annee VARCHAR(10) NOT NULL CHECK (annee IN ('L1', 'L2', 'L3'))
 );
 -- ----------------------------------------------------------------------------
 -- 5. PROFILING & CRITÈRES DE MATCHING (Compétences vs Lacunes)
@@ -161,7 +162,17 @@ CREATE TABLE notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- ----------------------------------------------------------------------------
+-- 10. RÉINITIALISATION DE MOT DE PASSE (Tokens sécurisés)
+-- ----------------------------------------------------------------------------
+CREATE TABLE password_reset_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL
+);
 
 -- Injection des matières officielles de l'IFRI
 -- ============================================================

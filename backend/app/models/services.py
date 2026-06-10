@@ -26,7 +26,7 @@ class Offer(db.Model):
     creneau = db.Column(db.String(10), nullable=True)
     format_preference = db.Column(db.String(20), default='hybride')
     disponibilites = db.Column(db.JSON, default=list)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     matiere = db.relationship('Matiere', back_populates='offers')
 
 class Demand(db.Model):
@@ -38,8 +38,9 @@ class Demand(db.Model):
     creneau = db.Column(db.String(10), nullable=True)
     description = db.Column(db.Text)
     urgence = db.Column(db.String(20), default='Moyenne')
+    format_preference = db.Column(db.String(20), default='hybride')
     disponibilites = db.Column(db.JSON, default=list)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', back_populates='demands')
 
@@ -75,7 +76,7 @@ class Matching(db.Model):
     matiere_id   = db.Column(db.Integer, db.ForeignKey('matieres.id'), nullable=False)
     status       = db.Column(db.String(20), nullable=False, default='pending')         # pending/accepted/rejected
     score        = db.Column(db.Float, nullable=False)
-    created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at   = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     matiere = db.relationship('Matiere', foreign_keys=[matiere_id])
     demand = db.relationship('Demand', foreign_keys=[demand_id])
@@ -84,18 +85,3 @@ class Matching(db.Model):
         db.UniqueConstraint('user_one_id', 'user_two_id', 'demand_id', name='unique_match'),
     )
 
-
-class Feedback(db.Model):
-    __tablename__ = 'feedbacks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    from_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    to_user_id   = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    matching_id  = db.Column(db.Integer, db.ForeignKey('matching.id'), nullable=False)
-    note         = db.Column(db.Integer, nullable=False)  # 1-5
-    commentaire  = db.Column(db.Text)
-    created_at   = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-
-    __table_args__ = (
-        db.UniqueConstraint('from_user_id', 'matching_id', name='unique_feedback'),
-    )

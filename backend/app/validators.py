@@ -7,6 +7,7 @@ from app.models.services import Matiere
 
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+BENIN_PHONE_RE = re.compile(r"^01[4569]\d{7}$")
 
 # ─── ENUMS VALIDATION ────────────────────────────────────────────────────────
 class FormatPreference(str, Enum):
@@ -56,6 +57,14 @@ class NotificationType(str, Enum):
     GENERAL = "general"
 
 VALID_FORMAT_PREFERENCES = {e.value for e in FormatPreference}
+FORMAT_PREFERENCE_MAP = {
+    'En ligne': 'en_ligne',
+    'en ligne': 'en_ligne',
+    'Présentiel': 'presentiel',
+    'présentiel': 'presentiel',
+    'Hybride': 'hybride',
+    'hybride': 'hybride'
+}
 VALID_NIVEAUX = {e.value for e in Niveau}
 VALID_COMPETENCE_LEVELS = {e.value for e in NiveauCompetence}
 VALID_PRIORITY_LEVELS = {e.value for e in PriorityLevel}
@@ -76,6 +85,17 @@ def is_valid_email(email: str) -> bool:
 def is_valid_format_preference(value: str) -> bool:
     """Valide format d'apprentissage"""
     return bool(value and value in VALID_FORMAT_PREFERENCES)
+
+
+def normalize_format_preference(value):
+    """Normalise les variantes (ex: 'En ligne' → 'en_ligne')"""
+    if not value:
+        return 'hybride'
+    if value in FORMAT_PREFERENCE_MAP:
+        return FORMAT_PREFERENCE_MAP[value]
+    if is_valid_format_preference(value):
+        return value
+    return None
 
 
 def is_valid_niveau(value: str) -> bool:
@@ -106,6 +126,11 @@ def is_valid_day(value: str) -> bool:
 def is_valid_notification_type(value: str) -> bool:
     """Valide type de notification"""
     return bool(value and value in VALID_NOTIFICATION_TYPES)
+
+
+def is_valid_benin_phone(value: str) -> bool:
+    """Valide un numéro béninois format 01[4569] + 7 chiffres (10 total)"""
+    return bool(value and BENIN_PHONE_RE.match(value))
 
 
 def require_fields(data: dict, fields: list) -> list:

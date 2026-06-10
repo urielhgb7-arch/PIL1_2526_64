@@ -1,713 +1,1525 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Publications - IFRI MentorLink</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link rel="stylesheet" href="../css/styles.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            background: '#08090C',
-            foreground: '#FFFFFF',
-            card: '#0F111A',
-            popover: '#1F2433',
-            primary: '#7C6FF7',
-            success: '#2DD4A0',
-            warning: '#F5A623',
-            destructive: '#F97066',
-            border: 'rgba(255, 255, 255, 0.08)',
-            input: '#1F2433',
-            muted: 'rgba(255, 255, 255, 0.6)',
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="bg-background text-foreground">
-
-  <!-- ═══════════════ DESKTOP SIDEBAR ═══════════════ -->
-  <div class="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex-col">
-    <div class="p-6 border-b border-border">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-          <span class="text-sm font-bold text-primary">ML</span>
-        </div>
-        <h1 class="text-xl font-bold"><span class="text-primary">IFRI</span> MentorLink</h1>
-      </div>
-    </div>
-    <nav class="flex-1 p-4 space-y-2">
-      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a href="matching.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
-        </svg>
-        <span>Matchs</span>
-      </a>
-      <a href="messages.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        <span>Messages</span>
-      </a>
-      <a href="requests.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span>Publications</span>
-      </a>
-      <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        <span>Paramètres</span>
-      </a>
-    </nav>
-    <div class="p-4 border-t border-border">
-      <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        <span>Déconnexion</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
-  <div class="lg:ml-64 pb-24 lg:pb-8">
-
-    <!-- Top Bar -->
-    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
-      <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold">Publications</h1>
-        <div class="flex items-center gap-3">
-          <a href="notifications.html" class="site-bell" aria-label="Notifications">
-            <span class="ti ti-bell"></span>
-            <span class="dot" id="siteBellDot"></span>
-          </a>
-          <button onclick="openNewPublicationModal()"
-            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            Nouvelle publication
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="p-4 lg:p-8 space-y-8">
-
-      <!-- Toast -->
-      <div id="toast" class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"></div>
-
-      <!-- Tabs: Offres | Demandes -->
-      <div class="flex gap-1 bg-card border border-border rounded-xl p-1 w-fit">
-        <button id="tab-offers" onclick="switchTab('offers')"
-          class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-white">
-          Offres
-        </button>
-        <button id="tab-demands" onclick="switchTab('demands')"
-          class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors text-muted hover:text-white">
-          Demandes
-        </button>
-      </div>
-
-      <!-- ═══════════════ OFFERS TAB ═══════════════ -->
-      <div id="section-offers">
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <!-- My Offers -->
-          <div class="bg-card border border-border rounded-xl p-5">
-            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              Mes offres
-            </h2>
-            <div id="my-offers-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
-              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-              Chargement…
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Publications - IFRI MentorLink</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+        />
+        <link rel="stylesheet" href="../css/styles.css" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            background: "#08090C",
+                            foreground: "#FFFFFF",
+                            card: "#0F111A",
+                            popover: "#1F2433",
+                            primary: "#7C6FF7",
+                            success: "#2DD4A0",
+                            warning: "#F5A623",
+                            destructive: "#F97066",
+                            border: "rgba(255, 255, 255, 0.08)",
+                            input: "#1F2433",
+                            muted: "rgba(255, 255, 255, 0.6)",
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-background text-foreground">
+        <!-- ═══════════════ DESKTOP SIDEBAR ═══════════════ -->
+        <div
+            class="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex-col"
+        >
+            <div class="p-6 border-b border-border">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center"
+                    >
+                        <span class="text-sm font-bold text-primary">ML</span>
+                    </div>
+                    <h1 class="text-xl font-bold">
+                        <span class="text-primary">IFRI</span> MentorLink
+                    </h1>
+                </div>
             </div>
-            <div id="my-offers-empty" class="hidden flex-col items-center py-10 text-center">
-              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
-                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-              </div>
-              <p class="text-muted text-sm">Vous n'avez pas encore publié d'offre.</p>
-              <button onclick="openNewPublicationModal()" class="mt-3 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors">Publier une offre</button>
+            <nav class="flex-1 p-4 space-y-2">
+                <a
+                    href="dashboard.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a
+                    href="matching.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"
+                        />
+                    </svg>
+                    <span>Matchs</span>
+                </a>
+                <a
+                    href="messages.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                    </svg>
+                    <span>Messages</span>
+                </a>
+                <a
+                    href="requests.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                    </svg>
+                    <span>Publications</span>
+                </a>
+                <a
+                    href="settings.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    <span>Paramètres</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-border">
+                <button
+                    onclick="logout()"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                    </svg>
+                    <span>Déconnexion</span>
+                </button>
             </div>
-            <div id="my-offers-list" class="hidden space-y-3"></div>
-          </div>
+        </div>
 
-          <!-- Available Offers -->
-          <div class="bg-card border border-border rounded-xl p-5">
-            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              Offres disponibles
-              <span id="available-offers-count" class="ml-1 text-xs text-muted font-normal"></span>
-            </h2>
-            <p class="text-xs text-muted mb-4">Offres publiées par d'autres étudiants, filtrées selon vos lacunes.</p>
-            <div id="available-offers-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
-              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-              Chargement…
+        <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+        <div class="lg:ml-64 pb-24 lg:pb-8">
+            <!-- Top Bar -->
+            <div
+                class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4"
+            >
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl font-bold">Publications</h1>
+                    <div class="flex items-center gap-3">
+                        <a
+                            href="notifications.html"
+                            class="site-bell"
+                            aria-label="Notifications"
+                        >
+                            <span class="ti ti-bell"></span>
+                            <span class="dot" id="siteBellDot"></span>
+                        </a>
+                        <button
+                            onclick="openNewPublicationModal()"
+                            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
+                        >
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 4v16m8-8H4"
+                                />
+                            </svg>
+                            Nouvelle publication
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div id="available-offers-empty" class="hidden flex-col items-center py-10 text-center">
-              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
-                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-              </div>
-              <p class="text-muted text-sm">Aucune offre disponible pour vos lacunes.</p>
-              <p class="text-xs text-muted mt-1">Ajoutez des lacunes dans votre profil pour voir les offres correspondantes.</p>
+
+            <div class="p-4 lg:p-8 space-y-8">
+                <!-- Toast -->
+                <div
+                    id="toast"
+                    class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"
+                ></div>
+
+                <!-- Tabs: Offres | Demandes -->
+                <div
+                    class="flex gap-1 bg-card border border-border rounded-xl p-1 w-fit"
+                >
+                    <button
+                        id="tab-offers"
+                        onclick="switchTab('offers')"
+                        class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-white"
+                    >
+                        Offres
+                    </button>
+                    <button
+                        id="tab-demands"
+                        onclick="switchTab('demands')"
+                        class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors text-muted hover:text-white"
+                    >
+                        Demandes
+                    </button>
+                </div>
+
+                <!-- ═══════════════ RECEIVED REQUESTS ═══════════════ -->
+                <div id="section-received-requests" class="hidden">
+                    <div class="bg-card border border-border rounded-xl p-5">
+                        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            Demandes reçues
+                            <span id="received-requests-count" class="ml-1 text-xs text-muted font-normal"></span>
+                        </h2>
+                        <div id="received-requests-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
+                            <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                            Chargement…
+                        </div>
+                        <div id="received-requests-empty" class="hidden flex-col items-center py-10 text-center">
+                            <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <p class="text-muted text-sm">Aucune demande reçue pour le moment.</p>
+                        </div>
+                        <div id="received-requests-list" class="hidden space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════ OFFERS TAB ═══════════════ -->
+                <div id="section-offers">
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                        <!-- My Offers -->
+                        <div
+                            class="bg-card border border-border rounded-xl p-5"
+                        >
+                            <h2
+                                class="text-lg font-semibold mb-4 flex items-center gap-2"
+                            >
+                                <svg
+                                    class="w-5 h-5 text-primary"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                                Mes offres
+                            </h2>
+                            <div
+                                id="my-offers-loading"
+                                class="flex items-center gap-3 py-8 text-muted text-sm"
+                            >
+                                <div
+                                    class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"
+                                ></div>
+                                Chargement…
+                            </div>
+                            <div
+                                id="my-offers-empty"
+                                class="hidden flex-col items-center py-10 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-muted"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                        />
+                                    </svg>
+                                </div>
+                                <p class="text-muted text-sm">
+                                    Vous n'avez pas encore publié d'offre.
+                                </p>
+                                <button
+                                    onclick="openNewPublicationModal()"
+                                    class="mt-3 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors"
+                                >
+                                    Publier une offre
+                                </button>
+                            </div>
+                            <div
+                                id="my-offers-list"
+                                class="hidden space-y-3 max-h-[32rem] overflow-y-auto pr-1"
+                            ></div>
+                        </div>
+
+                        <!-- Available Offers -->
+                        <div
+                            class="bg-card border border-border rounded-xl p-5"
+                        >
+                            <h2
+                                class="text-lg font-semibold mb-4 flex items-center gap-2"
+                            >
+                                <svg
+                                    class="w-5 h-5 text-success"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+                                </svg>
+                                Offres disponibles
+                                <span
+                                    id="available-offers-count"
+                                    class="ml-1 text-xs text-muted font-normal"
+                                ></span>
+                            </h2>
+                            <p class="text-xs text-muted mb-4">
+                                Offres publiées par d'autres étudiants, filtrées
+                                selon vos lacunes.
+                            </p>
+                            <div
+                                id="available-offers-loading"
+                                class="flex items-center gap-3 py-8 text-muted text-sm"
+                            >
+                                <div
+                                    class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"
+                                ></div>
+                                Chargement…
+                            </div>
+                            <div
+                                id="available-offers-empty"
+                                class="hidden flex-col items-center py-10 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-muted"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                                        />
+                                    </svg>
+                                </div>
+                                <p class="text-muted text-sm">
+                                    Aucune offre disponible pour vos lacunes.
+                                </p>
+                                <p class="text-xs text-muted mt-1">
+                                    Ajoutez des lacunes dans votre profil pour
+                                    voir les offres correspondantes.
+                                </p>
+                            </div>
+                            <div
+                                id="available-offers-list"
+                                class="hidden space-y-3 max-h-[40rem] overflow-y-auto pr-1"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════ DEMANDS TAB ═══════════════ -->
+                <div id="section-demands" class="hidden">
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                        <!-- My Demands (sent match requests) -->
+                        <div
+                            class="bg-card border border-border rounded-xl p-5"
+                        >
+                            <h2
+                                class="text-lg font-semibold mb-4 flex items-center gap-2"
+                            >
+                                <svg
+                                    class="w-5 h-5 text-warning"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                                    />
+                                </svg>
+                                Mes demandes
+                            </h2>
+                            <div
+                                id="my-demands-loading"
+                                class="flex items-center gap-3 py-8 text-muted text-sm"
+                            >
+                                <div
+                                    class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"
+                                ></div>
+                                Chargement…
+                            </div>
+                            <div
+                                id="my-demands-empty"
+                                class="hidden flex-col items-center py-10 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-muted"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                        />
+                                    </svg>
+                                </div>
+                                <p class="text-muted text-sm">
+                                    Aucune demande envoyée.
+                                </p>
+                                <p class="text-xs text-muted mt-1">
+                                    Explorez les offres disponibles ou les
+                                    demandes à aider.
+                                </p>
+                            </div>
+                            <div
+                                id="my-demands-list"
+                                class="hidden space-y-3 max-h-[32rem] overflow-y-auto pr-1"
+                            ></div>
+                        </div>
+
+                        <!-- Demands to help (others' demands filtered by my competences) -->
+                        <div
+                            class="bg-card border border-border rounded-xl p-5"
+                        >
+                            <h2
+                                class="text-lg font-semibold mb-4 flex items-center gap-2"
+                            >
+                                <svg
+                                    class="w-5 h-5 text-primary"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                </svg>
+                                Demandes à aider
+                                <span
+                                    id="available-demands-count"
+                                    class="ml-1 text-xs text-muted font-normal"
+                                ></span>
+                            </h2>
+                            <p class="text-xs text-muted mb-4">
+                                Demandes d'étudiants qui ont besoin d'aide,
+                                filtrées selon vos compétences.
+                            </p>
+                            <div
+                                id="available-demands-loading"
+                                class="flex items-center gap-3 py-8 text-muted text-sm"
+                            >
+                                <div
+                                    class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"
+                                ></div>
+                                Chargement…
+                            </div>
+                            <div
+                                id="available-demands-empty"
+                                class="hidden flex-col items-center py-10 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-muted"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                    </svg>
+                                </div>
+                                <p class="text-muted text-sm">
+                                    Aucune demande d'aide disponible.
+                                </p>
+                                <p class="text-xs text-muted mt-1">
+                                    Ajoutez des compétences dans votre profil
+                                    pour voir les demandes correspondantes.
+                                </p>
+                            </div>
+                            <div
+                                id="available-demands-list"
+                                class="hidden space-y-3 max-h-[40rem] overflow-y-auto pr-1"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="available-offers-list" class="hidden space-y-3"></div>
-          </div>
         </div>
-      </div>
 
-      <!-- ═══════════════ DEMANDS TAB ═══════════════ -->
-      <div id="section-demands" class="hidden">
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <!-- My Demands (sent match requests) -->
-          <div class="bg-card border border-border rounded-xl p-5">
-            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-              Mes demandes
-            </h2>
-            <div id="my-demands-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
-              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-              Chargement…
+        <!-- ═══════════════ MOBILE BOTTOM NAV ═══════════════ -->
+        <div
+            class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50"
+        >
+            <div class="flex items-center justify-around p-2">
+                <a
+                    href="dashboard.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
+                    </svg>
+                    <span class="text-xs">Dashboard</span>
+                </a>
+                <a
+                    href="matching.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"
+                        />
+                    </svg>
+                    <span class="text-xs">Matchs</span>
+                </a>
+                <a
+                    href="messages.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                    </svg>
+                    <span class="text-xs">Messages</span>
+                </a>
+                <a
+                    href="requests.html"
+                    class="flex flex-col items-center gap-1 p-2 text-primary"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                    </svg>
+                    <span class="text-xs">Publications</span>
+                </a>
+                <a
+                    href="settings.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    <span class="text-xs">Paramètres</span>
+                </a>
             </div>
-            <div id="my-demands-empty" class="hidden flex-col items-center py-10 text-center">
-              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
-                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-              </div>
-              <p class="text-muted text-sm">Aucune demande envoyée.</p>
-              <p class="text-xs text-muted mt-1">Explorez les offres disponibles ou les demandes à aider.</p>
+        </div>
+
+        <!-- ═══════════════ CONFIRM MODAL ═══════════════ -->
+        <div
+            id="modal-confirm"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl p-7 w-full max-w-sm shadow-2xl"
+            >
+                <h3 id="confirm-title" class="text-lg font-semibold mb-2">
+                    Confirmer
+                </h3>
+                <p id="confirm-message" class="text-sm text-muted mb-6"></p>
+                <div class="flex gap-3">
+                    <button
+                        id="confirm-no"
+                        onclick="closeConfirmModal()"
+                        class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm"
+                    >
+                        Non
+                    </button>
+                    <button
+                        id="confirm-yes"
+                        onclick="confirmAction()"
+                        class="flex-1 py-2.5 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm font-medium"
+                    >
+                        Oui
+                    </button>
+                </div>
             </div>
-            <div id="my-demands-list" class="hidden space-y-3"></div>
-          </div>
+        </div>
 
-          <!-- Demands to help (others' demands filtered by my competences) -->
-          <div class="bg-card border border-border rounded-xl p-5">
-            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              Demandes à aider
-              <span id="available-demands-count" class="ml-1 text-xs text-muted font-normal"></span>
-            </h2>
-            <p class="text-xs text-muted mb-4">Demandes d'étudiants qui ont besoin d'aide, filtrées selon vos compétences.</p>
-            <div id="available-demands-loading" class="flex items-center gap-3 py-8 text-muted text-sm">
-              <div class="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-              Chargement…
+        <!-- ═══════════════ DETAIL MODAL ═══════════════ -->
+        <div
+            id="modal-detail"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8"
+            >
+                <div class="flex items-center justify-between mb-6">
+                    <h2 id="detail-title" class="text-xl font-semibold">
+                        Détails
+                    </h2>
+                    <button
+                        title="Fermer"
+                        onclick="closeDetailModal()"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
+                <div id="detail-body" class="space-y-4"></div>
             </div>
-            <div id="available-demands-empty" class="hidden flex-col items-center py-10 text-center">
-              <div class="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center mb-3">
-                <svg class="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-              <p class="text-muted text-sm">Aucune demande d'aide disponible.</p>
-              <p class="text-xs text-muted mt-1">Ajoutez des compétences dans votre profil pour voir les demandes correspondantes.</p>
+        </div>
+
+        <!-- ═══════════════ MENTEE PROFILE MODAL ═══════════════ -->
+        <div
+            id="modal-mentee-profile"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8"
+            >
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Profil du demandeur</h2>
+                    <button
+                        title="Fermer"
+                        onclick="closeMenteeProfileModal()"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="mentee-profile-body" class="space-y-4"></div>
             </div>
-            <div id="available-demands-list" class="hidden space-y-3"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ═══════════════ MOBILE BOTTOM NAV ═══════════════ -->
-  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50">
-    <div class="flex items-center justify-around p-2">
-      <a href="dashboard.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        <span class="text-xs">Dashboard</span>
-      </a>
-      <a href="matching.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
-        </svg>
-        <span class="text-xs">Matchs</span>
-      </a>
-      <a href="messages.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        <span class="text-xs">Messages</span>
-      </a>
-      <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-primary">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span class="text-xs">Publications</span>
-      </a>
-      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        <span class="text-xs">Paramètres</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- ═══════════════ CONFIRM MODAL ═══════════════ -->
-  <div id="modal-confirm" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-sm shadow-2xl">
-      <h3 id="confirm-title" class="text-lg font-semibold mb-2">Confirmer</h3>
-      <p id="confirm-message" class="text-sm text-muted mb-6"></p>
-      <div class="flex gap-3">
-        <button id="confirm-no" onclick="closeConfirmModal()"
-          class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">Non</button>
-        <button id="confirm-yes" onclick="confirmAction()"
-          class="flex-1 py-2.5 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm font-medium">Oui</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════ DETAIL MODAL ═══════════════ -->
-  <div id="modal-detail" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
-      <div class="flex items-center justify-between mb-6">
-        <h2 id="detail-title" class="text-xl font-semibold">Détails</h2>
-        <button title="Fermer" onclick="closeDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div id="detail-body" class="space-y-4"></div>
-    </div>
-  </div>
-
-  <!-- ═══════════════ MODAL NEW PUBLICATION ═══════════════ -->
-  <div id="modal-new-publication" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-semibold">Nouvelle publication</h2>
-        <button title="Fermer" onclick="closeNewPublicationModal()" class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <div id="pub-modal-error" class="hidden mb-4 p-3 bg-destructive/10 border border-destructive rounded-lg">
-        <p class="text-destructive text-sm" id="pub-modal-error-text"></p>
-      </div>
-
-      <form id="new-publication-form" class="space-y-5">
-
-        <!-- Type toggle -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Type de publication</label>
-          <div class="flex gap-2 p-1 bg-input rounded-lg">
-            <label class="flex-1 cursor-pointer">
-              <input type="radio" name="pub-type" value="offer" class="sr-only peer" checked />
-              <div class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors">Offre</div>
-            </label>
-            <label class="flex-1 cursor-pointer">
-              <input type="radio" name="pub-type" value="demand" class="sr-only peer" />
-              <div class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors">Demande</div>
-            </label>
-          </div>
-          <p id="pub-type-desc" class="text-xs text-muted mt-2">Proposez votre aide aux étudiants qui ont des lacunes dans cette matière.</p>
         </div>
 
-        <!-- Matière -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Matière concernée</label>
-          <select title="Matière concernée" id="pub-matiere" required
-            class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm">
-            <option value="">Sélectionnez une matière…</option>
-          </select>
+        <!-- ═══════════════ MODAL NEW PUBLICATION ═══════════════ -->
+        <div
+            id="modal-new-publication"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl p-7 w-full max-w-lg shadow-2xl my-8"
+            >
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Nouvelle publication</h2>
+                    <button
+                        title="Fermer"
+                        onclick="closeNewPublicationModal()"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
+
+                <div
+                    id="pub-modal-error"
+                    class="hidden mb-4 p-3 bg-destructive/10 border border-destructive rounded-lg"
+                >
+                    <p
+                        class="text-destructive text-sm"
+                        id="pub-modal-error-text"
+                    ></p>
+                </div>
+
+                <form id="new-publication-form" class="space-y-5">
+                    <!-- Type toggle -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Type de publication</label
+                        >
+                        <div class="flex gap-2 p-1 bg-input rounded-lg">
+                            <label class="flex-1 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="pub-type"
+                                    value="offer"
+                                    class="sr-only peer"
+                                    checked
+                                />
+                                <div
+                                    class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors"
+                                >
+                                    Offre
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="pub-type"
+                                    value="demand"
+                                    class="sr-only peer"
+                                />
+                                <div
+                                    class="text-center py-2 rounded-md text-sm font-medium text-muted bg-transparent peer-checked:bg-primary peer-checked:text-white transition-colors"
+                                >
+                                    Demande
+                                </div>
+                            </label>
+                        </div>
+                        <p id="pub-type-desc" class="text-xs text-muted mt-2">
+                            Proposez votre aide aux étudiants qui ont des
+                            lacunes dans cette matière.
+                        </p>
+                    </div>
+
+                    <!-- Matière -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Matière concernée</label
+                        >
+                        <select
+                            title="Matière concernée"
+                            id="pub-matiere"
+                            required
+                            class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                        >
+                            <option value="">Sélectionnez une matière…</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Description</label
+                        >
+                        <textarea
+                            title="Description"
+                            id="pub-desc"
+                            rows="3"
+                            required
+                            placeholder="Décrivez précisément…"
+                            class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none placeholder:text-muted"
+                        ></textarea>
+                    </div>
+
+                    <!-- Format préféré -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Format préféré</label
+                        >
+                        <div class="flex flex-wrap gap-3">
+                            <label
+                                class="format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors"
+                            >
+                                <input
+                                    type="radio"
+                                    name="pub-format"
+                                    value="en_ligne"
+                                    class="sr-only"
+                                    checked
+                                />En ligne
+                            </label>
+                            <label
+                                class="format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors"
+                            >
+                                <input
+                                    type="radio"
+                                    name="pub-format"
+                                    value="presentiel"
+                                    class="sr-only"
+                                />Présentiel
+                            </label>
+                            <label
+                                class="format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors"
+                            >
+                                <input
+                                    type="radio"
+                                    name="pub-format"
+                                    value="hybride"
+                                    class="sr-only"
+                                />Hybride
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Urgence (visible only for demands) -->
+                    <div id="pub-urgence-group" class="hidden">
+                        <label class="block text-sm font-medium mb-2"
+                            >Urgence</label
+                        >
+                        <div class="flex flex-wrap gap-2">
+                            <label class="flex-1 min-w-[80px] cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="pub-urgence"
+                                    value="Légère"
+                                    class="sr-only peer"
+                                />
+                                <div
+                                    class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-success/20 peer-checked:text-success peer-checked:border-success/40 transition-colors"
+                                >
+                                    Légère
+                                </div>
+                            </label>
+                            <label class="flex-1 min-w-[80px] cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="pub-urgence"
+                                    value="Moyenne"
+                                    class="sr-only peer"
+                                    checked
+                                />
+                                <div
+                                    class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-warning/20 peer-checked:text-warning peer-checked:border-warning/40 transition-colors"
+                                >
+                                    Moyenne
+                                </div>
+                            </label>
+                            <label class="flex-1 min-w-[80px] cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="pub-urgence"
+                                    value="Haute"
+                                    class="sr-only peer"
+                                />
+                                <div
+                                    class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive/40 transition-colors"
+                                >
+                                    Haute
+                                </div>
+                            </label>
+                            <label class="flex-1 min-w-[80px] cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="pub-urgence"
+                                    value="Urgente"
+                                    class="sr-only peer"
+                                />
+                                <div
+                                    class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/30 peer-checked:text-destructive peer-checked:border-destructive transition-colors"
+                                >
+                                    Urgente
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Disponibilités -->
+                    <div>
+                        <label class="block text-sm font-medium mb-3"
+                            >Disponibilités</label
+                        >
+                        <div
+                            id="pub-availability-grid"
+                            class="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"
+                        ></div>
+                        <input
+                            type="hidden"
+                            id="pub-availability"
+                            name="disponibilites"
+                        />
+                        <p
+                            id="pub-availability-note"
+                            class="text-xs text-muted mt-2"
+                        >
+                            Sélectionnez les créneaux où vous êtes disponible.
+                        </p>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="flex gap-3 pt-2">
+                        <button
+                            type="button"
+                            onclick="closeNewPublicationModal()"
+                            class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            id="pub-submit-btn"
+                            class="flex-1 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                        >
+                            Publier
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- Description -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Description</label>
-          <textarea title="Description" id="pub-desc" rows="3" required placeholder="Décrivez précisément…"
-            class="w-full px-4 py-3 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none placeholder:text-muted"></textarea>
-        </div>
+        <script src="../js/bundle.js"></script>
+        <script>
+            checkAuth();
 
-        <!-- Format préféré -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Format préféré</label>
-          <div class="flex flex-wrap gap-3">
-            <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors">
-              <input type="radio" name="pub-format" value="en_ligne" class="sr-only" checked />En ligne
-            </label>
-            <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors">
-              <input type="radio" name="pub-format" value="presentiel" class="sr-only" />Présentiel
-            </label>
-            <label class="format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors">
-              <input type="radio" name="pub-format" value="hybride" class="sr-only" />Hybride
-            </label>
-          </div>
-        </div>
+            /* ─── State ─── */
+            let matieresCache = [];
+            let currentTab = "offers";
+            let userProfile = null;
+            let userCompetenceIds = [];
+            let userLacuneIds = [];
+            const dataCache = {
+                "my-offers": [],
+                "available-offers": [],
+                "my-demands": [],
+                "available-demands": [],
+            };
+            let receivedMatchings = [];
 
-        <!-- Urgence (visible only for demands) -->
-        <div id="pub-urgence-group" class="hidden">
-          <label class="block text-sm font-medium mb-2">Urgence</label>
-          <div class="flex flex-wrap gap-2">
-            <label class="flex-1 min-w-[80px] cursor-pointer">
-              <input type="radio" name="pub-urgence" value="Légère" class="sr-only peer" />
-              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-success/20 peer-checked:text-success peer-checked:border-success/40 transition-colors">Légère</div>
-            </label>
-            <label class="flex-1 min-w-[80px] cursor-pointer">
-              <input type="radio" name="pub-urgence" value="Moyenne" class="sr-only peer" checked />
-              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-warning/20 peer-checked:text-warning peer-checked:border-warning/40 transition-colors">Moyenne</div>
-            </label>
-            <label class="flex-1 min-w-[80px] cursor-pointer">
-              <input type="radio" name="pub-urgence" value="Haute" class="sr-only peer" />
-              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive/40 transition-colors">Haute</div>
-            </label>
-            <label class="flex-1 min-w-[80px] cursor-pointer">
-              <input type="radio" name="pub-urgence" value="Urgente" class="sr-only peer" />
-              <div class="text-center py-2 rounded-lg text-sm font-medium text-muted bg-input border border-border peer-checked:bg-destructive/30 peer-checked:text-destructive peer-checked:border-destructive transition-colors">Urgente</div>
-            </label>
-          </div>
-        </div>
+            /* ─── Confirm Modal ─── */
+            let pendingCallback = null;
 
-        <!-- Disponibilités -->
-        <div>
-          <label class="block text-sm font-medium mb-3">Disponibilités</label>
-          <div id="pub-availability-grid" class="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-3 bg-input rounded-lg border border-border"></div>
-          <input type="hidden" id="pub-availability" name="disponibilites">
-          <p id="pub-availability-note" class="text-xs text-muted mt-2">Sélectionnez les créneaux où vous êtes disponible.</p>
-        </div>
+            function openConfirmModal(message, onConfirm) {
+                document.getElementById("confirm-message").textContent =
+                    message;
+                pendingCallback = onConfirm;
+                document
+                    .getElementById("modal-confirm")
+                    .classList.remove("hidden");
+            }
 
-        <!-- Submit -->
-        <div class="flex gap-3 pt-2">
-          <button type="button" onclick="closeNewPublicationModal()"
-            class="flex-1 py-2.5 bg-popover border border-border text-white rounded-lg hover:bg-popover/80 transition-colors text-sm">
-            Annuler
-          </button>
-          <button type="submit" id="pub-submit-btn"
-            class="flex-1 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center justify-center gap-2">
-            Publier
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+            function closeConfirmModal() {
+                document
+                    .getElementById("modal-confirm")
+                    .classList.add("hidden");
+                pendingCallback = null;
+            }
 
-  <script src="../js/bundle.js"></script>
-  <script>
-    checkAuth();
+            function confirmAction() {
+                const cb = pendingCallback;
+                closeConfirmModal();
+                if (typeof cb === "function") cb();
+            }
 
-    /* ─── State ─── */
-    let matieresCache = [];
-    let currentTab    = 'offers';
-    let userProfile   = null;
-    let userCompetenceIds = [];
-    let userLacuneIds     = [];
-    const dataCache = { 'my-offers': [], 'available-offers': [], 'my-demands': [], 'available-demands': [] };
-    let receivedMatchings = [];
+            /* ─── Detail Modal ─── */
+            function openDetailModal(id, type, cacheKey) {
+                const items = dataCache[cacheKey] || [];
+                const data = items.find((x) => x.id === id);
+                if (!data) return;
 
-    /* ─── Confirm Modal ─── */
-    let pendingCallback = null;
+                const title = document.getElementById("detail-title");
+                const body = document.getElementById("detail-body");
+                const matiere = matiereName(data.matiere_id);
+                const isOffer = type === "offer";
 
-    function openConfirmModal(message, onConfirm) {
-      document.getElementById('confirm-message').textContent = message;
-      pendingCallback = onConfirm;
-      document.getElementById('modal-confirm').classList.remove('hidden');
-    }
+                title.textContent = isOffer
+                    ? `Offre — ${matiere}`
+                    : `Demande — ${matiere}`;
 
-    function closeConfirmModal() {
-      document.getElementById('modal-confirm').classList.add('hidden');
-      pendingCallback = null;
-    }
+                const dispos =
+                    data.disponibilites && Array.isArray(data.disponibilites)
+                        ? data.disponibilites
+                        : [];
+                const slotsHtml = dispos
+                    .map(
+                        (d) =>
+                            `<span class="inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-medium">${d.jour} ${d.creneau}</span>`,
+                    )
+                    .join(" ");
 
-    function confirmAction() {
-      closeConfirmModal();
-      if (typeof pendingCallback === 'function') pendingCallback();
-    }
+                const publisher = data.publicateur
+                    ? `${data.publicateur.prenom || ""} ${data.publicateur.nom || ""}`.trim() ||
+                      "Anonyme"
+                    : "Anonyme";
+                const pubAv = data.publicateur?.avatar_url || "";
+                const pubAvHtml = pubAv && pubAv !== "https://via.placeholder.com/150"
+                    ? `<img src="${pubAv}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
+                    : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${publisher.charAt(0)}</span>`;
+                const pubFil = data.publicateur?.filiere || "";
+                const pubNiv = data.publicateur?.niveau || "";
+                const pubBadges = [pubFil ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">${pubFil}</span>` : "",
+                                   pubNiv ? `<span class="px-2 py-0.5 bg-success/10 text-success rounded-full text-xs">${pubNiv}</span>` : ""].filter(Boolean).join(" ");
 
-    /* ─── Detail Modal ─── */
-    function openDetailModal(id, type, cacheKey) {
-      const items = dataCache[cacheKey] || [];
-      const data = items.find(x => x.id === id);
-      if (!data) return;
+                const createdDate = data.created_at
+                    ? new Date(data.created_at).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                      })
+                    : "—";
 
-      const title = document.getElementById('detail-title');
-      const body  = document.getElementById('detail-body');
-      const matiere = matiereName(data.matiere_id);
-      const isOffer = type === 'offer';
-
-      title.textContent = isOffer ? `Offre — ${matiere}` : `Demande — ${matiere}`;
-
-      const dispos = data.disponibilites && Array.isArray(data.disponibilites) ? data.disponibilites : [];
-      const slotsHtml = dispos.map(d => `<span class="inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-medium">${d.jour} ${d.creneau}</span>`).join(' ');
-
-      const publisher = data.publicateur
-        ? `${data.publicateur.prenom || ''} ${data.publicateur.nom || ''}`.trim() || 'Anonyme'
-        : 'Anonyme';
-
-      const createdDate = data.created_at ? new Date(data.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
-
-      const isMyItem = ['my-offers','my-demands'].includes(cacheKey);
-      body.innerHTML = `
+                const isMyItem = ["my-offers", "my-demands"].includes(cacheKey);
+                body.innerHTML = `
         <div class="bg-popover rounded-xl p-4">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold ${isOffer ? 'text-success' : 'text-warning'} uppercase tracking-wide">${isOffer ? 'Offre d\'aide' : 'Demande d\'aide'}</span>
+            <span class="text-xs font-semibold ${isOffer ? "text-success" : "text-warning"} uppercase tracking-wide">${isOffer ? "Offre d'aide" : "Demande d'aide"}</span>
             <span class="text-xs text-muted">${createdDate}</span>
           </div>
           <p class="font-semibold text-base mb-3">${matiere}</p>
           ${data.description ? `<p class="text-sm text-muted leading-relaxed mb-4">${data.description}</p>` : '<p class="text-sm text-muted mb-4 italic">Aucune description</p>'}
-          ${slotsHtml ? `<div class="mb-4"><p class="text-xs font-medium text-muted mb-1.5">Disponibilités</p><div class="flex flex-wrap gap-1.5">${slotsHtml}</div></div>` : ''}
+          ${slotsHtml ? `<div class="mb-4"><p class="text-xs font-medium text-muted mb-1.5">Disponibilités</p><div class="flex flex-wrap gap-1.5">${slotsHtml}</div></div>` : ""}
           <hr class="border-border my-3">
           <div class="grid grid-cols-2 gap-3 text-xs">
-            <div><span class="text-muted">Publié par</span><p class="font-medium">${publisher}</p></div>
-            ${isOffer ? `
-            <div><span class="text-muted">Format</span><p class="font-medium capitalize">${(data.format_preference || 'non spécifié').replace('_', ' ')}</p></div>
-            ` : `
-            <div><span class="text-muted">Urgence</span><p class="font-medium">${data.urgence || 'Non spécifiée'}</p></div>
-            `}
-            ${data.status ? `<div><span class="text-muted">Statut</span><p class="font-medium">${data.status}</p></div>` : ''}
+            <div><span class="text-muted">Publié par</span><p class="font-medium flex items-center gap-1 mt-0.5">${pubAvHtml} ${publisher}</p>
+            ${pubBadges ? `<div class="flex gap-1 mt-1">${pubBadges}</div>` : ""}</div>
+            ${
+                isOffer
+                    ? `
+            <div><span class="text-muted">Format</span><p class="font-medium capitalize">${(data.format_preference || "non spécifié").replace("_", " ")}</p></div>
+            `
+                    : `
+            <div><span class="text-muted">Urgence</span><p class="font-medium">${data.urgence || "Non spécifiée"}</p></div>
+            `
+            }
+            ${data.status ? `<div><span class="text-muted">Statut</span><p class="font-medium">${data.status}</p></div>` : ""}
           </div>
-          ${!isOffer && cacheKey === 'my-demands' ? `
+          ${
+              !isOffer && cacheKey === "my-demands"
+                  ? `
           <a href="matching.html?demand_id=${data.id}" class="mt-4 block w-full text-center py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">Trouver un mentor</a>
-          ` : ''}
+          `
+                  : ""
+          }
         </div>
       `;
-      document.getElementById('modal-detail').classList.remove('hidden');
-    }
+                document
+                    .getElementById("modal-detail")
+                    .classList.remove("hidden");
+            }
 
-    function closeDetailModal() {
-      document.getElementById('modal-detail').classList.add('hidden');
-    }
+            function closeDetailModal() {
+                document.getElementById("modal-detail").classList.add("hidden");
+            }
 
-    /* ─── Toast ─── */
-    function showToast(msg, type) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
-        type === 'success' ? 'bg-success text-black' : 'bg-destructive text-white'
-      }`;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 3500);
-    }
+            /* ─── Toast ─── */
+            function showToast(msg, type) {
+                const t = document.getElementById("toast");
+                t.textContent = msg;
+                t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
+                    type === "success"
+                        ? "bg-success text-black"
+                        : "bg-destructive text-white"
+                }`;
+                t.classList.remove("hidden");
+                setTimeout(() => t.classList.add("hidden"), 3500);
+            }
 
-    /* ─── Tabs ─── */
-    function switchTab(tab) {
-      currentTab = tab;
-      ['offers','demands'].forEach(t => {
-        const btn = document.getElementById(`tab-${t}`);
-        const sec = document.getElementById(`section-${t}`);
-        if (t === tab) {
-          btn.className = 'tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-white';
-          sec.classList.remove('hidden');
-        } else {
-          btn.className = 'tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors text-muted hover:text-white';
-          sec.classList.add('hidden');
-        }
-      });
-    }
+            /* ─── Tabs ─── */
+            function switchTab(tab) {
+                currentTab = tab;
+                ["offers", "demands"].forEach((t) => {
+                    const btn = document.getElementById(`tab-${t}`);
+                    const sec = document.getElementById(`section-${t}`);
+                    if (t === tab) {
+                        btn.className =
+                            "tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-white";
+                        sec.classList.remove("hidden");
+                    } else {
+                        btn.className =
+                            "tab-btn px-5 py-2 rounded-lg text-sm font-medium transition-colors text-muted hover:text-white";
+                        sec.classList.add("hidden");
+                    }
+                });
+            }
 
-    /* ─── Helpers ─── */
-    function matiereName(id) {
-      const m = matieresCache.find(x => x.id === id);
-      return m ? m.nom : `Matière #${id}`;
-    }
+            /* ─── Helpers ─── */
+            function matiereName(id) {
+                const m = matieresCache.find((x) => x.id === id);
+                return m ? m.nom : `Matière #${id}`;
+            }
 
-    function statusBadge(s) {
-      const map = { pending:'bg-warning/10 text-warning border-warning/30 Envoyée', accepted:'bg-success/10 text-success border-success/30 Acceptée', rejected:'bg-destructive/10 text-destructive border-destructive/30 Refusée' };
-      const v = map[s] || 'bg-muted/10 text-muted border-border En attente';
-      const [cls, ...lblParts] = v.split(' ');
-      return `<span class="px-2 py-0.5 rounded-full border text-xs ${cls}">${lblParts.join(' ')}</span>`;
-    }
+            function statusBadge(s) {
+                const map = {
+                    pending:
+                        "bg-warning/10 text-warning border-warning/30 Envoyée",
+                    accepted:
+                        "bg-success/10 text-success border-success/30 Acceptée",
+                    rejected:
+                        "bg-destructive/10 text-destructive border-destructive/30 Refusée",
+                };
+                const v =
+                    map[s] || "bg-muted/10 text-muted border-border En attente";
+                const [cls, ...lblParts] = v.split(" ");
+                return `<span class="px-2 py-0.5 rounded-full border text-xs ${cls}">${lblParts.join(" ")}</span>`;
+            }
 
-    function avatarInitials(name) {
-      return name.split(' ').map(w => w[0] || '').slice(0,2).join('').toUpperCase();
-    }
+            function avatarInitials(name) {
+                return name
+                    .split(" ")
+                    .map((w) => w[0] || "")
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase();
+            }
 
-    /* ─── Load matières + user profile ─── */
-    async function loadInitialData() {
-      try {
-        const [matieres, profile] = await Promise.all([
-          API.matieres.getAll().catch(() => { showToast('Erreur lors du chargement des matières', 'error'); return []; }),
-          API.profile.getMe().catch(() => { showToast('Erreur lors du chargement du profil', 'error'); return ({}); })
-        ]);
-        matieresCache = Array.isArray(matieres) ? matieres : (matieres.matieres || matieres.data || []);
-        userProfile = profile.profile || profile;
-        if (Array.isArray(userProfile.competences)) {
-          userCompetenceIds = userProfile.competences.map(c => (typeof c === 'object' ? (c.matiere_id || c.id) : parseInt(c)));
-        }
-        if (Array.isArray(userProfile.lacunes)) {
-          userLacuneIds = userProfile.lacunes.map(l => (typeof l === 'object' ? (l.matiere_id || l.id) : parseInt(l)));
-        }
-      } catch (err) {
-        console.warn('Init data error', err);
-        showToast('Erreur lors du chargement des données', 'error');
-      }
-    }
+            /* ─── Load matières + user profile ─── */
+            async function loadInitialData() {
+                try {
+                    const [matieres, profile] = await Promise.all([
+                        API.matieres.getAll().catch(() => {
+                            showToast(
+                                "Erreur lors du chargement des matières",
+                                "error",
+                            );
+                            return [];
+                        }),
+                        API.profile.getMe().catch(() => {
+                            showToast(
+                                "Erreur lors du chargement du profil",
+                                "error",
+                            );
+                            return {};
+                        }),
+                    ]);
+                    matieresCache = Array.isArray(matieres)
+                        ? matieres
+                        : matieres.matieres || matieres.data || [];
+                    userProfile = profile.profile || profile;
+                    if (Array.isArray(userProfile.competences)) {
+                        userCompetenceIds = userProfile.competences.map((c) =>
+                            typeof c === "object"
+                                ? c.matiere_id || c.id
+                                : parseInt(c),
+                        );
+                    }
+                    if (Array.isArray(userProfile.lacunes)) {
+                        userLacuneIds = userProfile.lacunes.map((l) =>
+                            typeof l === "object"
+                                ? l.matiere_id || l.id
+                                : parseInt(l),
+                        );
+                    }
+                } catch (err) {
+                    console.warn("Init data error", err);
+                    showToast("Erreur lors du chargement des données", "error");
+                }
+            }
 
-    /* ─── Render: My Offers ─── */
-    async function loadMyOffers() {
-      const loading = document.getElementById('my-offers-loading');
-      const empty   = document.getElementById('my-offers-empty');
-      const list    = document.getElementById('my-offers-list');
-      loading.classList.remove('hidden');
-      empty.classList.add('hidden');
-      list.classList.add('hidden');
-      try {
-        const data = await API.offers.getMine();
-        const items = Array.isArray(data) ? data : (data.offers || data.data || []);
-        loading.classList.add('hidden');
-        dataCache['my-offers'] = items;
-        if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = items.map(o => {
-          const dispos = o.disponibilites && Array.isArray(o.disponibilites) ? o.disponibilites : [];
-          const slotsHtml = dispos.map(d => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`).join(' ');
-          const responses = getOfferResponses(o.id);
-          const respHtml = responses.map(r => {
-            const name = `${r.initiator.prenom || ''} ${r.initiator.nom || ''}`.trim() || 'Quelqu\'un';
-            if (r.status === 'accepted') {
-              return `<div class="flex items-center justify-between bg-success/5 border border-success/20 rounded-lg px-3 py-2 mt-2">
+            /* ─── Render: My Offers ─── */
+            async function loadMyOffers() {
+                const loading = document.getElementById("my-offers-loading");
+                const empty = document.getElementById("my-offers-empty");
+                const list = document.getElementById("my-offers-list");
+                loading.classList.remove("hidden");
+                empty.classList.add("hidden");
+                list.classList.add("hidden");
+                try {
+                    const data = await API.offers.getMine();
+                    const items = Array.isArray(data)
+                        ? data
+                        : data.offers || data.data || [];
+                    loading.classList.add("hidden");
+                    dataCache["my-offers"] = items;
+                    if (items.length === 0) {
+                        empty.classList.remove("hidden");
+                        return;
+                    }
+                    list.innerHTML = items
+                        .map((o) => {
+                            const dispos =
+                                o.disponibilites &&
+                                Array.isArray(o.disponibilites)
+                                    ? o.disponibilites
+                                    : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (d) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`,
+                                )
+                                .join(" ");
+                            const responses = getOfferResponses(o.id);
+                            const respHtml = responses
+                                .map((r) => {
+                                    const name =
+                                        `${r.initiator.prenom || ""} ${r.initiator.nom || ""}`.trim() ||
+                                        "Quelqu'un";
+                                    if (r.status === "accepted") {
+                                        return `<div class="flex items-center justify-between bg-success/5 border border-success/20 rounded-lg px-3 py-2 mt-2">
                 <span class="text-xs text-success font-medium">✓ ${name} — Match accepté</span>
                 <button onclick="event.stopPropagation(); goToMessages(${r.initiator.user_id})" class="px-3 py-1 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Discuter</button>
               </div>`;
-            }
-            if (r.status === 'rejected') {
-              return `<div class="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2 mt-2">
+                                    }
+                                    if (r.status === "rejected") {
+                                        return `<div class="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2 mt-2">
                 <span class="text-xs text-destructive">✗ ${name} — Refusé</span>
               </div>`;
-            }
-            return `<div class="flex items-center justify-between bg-warning/5 border border-warning/20 rounded-lg px-3 py-2 mt-2">
+                                    }
+                                    return `<div class="flex items-center justify-between bg-warning/5 border border-warning/20 rounded-lg px-3 py-2 mt-2">
               <span class="text-xs text-warning font-medium">${name} a postulé</span>
               <div class="flex gap-1.5">
                 <button onclick="event.stopPropagation(); acceptMatching(${r.matching_id})" class="px-2.5 py-1 bg-success text-black rounded-lg text-xs font-medium hover:bg-success/90 transition-colors">Accepter</button>
                 <button onclick="event.stopPropagation(); rejectMatching(${r.matching_id})" class="px-2.5 py-1 bg-destructive text-white rounded-lg text-xs hover:bg-destructive/90 transition-colors">Refuser</button>
               </div>
             </div>`;
-          }).join('');
-          return `
+                                })
+                                .join("");
+                            return `
           <div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-popover/80 transition-colors">
             <div onclick="openDetailModal(${o.id}, 'offer', 'my-offers')" class="flex items-start justify-between gap-3">
               <div class="flex-1 min-w-0">
                 <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
-                ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
-                ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
+                ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ""}
+                ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
               </div>
               <button onclick="event.stopPropagation(); deleteOffer(${o.id})" class="shrink-0 px-2.5 py-1.5 rounded-lg border border-destructive/40 text-destructive text-xs hover:bg-destructive/10 transition-colors">Supprimer</button>
             </div>
             ${respHtml}
           </div>
-        `}).join('');
-        list.classList.remove('hidden');
-      } catch (err) {
-        loading.classList.add('hidden');
-        empty.classList.remove('hidden');
-        showToast('Erreur lors du chargement de mes offres', 'error');
-      }
-    }
+        `;
+                        })
+                        .join("");
+                    list.classList.remove("hidden");
+                } catch (err) {
+                    loading.classList.add("hidden");
+                    empty.classList.remove("hidden");
+                    showToast(
+                        "Erreur lors du chargement de mes offres",
+                        "error",
+                    );
+                }
+            }
 
-    async function deleteOffer(id) {
-      openConfirmModal('Supprimer cette offre ?', async () => {
-        try {
-          await API.offers.delete(id);
-          showToast('Offre supprimée.', 'success');
-          loadMyOffers();
-          loadAvailableOffers();
-        } catch (err) {
-          showToast(err.message || 'Erreur', 'error');
-        }
-      });
-    }
+            async function deleteOffer(id) {
+                openConfirmModal("Supprimer cette offre ?", async () => {
+                    try {
+                        await API.offers.delete(id);
+                        showToast("Offre supprimée.", "success");
+                        loadMyOffers();
+                        loadAvailableOffers();
+                    } catch (err) {
+                        showToast(err.message || "Erreur", "error");
+                    }
+                });
+            }
 
-    /* ─── Render: Available Offers ─── */
-    async function loadAvailableOffers() {
-      const loading = document.getElementById('available-offers-loading');
-      const empty   = document.getElementById('available-offers-empty');
-      const list    = document.getElementById('available-offers-list');
-      const count   = document.getElementById('available-offers-count');
-      loading.classList.remove('hidden');
-      empty.classList.add('hidden');
-      list.classList.add('hidden');
-      try {
-        const data = await API.offers.getAll();
-        let items = Array.isArray(data) ? data : (data.offers || data.data || []);
-        // Filter by user's lacunes
-        if (userLacuneIds.length > 0) {
-          items = items.filter(o => userLacuneIds.includes(o.matiere_id));
-        }
-        // Exclude own offers
-        const myProfileId = userProfile ? userProfile.id : null;
-        if (myProfileId) {
-          items = items.filter(o => o.profile_id !== myProfileId);
-        }
-        loading.classList.add('hidden');
-        dataCache['available-offers'] = items;
-        count.textContent = `(${items.length})`;
-        if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = items.map(o => {
-          const name = o.publicateur ? `${o.publicateur.prenom || ''} ${o.publicateur.nom || ''}`.trim() : 'Anonyme';
-          const dispos = o.disponibilites && Array.isArray(o.disponibilites) ? o.disponibilites : [];
-          const slotsHtml = dispos.map(d => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`).join(' ');
-          return `
+            /* ─── Render: Available Offers ─── */
+            async function loadAvailableOffers() {
+                const loading = document.getElementById(
+                    "available-offers-loading",
+                );
+                const empty = document.getElementById("available-offers-empty");
+                const list = document.getElementById("available-offers-list");
+                const count = document.getElementById("available-offers-count");
+                loading.classList.remove("hidden");
+                empty.classList.add("hidden");
+                list.classList.add("hidden");
+                try {
+                    const data = await API.offers.getAll();
+                    let items = Array.isArray(data)
+                        ? data
+                        : data.offers || data.data || [];
+                    // Filter by user's lacunes
+                    if (userLacuneIds.length > 0) {
+                        items = items.filter((o) =>
+                            userLacuneIds.includes(o.matiere_id),
+                        );
+                    }
+                    // Exclude own offers
+                    const myProfileId = userProfile ? userProfile.id : null;
+                    if (myProfileId) {
+                        items = items.filter(
+                            (o) => o.profile_id !== myProfileId,
+                        );
+                    }
+                    loading.classList.add("hidden");
+                    dataCache["available-offers"] = items;
+                    count.textContent = `(${items.length})`;
+                    if (items.length === 0) {
+                        empty.classList.remove("hidden");
+                        return;
+                    }
+                    list.innerHTML = items
+                        .map((o) => {
+                            const name = o.publicateur
+                                ? `${o.publicateur.prenom || ""} ${o.publicateur.nom || ""}`.trim()
+                                : "Anonyme";
+                            const avUrl = o.publicateur?.avatar_url || "";
+                            const avHtml = avUrl && avUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avUrl}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
+                                : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${name.charAt(0)}</span>`;
+                            const dispos =
+                                o.disponibilites &&
+                                Array.isArray(o.disponibilites)
+                                    ? o.disponibilites
+                                    : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (d) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`,
+                                )
+                                .join(" ");
+                            return `
           <div onclick="openDetailModal(${o.id}, 'offer', 'available-offers')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(o.matiere_id)}</p>
-                <span class="text-xs text-muted">par ${name}</span>
+                <span class="text-xs text-muted flex items-center gap-1">${avHtml} par ${name}</span>
               </div>
-              ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ''}
-              ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
+              ${o.description ? `<p class="text-xs text-muted mt-1 truncate">${o.description}</p>` : ""}
+              ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
             </div>
             <button onclick="event.stopPropagation(); respondToOffer(${o.id})" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Postuler</button>
           </div>
-        `}).join('');
-        list.classList.remove('hidden');
-      } catch (err) {
-        console.warn('Available offers error', err);
-        loading.classList.add('hidden');
-        empty.classList.remove('hidden');
-        showToast('Erreur lors du chargement des offres disponibles', 'error');
-      }
-    }
+        `;
+                        })
+                        .join("");
+                    list.classList.remove("hidden");
+                } catch (err) {
+                    console.warn("Available offers error", err);
+                    loading.classList.add("hidden");
+                    empty.classList.remove("hidden");
+                    showToast(
+                        "Erreur lors du chargement des offres disponibles",
+                        "error",
+                    );
+                }
+            }
 
-    async function respondToOffer(offerId) {
-      try {
-        await API.offers.respond(offerId);
-        showToast('Réponse envoyée au mentor !', 'success');
-        loadMyDemands();
-        loadReceivedMatchings();
-      } catch (err) {
-        showToast(err.message || 'Erreur lors de la réponse.', 'error');
-      }
-    }
+            async function respondToOffer(offerId) {
+                try {
+                    await API.offers.respond(offerId);
+                    showToast("Réponse envoyée au mentor !", "success");
+                    loadMyDemands();
+                    loadReceivedMatchings();
+                } catch (err) {
+                    showToast(
+                        err.message || "Erreur lors de la réponse.",
+                        "error",
+                    );
+                }
+            }
 
-    /* ─── Render: My Demands (sent match requests) ─── */
-    async function loadMyDemands() {
-      const loading = document.getElementById('my-demands-loading');
-      const empty   = document.getElementById('my-demands-empty');
-      const list    = document.getElementById('my-demands-list');
-      loading.classList.remove('hidden');
-      empty.classList.add('hidden');
-      list.classList.add('hidden');
-      try {
-        const data = await API.demands.getMine();
-        const items = Array.isArray(data) ? data : (data.demands || data.demandes || data.data || []);
-        loading.classList.add('hidden');
-        dataCache['my-demands'] = items;
-        if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = items.map(d => {
-          const dispos = d.disponibilites && Array.isArray(d.disponibilites) ? d.disponibilites : [];
-          const slotsHtml = dispos.map(s => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`).join(' ');
-          const helpers = getDemandHelpers(d.id);
-          const helpHtml = helpers.map(r => {
-            const name = `${r.initiator.prenom || ''} ${r.initiator.nom || ''}`.trim() || 'Quelqu\'un';
-            if (r.status === 'accepted') {
-              return `<div class="flex items-center justify-between bg-success/5 border border-success/20 rounded-lg px-3 py-2 mt-2">
+            /* ─── Render: My Demands (sent match requests) ─── */
+            async function loadMyDemands() {
+                const loading = document.getElementById("my-demands-loading");
+                const empty = document.getElementById("my-demands-empty");
+                const list = document.getElementById("my-demands-list");
+                loading.classList.remove("hidden");
+                empty.classList.add("hidden");
+                list.classList.add("hidden");
+                try {
+                    const data = await API.demands.getMine();
+                    const items = Array.isArray(data)
+                        ? data
+                        : data.demands || data.demandes || data.data || [];
+                    loading.classList.add("hidden");
+                    dataCache["my-demands"] = items;
+                    if (items.length === 0) {
+                        empty.classList.remove("hidden");
+                        return;
+                    }
+                    list.innerHTML = items
+                        .map((d) => {
+                            const dispos =
+                                d.disponibilites &&
+                                Array.isArray(d.disponibilites)
+                                    ? d.disponibilites
+                                    : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (s) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`,
+                                )
+                                .join(" ");
+                            const helpers = getDemandHelpers(d.id);
+                            const helpHtml = helpers
+                                .map((r) => {
+                                    const name =
+                                        `${r.initiator.prenom || ""} ${r.initiator.nom || ""}`.trim() ||
+                                        "Quelqu'un";
+                                    if (r.status === "accepted") {
+                                        return `<div class="flex items-center justify-between bg-success/5 border border-success/20 rounded-lg px-3 py-2 mt-2">
                 <span class="text-xs text-success font-medium">✓ ${name} — Match accepté</span>
                 <button onclick="event.stopPropagation(); goToMessages(${r.initiator.user_id})" class="px-3 py-1 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Discuter</button>
               </div>`;
-            }
-            if (r.status === 'rejected') {
-              return `<div class="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2 mt-2">
+                                    }
+                                    if (r.status === "rejected") {
+                                        return `<div class="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2 mt-2">
                 <span class="text-xs text-destructive">✗ ${name} — Refusé</span>
               </div>`;
-            }
-            return `<div class="flex items-center justify-between bg-warning/5 border border-warning/20 rounded-lg px-3 py-2 mt-2">
+                                    }
+                                    return `<div class="flex items-center justify-between bg-warning/5 border border-warning/20 rounded-lg px-3 py-2 mt-2">
               <span class="text-xs text-warning font-medium">${name} propose son aide</span>
               <div class="flex gap-1.5">
                 <button onclick="event.stopPropagation(); acceptMatching(${r.matching_id})" class="px-2.5 py-1 bg-success text-black rounded-lg text-xs font-medium hover:bg-success/90 transition-colors">Accepter</button>
                 <button onclick="event.stopPropagation(); rejectMatching(${r.matching_id})" class="px-2.5 py-1 bg-destructive text-white rounded-lg text-xs hover:bg-destructive/90 transition-colors">Refuser</button>
               </div>
             </div>`;
-          }).join('');
-          const urgenceBadge = d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === 'Urgente' ? 'bg-destructive/20 text-destructive' : d.urgence === 'Haute' ? 'bg-warning/20 text-warning' : 'bg-muted/10 text-muted'}">${d.urgence}</span>` : '';
-          return `
+                                })
+                                .join("");
+                            const urgenceBadge = d.urgence
+                                ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : d.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${d.urgence}</span>`
+                                : "";
+                            return `
           <div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-popover/80 transition-colors">
             <div onclick="openDetailModal(${d.id}, 'demand', 'my-demands')" class="flex items-start justify-between gap-3">
               <div class="flex-1 min-w-0">
                 <p class="font-semibold text-sm">${matiereName(d.matiere_id)} ${urgenceBadge}</p>
-                ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
-                ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
+                ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ""}
+                ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
                 <a href="matching.html?demand_id=${d.id}" onclick="event.stopPropagation()" class="shrink-0 px-2 py-1.5 bg-primary/10 text-primary rounded-lg text-xs hover:bg-primary/20 transition-colors font-medium">Trouver un mentor</a>
@@ -716,397 +1528,710 @@
             </div>
             ${helpHtml}
           </div>
-        `}).join('');
-        list.classList.remove('hidden');
-      } catch (err) {
-        loading.classList.add('hidden');
-        empty.classList.remove('hidden');
-        showToast('Erreur lors du chargement de mes demandes', 'error');
-      }
-    }
+        `;
+                        })
+                        .join("");
+                    list.classList.remove("hidden");
+                } catch (err) {
+                    loading.classList.add("hidden");
+                    empty.classList.remove("hidden");
+                    showToast(
+                        "Erreur lors du chargement de mes demandes",
+                        "error",
+                    );
+                }
+            }
 
-    async function deleteDemand(id) {
-      openConfirmModal('Supprimer cette demande ?', async () => {
-        try {
-          await API.demands.delete(id);
-          showToast('Demande supprimée.', 'success');
-          loadMyDemands();
-          loadAvailableDemands();
-        } catch (err) {
-          showToast(err.message || 'Erreur', 'error');
-        }
-      });
-    }
+            async function deleteDemand(id) {
+                openConfirmModal("Supprimer cette demande ?", async () => {
+                    try {
+                        await API.demands.delete(id);
+                        showToast("Demande supprimée.", "success");
+                        loadMyDemands();
+                        loadAvailableDemands();
+                    } catch (err) {
+                        showToast(err.message || "Erreur", "error");
+                    }
+                });
+            }
 
-    /* ─── Render: Available Demands ─── */
-    async function loadAvailableDemands() {
-      const loading = document.getElementById('available-demands-loading');
-      const empty   = document.getElementById('available-demands-empty');
-      const list    = document.getElementById('available-demands-list');
-      const count   = document.getElementById('available-demands-count');
-      loading.classList.remove('hidden');
-      empty.classList.add('hidden');
-      list.classList.add('hidden');
-      try {
-        const data = await API.demands.getAll();
-        let items = Array.isArray(data) ? data : (data.demandes || data.data || []);
-        // Filter by user's competences
-        if (userCompetenceIds.length > 0) {
-          items = items.filter(d => userCompetenceIds.includes(d.matiere_id));
-        }
-        // Exclude own demands
-        const myProfileId = userProfile ? userProfile.id : null;
-        if (myProfileId) {
-          items = items.filter(d => d.profile_id !== myProfileId);
-        }
-        loading.classList.add('hidden');
-        dataCache['available-demands'] = items;
-        count.textContent = `(${items.length})`;
-        if (items.length === 0) { empty.classList.remove('hidden'); return; }
-        list.innerHTML = items.map(d => {
-          const name = d.publicateur ? `${d.publicateur.prenom || ''} ${d.publicateur.nom || ''}`.trim() : 'Anonyme';
-          const dispos = d.disponibilites && Array.isArray(d.disponibilites) ? d.disponibilites : [];
-          const slotsHtml = dispos.map(s => `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`).join(' ');
-          return `
+            /* ─── Render: Available Demands ─── */
+            async function loadAvailableDemands() {
+                const loading = document.getElementById(
+                    "available-demands-loading",
+                );
+                const empty = document.getElementById(
+                    "available-demands-empty",
+                );
+                const list = document.getElementById("available-demands-list");
+                const count = document.getElementById(
+                    "available-demands-count",
+                );
+                loading.classList.remove("hidden");
+                empty.classList.add("hidden");
+                list.classList.add("hidden");
+                try {
+                    const data = await API.demands.getAll();
+                    let items = Array.isArray(data)
+                        ? data
+                        : data.demands || data.demandes || data.data || [];
+                    // Filter by user's competences
+                    if (userCompetenceIds.length > 0) {
+                        items = items.filter((d) =>
+                            userCompetenceIds.includes(d.matiere_id),
+                        );
+                    }
+                    // Exclude own demands
+                    const myProfileId = userProfile ? userProfile.id : null;
+                    if (myProfileId) {
+                        items = items.filter(
+                            (d) => d.profile_id !== myProfileId,
+                        );
+                    }
+                    loading.classList.add("hidden");
+                    dataCache["available-demands"] = items;
+                    count.textContent = `(${items.length})`;
+                    if (items.length === 0) {
+                        empty.classList.remove("hidden");
+                        return;
+                    }
+                    list.innerHTML = items
+                        .map((d) => {
+                            const name = d.publicateur
+                                ? `${d.publicateur.prenom || ""} ${d.publicateur.nom || ""}`.trim()
+                                : "Anonyme";
+                            const avUrl = d.publicateur?.avatar_url || "";
+                            const avHtml = avUrl && avUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avUrl}" alt="" class="w-5 h-5 rounded-full object-cover inline-block align-middle" />`
+                                : `<span class="w-5 h-5 rounded-full bg-primary/20 inline-flex items-center justify-center text-[10px] font-bold text-primary align-middle">${name.charAt(0)}</span>`;
+                            const dispos =
+                                d.disponibilites &&
+                                Array.isArray(d.disponibilites)
+                                    ? d.disponibilites
+                                    : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (s) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour} ${s.creneau}</span>`,
+                                )
+                                .join(" ");
+                            return `
           <div onclick="openDetailModal(${d.id}, 'demand', 'available-demands')" class="bg-popover border border-border rounded-lg p-4 flex items-start justify-between gap-3 cursor-pointer hover:bg-popover/80 transition-colors">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <p class="font-semibold text-sm">${matiereName(d.matiere_id)}</p>
-                <span class="text-xs text-muted">par ${name}</span>
-                ${d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === 'Urgente' ? 'bg-destructive/20 text-destructive' : d.urgence === 'Haute' ? 'bg-warning/20 text-warning' : 'bg-muted/10 text-muted'}">${d.urgence}</span>` : ''}
+                <span class="text-xs text-muted flex items-center gap-1">${avHtml} par ${name}</span>
+                ${d.urgence ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : d.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${d.urgence}</span>` : ""}
               </div>
-              ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ''}
-              ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ''}
+              ${d.description ? `<p class="text-xs text-muted mt-1 truncate">${d.description}</p>` : ""}
+              ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
             </div>
             <button onclick="event.stopPropagation(); proposeHelp(${d.id})" class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs hover:bg-primary/90 transition-colors">Proposer mon aide</button>
           </div>
-        `}).join('');
-        list.classList.remove('hidden');
-      } catch (err) {
-        console.warn('Available demands error', err);
-        loading.classList.add('hidden');
-        empty.classList.remove('hidden');
-        showToast('Erreur lors du chargement des demandes disponibles', 'error');
-      }
-    }
-
-    async function proposeHelp(demandId) {
-      try {
-        await API.demands.offerHelp(demandId);
-        showToast('Aide proposée ! En attente de la réponse.', 'success');
-        loadMyDemands();
-        loadReceivedMatchings();
-      } catch (err) {
-        showToast(err.message || 'Erreur lors de l\'envoi.', 'error');
-      }
-    }
-
-    /* ─── Accept / Reject / Chat ─── */
-    async function loadReceivedMatchings() {
-      try {
-        const data = await API.matching.getReceived();
-        receivedMatchings = Array.isArray(data) ? data : (data.matchings || data.data || []);
-      } catch {
-        receivedMatchings = [];
-        showToast('Erreur lors du chargement des matchings', 'error');
-      }
-    }
-
-    function getOfferResponses(offerId) {
-      return receivedMatchings.filter(m => m.offer_id === offerId);
-    }
-
-    function getDemandHelpers(demandId) {
-      return receivedMatchings.filter(m => m.demand_id === demandId);
-    }
-
-    async function acceptMatching(matchingId) {
-      try {
-        await API.matching.accept(matchingId);
-        showToast('Match accepté ! Vous pouvez discuter.', 'success');
-        await loadReceivedMatchings();
-        loadMyOffers();
-        loadMyDemands();
-      } catch (err) {
-        showToast(err.message || 'Erreur', 'error');
-      }
-    }
-
-    async function rejectMatching(matchingId) {
-      try {
-        await API.matching.reject(matchingId);
-        showToast('Match refusé.', 'success');
-        await loadReceivedMatchings();
-        loadMyOffers();
-        loadMyDemands();
-      } catch (err) {
-        showToast(err.message || 'Erreur', 'error');
-      }
-    }
-
-    function goToMessages(otherUserId) {
-      window.location.href = `messages.html?user=${otherUserId}`;
-    }
-
-    /* ─── Modal: New Publication ─── */
-    function creneauToHour(c) {
-      const p = c.split('-');
-      return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
-    }
-
-    function openNewPublicationModal() {
-      document.getElementById('modal-new-publication').classList.remove('hidden');
-      document.getElementById('pub-modal-error').classList.add('hidden');
-      document.getElementById('new-publication-form').reset();
-
-      // Set default type description
-      updateTypeDesc();
-
-      // Load matieres into select, filtered by filiere
-      const sel = document.getElementById('pub-matiere');
-      sel.innerHTML = '<option value="">Sélectionnez une matière…</option>';
-      let filtered = matieresCache;
-      const userData = getUserData();
-      if (userData && userData.department) {
-        filtered = getMatiersByFiliere(userData.department);
-      }
-      filtered.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.id;
-        opt.textContent = m.nom || m.name || m.libelle;
-        sel.appendChild(opt);
-      });
-
-      // Render availability grid with user's saved slots pre-selected
-      renderAvailabilityGrid();
-    }
-
-    function closeNewPublicationModal() {
-      document.getElementById('modal-new-publication').classList.add('hidden');
-    }
-
-    // Type toggle description
-    document.querySelectorAll('input[name="pub-type"]').forEach(r => {
-      r.addEventListener('change', updateTypeDesc);
-    });
-
-    function updateTypeDesc() {
-      const isOffer = document.querySelector('input[name="pub-type"]:checked')?.value === 'offer';
-      document.getElementById('pub-type-desc').textContent = isOffer
-        ? 'Proposez votre aide aux étudiants qui ont des lacunes dans cette matière.'
-        : 'Demandez de l\'aide pour une matière où vous avez des lacunes.';
-      document.getElementById('pub-submit-btn').textContent = isOffer ? 'Publier l\'offre' : 'Publier la demande';
-      document.getElementById('pub-urgence-group').classList.toggle('hidden', isOffer);
-    }
-
-    // Format radio styling
-    document.querySelectorAll('input[name="pub-format"]').forEach(r => {
-      r.addEventListener('change', () => {
-        document.querySelectorAll('.format-option').forEach(lbl => {
-          const r2 = lbl.querySelector('input');
-          if (r2.checked) {
-            lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors';
-          } else {
-            lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors';
-          }
-        });
-      });
-    });
-
-    /* ─── Availability grid — only user's saved slots ─── */
-    async function renderAvailabilityGrid() {
-      const container = document.getElementById('pub-availability-grid');
-      const hidden    = document.getElementById('pub-availability');
-      container.innerHTML = '';
-
-      let savedSlots = [];
-      try {
-        const data = await API.profile.getMe();
-        const profile = data.profile || data;
-        savedSlots = profile.disponibilites || [];
-      } catch (_) {
-        showToast('Erreur lors du chargement des disponibilités', 'error');
-      }
-
-      if (savedSlots.length === 0) {
-        container.innerHTML = '<p class="text-xs text-muted col-span-full text-center py-4">Aucune disponibilité définie. Ajoutez-en dans Paramètres.</p>';
-        hidden.value = '[]';
-        return;
-      }
-
-      // Group by day
-      const grouped = {};
-      savedSlots.forEach(d => {
-        const day = d.jour;
-        if (!grouped[day]) grouped[day] = [];
-        grouped[day].push(creneauToHour(d.creneau));
-      });
-
-      const dayOrder = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-      const selected = new Set();
-
-      dayOrder.forEach(day => {
-        const slots = grouped[day];
-        if (!slots || slots.length === 0) return;
-        const dayCol = document.createElement('div');
-        dayCol.className = 'col-span-1';
-        const dayHeader = document.createElement('p');
-        dayHeader.className = 'text-xs font-semibold text-muted mb-1.5 text-center';
-        dayHeader.textContent = day.substring(0,3);
-        dayCol.appendChild(dayHeader);
-
-        slots.forEach(hSlot => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          const key = `${day}-${hSlot}`;
-          btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1';
-          btn.textContent = hSlot;
-          btn.dataset.key = key;
-          selected.add(key);
-          btn.onclick = () => {
-            const k = btn.dataset.key;
-            if (selected.has(k)) {
-              selected.delete(k);
-              btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-border bg-card/30 text-muted hover:bg-primary/10 transition-all mb-1';
-            } else {
-              selected.add(k);
-              btn.className = 'w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1';
+        `;
+                        })
+                        .join("");
+                    list.classList.remove("hidden");
+                } catch (err) {
+                    console.warn("Available demands error", err);
+                    loading.classList.add("hidden");
+                    empty.classList.remove("hidden");
+                    showToast(
+                        "Erreur lors du chargement des demandes disponibles",
+                        "error",
+                    );
+                }
             }
-            updateSelectedSlots();
-          };
-          dayCol.appendChild(btn);
-        });
 
-        container.appendChild(dayCol);
-      });
+            async function proposeHelp(demandId) {
+                try {
+                    await API.demands.offerHelp(demandId);
+                    showToast(
+                        "Aide proposée ! En attente de la réponse.",
+                        "success",
+                    );
+                    loadMyDemands();
+                    loadReceivedMatchings();
+                } catch (err) {
+                    showToast(
+                        err.message || "Erreur lors de l'envoi.",
+                        "error",
+                    );
+                }
+            }
 
-      function updateSelectedSlots() {
-        hidden.value = JSON.stringify(Array.from(selected));
-      }
-      updateSelectedSlots();
-    }
+            /* ─── Accept / Reject / Chat ─── */
+            async function loadReceivedMatchings() {
+                try {
+                    const data = await API.matching.getReceived();
+                    receivedMatchings = Array.isArray(data)
+                        ? data
+                        : data.matchings || data.data || [];
+                } catch {
+                    receivedMatchings = [];
+                    showToast(
+                        "Erreur lors du chargement des matchings",
+                        "error",
+                    );
+                }
+                renderReceivedRequests();
+            }
 
-    function getSelectedAvailability() {
-      try {
-        const raw = document.getElementById('pub-availability').value || '[]';
-        const data = JSON.parse(raw);
-        return Array.isArray(data) ? data : [];
-      } catch {
-        showToast('Erreur lors de la lecture des disponibilités', 'error');
-        return [];
-      }
-    }
+            function renderReceivedRequests() {
+                const section = document.getElementById('section-received-requests');
+                const list = document.getElementById('received-requests-list');
+                const empty = document.getElementById('received-requests-empty');
+                const loading = document.getElementById('received-requests-loading');
+                const count = document.getElementById('received-requests-count');
 
-    /* ─── Submit new publication ─── */
-    document.getElementById('new-publication-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const type        = document.querySelector('input[name="pub-type"]:checked')?.value || 'offer';
-      const matiere_id  = document.getElementById('pub-matiere').value;
-      const description = document.getElementById('pub-desc').value.trim();
-      const format_pref = document.querySelector('input[name="pub-format"]:checked')?.value || 'hybride';
-      const selectedSlots = getSelectedAvailability();
-      const errEl       = document.getElementById('pub-modal-error');
-      const errTxt      = document.getElementById('pub-modal-error-text');
-      const btn         = document.getElementById('pub-submit-btn');
+                const pending = receivedMatchings.filter(m => m.status === 'pending');
+                if (pending.length === 0) {
+                    section.classList.add('hidden');
+                    return;
+                }
+                section.classList.remove('hidden');
+                count.textContent = `(${pending.length} en attente)`;
+                list.classList.remove('hidden');
+                empty.classList.add('hidden');
+                loading.classList.add('hidden');
 
-      if (!matiere_id) {
-        errTxt.textContent = 'Veuillez sélectionner une matière.';
-        errEl.classList.remove('hidden');
-        return;
-      }
+                list.innerHTML = pending.map(m => {
+                    const initials = ((m.initiator?.prenom?.[0] || '') + (m.initiator?.nom?.[0] || ''));
+                    const score = parseFloat(m.score) || 0;
+                    const scoreColor = score >= 75 ? 'bg-success' : score >= 55 ? 'bg-warning' : 'bg-destructive';
+                    return `
+                    <div class="bg-popover border border-border rounded-xl p-4 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                            ${m.initiator?.avatar_url
+                              ? `<img src="${m.initiator.avatar_url}" class="w-full h-full rounded-full object-cover"
+                                   onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-sm font-bold text-primary\\'>${initials}</span>';this.parentElement.classList.add('flex','items-center','justify-center','bg-primary/20')">`
+                              : `<span class="text-sm font-bold text-primary">${initials}</span>`
+                            }
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <p class="font-semibold text-sm truncate">${m.initiator?.prenom || ''} ${m.initiator?.nom || '?'}</p>
+                                <span class="text-xs text-muted">${m.created_at ? new Date(m.created_at).toLocaleDateString('fr-FR') : ''}</span>
+                            </div>
+                            <p class="text-xs text-muted">${m.matiere_nom || 'Matière inconnue'}</p>
+                            ${m.jour ? `<p class="text-xs text-muted mt-1">${m.jour} ${m.creneau || ''}</p>` : ''}
+                            <div class="mt-2 inline-flex items-center gap-1.5">
+                                <div class="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div class="h-full ${scoreColor} rounded-full" style="width:${score}%"></div>
+                                </div>
+                                <span class="text-xs font-medium">${score}%</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 shrink-0">
+                            <button onclick="openMenteeProfileModal(${m.matching_id})"
+                                class="px-3 py-1.5 bg-primary/20 text-primary rounded-lg text-xs font-medium hover:bg-primary/30 transition-colors">
+                                Voir profil
+                            </button>
+                            <button onclick="acceptMatching(${m.matching_id})"
+                                class="px-3 py-1.5 bg-success text-white rounded-lg text-xs font-medium hover:bg-success/90 transition-colors">
+                                Accepter
+                            </button>
+                            <button onclick="rejectMatching(${m.matching_id})"
+                                class="px-3 py-1.5 bg-destructive/20 text-destructive rounded-lg text-xs font-medium hover:bg-destructive/30 transition-colors">
+                                Refuser
+                            </button>
+                            <button onclick="goToMessages(${m.initiator?.user_id})"
+                                class="px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-medium hover:bg-primary/20 transition-colors">
+                                Envoyer message
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
 
-      // Parse first slot for jour/creneau  (key format: "Lundi-8h-9h")
-      let jour = '', creneau = '';
-      if (selectedSlots.length > 0) {
-        const parts = selectedSlots[0].split('-');
-        if (parts.length >= 3) {
-          jour = parts[0];
-          const startH = parseInt(parts[1]);
-          const endH   = parseInt(parts[2]);
-          if (!isNaN(startH) && !isNaN(endH)) {
-            creneau = `${String(startH).padStart(2,'0')}-${String(endH).padStart(2,'0')}`;
-          }
-        }
-      }
+            function closeMenteeProfileModal() {
+                document.getElementById('modal-mentee-profile').classList.add('hidden');
+            }
 
-      btn.disabled = true;
-      btn.innerHTML = '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>';
+            function openMenteeProfileModal(matchingId) {
+                const m = receivedMatchings.find(r => r.matching_id === matchingId);
+                if (!m) return;
+                const score = parseFloat(m.score) || 0;
+                const scoreColor = score >= 75 ? 'bg-success' : score >= 55 ? 'bg-warning' : 'bg-destructive';
+                const initials = ((m.initiator?.prenom?.[0] || '') + (m.initiator?.nom?.[0] || ''));
+                const body = document.getElementById('mentee-profile-body');
+                body.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-20 h-20 rounded-full mx-auto mb-3 ring-2 ring-primary/40 overflow-hidden">
+                            ${m.initiator?.avatar_url
+                              ? `<img src="${m.initiator.avatar_url}" class="w-full h-full object-cover"
+                                   onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-3xl font-bold text-primary\\'>${initials}</span>';this.parentElement.classList.add('flex','items-center','justify-center','bg-primary/20')">`
+                              : `<div class="w-full h-full flex items-center justify-center bg-primary/20">
+                                   <span class="text-3xl font-bold text-primary">${initials}</span>
+                                 </div>`
+                            }
+                        </div>
+                        <h3 class="text-lg font-bold">${m.initiator?.prenom || ''} ${m.initiator?.nom || '?'}</h3>
+                        <div class="flex items-center justify-center gap-2 mt-1">
+                            ${m.initiator?.niveau ? `<span class="px-2 py-0.5 bg-primary/20 text-primary rounded-full text-xs font-medium">${m.initiator.niveau}</span>` : ''}
+                            ${m.initiator?.filiere ? `<span class="px-2 py-0.5 bg-popover border border-border rounded-full text-xs text-muted">${m.initiator.filiere}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="border-t border-border pt-4 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-muted">Matière</span>
+                            <span class="font-medium">${m.matiere_nom || 'Inconnue'}</span>
+                        </div>
+                        ${m.jour ? `<div class="flex justify-between text-sm"><span class="text-muted">Créneau</span><span class="font-medium">${m.jour} ${m.creneau || ''}</span></div>` : ''}
+                        <div class="flex justify-between text-sm items-center">
+                            <span class="text-muted">Score</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                                    <div class="h-full ${scoreColor} rounded-full" style="width:${score}%"></div>
+                                </div>
+                                <span class="font-medium text-sm">${score}%</span>
+                            </div>
+                        </div>
+                        ${m.initiator?.bio ? `<div class="pt-2"><p class="text-xs text-muted mb-1">Bio</p><p class="text-sm">${m.initiator.bio}</p></div>` : ''}
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="closeMenteeProfileModal(); acceptMatching(${m.matching_id})"
+                            class="flex-1 py-2.5 bg-success text-white rounded-lg text-sm font-medium hover:bg-success/90 transition-colors">
+                            Accepter
+                        </button>
+                        <button onclick="closeMenteeProfileModal(); rejectMatching(${m.matching_id})"
+                            class="flex-1 py-2.5 bg-destructive/20 text-destructive rounded-lg text-sm font-medium hover:bg-destructive/30 transition-colors">
+                            Refuser
+                        </button>
+                        <button onclick="closeMenteeProfileModal(); goToMessages(${m.initiator?.user_id})"
+                            class="flex-1 py-2.5 bg-primary/10 text-primary rounded-lg text-sm font-medium hover:bg-primary/20 transition-colors">
+                            Message
+                        </button>
+                    </div>
+                `;
+                document.getElementById('modal-mentee-profile').classList.remove('hidden');
+            }
 
-      try {
-        if (type === 'offer') {
-          await API.offers.create({
-            matiere_id: parseInt(matiere_id),
-            description,
-            format_preference: format_pref,
-            disponibilites: selectedSlots
-          });
-        } else {
-          const urgence = document.querySelector('input[name="pub-urgence"]:checked')?.value || 'Moyenne';
-          await API.demands.create({
-            matiere_id: parseInt(matiere_id),
-            description,
-            format: format_pref,
-            jour,
-            creneau,
-            disponibilite: selectedSlots,
-            urgence
-          });
-        }
-        closeNewPublicationModal();
-        showToast(type === 'offer' ? 'Offre publiée avec succès !' : 'Demande publiée avec succès !', 'success');
-        loadMyOffers();
-        loadAvailableOffers();
-        loadMyDemands();
-        loadAvailableDemands();
-      } catch (err) {
-        errTxt.textContent = err.message || 'Erreur lors de la publication.';
-        errEl.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Publier';
-      }
-    });
+            function getOfferResponses(offerId) {
+                return receivedMatchings.filter((m) => m.offer_id === offerId);
+            }
 
-    /* ─── Handle URL params (open a specific demand) ─── */
-    function handleUrlParams() {
-      const params = new URLSearchParams(window.location.search);
-      const demandId = params.get('open-demand');
-      if (demandId) {
-        switchTab('demands');
-        // Wait for data to load, then find and open
-        const waitAndOpen = setInterval(() => {
-          const items = dataCache['available-demands'] || [];
-          const found = items.find(d => d.id === parseInt(demandId));
-          if (found) {
-            clearInterval(waitAndOpen);
-            openDetailModal(found.id, 'demand', 'available-demands');
-          }
-        }, 300);
-        // Timeout after 10s
-        setTimeout(() => clearInterval(waitAndOpen), 10000);
-      }
-    }
+            function getDemandHelpers(demandId) {
+                return receivedMatchings.filter(
+                    (m) => m.demand_id === demandId,
+                );
+            }
 
-    /* ─── Init ─── */
-    (async function init() {
-      await loadInitialData();
-      loadMyOffers();
-      loadAvailableOffers();
-      loadMyDemands();
-      loadAvailableDemands();
-      loadReceivedMatchings();
-      handleUrlParams();
+            async function acceptMatching(matchingId) {
+                try {
+                    await API.matching.accept(matchingId);
+                    showToast(
+                        "Match accepté ! Vous pouvez discuter.",
+                        "success",
+                    );
+                    await loadReceivedMatchings();
+                    loadMyOffers();
+                    loadMyDemands();
+                } catch (err) {
+                    showToast(err.message || "Erreur", "error");
+                }
+            }
 
-      // Initial format styling
-      document.querySelectorAll('input[name="pub-format"]').forEach(r => {
-        const lbl = r.closest('.format-option');
-        if (r.checked) {
-          lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors';
-        } else {
-          lbl.className = 'format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors';
-        }
-      });
-    })();
-  </script>
-</body>
+            async function rejectMatching(matchingId) {
+                try {
+                    await API.matching.reject(matchingId);
+                    showToast("Match refusé.", "success");
+                    await loadReceivedMatchings();
+                    loadMyOffers();
+                    loadMyDemands();
+                } catch (err) {
+                    showToast(err.message || "Erreur", "error");
+                }
+            }
+
+            function goToMessages(otherUserId) {
+                window.location.href = `messages.html?user=${otherUserId}`;
+            }
+
+            /* ─── Modal: New Publication ─── */
+            function creneauToHour(c) {
+                const p = c.split("-");
+                return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
+            }
+
+            function populateMatieresDropdown(type) {
+                const sel = document.getElementById("pub-matiere");
+                sel.innerHTML =
+                    '<option value="">Sélectionnez une matière…</option>';
+
+                if (type === "offer") {
+                    // Offre : montrer les compétences de l'utilisateur
+                    const comps =
+                        userProfile && userProfile.competences
+                            ? userProfile.competences
+                            : [];
+                    if (comps.length === 0) {
+                        sel.innerHTML +=
+                            "<option disabled>Aucune compétence enregistrée</option>";
+                        return;
+                    }
+                    comps.forEach((c) => {
+                        const opt = document.createElement("option");
+                        opt.value = c.matiere_id;
+                        opt.textContent =
+                            c.matiere_nom || `Matière #${c.matiere_id}`;
+                        sel.appendChild(opt);
+                    });
+                } else {
+                    // Demande : montrer les lacunes de l'utilisateur
+                    const lacs =
+                        userProfile && userProfile.lacunes
+                            ? userProfile.lacunes
+                            : [];
+                    if (lacs.length === 0) {
+                        sel.innerHTML +=
+                            "<option disabled>Aucune lacune enregistrée</option>";
+                        return;
+                    }
+                    lacs.forEach((l) => {
+                        const opt = document.createElement("option");
+                        opt.value = l.matiere_id;
+                        opt.textContent =
+                            l.matiere_nom || `Matière #${l.matiere_id}`;
+                        sel.appendChild(opt);
+                    });
+                }
+            }
+
+            async function openNewPublicationModal() {
+                document
+                    .getElementById("modal-new-publication")
+                    .classList.remove("hidden");
+                document
+                    .getElementById("pub-modal-error")
+                    .classList.add("hidden");
+                document.getElementById("new-publication-form").reset();
+
+                // Set default type description
+                updateTypeDesc();
+
+                // Déterminer le type sélectionné
+                const selectedType =
+                    document.querySelector('input[name="pub-type"]:checked')
+                        ?.value || "offer";
+                populateMatieresDropdown(selectedType);
+
+                // Render availability grid with user's saved slots pre-selected
+                try {
+                    await renderAvailabilityGrid();
+                } catch (_) {
+                    // grid errors are handled internally with toasts
+                }
+            }
+
+            function closeNewPublicationModal() {
+                document
+                    .getElementById("modal-new-publication")
+                    .classList.add("hidden");
+            }
+
+            // Type toggle description
+            document.querySelectorAll('input[name="pub-type"]').forEach((r) => {
+                r.addEventListener("change", () => {
+                    updateTypeDesc();
+                    populateMatieresDropdown(r.value);
+                });
+            });
+
+            function updateTypeDesc() {
+                const isOffer =
+                    document.querySelector('input[name="pub-type"]:checked')
+                        ?.value === "offer";
+                document.getElementById("pub-type-desc").textContent = isOffer
+                    ? "Proposez votre aide aux étudiants qui ont des lacunes dans cette matière."
+                    : "Demandez de l'aide pour une matière où vous avez des lacunes.";
+                document.getElementById("pub-submit-btn").textContent = isOffer
+                    ? "Publier l'offre"
+                    : "Publier la demande";
+                document
+                    .getElementById("pub-urgence-group")
+                    .classList.toggle("hidden", isOffer);
+            }
+
+            // Format radio styling
+            document
+                .querySelectorAll('input[name="pub-format"]')
+                .forEach((r) => {
+                    r.addEventListener("change", () => {
+                        document
+                            .querySelectorAll(".format-option")
+                            .forEach((lbl) => {
+                                const r2 = lbl.querySelector("input");
+                                if (r2.checked) {
+                                    lbl.className =
+                                        "format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors";
+                                } else {
+                                    lbl.className =
+                                        "format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors";
+                                }
+                            });
+                    });
+                });
+
+            /* ─── Availability grid — only user's saved slots ─── */
+            async function renderAvailabilityGrid() {
+                const container = document.getElementById(
+                    "pub-availability-grid",
+                );
+                const hidden = document.getElementById("pub-availability");
+                if (!container || !hidden) return;
+                container.innerHTML = "";
+
+                let savedSlots = [];
+                try {
+                    const data = await API.profile.getMe();
+                    const profile = data.profile || data;
+                    savedSlots = profile.disponibilites || [];
+                } catch (_) {
+                    showToast(
+                        "Erreur lors du chargement des disponibilités",
+                        "error",
+                    );
+                }
+
+                if (savedSlots.length === 0) {
+                    container.innerHTML =
+                        '<p class="text-xs text-muted col-span-full text-center py-4">Aucune disponibilité définie. Ajoutez-en dans Paramètres.</p>';
+                    hidden.value = "[]";
+                    return;
+                }
+
+                // Group by day
+                const grouped = {};
+                savedSlots.forEach((d) => {
+                    const day = d.jour;
+                    if (!grouped[day]) grouped[day] = [];
+                    grouped[day].push(creneauToHour(d.creneau));
+                });
+
+                const dayOrder = [
+                    "Lundi",
+                    "Mardi",
+                    "Mercredi",
+                    "Jeudi",
+                    "Vendredi",
+                    "Samedi",
+                    "Dimanche",
+                ];
+                const selected = new Set();
+
+                dayOrder.forEach((day) => {
+                    const slots = grouped[day];
+                    if (!slots || slots.length === 0) return;
+                    const dayCol = document.createElement("div");
+                    dayCol.className = "col-span-1";
+                    const dayHeader = document.createElement("p");
+                    dayHeader.className =
+                        "text-xs font-semibold text-muted mb-1.5 text-center";
+                    dayHeader.textContent = day.substring(0, 3);
+                    dayCol.appendChild(dayHeader);
+
+                    slots.forEach((hSlot) => {
+                        const btn = document.createElement("button");
+                        btn.type = "button";
+                        const key = `${day}-${hSlot}`;
+                        btn.className =
+                            "w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1";
+                        btn.textContent = hSlot;
+                        btn.dataset.key = key;
+                        selected.add(key);
+                        btn.onclick = () => {
+                            const k = btn.dataset.key;
+                            if (selected.has(k)) {
+                                selected.delete(k);
+                                btn.className =
+                                    "w-full text-xs px-1.5 py-1.5 rounded-md border border-border bg-card/30 text-muted hover:bg-primary/10 transition-all mb-1";
+                            } else {
+                                selected.add(k);
+                                btn.className =
+                                    "w-full text-xs px-1.5 py-1.5 rounded-md border border-primary bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-all mb-1";
+                            }
+                            updateSelectedSlots();
+                        };
+                        dayCol.appendChild(btn);
+                    });
+
+                    container.appendChild(dayCol);
+                });
+
+                function updateSelectedSlots() {
+                    hidden.value = JSON.stringify(Array.from(selected));
+                }
+                updateSelectedSlots();
+            }
+
+            function getSelectedAvailability() {
+                try {
+                    const raw =
+                        document.getElementById("pub-availability").value ||
+                        "[]";
+                    const data = JSON.parse(raw);
+                    return Array.isArray(data) ? data : [];
+                } catch {
+                    showToast(
+                        "Erreur lors de la lecture des disponibilités",
+                        "error",
+                    );
+                    return [];
+                }
+            }
+
+            /* ─── Submit new publication ─── */
+            document
+                .getElementById("new-publication-form")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const type =
+                        document.querySelector('input[name="pub-type"]:checked')
+                            ?.value || "offer";
+                    const matiere_id =
+                        document.getElementById("pub-matiere").value;
+                    const description = document
+                        .getElementById("pub-desc")
+                        .value.trim();
+                    const format_pref =
+                        document.querySelector(
+                            'input[name="pub-format"]:checked',
+                        )?.value || "hybride";
+                    const selectedSlots = getSelectedAvailability();
+                    const errEl = document.getElementById("pub-modal-error");
+                    const errTxt = document.getElementById(
+                        "pub-modal-error-text",
+                    );
+                    const btn = document.getElementById("pub-submit-btn");
+
+                    if (!matiere_id) {
+                        errTxt.textContent =
+                            "Veuillez sélectionner une matière.";
+                        errEl.classList.remove("hidden");
+                        return;
+                    }
+
+                    // Parse first slot for jour/creneau  (key format: "Lundi-8h-9h")
+                    let jour = "",
+                        creneau = "";
+                    if (selectedSlots.length > 0) {
+                        const parts = selectedSlots[0].split("-");
+                        if (parts.length >= 3) {
+                            jour = parts[0];
+                            const startH = parseInt(parts[1]);
+                            const endH = parseInt(parts[2]);
+                            if (!isNaN(startH) && !isNaN(endH)) {
+                                creneau = `${String(startH).padStart(2, "0")}-${String(endH).padStart(2, "0")}`;
+                            }
+                        }
+                    }
+
+                    btn.disabled = true;
+                    btn.innerHTML =
+                        '<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>';
+
+                    try {
+                        if (type === "offer") {
+                            await API.offers.create({
+                                matiere_id: parseInt(matiere_id),
+                                description,
+                                format_preference: format_pref,
+                                disponibilites: selectedSlots,
+                            });
+                        } else {
+                            const urgence =
+                                document.querySelector(
+                                    'input[name="pub-urgence"]:checked',
+                                )?.value || "Moyenne";
+                            const payload = {
+                                matiere_id: parseInt(matiere_id),
+                                description,
+                                format_preference: format_pref,
+                                urgence,
+                                jour,
+                                creneau,
+                            };
+                            if (selectedSlots.length > 0) {
+                                payload.disponibilites = selectedSlots;
+                            }
+                            await API.demands.create(payload);
+                        }
+                        closeNewPublicationModal();
+                        showToast(
+                            type === "offer"
+                                ? "Offre publiée avec succès !"
+                                : "Demande publiée avec succès !",
+                            "success",
+                        );
+                        await Promise.all([
+                            loadMyOffers(),
+                            loadAvailableOffers(),
+                            loadMyDemands(),
+                            loadAvailableDemands(),
+                            loadReceivedMatchings(),
+                        ]);
+                    } catch (err) {
+                        errTxt.textContent =
+                            err.message || "Erreur lors de la publication.";
+                        errEl.classList.remove("hidden");
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = "Publier";
+                    }
+                });
+
+            /* ─── Handle URL params (open a specific demand) ─── */
+            function handleUrlParams() {
+                const params = new URLSearchParams(window.location.search);
+                const demandId = params.get("open-demand");
+                if (demandId) {
+                    switchTab("demands");
+                    // Wait for data to load, then find and open
+                    const waitAndOpen = setInterval(() => {
+                        const items = dataCache["available-demands"] || [];
+                        const found = items.find(
+                            (d) => d.id === parseInt(demandId),
+                        );
+                        if (found) {
+                            clearInterval(waitAndOpen);
+                            openDetailModal(
+                                found.id,
+                                "demand",
+                                "available-demands",
+                            );
+                        }
+                    }, 300);
+                    // Timeout after 10s
+                    setTimeout(() => clearInterval(waitAndOpen), 10000);
+                }
+            }
+
+            /* ─── Init ─── */
+            (async function init() {
+                await loadInitialData();
+                // Load matchings FIRST so render functions have data
+                await loadReceivedMatchings();
+                await loadMyOffers();
+                await loadAvailableOffers();
+                await loadMyDemands();
+                await loadAvailableDemands();
+                handleUrlParams();
+
+                // Initial format styling
+                document
+                    .querySelectorAll('input[name="pub-format"]')
+                    .forEach((r) => {
+                        const lbl = r.closest(".format-option");
+                        if (r.checked) {
+                            lbl.className =
+                                "format-option cursor-pointer px-4 py-2 rounded-lg border border-primary bg-primary/10 text-sm text-primary transition-colors";
+                        } else {
+                            lbl.className =
+                                "format-option cursor-pointer px-4 py-2 rounded-lg border border-border bg-input text-sm text-muted hover:border-primary/40 transition-colors";
+                        }
+                    });
+            })();
+        </script>
+    </body>
 </html>

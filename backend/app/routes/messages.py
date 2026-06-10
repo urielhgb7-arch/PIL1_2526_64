@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database import db
 from app.models import User, Profile
-from app.models.messages import Conversation, Message
+from app.models.messages import Conversation, Message, Notification
 
 logger = logging.getLogger(__name__)
 messages_bp = Blueprint('messages', __name__)
@@ -88,7 +88,8 @@ def mes_conversations():
                 "avec": {
                     "user_id": autre_id,
                     "nom": autre_profile.nom if autre_profile else "Inconnu",
-                    "prenom": autre_profile.prenom if autre_profile else ""
+                    "prenom": autre_profile.prenom if autre_profile else "",
+                    "avatar_url": (autre_profile.avatar_url or 'https://via.placeholder.com/150') if autre_profile else None
                 }
             })
 
@@ -139,6 +140,23 @@ def envoyer_message(conv_id: int):
         db.session.commit()
         logger.info(f" Message envoyé: {msg.id} dans conv={conv_id}")
 
+        # Notification pour le destinataire
+        try:
+            current_user = db.session.get(User, current_user_id)
+            profile = Profile.query.filter_by(user_id=current_user_id).first()
+            sender_name = f"{profile.prenom} {profile.nom}" if profile else "Quelqu'un"
+            other_user_id = conv.user_one_id if conv.user_two_id == current_user_id else conv.user_two_id
+            notif = Notification(
+                user_id=other_user_id,
+                titre="Nouveau message",
+                contenu=f"{sender_name} vous a envoyé un message",
+                type='message'
+            )
+            db.session.add(notif)
+            db.session.commit()
+        except Exception as e:
+            logger.warning(f"Échec création notification message REST: {e}")
+
         return jsonify({"message": "Message envoyé", "message_id": msg.id}), 201
         
     except Exception as e:
@@ -174,11 +192,24 @@ def lire_messages(conv_id: int):
             page=page, per_page=per_page, error_out=False
         )
 
+        sender_profiles = {}
+        def get_sender_info(sender_id):
+            if sender_id not in sender_profiles:
+                p = Profile.query.filter_by(user_id=sender_id).first()
+                sender_profiles[sender_id] = p
+            p = sender_profiles[sender_id]
+            return {
+                "prenom": p.prenom if p else "",
+                "nom": p.nom if p else "",
+                "avatar_url": p.avatar_url if p else None
+            }
+
         result = [{
             "id": m.id,
             "sender_id": m.sender_id,
             "contenu": m.contenu,
-            "date_envoi": m.date_envoi.isoformat()
+            "date_envoi": m.date_envoi.isoformat(),
+            "sender": get_sender_info(m.sender_id)
         } for m in pagination.items]
 
         logger.info(f" {len(result)} messages listés pour conv={conv_id} (page {page}/{pagination.pages})")

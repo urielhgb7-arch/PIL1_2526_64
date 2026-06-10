@@ -223,14 +223,20 @@ async function loadConversations() {
       const a = c.avec || {};
       const name = `${a.prenom || ''} ${a.nom || ''}`.trim() || 'Utilisateur';
       const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      const avatarHtml = a.avatar_url
+        ? `<div class="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden bg-primary/20 flex items-center justify-center">
+             <img src="${a.avatar_url}" alt="${name}" class="w-full h-full object-cover"
+               onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-sm font-bold text-primary\\'>${initials}</span>'">
+           </div>`
+        : `<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+             <span class="text-sm font-bold text-primary">${initials}</span>
+           </div>`;
       const cid = c.conversation_id || c.id;
       return `
         <div class="conv-item cursor-pointer px-4 py-3 hover:bg-popover transition-colors border-b border-border"
-             onclick="selectConversation(${cid}, '${name.replace(/'/g, "\\'")}', '${initials}')">
+             onclick="selectConversation(${cid}, '${name.replace(/'/g, "\\'")}', '${initials}', '${(a.avatar_url || '').replace(/'/g, "\\'")}')">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-              <span class="text-sm font-bold text-primary">${initials}</span>
-            </div>
+            ${avatarHtml}
             <div class="flex-1 min-w-0">
               <p class="font-medium text-sm truncate">${name}</p>
             </div>
@@ -243,12 +249,20 @@ async function loadConversations() {
 }
 
 // ── Select conversation ───────────────────────────────────────────
-async function selectConversation(convId, name, initials) {
+async function selectConversation(convId, name, initials, avatarUrl) {
   if (currentConvId === convId) return;
   currentConvId = convId;
 
-  // Update header
-  document.getElementById('chat-avatar').textContent = initials;
+  // Update header with avatar
+  const avatarEl = document.getElementById('chat-avatar');
+  const parent = avatarEl.parentElement;
+  if (avatarUrl) {
+    parent.innerHTML = `<img src="${avatarUrl}" alt="${name}" class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+      onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-sm font-bold text-primary\\'>${initials}</span>';this.parentElement.classList.add('flex','items-center','justify-center','bg-primary/20')">`;
+  } else {
+    parent.innerHTML = `<span id="chat-avatar" class="text-sm font-bold text-primary">${initials}</span>`;
+    parent.classList.add('flex', 'items-center', 'justify-center', 'bg-primary/20');
+  }
   document.getElementById('chat-name').textContent = name;
 
   // Show chat panel
@@ -299,16 +313,30 @@ async function loadMessages(convId) {
     el.innerHTML = msgs.map(m => {
       const isMine = m.sender_id === uid;
       const time = formatTime(m.date_envoi);
+      const s = m.sender || {};
+      const sName = `${s.prenom || ''} ${s.nom || ''}`.trim() || 'Inconnu';
+      const sInitials = sName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      const sAvatar = s.avatar_url
+        ? `<div class="w-7 h-7 rounded-full flex-shrink-0 overflow-hidden bg-popover border border-border flex items-center justify-center">
+             <img src="${s.avatar_url}" alt="${sName}" class="w-full h-full object-cover"
+               onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-muted\\'>${sInitials}</span>'">
+           </div>`
+        : `<div class="w-7 h-7 rounded-full bg-popover border border-border flex items-center justify-center flex-shrink-0">
+             <span class="text-xs font-bold text-muted">${sInitials}</span>
+           </div>`;
       return `
-        <div class="flex ${isMine ? 'justify-end' : 'justify-start'}">
+        <div class="flex ${isMine ? 'justify-end' : 'justify-start'} items-end gap-2">
+          ${!isMine ? sAvatar : ''}
           <div class="max-w-[75%] lg:max-w-[60%] px-4 py-2.5 rounded-2xl text-sm ${
             isMine
               ? 'bg-primary text-white rounded-br-md'
               : 'bg-popover border border-border rounded-bl-md'
           }">
+            ${!isMine ? `<p class="text-[11px] font-medium text-primary mb-0.5">${sName}</p>` : ''}
             <p class="whitespace-pre-wrap break-words">${escapeHtml(m.contenu || '')}</p>
             <p class="text-xs mt-1 ${isMine ? 'text-white/60' : 'text-muted'}">${time}</p>
           </div>
+          ${isMine ? sAvatar : ''}
         </div>`;
     }).join('');
     el.scrollTop = el.scrollHeight;

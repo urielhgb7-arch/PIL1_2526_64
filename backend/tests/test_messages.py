@@ -47,9 +47,11 @@ def test_lister_conversations(client, app_context):
     
     # Créer profils
     profile1 = Profile(user_id=user1.id, nom='Test', prenom='User1', 
-                      filiere='INFO', niveau='L1')
+                      filiere='INFO', niveau='L1',
+                      telephone=f'014{str(user1.id).zfill(7)}')
     profile2 = Profile(user_id=user2.id, nom='Test', prenom='User2',
-                      filiere='INFO', niveau='L1')
+                      filiere='INFO', niveau='L1',
+                      telephone=f'014{str(user2.id).zfill(7)}')
     db.session.add_all([profile1, profile2])
     db.session.commit()
     

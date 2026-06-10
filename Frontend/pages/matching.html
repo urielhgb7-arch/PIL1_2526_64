@@ -103,6 +103,20 @@
     </div>
   </div>
 
+  <!-- Match Info Modal -->
+  <div id="matchInfoModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" style="background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);">
+    <div class="bg-card border border-border rounded-2xl max-w-sm w-full max-h-[80vh] overflow-y-auto shadow-2xl">
+      <div class="sticky top-0 bg-card border-b border-border p-4 flex items-center justify-between">
+        <h3 class="font-bold text-lg" id="matchInfoTitle">Raisons du match</h3>
+        <button onclick="closeMatchInfo()" class="w-8 h-8 rounded-full bg-popover flex items-center justify-center hover:bg-primary/20 transition-colors">
+          <span class="ti ti-x"></span>
+        </button>
+      </div>
+      <div class="p-5 space-y-4" id="matchInfoBody">
+      </div>
+    </div>
+  </div>
+
   <script src="../js/bundle.js"></script>
   <script>
     checkAuth();
@@ -115,10 +129,20 @@
     }
 
     let noMatchesFound = false;
+    let autoDemandId = null;
 
     async function loadSuggestions() {
-      const demandId = getDemandId();
+      let demandId = getDemandId();
       try {
+        if (!demandId) {
+          const resp = await API.demands.getMine();
+          const myDemands = resp.demands || [];
+          if (myDemands.length > 0) {
+            const latest = myDemands.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+            demandId = latest.id;
+            autoDemandId = demandId;
+          }
+        }
         const filters = {};
         if (demandId) filters.demand_id = demandId;
         const data = await API.matching.getSuggestions(filters);
@@ -132,23 +156,23 @@
             name: `${u.prenom} ${u.nom}`,
             level: `${u.niveau || ''} ${u.filiere || ''}`.trim(),
             department: u.filiere || '',
-            bio: (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || 'Aucune bio disponible.',
-            skills: (u.matched_subjects || []).map(s => s.nom),
+            avatar_url: u.avatar_url,
+            bio: u.bio || (u.matched_subjects || []).map(s => `${s.nom} (${s.niveau_competence})`).join(', ') || '',
+            skills: (u.competences || []).map(c => ({ nom: c.nom, niveau: c.niveau })),
+            matched_subjects: (u.matched_subjects || []).map(s => ({ nom: s.nom, niveau: s.niveau_competence })),
             compatibility: u.score,
+            shared_slots: (u.shared_slots || []).map(s =>
+              Array.isArray(s) ? { jour: s[0], creneau: s[1] } : s
+            ),
             score_detail: u.score_detail,
             explication: u.explication,
             rejected_before: u.rejected_before
           }));
         }
       } catch (err) {
-        console.warn('API non disponible, utilisation des données de démo.', err);
-        profiles = [
-          { name: 'Sarah Mensah', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Passionnée par le développement web et mobile.', skills: ['React', 'Node.js', 'MongoDB', 'Docker'], compatibility: 92 },
-          { name: 'Karim Diallo', level: 'M1 RSI', department: 'Réseaux et SI', bio: 'Expert en cybersécurité et architecture réseau.', skills: ['Cybersécurité', 'Cisco', 'Linux', 'Python'], compatibility: 88 },
-          { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', skills: ['Python', 'TensorFlow', 'Scikit-learn', 'Pandas'], compatibility: 85 },
-          { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', skills: ['Vue.js', 'Laravel', 'PostgreSQL', 'AWS'], compatibility: 90 }
-        ];
-        noMatchesFound = false;
+        console.warn('API non disponible, aucun profil à afficher.', err);
+        profiles = [];
+        noMatchesFound = true;
       }
       initCards();
     }
@@ -163,55 +187,100 @@
       const card = document.createElement('div');
       card.className = 'swipe-card absolute inset-0 bg-card border border-border rounded-3xl overflow-hidden shadow-2xl';
       card.style.zIndex = profiles.length - index;
+      const initials = profile.name.split(' ').map(n => n[0]).join('');
+
+      const sharedSlotsHtml = profile.shared_slots && profile.shared_slots.length > 0
+        ? `<div class="flex flex-wrap gap-1.5">
+            ${profile.shared_slots.map(s => `
+              <span class="px-2 py-1 bg-success/10 border border-success/30 text-success rounded-lg text-xs flex items-center gap-1">
+                <span class="ti ti-calendar-check"></span>
+                ${s.jour} ${s.creneau}h
+              </span>
+            `).join('')}
+          </div>`
+        : `<p class="text-xs text-muted italic">Aucun créneau commun</p>`;
+
+      const formatIcon = { 'presentiel': 'ti-building', 'distanciel': 'ti-wifi', 'hybride': 'ti-refresh' };
+      const formatLabel = { 'presentiel': 'Présentiel', 'distanciel': 'Distanciel', 'hybride': 'Hybride' };
+      const fmt = (profile.format_preference || 'hybride').toLowerCase();
+
       card.innerHTML = `
         <div class="h-full flex flex-col">
-          <!-- Profile Header -->
-          <div class="bg-gradient-to-br from-primary/20 to-success/20 p-8 text-center">
-            <div class="w-24 h-24 rounded-full bg-primary/30 flex items-center justify-center mx-auto mb-4">
-              <span class="text-4xl font-bold text-primary">${profile.name.split(' ').map(n => n[0]).join('')}</span>
+          <!-- Header -->
+          <div class="bg-gradient-to-br from-primary/20 to-success/20 p-6 text-center relative flex-shrink-0">
+            <button onclick="showMatchInfo(event, ${index})" title="Raisons du match"
+              class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/40 border border-white/10 flex items-center justify-center hover:bg-primary/30 transition-colors z-10">
+              <span class="ti ti-info-circle" style="font-size:1.2rem;color:#7C6FF7;"></span>
+            </button>
+
+            ${profile.avatar_url
+              ? `<div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-3 ring-2 ring-primary/40">
+                   <img src="${profile.avatar_url}" alt="${profile.name}" class="w-full h-full object-cover"
+                     onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'text-3xl font-bold text-primary\\'>${initials}</span>';this.parentElement.classList.add('flex','items-center','justify-center','bg-primary/20')">
+                 </div>`
+              : `<div class="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3 ring-2 ring-primary/30">
+                   <span class="text-3xl font-bold text-primary">${initials}</span>
+                 </div>`
+            }
+
+            <h2 class="text-xl font-bold mb-0.5">${profile.name}</h2>
+
+            <div class="flex items-center justify-center gap-2 flex-wrap mt-1">
+              <span class="px-2 py-0.5 bg-primary/20 text-primary rounded-full text-xs font-medium">${profile.level}</span>
+              ${fmt ? `<span class="px-2 py-0.5 bg-popover border border-border rounded-full text-xs text-muted flex items-center gap-1">
+                <span class="ti ${formatIcon[fmt] || 'ti-refresh'}"></span>${formatLabel[fmt] || fmt}
+              </span>` : ''}
             </div>
-            <h2 class="text-2xl font-bold mb-1">${profile.name}</h2>
-            <p class="text-muted">${profile.level} - ${profile.department}</p>
-            <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-success/20 text-success rounded-full">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+
+            <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-success/20 text-success rounded-full text-sm">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
               <span class="font-semibold">${profile.compatibility}% compatible</span>
             </div>
           </div>
 
-          <!-- Profile Content -->
-          <div class="flex-1 p-6 space-y-6 overflow-y-auto">
-            <div>
-              <h3 class="text-sm font-semibold text-muted mb-2">À PROPOS</h3>
-              <p class="text-sm">${profile.bio}</p>
-            </div>
+          <!-- Contenu scrollable -->
+          <div class="flex-1 p-4 space-y-4 overflow-y-auto">
+            ${profile.bio ? `<div>
+              <h3 class="text-xs font-semibold text-muted mb-1 tracking-wider">À PROPOS</h3>
+              <p class="text-sm text-foreground/80">${profile.bio}</p>
+            </div>` : ''}
 
-            <div>
-              <h3 class="text-sm font-semibold text-muted mb-3">COMPÉTENCES</h3>
-              <div class="flex flex-wrap gap-2">
-                ${profile.skills.map(skill => `
-                  <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">${skill}</span>
+            ${profile.matched_subjects && profile.matched_subjects.length > 0 ? `<div>
+              <h3 class="text-xs font-semibold text-muted mb-2 tracking-wider">MATIÈRES CORRESPONDANTES</h3>
+              <div class="flex flex-wrap gap-1.5">
+                ${profile.matched_subjects.map(s => `
+                  <span class="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs flex items-center gap-1">${s.nom} <span class="text-[10px] text-primary/60">${s.niveau}</span></span>
                 `).join('')}
               </div>
+            </div>` : ''}
+
+            ${profile.skills && profile.skills.length > (profile.matched_subjects || []).length ? `<div>
+              <h3 class="text-xs font-semibold text-muted mb-2 tracking-wider">AUTRES COMPÉTENCES</h3>
+              <div class="flex flex-wrap gap-1.5">
+                ${profile.skills.filter(s => !(profile.matched_subjects || []).some(ms => ms.nom === s.nom)).map(s => `
+                  <span class="px-2.5 py-1 bg-popover border border-border rounded-full text-xs flex items-center gap-1">${s.nom} <span class="text-[10px] text-muted">${s.niveau}</span></span>
+                `).join('')}
+              </div>
+            </div>` : ''}
+
+            <div>
+              <h3 class="text-xs font-semibold text-muted mb-2 tracking-wider">CRÉNEAUX COMMUNS</h3>
+              ${sharedSlotsHtml}
             </div>
           </div>
 
           <!-- Swipe Overlays -->
-          <div class="swipe-overlay like">
-            <span>LIKE</span>
-          </div>
-          <div class="swipe-overlay nope">
-            <span>NOPE</span>
-          </div>
+          <div class="swipe-overlay like"><span>LIKE</span></div>
+          <div class="swipe-overlay nope"><span>NOPE</span></div>
         </div>
       `;
 
-      // Touch and mouse events
       card.addEventListener('mousedown', handleDragStart);
-      card.addEventListener('touchstart', handleDragStart);
+      card.addEventListener('touchstart', handleDragStart, { passive: true });
       card.addEventListener('mousemove', handleDrag);
-      card.addEventListener('touchmove', handleDrag);
+      card.addEventListener('touchmove', handleDrag, { passive: false });
       card.addEventListener('mouseup', handleDragEnd);
       card.addEventListener('touchend', handleDragEnd);
       card.addEventListener('mouseleave', handleDragEnd);
@@ -261,7 +330,7 @@
     function handleDragEnd(e) {
       if (!isDragging || !currentCard) return;
 
-      const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+      const clientX = e.type.includes('mouse') ? e.clientX : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : dragStartX);
       const deltaX = clientX - dragStartX;
 
       if (Math.abs(deltaX) > 100) {
@@ -282,28 +351,49 @@
 
     function swipeCard(direction) {
       if (!currentCard) return;
+      const card = currentCard;
 
       const profile = profiles[currentIndex];
       const rotation = direction === 'right' ? 30 : -30;
       const translateX = direction === 'right' ? 1000 : -1000;
 
-      // Swipe droit = envoi d'une demande de match
-      if (profile && profile.id && direction === 'right') {
-        const demandId = getDemandId();
-        if (demandId) {
-          API.matching.requestMatch(profile.id, { demand_id: parseInt(demandId), score: profile.compatibility })
-            .catch(err => console.warn('API requestMatch error:', err));
-        } else {
-          console.warn('demand_id manquant dans l\'URL');
+      const demandId = getDemandId() || autoDemandId;
+
+      if (profile && profile.id) {
+        if (direction === 'right') {
+          const body = { score: profile.compatibility };
+          if (demandId) body.demand_id = parseInt(demandId);
+          API.matching.requestMatch(profile.id, body)
+            .then(() => {
+              if (typeof showToast === 'function') {
+                showToast(`Demande envoyée à ${profile.name} !`, 'success');
+              }
+            })
+            .catch(err => {
+              const msg = err?.message || 'Erreur lors de l\'envoi';
+              if (typeof showToast === 'function') {
+                showToast(msg, 'error');
+              }
+            });
+        } else if (direction === 'left') {
+          if (demandId) {
+            API.matching.skipMatch(profile.id, { demand_id: parseInt(demandId) })
+              .catch(err => {
+                const msg = err?.message || 'Erreur lors de l\'enregistrement';
+                if (typeof showToast === 'function') {
+                  showToast(msg, 'error');
+                }
+              });
+          }
         }
       }
 
-      currentCard.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      currentCard.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
-      currentCard.style.opacity = '0';
+      card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      card.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
+      card.style.opacity = '0';
 
       setTimeout(() => {
-        currentCard.remove();
+        card.remove();
         currentIndex++;
         if (currentIndex < profiles.length) {
           loadNextCard();
@@ -379,6 +469,82 @@
       }
       if (profiles.length === 0) showNoMoreCards(noMatchesFound);
     }
+
+    // ── Match Info Modal ──
+    function showMatchInfo(e, index) {
+      e.stopPropagation();
+      const p = profiles[index];
+      if (!p) return;
+      document.getElementById('matchInfoTitle').textContent = `${p.name} — Détails du match`;
+      const sd = p.score_detail || {};
+      const body = document.getElementById('matchInfoBody');
+      body.innerHTML = `
+        <div class="space-y-3">
+          <h4 class="font-semibold text-sm text-muted">RAISONS</h4>
+          <ul class="space-y-2">
+            ${(p.explication?.raisons || ['Aucune raison spécifique']).map(r => `
+              <li class="flex items-start gap-2 text-sm">
+                <span class="ti ti-circle-check text-success mt-0.5"></span>
+                <span>${r}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        <div class="border-t border-border pt-3">
+          <h4 class="font-semibold text-sm text-muted mb-3">DÉTAIL DU SCORE</h4>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between">
+              <span>Matière</span>
+              <span class="font-semibold text-primary">${sd.matiere || 0}/35</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Niveau vs urgence</span>
+              <span class="font-semibold text-primary">${sd.niveau_vs_gravite || 0}/20</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Disponibilités</span>
+              <span class="font-semibold text-primary">${sd.disponibilites || 0}/25</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Même année</span>
+              <span class="font-semibold text-primary">${sd.meme_niveau || 0}/10</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Même filière</span>
+              <span class="font-semibold text-primary">${sd.meme_filiere || 0}/10</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Format</span>
+              <span class="font-semibold text-primary">${sd.format_preference || 0}/10</span>
+            </div>
+            ${sd.penalite_rejet < 0 ? `
+            <div class="flex items-center justify-between text-destructive">
+              <span>Pénalité rejet</span>
+              <span class="font-semibold">${sd.penalite_rejet}</span>
+            </div>` : ''}
+            <div class="flex items-center justify-between pt-2 border-t border-border font-bold">
+              <span>Total</span>
+              <span class="text-success">${p.compatibility}%</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('matchInfoModal').classList.remove('hidden');
+    }
+
+    function closeMatchInfo() {
+      document.getElementById('matchInfoModal').classList.add('hidden');
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('matchInfoModal').addEventListener('click', function(e) {
+      if (e.target === this) closeMatchInfo();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMatchInfo();
+    });
 
     // Lancement : charger les suggestions depuis l'API
     loadSuggestions();

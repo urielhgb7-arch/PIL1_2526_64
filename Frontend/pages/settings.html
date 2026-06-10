@@ -1,582 +1,1414 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paramètres - IFRI MentorLink</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link rel="stylesheet" href="../css/styles.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            background: '#08090C',
-            foreground: '#FFFFFF',
-            card: '#0F111A',
-            popover: '#1F2433',
-            primary: '#7C6FF7',
-            success: '#2DD4A0',
-            warning: '#F5A623',
-            destructive: '#F97066',
-            border: 'rgba(255, 255, 255, 0.08)',
-            input: '#1F2433',
-            muted: 'rgba(255, 255, 255, 0.6)',
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="bg-background text-foreground">
-  <!-- Top Bar -->
-  <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
-    <div class="max-w-4xl mx-auto flex items-center justify-between">
-      <h1 class="text-2xl font-bold">Paramètres</h1>
-      <div class="flex items-center gap-3">
-        <a href="notifications.html" class="site-bell" aria-label="Notifications">
-          <span class="ti ti-bell"></span>
-          <span class="dot" id="siteBellDot"></span>
-        </a>
-        <a href="dashboard.html" class="text-muted hover:text-white" aria-label="Retour au dashboard">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Settings Content -->
-  <div class="max-w-4xl mx-auto p-4 pb-24 lg:pb-8 space-y-6">
-    <!-- Profile Section -->
-    <div class="bg-card border border-border rounded-xl p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Profil</h2>
-        <button onclick="openModal('profile')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-          Modifier
-        </button>
-      </div>
-      <div class="space-y-3">
-        <div>
-          <label class="text-sm text-muted">Nom complet</label>
-          <p id="display-name" class="font-medium">Jean Dupont</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Paramètres - IFRI MentorLink</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+        />
+        <link rel="stylesheet" href="../css/styles.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js">
+        </script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            background: "#08090C",
+                            foreground: "#FFFFFF",
+                            card: "#0F111A",
+                            popover: "#1F2433",
+                            primary: "#7C6FF7",
+                            success: "#2DD4A0",
+                            warning: "#F5A623",
+                            destructive: "#F97066",
+                            border: "rgba(255, 255, 255, 0.08)",
+                            input: "#1F2433",
+                            muted: "rgba(255, 255, 255, 0.6)",
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-background text-foreground">
+        <!-- Top Bar -->
+        <div
+            class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4"
+        >
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <h1 class="text-2xl font-bold">Paramètres</h1>
+                <div class="flex items-center gap-3">
+                    <a
+                        href="notifications.html"
+                        class="site-bell"
+                        aria-label="Notifications"
+                    >
+                        <span class="ti ti-bell"></span>
+                        <span class="dot" id="siteBellDot"></span>
+                    </a>
+                    <a
+                        href="dashboard.html"
+                        class="text-muted hover:text-white"
+                        aria-label="Retour au dashboard"
+                    >
+                        <svg
+                            class="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm text-muted">Filière</label>
-            <p id="display-department" class="font-medium">Génie Logiciel</p>
-          </div>
-          <div>
-            <label class="text-sm text-muted">Niveau</label>
-            <p id="display-level" class="font-medium">Licence 3</p>
-          </div>
+
+        <!-- Toast -->
+        <div
+            id="toast"
+            class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"
+        ></div>
+
+        <!-- Settings Content -->
+        <div class="max-w-4xl mx-auto p-4 pb-24 lg:pb-8 space-y-6">
+            <!-- Profile Section -->
+            <div class="bg-card border border-border rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Profil</h2>
+                    <button
+                        onclick="openModal('profile')"
+                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm"
+                    >
+                        Modifier
+                    </button>
+                </div>
+                <div class="flex items-start gap-5">
+                    <!-- Avatar avec bouton crayon -->
+                    <div class="relative flex-shrink-0">
+                        <div
+                            id="settings-avatar-container"
+                            class="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-border"
+                        >
+                            <span
+                                id="settings-avatar-initials"
+                                class="text-2xl font-bold text-primary"
+                                >?</span
+                            >
+                            <img
+                                id="settings-avatar-img"
+                                src=""
+                                alt="avatar"
+                                class="hidden w-full h-full object-cover absolute inset-0 rounded-full"
+                            />
+                        </div>
+                        <button
+                            onclick="
+                                document
+                                    .getElementById('avatar-file-input')
+                                    .click()
+                            "
+                            class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg"
+                            title="Changer la photo"
+                        >
+                            <svg
+                                class="w-3.5 h-3.5 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                />
+                            </svg>
+                        </button>
+                        <input
+                            type="file"
+                            id="avatar-file-input"
+                            accept="image/*"
+                            class="hidden"
+                            onchange="handleAvatarChange(event)"
+                        />
+                    </div>
+                    <!-- Infos texte -->
+                    <div class="flex-1 space-y-3">
+                        <div>
+                            <label class="text-sm text-muted"
+                                >Nom complet</label
+                            >
+                            <p id="display-name" class="font-medium">
+                                Jean Dupont
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm text-muted"
+                                    >Filière</label
+                                >
+                                <p id="display-department" class="font-medium">
+                                    Génie Logiciel
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-sm text-muted">Niveau</label>
+                                <p id="display-level" class="font-medium">
+                                    Licence 3
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-sm text-muted">Biographie</label>
+                            <p
+                                id="display-bio"
+                                class="text-sm text-foreground/80 mt-0.5 italic"
+                            >
+                                <span class="text-muted">Non renseignée</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="bg-card border border-border rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">
+                        Compétences & Faiblesses
+                    </h2>
+                    <button
+                        onclick="openModal('skills')"
+                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm"
+                    >
+                        Modifier
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-sm text-muted mb-2 block"
+                            >Compétences</label
+                        >
+                        <div id="skills-display" class="flex flex-wrap gap-2">
+                            <span class="text-xs text-muted"
+                                >Chargement...</span
+                            >
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm text-muted mb-2 block"
+                            >Faiblesses</label
+                        >
+                        <div
+                            id="weaknesses-display"
+                            class="flex flex-wrap gap-2"
+                        >
+                            <span class="text-xs text-muted"
+                                >Chargement...</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability Section -->
+            <div class="bg-card border border-border rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Disponibilité</h2>
+                    <button
+                        onclick="openModal('availability')"
+                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm"
+                    >
+                        Modifier
+                    </button>
+                </div>
+                <p class="text-sm text-muted">
+                    Vos créneaux de disponibilité pour le mentorat
+                </p>
+                <div id="dispo-tags" class="flex flex-wrap gap-1.5 mt-3"></div>
+            </div>
+
+            <!-- Password Section -->
+            <div class="bg-card border border-border rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Mot de passe</h2>
+                    <button
+                        onclick="openModal('password')"
+                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm"
+                    >
+                        Changer
+                    </button>
+                </div>
+                <p class="text-sm text-muted">••••••••</p>
+            </div>
+
+            <!-- Danger Zone -->
+            <div
+                class="bg-destructive/10 border border-destructive/20 rounded-xl p-6"
+            >
+                <h2 class="text-xl font-semibold text-destructive mb-4">
+                    Zone de danger
+                </h2>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button
+                        onclick="logout()"
+                        class="px-4 py-2 bg-destructive/20 text-destructive border border-destructive/40 rounded-lg hover:bg-destructive/30 transition-colors text-sm"
+                    >
+                        Déconnexion
+                    </button>
+                    <button
+                        onclick="openModal('delete-account')"
+                        class="px-4 py-2 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm flex items-center gap-2"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                        </svg>
+                        Supprimer mon compte
+                    </button>
+                </div>
+                <p class="text-xs text-muted mt-3">
+                    La suppression est irréversible. Toutes vos données seront
+                    définitivement effacées.
+                </p>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Skills Section -->
-    <div class="bg-card border border-border rounded-xl p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Compétences & Faiblesses</h2>
-        <button onclick="openModal('skills')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-          Modifier
-        </button>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label class="text-sm text-muted mb-2 block">Compétences</label>
-          <div id="skills-display" class="flex flex-wrap gap-2">
-            <span class="text-xs text-muted">Chargement...</span>
-          </div>
+        <!-- Profile Modal -->
+        <div
+            id="modal-profile"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-xl p-6 max-w-md w-full"
+            >
+                <h3 class="text-xl font-semibold mb-4">Modifier le profil</h3>
+                <form id="form-profile" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2"
+                                >Prénom</label
+                            >
+                            <input
+                                id="profile-prenom"
+                                type="text"
+                                placeholder="Jean"
+                                class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2"
+                                >Nom</label
+                            >
+                            <input
+                                id="profile-nom"
+                                type="text"
+                                placeholder="DUPONT"
+                                class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Filière</label
+                        >
+                        <select
+                            id="profile-filiere"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                            <option value="GL">Génie Logiciel (GL)</option>
+                            <option value="RSI">
+                                Réseaux et Systèmes d'Information (RSI)
+                            </option>
+                            <option value="SI">
+                                Systèmes d'Information (SI)
+                            </option>
+                            <option value="IA">
+                                Intelligence Artificielle (IA)
+                            </option>
+                            <option value="IM">
+                                Ingénierie Mathématique (IM)
+                            </option>
+                            <option value="SIRI">
+                                Sécurité Informatique (SIRI)
+                            </option>
+                            <option value="SEoIT">
+                                Software Engineering (SEoIT)
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Niveau</label
+                        >
+                        <select
+                            id="profile-niveau"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                            <option value="L1">Licence 1 (L1)</option>
+                            <option value="L2">Licence 2 (L2)</option>
+                            <option value="L3">Licence 3 (L3)</option>
+                            <option value="M1">Master 1 (M1)</option>
+                            <option value="M2">Master 2 (M2)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Biographie</label
+                        >
+                        <textarea
+                            id="profile-bio"
+                            rows="3"
+                            placeholder="Quelques mots sur vous…"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm placeholder:text-muted"
+                        ></textarea>
+                    </div>
+                    <p
+                        id="profile-form-error"
+                        class="hidden text-sm text-destructive"
+                    ></p>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            onclick="closeModal('profile')"
+                            class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div>
-          <label class="text-sm text-muted mb-2 block">Faiblesses</label>
-          <div id="weaknesses-display" class="flex flex-wrap gap-2">
-            <span class="text-xs text-muted">Chargement...</span>
-          </div>
+
+        <!-- Skills Modal -->
+        <div
+            id="modal-skills"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+                <h3 class="text-xl font-semibold mb-4">
+                    Compétences & Faiblesses
+                </h3>
+                <div
+                    id="matieres-loading-modal"
+                    class="flex items-center justify-center py-6"
+                >
+                    <div
+                        class="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-3"
+                    ></div>
+                    <span class="text-muted text-sm"
+                        >Chargement des matières…</span
+                    >
+                </div>
+                <form id="modal-skills-form" class="space-y-6 hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-medium mb-3">
+                                Compétences
+                            </h4>
+                            <div
+                                id="strengths-list-modal"
+                                class="space-y-2"
+                            ></div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium mb-3">Faiblesses</h4>
+                            <div
+                                id="weaknesses-list-modal"
+                                class="space-y-2"
+                            ></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            onclick="closeModal('skills')"
+                            class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Availability Section -->
-    <div class="bg-card border border-border rounded-xl p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Disponibilité</h2>
-        <button onclick="openModal('availability')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-          Modifier
-        </button>
-      </div>
-      <p class="text-sm text-muted">Vos créneaux de disponibilité pour le mentorat</p>
-      <div id="dispo-tags" class="flex flex-wrap gap-1.5 mt-3"></div>
-    </div>
-
-    <!-- Password Section -->
-    <div class="bg-card border border-border rounded-xl p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Mot de passe</h2>
-        <button onclick="openModal('password')" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-          Changer
-        </button>
-      </div>
-      <p class="text-sm text-muted">••••••••</p>
-    </div>
-
-    <!-- Danger Zone -->
-    <div class="bg-destructive/10 border border-destructive/20 rounded-xl p-6">
-      <h2 class="text-xl font-semibold text-destructive mb-4">Zone de danger</h2>
-      <button onclick="logout()" class="px-4 py-2 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors text-sm">
-        Déconnexion
-      </button>
-    </div>
-  </div>
-
-  <!-- Profile Modal -->
-  <div id="modal-profile" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-xl p-6 max-w-md w-full">
-      <h3 class="text-xl font-semibold mb-4">Modifier le profil</h3>
-      <form class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-2">Prénom</label>
-            <input title="Prénom" type="text" value="Jean" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">Nom</label>
-            <input title="Nom" type="text" value="Dupont" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
+        <!-- Availability Modal -->
+        <div
+            id="modal-availability"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            >
+                <h3 class="text-xl font-semibold mb-4">
+                    Modifier la disponibilité
+                </h3>
+                <form class="space-y-4">
+                    <p class="text-sm text-muted">
+                        Sélectionnez vos créneaux disponibles
+                    </p>
+                    <div class="flex gap-2 text-sm">
+                        <button type="button" onclick="selectMornings()"
+                            class="px-3 py-1.5 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-xs font-medium">
+                            Matin (8h-12h)
+                        </button>
+                        <button type="button" onclick="selectAfternoons()"
+                            class="px-3 py-1.5 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-xs font-medium">
+                            Après-midi (12h-17h)
+                        </button>
+                        <button type="button" onclick="clearAllSlots()"
+                            class="px-3 py-1.5 rounded bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-xs font-medium">
+                            Tout effacer
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="sticky left-0 bg-card border border-border p-2 text-left text-sm font-medium">Horaires</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Lundi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Mardi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Mercredi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Jeudi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Vendredi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Samedi</th>
+                                    <th class="border border-border p-2 text-sm font-medium min-w-[80px]">Dimanche</th>
+                                </tr>
+                            </thead>
+                            <tbody id="availability-grid-modal"></tbody>
+                        </table>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            onclick="closeModal('availability')"
+                            class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div>
-          <label class="block text-sm font-medium mb-2">Filière</label>
-          <select title="Filière" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-            <option>Génie Logiciel (GL)</option>
-            <option>Réseaux et Systèmes d'Information (RSI)</option>
-            <option>Intelligence Artificielle (IA)</option>
-          </select>
+
+        <!-- Password Modal -->
+        <div
+            id="modal-password"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-xl p-6 max-w-md w-full"
+            >
+                <h3 class="text-xl font-semibold mb-4">
+                    Changer le mot de passe
+                </h3>
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Mot de passe actuel</label
+                        >
+                        <input
+                            title="Mot de passe actuel"
+                            type="password"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Nouveau mot de passe</label
+                        >
+                        <input
+                            title="Nouveau mot de passe"
+                            type="password"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Confirmer le nouveau mot de passe</label
+                        >
+                        <input
+                            title="Confirmer le nouveau mot de passe"
+                            type="password"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            onclick="closeModal('password')"
+                            class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                            Changer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div>
-          <label class="block text-sm font-medium mb-2">Niveau</label>
-          <select title="Niveau" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary">
-            <option>Licence 1</option>
-            <option>Licence 2</option>
-            <option selected>Licence 3</option>
-            <option>Master 1</option>
-            <option>Master 2</option>
-          </select>
+
+        <!-- Delete Account Modal -->
+        <div
+            id="modal-delete-account"
+            class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-destructive/30 rounded-xl p-6 max-w-md w-full"
+            >
+                <div class="flex items-center gap-3 mb-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0"
+                    >
+                        <svg
+                            class="w-5 h-5 text-destructive"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-destructive">
+                        Supprimer mon compte
+                    </h3>
+                </div>
+                <p class="text-sm text-muted mb-2">
+                    Cette action est
+                    <strong class="text-white">irréversible</strong>. Les
+                    données suivantes seront définitivement supprimées :
+                </p>
+                <ul
+                    class="text-sm text-muted list-disc list-inside mb-5 space-y-1"
+                >
+                    <li>Votre profil, compétences et disponibilités</li>
+                    <li>Vos messages et conversations</li>
+                    <li>Vos offres, demandes et matchings</li>
+                </ul>
+                <form id="form-delete-account" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            >Confirmez avec votre mot de passe</label
+                        >
+                        <input
+                            id="delete-account-password"
+                            type="password"
+                            placeholder="Votre mot de passe"
+                            class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-destructive"
+                            autocomplete="current-password"
+                        />
+                    </div>
+                    <p
+                        id="delete-account-error"
+                        class="hidden text-sm text-destructive"
+                    ></p>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            onclick="closeModal('delete-account')"
+                            class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="submit"
+                            id="delete-account-btn"
+                            class="flex-1 py-2 bg-destructive text-white rounded-lg hover:bg-destructive/90 transition-colors"
+                        >
+                            Supprimer définitivement
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="flex gap-2">
-          <button type="button" onclick="closeModal('profile')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
-            Annuler
-          </button>
-          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Enregistrer
-          </button>
+
+        <!-- Crop Avatar Modal -->
+        <div
+            id="modal-crop-avatar"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 hidden"
+            onclick="if(event.target===this)closeCropModal()"
+        >
+            <div
+                class="bg-card rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl border border-border"
+                onclick="event.stopPropagation()"
+            >
+                <h3 class="text-lg font-bold mb-4">Recadrer la photo</h3>
+                <div class="w-full max-h-80 overflow-hidden rounded-xl bg-black/40">
+                    <img id="crop-image" src="" alt="Photo à recadrer" class="max-w-full" />
+                </div>
+                <div class="flex gap-3 mt-5">
+                    <button
+                        type="button"
+                        onclick="closeCropModal()"
+                        class="flex-1 py-2.5 bg-popover text-white rounded-xl hover:bg-popover/80 transition-colors text-sm font-medium"
+                    >
+                        Annuler
+                    </button>
+                    <button
+                        type="button"
+                        id="btn-save-crop"
+                        onclick="saveCrop()"
+                        class="flex-1 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
         </div>
-      </form>
-    </div>
-  </div>
 
-  <!-- Skills Modal -->
-  <div id="modal-skills" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      <h3 class="text-xl font-semibold mb-4">Compétences & Faiblesses</h3>
-      <div id="matieres-loading-modal" class="flex items-center justify-center py-6">
-        <div class="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-3"></div>
-        <span class="text-muted text-sm">Chargement des matières…</span>
-      </div>
-      <form id="modal-skills-form" class="space-y-6 hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-sm font-medium mb-3">Compétences</h4>
-            <div id="strengths-list-modal" class="space-y-2"></div>
-          </div>
-          <div>
-            <h4 class="text-sm font-medium mb-3">Faiblesses</h4>
-            <div id="weaknesses-list-modal" class="space-y-2"></div>
-          </div>
+        <!-- Mobile Bottom Navigation -->
+        <div
+            class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50"
+        >
+            <div class="flex items-center justify-around p-2">
+                <a
+                    href="dashboard.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
+                    </svg>
+                    <span class="text-xs">Dashboard</span>
+                </a>
+                <a
+                    href="matching.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"
+                        />
+                    </svg>
+                    <span class="text-xs">Matchs</span>
+                </a>
+                <a
+                    href="messages.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                    </svg>
+                    <span class="text-xs">Messages</span>
+                </a>
+                <a
+                    href="requests.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                    </svg>
+                    <span class="text-xs">Publications</span>
+                </a>
+                <a
+                    href="settings.html"
+                    class="flex flex-col items-center gap-1 p-2 text-primary"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    <span class="text-xs">Paramètres</span>
+                </a>
+            </div>
         </div>
-        <div class="flex gap-2">
-          <button type="button" onclick="closeModal('skills')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
-            Annuler
-          </button>
-          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Enregistrer
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <!-- Availability Modal -->
-  <div id="modal-availability" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-      <h3 class="text-xl font-semibold mb-4">Modifier la disponibilité</h3>
-      <form class="space-y-4">
-        <p class="text-sm text-muted">Sélectionnez vos créneaux disponibles</p>
-        <div class="overflow-x-auto">
-          <table class="w-full border-collapse">
-            <thead>
-              <tr>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover"></th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Lun</th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Mar</th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Mer</th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Jeu</th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Ven</th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Sam</th>
-                <th class="p-2 text-xs font-medium text-muted border border-border bg-popover">Dim</th>
-              </tr>
-            </thead>
-            <tbody id="availability-grid-modal"></tbody>
-          </table>
-        </div>
-        <div class="flex gap-2">
-          <button type="button" onclick="closeModal('availability')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
-            Annuler
-          </button>
-          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Enregistrer
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+        <script src="../js/bundle.js"></script>
+        <script>
+            checkAuth();
 
-  <!-- Password Modal -->
-  <div id="modal-password" class="hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-card border border-border rounded-xl p-6 max-w-md w-full">
-      <h3 class="text-xl font-semibold mb-4">Changer le mot de passe</h3>
-      <form class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium mb-2">Mot de passe actuel</label>
-          <input title="Mot de passe actuel" type="password" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-2">Nouveau mot de passe</label>
-          <input title="Nouveau mot de passe" type="password" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-2">Confirmer le nouveau mot de passe</label>
-          <input title="Confirmer le nouveau mot de passe" type="password" class="w-full px-4 py-2 bg-input rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary" />
-        </div>
-        <div class="flex gap-2">
-          <button type="button" onclick="closeModal('password')" class="flex-1 py-2 bg-popover text-white rounded-lg hover:bg-popover/80 transition-colors">
-            Annuler
-          </button>
-          <button type="submit" class="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Changer
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+            // ── Avatar ────────────────────────────────────────────────────────────────
+            function displayAvatar(url, initials) {
+                const img = document.getElementById("settings-avatar-img");
+                const ini = document.getElementById("settings-avatar-initials");
+                if (
+                    url &&
+                    url !== "https://via.placeholder.com/150" &&
+                    !url.startsWith("http")
+                ) {
+                    // data URL
+                    img.src = url;
+                    img.classList.remove("hidden");
+                    ini.classList.add("hidden");
+                } else if (url && url !== "https://via.placeholder.com/150") {
+                    img.src = url;
+                    img.classList.remove("hidden");
+                    ini.classList.add("hidden");
+                } else {
+                    img.classList.add("hidden");
+                    ini.classList.remove("hidden");
+                    ini.textContent = initials || "?";
+                }
+            }
 
-  <!-- Mobile Bottom Navigation -->
-  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50">
-    <div class="flex items-center justify-around p-2">
-      <a href="dashboard.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <span class="text-xs">Dashboard</span>
-      </a>
-      <a href="matching.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
-        </svg>
-        <span class="text-xs">Matchs</span>
-      </a>
-      <a href="messages.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span class="text-xs">Messages</span>
-      </a>
-      <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span class="text-xs">Publications</span>
-      </a>
-      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-primary">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <span class="text-xs">Paramètres</span>
-      </a>
-    </div>
-  </div>
+            let _cropper = null;
 
-  <script src="../js/bundle.js"></script>
-  <script>
-    checkAuth();
+            function openCropModal(dataUrl) {
+                const img = document.getElementById("crop-image");
+                img.src = dataUrl;
+                document.getElementById("modal-crop-avatar").classList.remove("hidden");
+                if (_cropper) _cropper.destroy();
+                _cropper = new Cropper(img, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: "move",
+                    autoCropArea: 1,
+                    cropBoxMovable: false,
+                    cropBoxResizable: true,
+                    background: false,
+                });
+            }
 
-    function openModal(name) {
-      document.getElementById(`modal-${name}`).classList.remove('hidden');
-      if (name === 'availability') {
-        initAvailabilityGrid();
-      }
-      if (name === 'skills') {
-        initSkillsModal();
-      }
-    }
+            function closeCropModal() {
+                document.getElementById("modal-crop-avatar").classList.add("hidden");
+                if (_cropper) { _cropper.destroy(); _cropper = null; }
+            }
 
-    function closeModal(name) {
-      document.getElementById(`modal-${name}`).classList.add('hidden');
-    }
+            async function handleAvatarChange(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast("Image trop grande. Maximum 2 Mo.", "error");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => openCropModal(e.target.result);
+                reader.readAsDataURL(file);
+            }
 
-    const DAY_SHORT_TO_FULL = { 'lun':'Lundi','mar':'Mardi','mer':'Mercredi','jeu':'Jeudi','ven':'Vendredi','sam':'Samedi','dim':'Dimanche' };
-    const DAY_FULL_TO_SHORT = { 'Lundi':'lun','Mardi':'mar','Mercredi':'mer','Jeudi':'jeu','Vendredi':'ven','Samedi':'sam','Dimanche':'dim' };
+            function openModal(name) {
+                document
+                    .getElementById(`modal-${name}`)
+                    .classList.remove("hidden");
+                if (name === "availability") {
+                    initAvailabilityGrid();
+                }
+                if (name === "skills") {
+                    initSkillsModal();
+                }
+                if (name === "profile") {
+                    document
+                        .getElementById("profile-form-error")
+                        .classList.add("hidden");
+                    API.profile
+                        .getMe()
+                        .then((data) => {
+                            const p = data.profile || data;
+                            document.getElementById("profile-prenom").value =
+                                p.prenom || "";
+                            document.getElementById("profile-nom").value =
+                                p.nom || "";
+                            document.getElementById("profile-filiere").value =
+                                p.filiere || "GL";
+                            document.getElementById("profile-niveau").value =
+                                p.niveau || "L1";
+                            document.getElementById("profile-bio").value =
+                                p.bio || "";
+                        })
+                        .catch(() => {});
+                }
+                if (name === "delete-account") {
+                    document.getElementById("delete-account-password").value =
+                        "";
+                    document
+                        .getElementById("delete-account-error")
+                        .classList.add("hidden");
+                    document.getElementById("delete-account-btn").disabled =
+                        false;
+                    document.getElementById("delete-account-btn").textContent =
+                        "Supprimer d\u00e9finitivement";
+                }
+            }
 
-    function creneauToHour(c) {
-      const p = c.split('-');
-      return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
-    }
-    function hourToCreneau(h) {
-      const p = h.split('h-');
-      return `${String(p[0]).padStart(2,'0')}-${String(p[1].replace('h','')).padStart(2,'0')}`;
-    }
+            function closeModal(name) {
+                document
+                    .getElementById(`modal-${name}`)
+                    .classList.add("hidden");
+            }
 
-    async function initAvailabilityGrid() {
-      const hours = ['8h-9h', '9h-10h', '10h-11h', '11h-12h', '12h-13h', '13h-14h', '14h-15h', '15h-16h', '16h-17h', '17h-18h', '18h-19h', '19h-20h', '20h-21h'];
-      const days = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
-      const grid = document.getElementById('availability-grid-modal');
-      grid.innerHTML = '';
+            const DAY_SHORT_TO_FULL = {
+                lun: "Lundi",
+                mar: "Mardi",
+                mer: "Mercredi",
+                jeu: "Jeudi",
+                ven: "Vendredi",
+                sam: "Samedi",
+                dim: "Dimanche",
+            };
+            const DAY_FULL_TO_SHORT = {
+                Lundi: "lun",
+                Mardi: "mar",
+                Mercredi: "mer",
+                Jeudi: "jeu",
+                Vendredi: "ven",
+                Samedi: "sam",
+                Dimanche: "dim",
+            };
 
-      // Load existing disponibilites
-      let savedDispos = new Set();
-      try {
-        const data = await API.profile.getMe();
-        const profile = data.profile || data;
-        (profile.disponibilites || []).forEach(d => {
-          savedDispos.add(`${DAY_FULL_TO_SHORT[d.jour]}|${creneauToHour(d.creneau)}`);
-        });
-      } catch (_) {}
+            function creneauToHour(c) {
+                const p = c.split("-");
+                return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
+            }
+            function hourToCreneau(h) {
+                const p = h.split("h-");
+                return `${String(p[0]).padStart(2, "0")}-${String(p[1].replace("h", "")).padStart(2, "0")}`;
+            }
 
-      hours.forEach(hour => {
-        const row = document.createElement('tr');
-        const hourCell = document.createElement('td');
-        hourCell.className = 'p-2 text-xs text-muted border border-border bg-popover font-medium';
-        hourCell.textContent = hour;
-        row.appendChild(hourCell);
+            // ── Disponibilités (grille type onboarding) ─────────────────────────────
+            const _AVAIL_HOURS = [
+                "8h-9h", "9h-10h", "10h-11h", "11h-12h", "12h-13h",
+                "13h-14h", "14h-15h", "15h-16h", "16h-17h", "17h-18h",
+                "18h-19h", "19h-20h", "20h-21h",
+            ];
+            const _AVAIL_DAYS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+            let _availSlots = new Set(); // "{di}|{ti}" pour les créneaux sélectionnés
 
-        days.forEach(day => {
-          const cell = document.createElement('td');
-          const key = `${day}|${hour}`;
-          const preFilled = savedDispos.has(key);
-          cell.className = 'p-2 border border-border cursor-pointer hover:bg-primary/20 transition-colors' + (preFilled ? ' bg-primary' : '');
-          cell.dataset.day = day;
-          cell.dataset.hour = hour;
-          cell.onclick = () => {
-            cell.classList.toggle('bg-primary');
-          };
-          row.appendChild(cell);
-        });
-        grid.appendChild(row);
-      });
-    }
+            function _availKey(di, ti) { return `${di}|${ti}`; }
 
-    // Save availability
-    document.querySelector('#modal-availability form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const cells = document.querySelectorAll('#availability-grid-modal td');
-      const selected = [];
-      cells.forEach(cell => {
-        if (cell.classList.contains('bg-primary')) {
-          selected.push({ jour: DAY_SHORT_TO_FULL[cell.dataset.day], creneau: hourToCreneau(cell.dataset.hour) });
-        }
-      });
-      try {
-        const data = await API.profile.getMe();
-        const profile = data.profile || data;
-        const saved = profile.disponibilites || [];
-        const savedSet = new Set(saved.map(d => `${d.jour}|${d.creneau}`));
-        const selectedSet = new Set(selected.map(s => `${s.jour}|${s.creneau}`));
+            function _toggleAvailSlot(di, ti, btn) {
+                const key = _availKey(di, ti);
+                if (_availSlots.has(key)) {
+                    _availSlots.delete(key);
+                    btn.className = "w-full h-8 rounded transition-colors bg-input hover:bg-primary/20";
+                } else {
+                    _availSlots.add(key);
+                    btn.className = "w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80";
+                }
+            }
 
-        const toAdd = selected.filter(s => !savedSet.has(`${s.jour}|${s.creneau}`));
-        const toRemove = saved.filter(d => !selectedSet.has(`${d.jour}|${d.creneau}`));
+            function _setAvailRange(tiFrom, tiTo, value) {
+                for (let ti = tiFrom; ti < tiTo; ti++) {
+                    for (let di = 0; di < 7; di++) {
+                        const key = _availKey(di, ti);
+                        if (value) _availSlots.add(key); else _availSlots.delete(key);
+                        const btn = document.querySelector(
+                            `#availability-grid-modal tr:nth-child(${ti + 1}) td:nth-child(${di + 2}) button`
+                        );
+                        if (btn) {
+                            btn.className = value
+                                ? "w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80"
+                                : "w-full h-8 rounded transition-colors bg-input hover:bg-primary/20";
+                        }
+                    }
+                }
+            }
 
-        for (const s of toAdd) await API.profile.addDisponibilite({ jour: s.jour, creneau: s.creneau });
-        for (const d of toRemove) await API.profile.removeDisponibilite({ jour: d.jour, creneau: d.creneau });
+            function selectMornings()   { _setAvailRange(0, 4, true);  }
+            function selectAfternoons() { _setAvailRange(4, 9, true);  }
+            function clearAllSlots()    { _setAvailRange(0, 13, false); }
 
-        closeModal('availability');
-      } catch (err) {
-        alert('Erreur lors de la sauvegarde : ' + (err.message || err));
-      }
-    });
+            async function initAvailabilityGrid() {
+                const grid = document.getElementById("availability-grid-modal");
+                grid.innerHTML = "";
+                _availSlots = new Set();
 
-    // ── Chargement du profil depuis l'API ──────────────────────────────────────
-    async function loadProfile() {
-      try {
-        const data = await API.profile.getMe();
-        const profile = data.profile || data;
-        document.getElementById('display-name').textContent =
-          `${profile.prenom || ''} ${profile.nom || ''}`.trim() || 'Profil';
-        document.getElementById('display-department').textContent = profile.filiere || '—';
-        document.getElementById('display-level').textContent = profile.niveau || '—';
-        // Sauvegarder localement pour les autres pages
-        saveUserData({
-          firstName: profile.prenom,
-          lastName: profile.nom,
-          department: profile.filiere,
-          level: profile.niveau
-        });
-        // Afficher les disponibilités
-        const dispos = profile.disponibilites || [];
-        const tagsEl = document.getElementById('dispo-tags');
-        tagsEl.innerHTML = '';
-        if (dispos.length === 0) {
-          tagsEl.innerHTML = '<span class="text-xs text-muted">Aucun créneau défini</span>';
-        } else {
-          dispos.forEach(d => {
-            const tag = document.createElement('span');
-            tag.className = 'inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs';
-            tag.textContent = `${d.jour} ${d.creneau}`;
-            tagsEl.appendChild(tag);
-          });
-        }
-        // Afficher les compétences depuis l'API
-        const comps = profile.competences || profile.competences_list || [];
-        renderTags('skills-display', comps, 'bg-success/10 text-success', 'Compétence');
-        // Afficher les faiblesses depuis l'API
-        const lacs = profile.lacunes || profile.lacunes_list || [];
-        renderTags('weaknesses-display', lacs, 'bg-warning/10 text-warning', 'Faiblesse');
-      } catch (err) {
-        console.warn('API profil non disponible, utilisation du cache local.', err);
-        // Fallback localStorage
-        const userData = getUserData();
-        if (userData) {
-          if (userData.firstName && userData.lastName)
-            document.getElementById('display-name').textContent = `${userData.firstName} ${userData.lastName}`;
-          if (userData.department)
-            document.getElementById('display-department').textContent = userData.department;
-          if (userData.level)
-            document.getElementById('display-level').textContent = userData.level;
-        }
-      }
-    }
+                // Charge les disponibilités existantes
+                try {
+                    const data = await API.profile.getMe();
+                    const profile = data.profile || data;
+                    (profile.disponibilites || []).forEach((d) => {
+                        const di = _AVAIL_DAYS.indexOf(d.jour);
+                        const ti = _AVAIL_HOURS.indexOf(creneauToHour(d.creneau));
+                        if (di !== -1 && ti !== -1) _availSlots.add(_availKey(di, ti));
+                    });
+                } catch (_) {}
 
-    // ── Sauvegarde du profil ───────────────────────────────────────────────────
-    document.querySelector('#modal-profile form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const inputs = e.target.querySelectorAll('input, select');
-      const payload = {
-        prenom: inputs[0].value,
-        nom: inputs[1].value,
-        filiere: inputs[2].value,
-        niveau: inputs[3].value
-      };
-      try {
-        await API.profile.updateMe(payload);
-        saveUserData({ firstName: payload.prenom, lastName: payload.nom, department: payload.filiere, level: payload.niveau });
-        await loadProfile();
-        closeModal('profile');
-      } catch (err) {
-        alert('Erreur lors de la mise à jour du profil : ' + err.message);
-      }
-    });
+                _AVAIL_HOURS.forEach((hour, ti) => {
+                    const row = document.createElement("tr");
+                    const hc = document.createElement("td");
+                    hc.className = "sticky left-0 bg-card border border-border p-2 text-sm text-muted";
+                    hc.textContent = hour;
+                    row.appendChild(hc);
+                    _AVAIL_DAYS.forEach((_, di) => {
+                        const cell = document.createElement("td");
+                        cell.className = "border border-border p-1";
+                        const btn = document.createElement("button");
+                        btn.type = "button";
+                        const active = _availSlots.has(_availKey(di, ti));
+                        btn.className = active
+                            ? "w-full h-8 rounded transition-colors bg-primary hover:bg-primary/80"
+                            : "w-full h-8 rounded transition-colors bg-input hover:bg-primary/20";
+                        btn.onclick = () => _toggleAvailSlot(di, ti, btn);
+                        cell.appendChild(btn);
+                        row.appendChild(cell);
+                    });
+                    grid.appendChild(row);
+                });
+            }
 
-    /* ──────────────────────────────────────────
+            // Save availability
+            document
+                .querySelector("#modal-availability form")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const selected = [];
+                    _availSlots.forEach((key) => {
+                        const [di, ti] = key.split("|").map(Number);
+                        selected.push({
+                            jour: _AVAIL_DAYS[di],
+                            creneau: hourToCreneau(_AVAIL_HOURS[ti]),
+                        });
+                    });
+                    try {
+                        const data = await API.profile.getMe();
+                        const profile = data.profile || data;
+                        const saved = profile.disponibilites || [];
+                        const savedSet = new Set(
+                            saved.map((d) => `${d.jour}|${d.creneau}`),
+                        );
+                        const selectedSet = new Set(
+                            selected.map((s) => `${s.jour}|${s.creneau}`),
+                        );
+
+                        const toAdd = selected.filter(
+                            (s) => !savedSet.has(`${s.jour}|${s.creneau}`),
+                        );
+                        const toRemove = saved.filter(
+                            (d) => !selectedSet.has(`${d.jour}|${d.creneau}`),
+                        );
+
+                        for (const s of toAdd)
+                            await API.profile.addDisponibilite({
+                                jour: s.jour,
+                                creneau: s.creneau,
+                            });
+                        for (const d of toRemove)
+                            await API.profile.removeDisponibilite({
+                                jour: d.jour,
+                                creneau: d.creneau,
+                            });
+
+                        closeModal("availability");
+                        loadProfile();
+                    } catch (err) {
+                        showToast("Erreur lors de la sauvegarde : " + (err.message || err), "error");
+                    }
+                });
+
+            // ── Chargement du profil depuis l'API ──────────────────────────────────────
+            async function loadProfile() {
+                // Cache instant
+                const cached = localStorage.getItem("mentorlink_profile_cache");
+                if (cached) {
+                    try { renderSettingsProfile(JSON.parse(cached)); } catch (_) {}
+                }
+                // Rafraîchissement depuis l'API
+                try {
+                    const data = await API.profile.getMe();
+                    const profile = data.profile || data;
+                    renderSettingsProfile(profile);
+                    try { localStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile)); } catch (_) {}
+                } catch (err) {
+                    if (!cached) console.warn("Profil non disponible", err);
+                }
+            }
+
+            function renderSettingsProfile(profile) {
+                if (!profile) return;
+                document.getElementById("display-name").textContent =
+                    `${profile.prenom || ""} ${profile.nom || ""}`.trim() || "Profil";
+                const initials =
+                    `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() || "?";
+                document.getElementById("settings-avatar-initials").textContent = initials;
+                displayAvatar(profile.avatar_url || "", initials);
+                document.getElementById("display-department").textContent = filiereLabel(profile.filiere);
+                document.getElementById("display-level").textContent = niveauLabel(profile.niveau);
+                const bioEl = document.getElementById("display-bio");
+                if (profile.bio && profile.bio.trim()) {
+                    bioEl.textContent = profile.bio;
+                    bioEl.classList.remove("text-muted");
+                } else {
+                    bioEl.innerHTML = '<span class="text-muted">Non renseignée</span>';
+                }
+                saveUserData({
+                    firstName: profile.prenom,
+                    lastName: profile.nom,
+                    department: profile.filiere,
+                    level: profile.niveau,
+                });
+                // Afficher les disponibilités
+                const dispos = profile.disponibilites || [];
+                const tagsEl = document.getElementById("dispo-tags");
+                tagsEl.innerHTML = "";
+                if (dispos.length === 0) {
+                    tagsEl.innerHTML = '<span class="text-xs text-muted">Aucun créneau défini</span>';
+                } else {
+                    dispos.forEach((d) => {
+                        const tag = document.createElement("span");
+                            tag.className =
+                                "inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs";
+                            tag.textContent = `${d.jour} ${d.creneau}`;
+                            tagsEl.appendChild(tag);
+                        });
+                    }
+                    try {
+                        // Afficher les compétences depuis l'API
+                    const comps =
+                        profile.competences || profile.competences_list || [];
+                    renderTags(
+                        "skills-display",
+                        comps,
+                        "bg-success/10 text-success",
+                        "Compétence",
+                    );
+                    // Afficher les faiblesses depuis l'API
+                    const lacs = profile.lacunes || profile.lacunes_list || [];
+                    renderTags(
+                        "weaknesses-display",
+                        lacs,
+                        "bg-warning/10 text-warning",
+                        "Faiblesse",
+                    );
+                } catch (err) {
+                    console.warn(
+                        "API profil non disponible, utilisation du cache local.",
+                        err,
+                    );
+                    // Fallback localStorage
+                    const userData = getUserData();
+                    if (userData) {
+                        if (userData.firstName && userData.lastName)
+                            document.getElementById(
+                                "display-name",
+                            ).textContent =
+                                `${userData.firstName} ${userData.lastName}`;
+                        if (userData.department)
+                            document.getElementById(
+                                "display-department",
+                            ).textContent = filiereLabel(userData.department);
+                        if (userData.level)
+                            document.getElementById(
+                                "display-level",
+                            ).textContent = niveauLabel(userData.level);
+                    }
+                }
+            }
+
+            // ── Sauvegarde du profil ───────────────────────────────────────────────────
+            document
+                .getElementById("form-profile")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const errorEl =
+                        document.getElementById("profile-form-error");
+                    errorEl.classList.add("hidden");
+
+                    const prenom = document
+                        .getElementById("profile-prenom")
+                        .value.trim();
+                    const nom = document
+                        .getElementById("profile-nom")
+                        .value.trim();
+                    const filiere =
+                        document.getElementById("profile-filiere").value;
+                    const niveau =
+                        document.getElementById("profile-niveau").value;
+                    const bio = document
+                        .getElementById("profile-bio")
+                        .value.trim();
+
+                    if (!prenom || !nom) {
+                        errorEl.textContent = "Prénom et nom sont requis.";
+                        errorEl.classList.remove("hidden");
+                        return;
+                    }
+                    const payload = { prenom, nom, filiere, niveau, bio };
+
+                    try {
+                        const result = await API.profile.updateMe(payload);
+                        saveUserData({
+                            firstName: prenom,
+                            lastName: nom,
+                            department: filiere,
+                            level: niveau,
+                        });
+                        // Met à jour le cache dashboard
+                        try {
+                            const cached = JSON.parse(localStorage.getItem("mentorlink_profile_cache") || "{}");
+                            cached.prenom = prenom;
+                            cached.nom = nom;
+                            cached.filiere = filiere;
+                            cached.niveau = niveau;
+                            if (result && result.profile) Object.assign(cached, result.profile);
+                            localStorage.setItem("mentorlink_profile_cache", JSON.stringify(cached));
+                        } catch (_) {}
+                        await loadProfile();
+                        closeModal("profile");
+                    } catch (err) {
+                        errorEl.textContent =
+                            err.message || "Erreur lors de la mise à jour.";
+                        errorEl.classList.remove("hidden");
+                    }
+                });
+
+            /* ──────────────────────────────────────────
        Skills modal: load matieres from API, filter by filiere, render selectable lists
     ────────────────────────────────────────── */
-    async function initSkillsModal() {
-      // show loader
-      document.getElementById('matieres-loading-modal').classList.remove('hidden');
-      document.getElementById('modal-skills-form').classList.add('hidden');
+            async function initSkillsModal() {
+                // show loader
+                document
+                    .getElementById("matieres-loading-modal")
+                    .classList.remove("hidden");
+                document
+                    .getElementById("modal-skills-form")
+                    .classList.add("hidden");
 
-      // determine filiere from profile display or local cache
-      let filiere = document.getElementById('display-department').textContent || '';
-      const saved = getUserData();
-      if ((!filiere || filiere === '—') && saved && saved.department) filiere = saved.department;
+                // determine filiere : on utilise le cache localStorage (valeur brute)
+                // plutôt que le texte affiché qui est maintenant un libellé long
+                const saved = getUserData();
+                let filiere = (saved && saved.department) || "";
+                if (!filiere) {
+                    // dernier recours : tenter d'extraire la valeur entre parenthèses du libellé
+                    const displayed =
+                        document.getElementById("display-department")
+                            .textContent || "";
+                    const match = displayed.match(/\(([^)]+)\)$/);
+                    filiere = match ? match[1] : displayed;
+                }
 
-      try {
-        // ensure global loader has data
-        await loadMatieresFromAPI();
-        // filter by filiere
-        const matieres = (filiere && filiere !== '—') ? getMatiersByFiliere(filiere) : window._matieresCache || [];
-        renderSkillsModal(matieres || []);
-        // pré-remplir depuis le profil si disponible
-        try {
-          const data = await API.profile.getMe();
-          const profile = data.profile || data;
-          const comps = profile.competences || profile.competences_list || [];
-          const lacs = profile.lacunes || profile.lacunes_list || [];
-          prefillSkillsModal(comps, lacs);
-        } catch (e) {
-          // pas de profil ou erreur, silencieux
-        }
-      } catch (err) {
-        console.warn('Erreur chargement matieres pour modal skills', err);
-        renderSkillsModal([]);
-      } finally {
-        document.getElementById('matieres-loading-modal').classList.add('hidden');
-        document.getElementById('modal-skills-form').classList.remove('hidden');
-      }
-    }
+                try {
+                    // ensure global loader has data
+                    await loadMatieresFromAPI();
+                    // filter by filiere
+                    const matieres =
+                        filiere && filiere !== "—"
+                            ? getMatiersByFiliere(filiere)
+                            : window._matieresCache || [];
+                    renderSkillsModal(matieres || []);
+                    // pré-remplir depuis le profil si disponible
+                    try {
+                        const data = await API.profile.getMe();
+                        const profile = data.profile || data;
+                        const comps =
+                            profile.competences ||
+                            profile.competences_list ||
+                            [];
+                        const lacs =
+                            profile.lacunes || profile.lacunes_list || [];
+                        prefillSkillsModal(comps, lacs);
+                    } catch (e) {
+                        // pas de profil ou erreur, silencieux
+                    }
+                } catch (err) {
+                    console.warn(
+                        "Erreur chargement matieres pour modal skills",
+                        err,
+                    );
+                    renderSkillsModal([]);
+                } finally {
+                    document
+                        .getElementById("matieres-loading-modal")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("modal-skills-form")
+                        .classList.remove("hidden");
+                }
+            }
 
-    function renderTags(containerId, items, baseClass, label) {
-      const el = document.getElementById(containerId);
-      if (!el) return;
-      el.innerHTML = '';
-      if (!items || items.length === 0) {
-        el.innerHTML = `<span class="text-xs text-muted">Aucune ${label.toLowerCase()} définie</span>`;
-        return;
-      }
-      items.forEach(item => {
-        const nom = item.nom || item.matiere_nom || item.libelle || item.name || item.matiere || '';
-        const tag = document.createElement('span');
-        tag.className = `px-3 py-1 ${baseClass} rounded-full text-sm`;
-        tag.textContent = nom;
-        el.appendChild(tag);
-      });
-    }
+            function renderTags(containerId, items, baseClass, label) {
+                const el = document.getElementById(containerId);
+                if (!el) return;
+                el.innerHTML = "";
+                if (!items || items.length === 0) {
+                    el.innerHTML = `<span class="text-xs text-muted">Aucune ${label.toLowerCase()} définie</span>`;
+                    return;
+                }
+                items.forEach((item) => {
+                    const nom =
+                        item.nom ||
+                        item.matiere_nom ||
+                        item.libelle ||
+                        item.name ||
+                        item.matiere ||
+                        "";
+                    const tag = document.createElement("span");
+                    tag.className = `px-3 py-1 ${baseClass} rounded-full text-sm`;
+                    tag.textContent = nom;
+                    el.appendChild(tag);
+                });
+            }
 
-    function prefillSkillsModal(comps = [], lacs = []) {
-      try {
-        // compétences
-        (comps || []).forEach(c => {
-          const id = c.matiere_id || c.matiere || c.id || c.matiere_id;
-          const mastery = c.mastery || c.niveau || c.value || 'Intermédiaire';
-          const sid = safeId(id);
-          const btn = document.getElementById(`ms-strength-${sid}`);
-          const lvl = document.getElementById(`ms-strength-level-${sid}`);
-          if (btn) {
-            btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors`;
-            if (lvl) { lvl.classList.remove('hidden'); lvl.value = mastery; }
-            modalUser.strengths.push({ matiere_id: id, value: mastery });
-          }
-        });
-        // lacunes
-        (lacs || []).forEach(l => {
-          const id = l.matiere_id || l.matiere || l.id || l.matiere_id;
-          const prio = l.priority || l.niveau || l.value || 'Moyenne';
-          const sid = safeId(id);
-          const btn = document.getElementById(`ms-weakness-${sid}`);
-          const lvl = document.getElementById(`ms-weakness-level-${sid}`);
-          if (btn) {
-            btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors`;
-            if (lvl) { lvl.classList.remove('hidden'); lvl.value = prio; }
-            modalUser.weaknesses.push({ matiere_id: id, value: prio });
-          }
-        });
-      } catch (err) { console.warn('prefillSkillsModal error', err); }
-    }
+            function prefillSkillsModal(comps = [], lacs = []) {
+                try {
+                    // compétences
+                    (comps || []).forEach((c) => {
+                        const id =
+                            c.matiere_id || c.matiere || c.id || c.matiere_id;
+                        const mastery =
+                            c.mastery || c.niveau || c.value || "Intermédiaire";
+                        const sid = safeId(id);
+                        const btn = document.getElementById(
+                            `ms-strength-${sid}`,
+                        );
+                        const lvl = document.getElementById(
+                            `ms-strength-level-${sid}`,
+                        );
+                        if (btn) {
+                            btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-primary/10 border-primary text-white transition-colors`;
+                            if (lvl) {
+                                lvl.classList.remove("hidden");
+                                lvl.value = mastery;
+                            }
+                            modalUser.strengths.push({
+                                matiere_id: id,
+                                value: mastery,
+                            });
+                        }
+                    });
+                    // lacunes
+                    (lacs || []).forEach((l) => {
+                        const id =
+                            l.matiere_id || l.matiere || l.id || l.matiere_id;
+                        const prio =
+                            l.priority || l.niveau || l.value || "Moyenne";
+                        const sid = safeId(id);
+                        const btn = document.getElementById(
+                            `ms-weakness-${sid}`,
+                        );
+                        const lvl = document.getElementById(
+                            `ms-weakness-level-${sid}`,
+                        );
+                        if (btn) {
+                            btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-warning/10 border-warning text-white transition-colors`;
+                            if (lvl) {
+                                lvl.classList.remove("hidden");
+                                lvl.value = prio;
+                            }
+                            modalUser.weaknesses.push({
+                                matiere_id: id,
+                                value: prio,
+                            });
+                        }
+                    });
+                } catch (err) {
+                    console.warn("prefillSkillsModal error", err);
+                }
+            }
 
-    function safeId(str) { return String(str).replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, ''); }
+            function safeId(str) {
+                return String(str)
+                    .replace(/\s+/g, "-")
+                    .replace(/[^a-zA-Z0-9\-_]/g, "");
+            }
 
-    function renderSkillsModal(matieres) {
-      const sl = document.getElementById('strengths-list-modal');
-      const wl = document.getElementById('weaknesses-list-modal');
-      sl.innerHTML = '';
-      wl.innerHTML = '';
+            function renderSkillsModal(matieres) {
+                const sl = document.getElementById("strengths-list-modal");
+                const wl = document.getElementById("weaknesses-list-modal");
+                sl.innerHTML = "";
+                wl.innerHTML = "";
 
-      matieres.forEach(mat => {
-        const id = mat.id; const nom = mat.nom || mat.name || mat.libelle || '';
-        const sid = safeId(id);
+                matieres.forEach((mat) => {
+                    const id = mat.id;
+                    const nom = mat.nom || mat.name || mat.libelle || "";
+                    const sid = safeId(id);
 
-        const sd = document.createElement('div');
-        sd.className = 'space-y-2';
-        sd.innerHTML = `
+                    const sd = document.createElement("div");
+                    sd.className = "space-y-2";
+                    sd.innerHTML = `
           <button type="button" onclick="toggleSkillModal(${id},'strength')"
             id="ms-strength-${sid}"
             class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors">
@@ -585,17 +1417,22 @@
           <select id="ms-strength-level-${sid}" class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary">
             <option>Débutant</option><option>Intermédiaire</option><option>Avancé</option><option>Expert</option>
           </select>`;
-        sl.appendChild(sd);
-        // attach change handler to update modalUser value
-        const sSelect = document.getElementById(`ms-strength-level-${sid}`);
-        if (sSelect) sSelect.addEventListener('change', (ev) => {
-          const entry = modalUser.strengths.find(x => x.matiere_id === id);
-          if (entry) entry.value = ev.target.value;
-        });
+                    sl.appendChild(sd);
+                    // attach change handler to update modalUser value
+                    const sSelect = document.getElementById(
+                        `ms-strength-level-${sid}`,
+                    );
+                    if (sSelect)
+                        sSelect.addEventListener("change", (ev) => {
+                            const entry = modalUser.strengths.find(
+                                (x) => x.matiere_id === id,
+                            );
+                            if (entry) entry.value = ev.target.value;
+                        });
 
-        const wd = document.createElement('div');
-        wd.className = 'space-y-2';
-        wd.innerHTML = `
+                    const wd = document.createElement("div");
+                    wd.className = "space-y-2";
+                    wd.innerHTML = `
           <button type="button" onclick="toggleSkillModal(${id},'weakness')"
             id="ms-weakness-${sid}"
             class="w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors">
@@ -604,120 +1441,291 @@
           <select id="ms-weakness-level-${sid}" class="hidden w-full px-4 py-2 bg-input rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-warning">
             <option>Basse</option><option>Moyenne</option><option>Haute</option><option>Urgente</option>
           </select>`;
-        wl.appendChild(wd);
-        const wSelect = document.getElementById(`ms-weakness-level-${sid}`);
-        if (wSelect) wSelect.addEventListener('change', (ev) => {
-          const entry = modalUser.weaknesses.find(x => x.matiere_id === id);
-          if (entry) entry.value = ev.target.value;
-        });
-      });
-    }
+                    wl.appendChild(wd);
+                    const wSelect = document.getElementById(
+                        `ms-weakness-level-${sid}`,
+                    );
+                    if (wSelect)
+                        wSelect.addEventListener("change", (ev) => {
+                            const entry = modalUser.weaknesses.find(
+                                (x) => x.matiere_id === id,
+                            );
+                            if (entry) entry.value = ev.target.value;
+                        });
+                });
+            }
 
-    // Track selections in the modal
-    const modalUser = { strengths: [], weaknesses: [] };
+            // Track selections in the modal
+            const modalUser = { strengths: [], weaknesses: [] };
 
-    function toggleSkillModal(id, type) {
-      const sid = safeId(id);
-      const btnId = `ms-${type}-${sid}`;
-      const lvlId = `ms-${type}-level-${sid}`;
-      const oppType = type === 'strength' ? 'weakness' : 'strength';
-      const oppBtnId = `ms-${oppType}-${sid}`;
-      const oppLvlId = `ms-${oppType}-level-${sid}`;
+            function toggleSkillModal(id, type) {
+                const sid = safeId(id);
+                const btnId = `ms-${type}-${sid}`;
+                const lvlId = `ms-${type}-level-${sid}`;
+                const oppType = type === "strength" ? "weakness" : "strength";
+                const oppBtnId = `ms-${oppType}-${sid}`;
+                const oppLvlId = `ms-${oppType}-level-${sid}`;
 
-      const btn = document.getElementById(btnId);
-      const lvl = document.getElementById(lvlId);
-      const oppBtn = document.getElementById(oppBtnId);
-      const oppLvl = document.getElementById(oppLvlId);
+                const btn = document.getElementById(btnId);
+                const lvl = document.getElementById(lvlId);
+                const oppBtn = document.getElementById(oppBtnId);
+                const oppLvl = document.getElementById(oppLvlId);
 
-      const arr = type === 'strength' ? modalUser.strengths : modalUser.weaknesses;
-      const oppArr = type === 'strength' ? modalUser.weaknesses : modalUser.strengths;
-      const idx = arr.findIndex(x => x.matiere_id === id);
-      const nom = (document.getElementById(`ms-${type}-${sid}`)?.textContent || '').trim();
+                const arr =
+                    type === "strength"
+                        ? modalUser.strengths
+                        : modalUser.weaknesses;
+                const oppArr =
+                    type === "strength"
+                        ? modalUser.weaknesses
+                        : modalUser.strengths;
+                const idx = arr.findIndex((x) => x.matiere_id === id);
+                const nom = (
+                    document.getElementById(`ms-${type}-${sid}`)?.textContent ||
+                    ""
+                ).trim();
 
-      if (idx > -1) {
-        arr.splice(idx,1);
-        btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors`;
-        lvl.classList.add('hidden');
-      } else {
-        // remove opposite
-        const oppIdx = oppArr.findIndex(x => x.matiere_id === id);
-        if (oppIdx > -1) {
-          oppArr.splice(oppIdx,1);
-          if (oppBtn) { oppBtn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors`; }
-          if (oppLvl) oppLvl.classList.add('hidden');
-        }
-        const defaultVal = type === 'strength' ? 'Intermédiaire' : 'Moyenne';
-        arr.push({ matiere_id: id, value: defaultVal });
-        btn.className = `w-full text-left px-4 py-3 rounded-lg border ${type==='strength'?'bg-primary/10 border-primary':'bg-warning/10 border-warning'} text-white transition-colors`;
-        lvl.classList.remove('hidden'); lvl.value = defaultVal;
-      }
-    }
+                if (idx > -1) {
+                    arr.splice(idx, 1);
+                    btn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-primary/50 transition-colors`;
+                    lvl.classList.add("hidden");
+                } else {
+                    // remove opposite
+                    const oppIdx = oppArr.findIndex((x) => x.matiere_id === id);
+                    if (oppIdx > -1) {
+                        oppArr.splice(oppIdx, 1);
+                        if (oppBtn) {
+                            oppBtn.className = `w-full text-left px-4 py-3 rounded-lg border bg-input border-border text-muted hover:border-warning/50 transition-colors`;
+                        }
+                        if (oppLvl) oppLvl.classList.add("hidden");
+                    }
+                    const defaultVal =
+                        type === "strength" ? "Intermédiaire" : "Moyenne";
+                    arr.push({ matiere_id: id, value: defaultVal });
+                    btn.className = `w-full text-left px-4 py-3 rounded-lg border ${type === "strength" ? "bg-primary/10 border-primary" : "bg-warning/10 border-warning"} text-white transition-colors`;
+                    lvl.classList.remove("hidden");
+                    lvl.value = defaultVal;
+                }
+            }
 
-    document.getElementById('modal-skills-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        // Récupérer les compétences/lacunes actuelles depuis l'API pour savoir quoi supprimer
-        const data = await API.profile.getMe();
-        const profile = data.profile || data;
-        const currentComps = profile.competences || profile.competences_list || [];
-        const currentLacs = profile.lacunes || profile.lacunes_list || [];
-        // Supprimer les compétences décochées
-        for (const c of currentComps) {
-          const cid = c.matiere_id || c.matiere;
-          if (!modalUser.strengths.some(s => s.matiere_id === cid)) {
-            await API.profile.removeCompetence({ matiere_id: cid }).catch(() => {});
-          }
-        }
-        // Supprimer les lacunes décochées
-        for (const l of currentLacs) {
-          const lid = l.matiere_id || l.matiere;
-          if (!modalUser.weaknesses.some(w => w.matiere_id === lid)) {
-            await API.profile.removeLacune({ matiere_id: lid }).catch(() => {});
-          }
-        }
-        // Ajouter les nouvelles compétences
-        for (const s of modalUser.strengths) {
-          if (!currentComps.some(c => (c.matiere_id || c.matiere) === s.matiere_id)) {
-            await API.profile.addCompetence({ matiere_id: s.matiere_id, niveau: s.value || 'Intermédiaire' });
-          }
-        }
-        // Ajouter les nouvelles lacunes
-        for (const w of modalUser.weaknesses) {
-          if (!currentLacs.some(l => (l.matiere_id || l.matiere) === w.matiere_id)) {
-            await API.profile.addLacune({ matiere_id: w.matiere_id, priorite: w.value || 'Moyenne' });
-          }
-        }
-        // close
-        modalUser.strengths = []; modalUser.weaknesses = [];
-        closeModal('skills');
-        loadProfile();
-      } catch (err) {
-        alert('Erreur lors de la sauvegarde des compétences: ' + (err.message || err));
-      }
-    });
+            document
+                .getElementById("modal-skills-form")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    try {
+                        // Récupérer les compétences/lacunes actuelles depuis l'API pour savoir quoi supprimer
+                        const data = await API.profile.getMe();
+                        const profile = data.profile || data;
+                        const currentComps =
+                            profile.competences ||
+                            profile.competences_list ||
+                            [];
+                        const currentLacs =
+                            profile.lacunes || profile.lacunes_list || [];
+                        // Supprimer les compétences décochées
+                        for (const c of currentComps) {
+                            const cid = c.matiere_id || c.matiere;
+                            if (
+                                !modalUser.strengths.some(
+                                    (s) => s.matiere_id === cid,
+                                )
+                            ) {
+                                await API.profile
+                                    .removeCompetence({ matiere_id: cid })
+                                    .catch(() => {});
+                            }
+                        }
+                        // Supprimer les lacunes décochées
+                        for (const l of currentLacs) {
+                            const lid = l.matiere_id || l.matiere;
+                            if (
+                                !modalUser.weaknesses.some(
+                                    (w) => w.matiere_id === lid,
+                                )
+                            ) {
+                                await API.profile
+                                    .removeLacune({ matiere_id: lid })
+                                    .catch(() => {});
+                            }
+                        }
+                        // Ajouter les nouvelles compétences
+                        for (const s of modalUser.strengths) {
+                            if (
+                                !currentComps.some(
+                                    (c) =>
+                                        (c.matiere_id || c.matiere) ===
+                                        s.matiere_id,
+                                )
+                            ) {
+                                await API.profile.addCompetence({
+                                    matiere_id: s.matiere_id,
+                                    niveau: s.value || "Intermédiaire",
+                                });
+                            }
+                        }
+                        // Ajouter les nouvelles lacunes
+                        for (const w of modalUser.weaknesses) {
+                            if (
+                                !currentLacs.some(
+                                    (l) =>
+                                        (l.matiere_id || l.matiere) ===
+                                        w.matiere_id,
+                                )
+                            ) {
+                                await API.profile.addLacune({
+                                    matiere_id: w.matiere_id,
+                                    priorite: w.value || "Moyenne",
+                                });
+                            }
+                        }
+                        // close
+                        modalUser.strengths = [];
+                        modalUser.weaknesses = [];
+                        closeModal("skills");
+                        loadProfile();
+                    } catch (err) {
+                        showToast("Erreur lors de la sauvegarde des compétences: " + (err.message || err), "error");
+                    }
+                });
 
+            // ── Changement de mot de passe ─────────────────────────────────────────────
+            document
+                .querySelector("#modal-password form")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const inputs = e.target.querySelectorAll(
+                        'input[type="password"]',
+                    );
+                    const currentPwd = inputs[0].value;
+                    const newPwd = inputs[1].value;
+                    const confirmPwd = inputs[2].value;
+                    if (newPwd !== confirmPwd) {
+                        showToast("Les mots de passe ne correspondent pas.", "error");
+                        return;
+                    }
+                    if (newPwd.length < 8) {
+                        showToast("Le mot de passe doit contenir au moins 8 caractères.", "error");
+                        return;
+                    }
+                    try {
+                        await API.auth.changePassword({
+                            ancien_mot_de_passe: currentPwd,
+                            nouveau_mot_de_passe: newPwd,
+                        });
+                        showToast("Mot de passe modifié avec succès.", "success");
+                        closeModal("password");
+                        e.target.reset();
+                    } catch (err) {
+                        showToast("Erreur : " + err.message, "error");
+                    }
+                });
 
-    // ── Changement de mot de passe ─────────────────────────────────────────────
-    document.querySelector('#modal-password form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const inputs = e.target.querySelectorAll('input[type="password"]');
-      const currentPwd = inputs[0].value;
-      const newPwd = inputs[1].value;
-      const confirmPwd = inputs[2].value;
-      if (newPwd !== confirmPwd) { alert('Les mots de passe ne correspondent pas.'); return; }
-      if (newPwd.length < 8) { alert('Le mot de passe doit contenir au moins 8 caractères.'); return; }
-      try {
-        await API.auth.changePassword({ ancien_mot_de_passe: currentPwd, nouveau_mot_de_passe: newPwd });
-        alert('Mot de passe modifié avec succès.');
-        closeModal('password');
-        e.target.reset();
-      } catch (err) {
-        alert('Erreur : ' + err.message);
-      }
-    });
+            // ── Suppression de compte ───────────────────────────────────────────────
+            document
+                .getElementById("form-delete-account")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const password = document.getElementById(
+                        "delete-account-password",
+                    ).value;
+                    const errorEl = document.getElementById(
+                        "delete-account-error",
+                    );
+                    const btn = document.getElementById("delete-account-btn");
 
-    // Lancement
-    loadProfile();
-  </script>
-</body>
+                    if (!btn) return;
+
+                    if (!password) {
+                        errorEl.textContent =
+                            "Veuillez saisir votre mot de passe.";
+                        errorEl.classList.remove("hidden");
+                        return;
+                    }
+
+                    btn.disabled = true;
+                    btn.textContent = "Suppression...";
+                    errorEl.classList.add("hidden");
+
+                    try {
+                        await API.auth.deleteAccount(password);
+                        // Nettoyage local et redirection
+                        localStorage.clear();
+                        window.location.href = "../index.html";
+                    } catch (err) {
+                        errorEl.textContent =
+                            err.message || "Erreur lors de la suppression.";
+                        errorEl.classList.remove("hidden");
+                        btn.disabled = false;
+                        btn.textContent = "Supprimer définitivement";
+                    }
+                });
+
+            // ── Toast ────────────────────────────────────────────────────────────────
+            function showToast(msg, type) {
+                const el = document.getElementById("toast");
+                if (!el) return;
+                el.textContent = msg;
+                const bg = type === "success" ? "bg-success/20 text-success border border-success/30"
+                    : type === "error" ? "bg-destructive/20 text-destructive border border-destructive/30"
+                    : "bg-popover text-white border border-border";
+                el.className = "fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all " + bg;
+                el.classList.remove("hidden");
+                clearTimeout(el._timeout);
+                el._timeout = setTimeout(() => el.classList.add("hidden"), 3500);
+            }
+
+            // ── Save Crop ────────────────────────────────────────────────────────────
+            async function saveCrop() {
+                if (!_cropper) return;
+                const btn = document.getElementById("btn-save-crop");
+                btn.innerHTML = '<span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle"></span>Enregistrement...';
+                btn.disabled = true;
+                const canvas = _cropper.getCroppedCanvas({ width: 256, height: 256 });
+
+                // 1) Tente l'upload Cloudinary (multipart)
+                let savedUrl = null;
+                let storageType = "base64";
+                try {
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.9));
+                    const formData = new FormData();
+                    formData.append("file", blob, "avatar.jpg");
+                    const res = await API.profile.uploadAvatar(formData);
+                    savedUrl = res.avatar_url || null;
+                    storageType = res.storage || "base64";
+                } catch (_) {
+                    // 2) Fallback : envoi en base64 via JSON
+                    try {
+                        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+                        const res = await API.profile.updateAvatar({ avatar_url: dataUrl });
+                        savedUrl = res?.profile?.avatar_url || dataUrl;
+                    } catch (_2) {
+                        // 3) Dernier fallback : updateMe
+                        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+                        await API.profile.updateMe({ avatar_url: dataUrl });
+                        savedUrl = dataUrl;
+                    }
+                }
+
+                displayAvatar(savedUrl || canvas.toDataURL("image/jpeg", 0.9), "");
+                closeCropModal();
+
+                if (savedUrl) {
+                    try {
+                        const cached = JSON.parse(localStorage.getItem("mentorlink_profile_cache") || "{}");
+                        cached.avatar_url = savedUrl;
+                        localStorage.setItem("mentorlink_profile_cache", JSON.stringify(cached));
+                    } catch (_) {}
+                    const label = storageType === "cloudinary" ? "☁️" : "💾";
+                    showToast(`Photo enregistrée ${label}`, "success");
+                } else {
+                    showToast("Erreur lors de l'enregistrement de la photo", "error");
+                }
+                btn.innerHTML = 'Enregistrer';
+                btn.disabled = false;
+            }
+
+            // Lancement
+            loadProfile();
+        </script>
+    </body>
 </html>

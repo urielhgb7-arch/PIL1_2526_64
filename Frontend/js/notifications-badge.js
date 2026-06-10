@@ -36,8 +36,7 @@ function startNotificationsBadgePoll(intervalMs = 30000) {
 // Init on DOM ready
 if (typeof window !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
-    const authPages = /signin\.html|signup\.html|reset-password\.html/.test(window.location.pathname);
-    if (!authPages) startNotificationsBadgePoll();
+    if (!/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname)) startNotificationsBadgePoll();
   });
 }
 

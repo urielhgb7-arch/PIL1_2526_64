@@ -1,313 +1,1456 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - IFRI MentorLink</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link rel="stylesheet" href="../css/styles.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            background: '#08090C',
-            foreground: '#FFFFFF',
-            card: '#0F111A',
-            popover: '#1F2433',
-            primary: '#7C6FF7',
-            success: '#2DD4A0',
-            warning: '#F5A623',
-            destructive: '#F97066',
-            border: 'rgba(255, 255, 255, 0.08)',
-            input: '#1F2433',
-            muted: 'rgba(255, 255, 255, 0.6)',
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="bg-background text-foreground">
-  <!-- Desktop Sidebar -->
-  <div class="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex-col">
-    <div class="p-6 border-b border-border">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-          <span class="text-sm font-bold text-primary">ML</span>
-        </div>
-        <h1 class="text-xl font-bold">
-          <span class="text-primary">IFRI</span> MentorLink
-        </h1>
-      </div>
-    </div>
-    
-    <nav class="flex-1 p-4 space-y-2">
-      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <span>Dashboard</span>
-      </a>
-      <a href="matching.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
-        </svg>
-        <span>Matchs</span>
-      </a>
-      <a href="messages.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span>Messages</span>
-      </a>
-      <a href="requests.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        </svg>
-        <span>Publications</span>
-      </a>
-      <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <span>Paramètres</span>
-      </a>
-    </nav>
-
-    <div class="p-4 border-t border-border">
-      <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-        <span>Déconnexion</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Main Content -->
-  <div class="lg:ml-64 pb-20 lg:pb-0">
-    <!-- Top Bar -->
-    <div class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4">
-      <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold">Dashboard</h1>
-        <div class="flex items-center gap-4">
-          <div id="user-name" class="text-sm text-muted"></div>
-                <a href="notifications.html" class="site-bell ml-4" aria-label="Notifications">
-                  <span class="ti ti-bell"></span>
-                  <span class="dot" id="siteBellDot"></span>
-                </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Toast -->
-    <div id="toast" class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"></div>
-
-    <!-- Dashboard Content -->
-    <div class="p-4 lg:p-8 space-y-8">
-      <!-- Metrics Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-card border border-border rounded-xl p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-              <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </div>
-          </div>
-          <div class="text-3xl font-bold mb-1" id="metric-matches">0</div>
-          <div class="text-sm text-muted">Matchs actifs</div>
-        </div>
-
-        <div class="bg-card border border-border rounded-xl p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
-              <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <div class="text-3xl font-bold mb-1" id="metric-hours">0h</div>
-          <div class="text-sm text-muted">Heures de mentorat</div>
-        </div>
-
-        <div class="bg-card border border-border rounded-xl p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
-              <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-            </div>
-          </div>
-          <div class="text-3xl font-bold mb-1">4.8</div>
-          <div class="text-sm text-muted">Note moyenne</div>
-        </div>
-      </div>
-
-      <!-- Intentions -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Offres de mentorat -->
-        <div class="bg-card border border-border rounded-xl p-6">
-          <h2 class="text-xl font-semibold mb-4">Offres de mentorat disponibles</h2>
-          <div class="space-y-3" id="offers-list">
-            <div class="text-sm text-muted text-center py-4">Aucune offre disponible</div>
-          </div>
-        </div>
-
-        <!-- Demandes d'aide -->
-        <div class="bg-card border border-border rounded-xl p-6">
-          <h2 class="text-xl font-semibold mb-4">Demandes d'aide récentes</h2>
-          <div class="space-y-3" id="demands-list">
-            <div class="text-sm text-muted text-center py-4">Aucune demande récente</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Mobile Bottom Navigation -->
-  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50">
-    <div class="flex items-center justify-around p-2">
-      <a href="dashboard.html" class="flex flex-col items-center gap-1 p-2 text-primary">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <span class="text-xs">Dashboard</span>
-      </a>
-      <a href="matching.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z" />
-        </svg>
-        <span class="text-xs">Matchs</span>
-      </a>
-      <a href="messages.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span class="text-xs">Messages</span>
-      </a>
-      <a href="requests.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        <span class="text-xs">Publications</span>
-      </a>
-      <a href="settings.html" class="flex flex-col items-center gap-1 p-2 text-muted">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <span class="text-xs">Paramètres</span>
-      </a>
-    </div>
-  </div>
-
-  <script src="../js/bundle.js"></script>
-  <script>
-    checkAuth();
-
-    function showToast(msg, type) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
-        type === 'success' ? 'bg-success text-black' : 'bg-destructive text-white'
-      }`;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 3500);
-    }
-
-    async function loadDashboard() {
-      try {
-        const data = await API.profile.getMe();
-        const profile = data.profile || data;
-        const fullName = `${profile.prenom || ''} ${profile.nom || ''}`.trim();
-        document.getElementById('user-name').textContent = fullName;
-        saveUserData({ firstName: profile.prenom, lastName: profile.nom, department: profile.filiere, level: profile.niveau });
-      } catch (err) {
-        const userData = getUserData();
-        if (userData && userData.firstName) {
-          document.getElementById('user-name').textContent = `${userData.firstName} ${userData.lastName}`;
-        }
-      }
-
-      // ── Métriques réelles ─────────────────────────────────────────────────
-      try {
-        const [received, sent, offers, prof] = await Promise.all([
-          API.matching.getReceived().catch(() => { showToast('Erreur chargement matchs', 'error'); return []; }),
-          API.matching.getSent().catch(() => { showToast('Erreur chargement matchs', 'error'); return []; }),
-          API.offers.getAll().catch(() => { showToast('Erreur chargement offres', 'error'); return []; }),
-          API.profile.getMe().catch(() => { showToast('Erreur chargement profil', 'error'); return ({}); })
-        ]);
-        const rArr = Array.isArray(received) ? received : (received.matches || received.data || []);
-        const sArr = Array.isArray(sent) ? sent : (sent.matches || sent.data || []);
-        const oArr = Array.isArray(offers) ? offers : (offers.offers || offers.data || []);
-        const acceptedCount = [...rArr, ...sArr].filter(m => m.status === 'accepted').length;
-        document.getElementById('metric-matches').textContent = acceptedCount;
-        document.getElementById('metric-hours').textContent = acceptedCount > 0 ? `${acceptedCount * 2}h` : '0h';
-
-        const p = prof.profile || prof;
-        if (p.user_id) {
-          API.feedback.getUser(p.user_id).then(fb => {
-            const note = (fb || {}).note_moyenne;
-            if (note != null) document.getElementById('metric-rating').textContent = note.toFixed(1);
-          }).catch(() => { showToast('Erreur chargement feedback', 'error'); });
-        }
-      } catch (err) { console.warn('Metrics error', err); showToast('Erreur lors du chargement des métriques', 'error'); }
-
-      // ── Offres réelles ────────────────────────────────────────────────────
-      try {
-        const data = await API.offers.getAll();
-        const items = Array.isArray(data) ? data : (data.offers || data.data || []);
-        const el = document.getElementById('offers-list');
-        if (items.length > 0) {
-          el.innerHTML = items.slice(0, 3).map(o => {
-            const nom = o.matiere_nom || o.matiere?.nom || 'Matière';
-            const profil = o.publicateur ? `${o.publicateur.prenom || ''} ${o.publicateur.nom || ''}`.trim() : (o.profile_name || '');
-            return `
-              <div class="bg-popover border border-border rounded-lg p-4">
-                <div class="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 class="font-semibold">${nom}</h3>
-                    ${profil ? `<p class="text-sm text-muted">${profil}</p>` : ''}
-                  </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard - IFRI MentorLink</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+        />
+        <link rel="stylesheet" href="../css/styles.css" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            background: "#08090C",
+                            foreground: "#FFFFFF",
+                            card: "#0F111A",
+                            popover: "#1F2433",
+                            primary: "#7C6FF7",
+                            success: "#2DD4A0",
+                            warning: "#F5A623",
+                            destructive: "#F97066",
+                            border: "rgba(255, 255, 255, 0.08)",
+                            input: "#1F2433",
+                            muted: "rgba(255, 255, 255, 0.6)",
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-background text-foreground">
+        <!-- Desktop Sidebar -->
+        <div
+            class="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-card border-r border-border flex-col"
+        >
+            <div class="p-6 border-b border-border">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center"
+                    >
+                        <span class="text-sm font-bold text-primary">ML</span>
+                    </div>
+                    <h1 class="text-xl font-bold">
+                        <span class="text-primary">IFRI</span> MentorLink
+                    </h1>
                 </div>
-                <a href="matching.html" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                  Voir
-                </a>
-              </div>`;
-          }).join('');
-        }
-      } catch (err) { console.warn('Offers error', err); showToast('Erreur lors du chargement des offres', 'error'); }
+            </div>
 
-      // ── Demandes réelles ──────────────────────────────────────────────────
-      try {
-        const data = await API.demands.getAll();
-        const items = Array.isArray(data) ? data : (data.demandes || data.data || []);
-        const el = document.getElementById('demands-list');
-        if (items.length > 0) {
-          el.innerHTML = items.slice(0, 3).map(d => {
-            const nom = d.matiere_nom || 'Matière';
-            const slot = d.jour && d.creneau ? `${d.jour} ${d.creneau}` : '';
-            return `
-              <div class="bg-popover border border-border rounded-lg p-4">
-                <div class="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 class="font-semibold">${nom}</h3>
-                    ${slot ? `<p class="text-sm text-muted">${slot}</p>` : ''}
-                  </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a
+                    href="dashboard.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a
+                    href="matching.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"
+                        />
+                    </svg>
+                    <span>Matchs</span>
+                </a>
+                <a
+                    href="messages.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                    </svg>
+                    <span>Messages</span>
+                </a>
+                <a
+                    href="requests.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                    </svg>
+                    <span>Publications</span>
+                </a>
+                <a
+                    href="settings.html"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg text-muted hover:bg-popover hover:text-white transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    <span>Paramètres</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-border">
+                <button
+                    onclick="logout()"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                    </svg>
+                    <span>Déconnexion</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:ml-64 pb-20 lg:pb-0">
+            <!-- Top Bar -->
+            <div
+                class="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border p-4"
+            >
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl font-bold">Dashboard</h1>
+                    <div class="flex items-center gap-4">
+                        <a
+                            href="settings.html"
+                            class="flex items-center gap-2 group cursor-pointer hover:opacity-80 transition-opacity"
+                        >
+                <div
+                    class="w-9 h-9 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center flex-shrink-0 overflow-hidden relative ring-2 ring-primary/20"
+                >
+                    <span
+                        id="topbar-avatar-initials"
+                        class="text-sm font-bold text-primary drop-shadow-sm"
+                    >?</span>
+                    <img
+                        id="topbar-avatar-img"
+                        src=""
+                        alt="avatar"
+                        class="hidden w-full h-full object-cover absolute inset-0 rounded-full"
+                    />
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span
+                                    id="user-name"
+                                    class="text-sm font-medium text-white group-hover:text-primary transition-colors"
+                                ></span>
+                                <div class="flex gap-1.5 mt-0.5">
+                                    <span
+                                        id="topbar-filiere"
+                                        class="hidden text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
+                                    ></span>
+                                    <span
+                                        id="topbar-niveau"
+                                        class="hidden text-xs px-2 py-0.5 bg-success/10 text-success rounded-full"
+                                    ></span>
+                                </div>
+                            </div>
+                        </a>
+                        <a
+                            href="notifications.html"
+                            class="site-bell ml-4"
+                            aria-label="Notifications"
+                        >
+                            <span class="ti ti-bell"></span>
+                            <span class="dot" id="siteBellDot"></span>
+                        </a>
+                    </div>
                 </div>
-                <a href="requests.html?open-demand=${d.id}" class="block w-full text-center py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                  Voir
-                </a>
-              </div>`;
-          }).join('');
-        }
-      } catch (err) { console.warn('Demands error', err); showToast('Erreur lors du chargement des demandes', 'error'); }
-    }
+            </div>
 
-    loadDashboard();
-  </script>
-</body>
+            <!-- Toast -->
+            <div
+                id="toast"
+                class="hidden fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all"
+            ></div>
+
+            <!-- Dashboard Content -->
+            <div class="p-4 lg:p-8 space-y-8">
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-card border border-border rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center"
+                            >
+                                <svg
+                                    class="w-6 h-6 text-primary"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                        <div
+                            class="text-3xl font-bold mb-1"
+                            id="metric-matches"
+                        >
+                            0
+                        </div>
+                        <div class="text-sm text-muted">Matchs actifs</div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center"
+                            >
+                                <svg
+                                    class="w-6 h-6 text-success"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold mb-1" id="metric-hours">
+                            0h
+                        </div>
+                        <div class="text-sm text-muted">Heures de mentorat</div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center"
+                            >
+                                <svg
+                                    class="w-6 h-6 text-warning"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold mb-1">4.8</div>
+                        <div class="text-sm text-muted">Note moyenne</div>
+                    </div>
+                </div>
+
+                <!-- Profile Preview -->
+                <div class="bg-card border border-border rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold">Mon profil</h2>
+                        <div class="flex items-center gap-2">
+                            <button
+                                onclick="openProfileModal()"
+                                class="p-2 rounded-lg bg-popover text-muted hover:text-white hover:bg-popover/80 transition-colors"
+                                title="Voir mon profil"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                </svg>
+                            </button>
+                            <a
+                                href="settings.html"
+                                class="p-2 rounded-lg bg-popover text-muted hover:text-white hover:bg-popover/80 transition-colors"
+                                title="Modifier le profil"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                    />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="profile-preview-content">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden relative"
+                            >
+                                <span
+                                    id="profile-avatar-initials"
+                                    class="text-lg font-bold text-primary"
+                                    >?</span
+                                >
+                                <img
+                                    id="profile-avatar-img"
+                                    src=""
+                                    alt="avatar"
+                                    class="hidden w-full h-full object-cover absolute inset-0"
+                                />
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p
+                                    id="profile-fullname-dash"
+                                    class="font-semibold text-lg"
+                                >
+                                    —
+                                </p>
+                                <p
+                                    id="profile-email-dash"
+                                    class="text-sm text-muted truncate"
+                                >
+                                    —
+                                </p>
+                                <p
+                                    id="profile-bio-dash"
+                                    class="text-xs text-muted mt-1 line-clamp-2"
+                                >
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+                                        id="profile-filiere-badge"
+                                        >—</span
+                                    >
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success"
+                                        id="profile-niveau-badge"
+                                        >—</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-border">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-xs text-muted mb-1.5">
+                                        Compétences
+                                    </p>
+                                    <div
+                                        id="profile-comps-dash"
+                                        class="flex flex-wrap gap-1"
+                                    >
+                                        <span class="text-xs text-muted"
+                                            >Aucune</span
+                                        >
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-muted mb-1.5">
+                                        Lacunes
+                                    </p>
+                                    <div
+                                        id="profile-lacs-dash"
+                                        class="flex flex-wrap gap-1"
+                                    >
+                                        <span class="text-xs text-muted"
+                                            >Aucune</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offres & Demandes avec filtres -->
+                <div class="bg-card border border-border rounded-xl p-6">
+                    <div
+                        class="flex flex-wrap items-center justify-between gap-3 mb-4"
+                    >
+                        <h2 class="text-xl font-semibold">
+                            Offres &amp; Demandes
+                        </h2>
+                        <div class="flex gap-2">
+                            <button
+                                id="tab-btn-offers"
+                                onclick="switchTab('offers')"
+                                class="px-3 py-1.5 text-sm rounded-lg bg-primary text-white transition-colors"
+                            >
+                                Offres
+                            </button>
+                            <button
+                                id="tab-btn-demands"
+                                onclick="switchTab('demands')"
+                                class="px-3 py-1.5 text-sm rounded-lg bg-popover text-muted hover:text-white transition-colors"
+                            >
+                                Demandes
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Filtres -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <select
+                            id="filter-matiere"
+                            onchange="applyFilters()"
+                            class="flex-1 min-w-36 px-3 py-2 bg-input text-sm rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+                        >
+                            <option value="">Toutes les matières</option>
+                        </select>
+                        <select
+                            id="filter-horaire"
+                            onchange="applyFilters()"
+                            class="flex-1 min-w-36 px-3 py-2 bg-input text-sm rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+                        >
+                            <option value="">Tous les horaires</option>
+                            <option value="08-09">08h–09h</option>
+                            <option value="09-10">09h–10h</option>
+                            <option value="10-11">10h–11h</option>
+                            <option value="11-12">11h–12h</option>
+                            <option value="12-13">12h–13h</option>
+                            <option value="13-14">13h–14h</option>
+                            <option value="14-15">14h–15h</option>
+                            <option value="15-16">15h–16h</option>
+                            <option value="16-17">16h–17h</option>
+                            <option value="17-18">17h–18h</option>
+                            <option value="18-19">18h–19h</option>
+                            <option value="19-20">19h–20h</option>
+                            <option value="20-21">20h–21h</option>
+                            <option value="21-22">21h–22h</option>
+                        </select>
+                    </div>
+                    <div id="offers-demands-list" class="space-y-3">
+                        <div class="text-sm text-muted text-center py-6">
+                            Chargement...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Profil Complet -->
+        <div
+            id="modal-profile-view"
+            class="hidden fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            >
+                <!-- Header avec gradient -->
+                <div
+                    class="relative h-28 bg-gradient-to-br from-primary/30 via-primary/10 to-background rounded-t-2xl"
+                >
+                    <button
+                        onclick="
+                            document
+                                .getElementById('modal-profile-view')
+                                .classList.add('hidden')
+                        "
+                        class="absolute top-4 right-4 p-1.5 rounded-lg bg-background/50 text-muted hover:text-white transition-colors"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Avatar -->
+                <div class="flex justify-center -mt-10 mb-4 px-6">
+                    <div class="relative">
+                        <div
+                            id="pv-avatar-container"
+                            class="w-20 h-20 rounded-full border-4 border-card bg-primary/20 flex items-center justify-center overflow-hidden shadow-lg"
+                        >
+                            <span
+                                id="pv-initials"
+                                class="text-2xl font-bold text-primary"
+                                >?</span
+                            >
+                            <img
+                                id="pv-avatar-img"
+                                src=""
+                                alt="avatar"
+                                class="hidden w-full h-full object-cover absolute inset-0"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <!-- Infos -->
+                <div class="px-6 pb-6 space-y-5">
+                    <div class="text-center">
+                        <h3 id="pv-name" class="text-2xl font-bold">—</h3>
+                        <p id="pv-email" class="text-sm text-muted mt-1">—</p>
+                    </div>
+                    <!-- Badges -->
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span
+                            id="pv-filiere"
+                            class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
+                            >—</span
+                        >
+                        <span
+                            id="pv-niveau"
+                            class="px-3 py-1 bg-success/10 text-success rounded-full text-sm font-medium"
+                            >—</span
+                        >
+                        <span
+                            id="pv-format"
+                            class="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm"
+                            >—</span
+                        >
+                    </div>
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-popover rounded-xl p-3 text-center">
+                            <p
+                                id="pv-comps-count"
+                                class="text-2xl font-bold text-primary"
+                            >
+                                0
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">Compétences</p>
+                        </div>
+                        <div class="bg-popover rounded-xl p-3 text-center">
+                            <p
+                                id="pv-lacs-count"
+                                class="text-2xl font-bold text-warning"
+                            >
+                                0
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">Lacunes</p>
+                        </div>
+                    </div>
+                    <!-- Compétences -->
+                    <div>
+                        <h4
+                            class="text-sm font-semibold mb-2 flex items-center gap-2"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-success inline-block"
+                            ></span>
+                            Compétences
+                        </h4>
+                        <div id="pv-comps" class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-muted">Aucune</span>
+                        </div>
+                    </div>
+                    <!-- Lacunes -->
+                    <div>
+                        <h4
+                            class="text-sm font-semibold mb-2 flex items-center gap-2"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-warning inline-block"
+                            ></span>
+                            Lacunes
+                        </h4>
+                        <div id="pv-lacs" class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-muted">Aucune</span>
+                        </div>
+                    </div>
+                    <!-- Disponibilités -->
+                    <div>
+                        <h4
+                            class="text-sm font-semibold mb-2 flex items-center gap-2"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-primary inline-block"
+                            ></span>
+                            Disponibilités
+                        </h4>
+                        <div id="pv-dispos" class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-muted">Aucune</span>
+                        </div>
+                    </div>
+                    <!-- Bouton settings -->
+                    <a
+                        href="settings.html"
+                        class="flex items-center justify-center gap-2 w-full py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                        </svg>
+                        Modifier mon profil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Détail Offre / Demande -->
+        <div
+            id="modal-detail"
+            class="hidden fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6"
+            >
+                <div class="flex items-center justify-between mb-4">
+                    <h2 id="modal-detail-title" class="text-xl font-semibold">—</h2>
+                    <button
+                        onclick="document.getElementById('modal-detail').classList.add('hidden')"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg text-muted hover:text-white hover:bg-popover transition-colors"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modal-detail-body" class="space-y-4 text-sm">
+                    <p class="text-muted">Chargement…</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <div
+            class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom z-50"
+        >
+            <div class="flex items-center justify-around p-2">
+                <a
+                    href="dashboard.html"
+                    class="flex flex-col items-center gap-1 p-2 text-primary"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
+                    </svg>
+                    <span class="text-xs">Dashboard</span>
+                </a>
+                <a
+                    href="matching.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.618 9.104c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69L11.049 2.927z"
+                        />
+                    </svg>
+                    <span class="text-xs">Matchs</span>
+                </a>
+                <a
+                    href="messages.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                    </svg>
+                    <span class="text-xs">Messages</span>
+                </a>
+                <a
+                    href="requests.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                    </svg>
+                    <span class="text-xs">Publications</span>
+                </a>
+                <a
+                    href="settings.html"
+                    class="flex flex-col items-center gap-1 p-2 text-muted"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    <span class="text-xs">Paramètres</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Remplissage instantané du profil depuis le cache (avant loadDashboard) -->
+        <script>
+            (function() {
+                try {
+                    var data = JSON.parse(localStorage.getItem('mentorlink_profile_cache') || sessionStorage.getItem('mentorlink_profile_cache') || 'null');
+                    if (!data) {
+                        var legacy = localStorage.getItem('userData');
+                        if (legacy) {
+                            var ud = JSON.parse(legacy);
+                            data = { prenom: ud.firstName, nom: ud.lastName, filiere: ud.department, niveau: ud.level, avatar_url: '' };
+                        }
+                    }
+                    if (!data) return;
+
+                    var prenom = data.prenom || '';
+                    var nom = data.nom || '';
+                    var fullName = (prenom + ' ' + nom).trim();
+                    var initials = (prenom.charAt(0) + nom.charAt(0)).toUpperCase() || '?';
+
+                    // Top bar
+                    var userName = document.getElementById('user-name');
+                    if (userName) userName.textContent = fullName;
+
+                    var topInit = document.getElementById('topbar-avatar-initials');
+                    var topImg = document.getElementById('topbar-avatar-img');
+                    var avatarUrl = data.avatar_url || '';
+                    if (avatarUrl && avatarUrl !== 'https://via.placeholder.com/150') {
+                        if (topImg) { topImg.src = avatarUrl; topImg.classList.remove('hidden'); }
+                        if (topInit) topInit.classList.add('hidden');
+                    } else {
+                        if (topInit) { topInit.textContent = initials; topInit.classList.remove('hidden'); }
+                        if (topImg) topImg.classList.add('hidden');
+                    }
+
+                    var topFiliere = document.getElementById('topbar-filiere');
+                    if (topFiliere && data.filiere) { topFiliere.textContent = data.filiere; topFiliere.classList.remove('hidden'); }
+                    var topNiveau = document.getElementById('topbar-niveau');
+                    if (topNiveau && data.niveau) { topNiveau.textContent = data.niveau; topNiveau.classList.remove('hidden'); }
+
+                    // Profile preview card
+                    var pfpName = document.getElementById('profile-fullname-dash');
+                    if (pfpName) pfpName.textContent = fullName || '—';
+
+                    var pfInit = document.getElementById('profile-avatar-initials');
+                    var pfImg = document.getElementById('profile-avatar-img');
+                    if (avatarUrl && avatarUrl !== 'https://via.placeholder.com/150') {
+                        if (pfImg) { pfImg.src = avatarUrl; pfImg.classList.remove('hidden'); }
+                        if (pfInit) pfInit.classList.add('hidden');
+                    } else {
+                        if (pfInit) { pfInit.textContent = initials; pfInit.classList.remove('hidden'); }
+                        if (pfImg) pfImg.classList.add('hidden');
+                    }
+
+                    var pfFiliere = document.getElementById('profile-filiere-badge');
+                    if (pfFiliere) pfFiliere.textContent = data.filiere || '—';
+                    var pfNiveau = document.getElementById('profile-niveau-badge');
+                    if (pfNiveau) pfNiveau.textContent = data.niveau || '—';
+                    var pfEmail = document.getElementById('profile-email-dash');
+                    if (pfEmail && data.email) pfEmail.textContent = data.email;
+                    var pfBio = document.getElementById('profile-bio-dash');
+                    if (pfBio) { if (data.bio && data.bio.trim()) { pfBio.textContent = data.bio; pfBio.classList.remove('text-muted'); } else { pfBio.innerHTML = '<span class="text-muted">Aucune bio</span>'; } }
+
+                    // Compétences (max 4, vert)
+                    var compsEl = document.getElementById('profile-comps-dash');
+                    if (compsEl) {
+                        var comps = data.competences || [];
+                        compsEl.innerHTML = comps.length > 0
+                            ? comps.slice(0, 4).map(function(c) { return '<span class="inline-flex px-2 py-0.5 rounded text-xs bg-success/10 text-success">' + (c.matiere_nom || '') + '</span>'; }).join('')
+                            : '<span class="text-xs text-muted">Aucune</span>';
+                    }
+
+                    // Lacunes (max 4, orange)
+                    var lacsEl = document.getElementById('profile-lacs-dash');
+                    if (lacsEl) {
+                        var lacs = data.lacunes || [];
+                        lacsEl.innerHTML = lacs.length > 0
+                            ? lacs.slice(0, 4).map(function(l) { return '<span class="inline-flex px-2 py-0.5 rounded text-xs bg-warning/10 text-warning">' + (l.matiere_nom || '') + '</span>'; }).join('')
+                            : '<span class="text-xs text-muted">Aucune</span>';
+                    }
+                } catch(e) {}
+            })();
+        </script>
+        <script src="../js/bundle.js"></script>
+        <script>
+            checkAuth();
+
+            function showToast(msg, type) {
+                const t = document.getElementById("toast");
+                t.textContent = msg;
+                t.className = `fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-medium transition-all ${
+                    type === "success"
+                        ? "bg-success text-black"
+                        : "bg-destructive text-white"
+                }`;
+                t.classList.remove("hidden");
+                setTimeout(() => t.classList.add("hidden"), 3500);
+            }
+
+            function switchTab(tab) {
+                window._currentTab = tab;
+                document.getElementById("tab-btn-offers").className =
+                    tab === "offers"
+                        ? "px-3 py-1.5 text-sm rounded-lg bg-primary text-white transition-colors"
+                        : "px-3 py-1.5 text-sm rounded-lg bg-popover text-muted hover:text-white transition-colors";
+                document.getElementById("tab-btn-demands").className =
+                    tab === "demands"
+                        ? "px-3 py-1.5 text-sm rounded-lg bg-primary text-white transition-colors"
+                        : "px-3 py-1.5 text-sm rounded-lg bg-popover text-muted hover:text-white transition-colors";
+                applyFilters();
+            }
+
+            function applyFilters() {
+                const matId = document.getElementById("filter-matiere").value;
+                const horaire = document.getElementById("filter-horaire").value;
+                const tab = window._currentTab || "offers";
+                const items =
+                    tab === "offers"
+                        ? window._allOffers || []
+                        : window._allDemands || [];
+                const el = document.getElementById("offers-demands-list");
+
+                let filtered = items;
+
+                if (matId) {
+                    filtered = filtered.filter(
+                        (item) => String(item.matiere_id) === String(matId),
+                    );
+                }
+                if (horaire) {
+                    filtered = filtered.filter((item) => {
+                        const dispos = Array.isArray(item.disponibilites)
+                            ? item.disponibilites
+                            : [];
+                        return dispos.some((d) => d.creneau === horaire);
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    el.innerHTML =
+                        '<div class="text-sm text-muted text-center py-6">Aucun résultat pour ces filtres.</div>';
+                    return;
+                }
+
+                if (tab === "offers") {
+                    el.innerHTML = filtered
+                        .map((o) => {
+                            const nom =
+                                o.matiere_nom ||
+                                (window._matieres || []).find(
+                                    (m) => m.id === o.matiere_id,
+                                )?.nom ||
+                                "Matière";
+                            const p = o.publicateur;
+                            const profil = p
+                                ? `${p.prenom || ""} ${p.nom || ""}`.trim()
+                                : o.profile_name || "";
+                            const avatarUrl = p?.avatar_url || "";
+                            const avatarHtml = avatarUrl && avatarUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avatarUrl}" alt="" class="w-6 h-6 rounded-full object-cover flex-shrink-0" />`
+                                : `<span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">${profil ? profil.charAt(0) : "?"}</span>`;
+                            const dispos = Array.isArray(o.disponibilites)
+                                ? o.disponibilites
+                                : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (d) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour ? d.jour + " " : ""}${d.creneau || ""}</span>`,
+                                )
+                                .join(" ");
+                            const actionBtn = `<button onclick="event.stopPropagation();handleRequestHelp(${o.id})" class="w-full mt-2 py-2 bg-warning text-white rounded-lg text-xs font-medium hover:bg-warning/90 transition-colors">Demander de l'aide</button>`;
+                            return `<div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-card/80 transition-colors" onclick="openDetailModal(${o.id}, 'offer')">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm">${nom}</p>
+                        ${profil ? `<p class="text-xs text-muted mt-0.5 flex items-center gap-1.5">${avatarHtml}${profil}</p>${p?.filiere || p?.niveau ? `<div class="flex gap-1 mt-1">${p.filiere ? `<span class="px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-medium">${p.filiere}</span>` : ""}${p.niveau ? `<span class="px-1.5 py-0.5 bg-success/10 text-success rounded text-[10px] font-medium">${p.niveau}</span>` : ""}</div>` : ""}` : ""}
+                        ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
+                    </div>
+                    <span class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs">Voir</span>
+                </div>
+                ${actionBtn}
+            </div>`;
+                        })
+                        .join("");
+                } else {
+                    el.innerHTML = filtered
+                        .map((d) => {
+                            const nom =
+                                d.matiere_nom ||
+                                (window._matieres || []).find(
+                                    (m) => m.id === d.matiere_id,
+                                )?.nom ||
+                                "Matière";
+                            const p = d.publicateur;
+                            const profil = p
+                                ? `${p.prenom || ""} ${p.nom || ""}`.trim()
+                                : "";
+                            const avatarUrl = p?.avatar_url || "";
+                            const avatarHtml = avatarUrl && avatarUrl !== "https://via.placeholder.com/150"
+                                ? `<img src="${avatarUrl}" alt="" class="w-6 h-6 rounded-full object-cover flex-shrink-0" />`
+                                : profil ? `<span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">${profil.charAt(0)}</span>` : "";
+                            const dispos = Array.isArray(d.disponibilites)
+                                ? d.disponibilites
+                                : [];
+                            const slotsHtml = dispos
+                                .map(
+                                    (s) =>
+                                        `<span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${s.jour ? s.jour + " " : ""}${s.creneau || ""}</span>`,
+                                )
+                                .join(" ");
+                            const urgBadge = d.urgence
+                                ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${d.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : d.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${d.urgence}</span>`
+                                : "";
+                            const actionBtn = `<button onclick="event.stopPropagation();handleOfferHelp(${d.id})" class="w-full mt-2 py-2 bg-primary text-white rounded-lg text-xs font-medium hover:bg-primary/90 transition-colors">Offrir mon aide</button>`;
+                            return `<div class="bg-popover border border-border rounded-lg p-4 cursor-pointer hover:bg-card/80 transition-colors" onclick="openDetailModal(${d.id}, 'demand')">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm">${nom} ${urgBadge}</p>
+                        ${d.description ? `<p class="text-xs text-muted mt-0.5 truncate">${d.description}</p>` : ""}
+                        ${profil ? `<p class="text-xs text-muted mt-0.5 flex items-center gap-1.5">${avatarHtml}${profil}</p>${p?.filiere || p?.niveau ? `<div class="flex gap-1 mt-1">${p.filiere ? `<span class="px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-medium">${p.filiere}</span>` : ""}${p.niveau ? `<span class="px-1.5 py-0.5 bg-success/10 text-success rounded text-[10px] font-medium">${p.niveau}</span>` : ""}</div>` : ""}` : ""}
+                        ${slotsHtml ? `<div class="flex flex-wrap gap-1 mt-1.5">${slotsHtml}</div>` : ""}
+                    </div>
+                    <span class="shrink-0 px-3 py-1.5 bg-primary text-white rounded-lg text-xs">Voir</span>
+                </div>
+                ${actionBtn}
+            </div>`;
+                        })
+                        .join("");
+                }
+            }
+
+            function openProfileModal() {
+                const modal = document.getElementById("modal-profile-view");
+                modal.classList.remove("hidden");
+
+                // Fermer en cliquant en dehors
+                modal.onclick = (e) => {
+                    if (e.target === modal) modal.classList.add("hidden");
+                };
+
+                // Alimenter avec les données déjà chargées dans le DOM
+                const name =
+                    document.getElementById("profile-fullname-dash")
+                        ?.textContent || "—";
+                const email =
+                    document.getElementById("profile-email-dash")
+                        ?.textContent || "—";
+                const filiere =
+                    document.getElementById("profile-filiere-badge")
+                        ?.textContent || "—";
+                const niveau =
+                    document.getElementById("profile-niveau-badge")
+                        ?.textContent || "—";
+
+                document.getElementById("pv-name").textContent = name;
+                document.getElementById("pv-email").textContent = email;
+                document.getElementById("pv-filiere").textContent = filiere;
+                document.getElementById("pv-niveau").textContent = niveau;
+
+                // Initiales et avatar
+                const initials =
+                    name
+                        .split(" ")
+                        .map((w) => w.charAt(0))
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2) || "?";
+                document.getElementById("pv-initials").textContent = initials;
+
+                // Avatar photo si disponible
+                const avatarUrl = window._profileAvatarUrl;
+                const img = document.getElementById("pv-avatar-img");
+                const ini = document.getElementById("pv-initials");
+                if (
+                    avatarUrl &&
+                    avatarUrl !== "https://via.placeholder.com/150"
+                ) {
+                    img.src = avatarUrl;
+                    img.classList.remove("hidden");
+                    ini.classList.add("hidden");
+                } else {
+                    img.classList.add("hidden");
+                    ini.classList.remove("hidden");
+                }
+
+                // Compétences et lacunes
+                const comps = window._profileComps || [];
+                const lacs = window._profileLacs || [];
+                document.getElementById("pv-comps-count").textContent =
+                    comps.length;
+                document.getElementById("pv-lacs-count").textContent =
+                    lacs.length;
+
+                document.getElementById("pv-comps").innerHTML =
+                    comps.length > 0
+                        ? comps
+                              .map(
+                                  (c) =>
+                                      `<span class="px-2 py-0.5 bg-success/10 text-success rounded-full text-xs">${c.matiere_nom || c.nom || ""}</span>`,
+                              )
+                              .join("")
+                        : '<span class="text-xs text-muted">Aucune compétence</span>';
+
+                document.getElementById("pv-lacs").innerHTML =
+                    lacs.length > 0
+                        ? lacs
+                              .map(
+                                  (l) =>
+                                      `<span class="px-2 py-0.5 bg-warning/10 text-warning rounded-full text-xs">${l.matiere_nom || l.nom || ""}</span>`,
+                              )
+                              .join("")
+                        : '<span class="text-xs text-muted">Aucune lacune</span>';
+
+                // Format
+                const profile = window._profileData || {};
+                const fmt = {
+                    presentiel: "Présentiel",
+                    en_ligne: "En ligne",
+                    hybride: "Hybride",
+                };
+                document.getElementById("pv-format").textContent =
+                    fmt[profile.format_preference] ||
+                    profile.format_preference ||
+                    "—";
+
+                // Disponibilités
+                const dispos = profile.disponibilites || [];
+                document.getElementById("pv-dispos").innerHTML =
+                    dispos.length > 0
+                        ? dispos
+                              .map(
+                                  (d) =>
+                                      `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`,
+                              )
+                              .join("")
+                        : '<span class="text-xs text-muted">Aucune disponibilité</span>';
+            }
+
+            function handleOfferHelp(demandId) {
+                API.demands.offerHelp(demandId)
+                    .then(() => { showToast("Aide proposée avec succès !", "success"); document.getElementById("modal-detail").classList.add("hidden"); })
+                    .catch(err => showToast(err.message || "Erreur", "error"));
+            }
+
+            function handleRequestHelp(offerId) {
+                API.offers.respond(offerId)
+                    .then(() => { showToast("Demande d'aide envoyée !", "success"); document.getElementById("modal-detail").classList.add("hidden"); })
+                    .catch(err => showToast(err.message || "Erreur", "error"));
+            }
+
+            function openDetailModal(id, type) {
+                const modal = document.getElementById("modal-detail");
+                const title = document.getElementById("modal-detail-title");
+                const body = document.getElementById("modal-detail-body");
+                modal.classList.remove("hidden");
+                modal.onclick = (e) => { if (e.target === modal) modal.classList.add("hidden"); };
+
+                const items = type === "offer" ? window._allOffers : window._allDemands;
+                const item = items.find(i => i.id === id);
+
+                if (!item) {
+                    body.innerHTML = `<p class="text-muted">Élément introuvable.</p>`;
+                    title.textContent = type === "offer" ? "Offre" : "Demande";
+                    return;
+                }
+
+                const p = item.publicateur || {};
+                const nomPublieur = `${p.prenom || ""} ${p.nom || ""}`.trim() || "Anonyme";
+                const avatarP = p.avatar_url && p.avatar_url !== "https://via.placeholder.com/150"
+                    ? `<img src="${p.avatar_url}" alt="" class="w-10 h-10 rounded-full object-cover" />`
+                    : `<span class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">${nomPublieur.charAt(0)}</span>`;
+                const filiereBadge = p.filiere
+                    ? `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">${p.filiere}</span>`
+                    : "";
+                const niveauBadge = p.niveau
+                    ? `<span class="px-2 py-0.5 bg-success/10 text-success rounded-full text-xs">${p.niveau}</span>`
+                    : "";
+
+                const matiereNom = item.matiere_nom ||
+                    ((window._matieres || []).find(m => m.id === item.matiere_id)?.nom) ||
+                    "—";
+                const dispos = Array.isArray(item.disponibilites) ? item.disponibilites : [];
+                const disposHtml = dispos.length
+                    ? dispos.map(d => `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour || ""} ${d.creneau || ""}</span>`).join(" ")
+                    : '<span class="text-xs text-muted">Non spécifié</span>';
+
+                const urgBadge = item.urgence
+                    ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full ${item.urgence === "Urgente" ? "bg-destructive/20 text-destructive" : item.urgence === "Haute" ? "bg-warning/20 text-warning" : "bg-muted/10 text-muted"}">${item.urgence}</span>`
+                    : "";
+
+                // Bouton action visible en permanence (le backend valide l'éligibilité)
+                const actionBtn = type === "demand"
+                    ? `<button onclick="handleOfferHelp(${item.id})" class="w-full py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium">Offrir mon aide</button>`
+                    : `<button onclick="handleRequestHelp(${item.id})" class="w-full py-2.5 bg-warning text-white rounded-xl hover:bg-warning/90 transition-colors text-sm font-medium">Demander de l'aide</button>`;
+
+                title.textContent = type === "offer" ? "Offre de mentorat" : "Demande d'aide";
+                body.innerHTML = `
+                    <div class="flex items-center gap-3 p-3 bg-popover rounded-xl mb-2">
+                        ${avatarP}
+                        <div>
+                            <p class="font-medium text-sm">${nomPublieur}</p>
+                            <div class="flex gap-1.5 mt-1">${filiereBadge} ${niveauBadge}</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-popover rounded-xl p-3">
+                            <p class="text-xs text-muted mb-0.5">Matière</p>
+                            <p class="font-medium text-sm">${matiereNom}</p>
+                        </div>
+                        <div class="bg-popover rounded-xl p-3">
+                            <p class="text-xs text-muted mb-0.5">Format</p>
+                            <p class="font-medium text-sm">${item.format_preference || item.format || "—"}</p>
+                        </div>
+                    </div>
+                    ${item.urgence ? `<div class="flex items-center gap-2">${urgBadge}</div>` : ""}
+                    <div>
+                        <p class="text-xs text-muted mb-1">Description</p>
+                        <p class="text-sm">${item.description || "Aucune description"}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-muted mb-1">Disponibilités</p>
+                        <div class="flex flex-wrap gap-1">${disposHtml}</div>
+                    </div>
+                    ${actionBtn ? `<div class="pt-2">${actionBtn}</div>` : ""}
+                `;
+            }
+
+            function renderProfileCard(profile) {
+                const fullName =
+                    `${profile.prenom || ""} ${profile.nom || ""}`.trim();
+                document.getElementById("user-name").textContent = fullName;
+                const topFiliere = document.getElementById("topbar-filiere");
+                const topNiveau = document.getElementById("topbar-niveau");
+                if (profile.filiere) {
+                    topFiliere.textContent = profile.filiere;
+                    topFiliere.classList.remove("hidden");
+                }
+                if (profile.niveau) {
+                    topNiveau.textContent = niveauLabel(profile.niveau);
+                    topNiveau.classList.remove("hidden");
+                }
+                saveUserData({
+                    firstName: profile.prenom,
+                    lastName: profile.nom,
+                    department: profile.filiere,
+                    level: profile.niveau,
+                });
+
+                window._profileData = profile;
+                window._profileComps = profile.competences || [];
+                window._profileLacs = profile.lacunes || [];
+                window._profileAvatarUrl = profile.avatar_url || "";
+
+                const avatarUrl = profile.avatar_url || "";
+                const initials =
+                    `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
+                    "?";
+                function setAvatar(imgId, initId, url, initials) {
+                    const img = document.getElementById(imgId);
+                    const ini = document.getElementById(initId);
+                    if (url && url !== "https://via.placeholder.com/150") {
+                        img.src = url;
+                        img.classList.remove("hidden");
+                        ini.classList.add("hidden");
+                    } else {
+                        img.classList.add("hidden");
+                        ini.classList.remove("hidden");
+                        ini.textContent = initials;
+                    }
+                }
+                setAvatar("profile-avatar-img", "profile-avatar-initials", avatarUrl, initials);
+                setAvatar("topbar-avatar-img", "topbar-avatar-initials", avatarUrl, initials);
+                document.getElementById(
+                    "profile-fullname-dash",
+                ).textContent = fullName || "—";
+                document.getElementById("profile-email-dash").textContent =
+                    profile.email || "—";
+                const bioEl = document.getElementById("profile-bio-dash");
+                if (bioEl) {
+                    if (profile.bio && profile.bio.trim()) {
+                        bioEl.textContent = profile.bio;
+                        bioEl.classList.remove("text-muted");
+                    } else {
+                        bioEl.innerHTML = '<span class="text-muted">Aucune bio</span>';
+                    }
+                }
+                document.getElementById(
+                    "profile-filiere-badge",
+                ).textContent = filiereLabel(profile.filiere);
+                document.getElementById(
+                    "profile-niveau-badge",
+                ).textContent = niveauLabel(profile.niveau);
+
+                const compsEl = document.getElementById("profile-comps-dash");
+                const comps = profile.competences || [];
+                compsEl.innerHTML =
+                    comps.length > 0
+                        ? comps.slice(0, 4).map(c =>
+                            `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-success/10 text-success">${c.matiere_nom || ""}</span>`
+                        ).join("")
+                        : '<span class="text-xs text-muted">Aucune</span>';
+
+                const lacsEl = document.getElementById("profile-lacs-dash");
+                const lacs = profile.lacunes || [];
+                lacsEl.innerHTML =
+                    lacs.length > 0
+                        ? lacs.slice(0, 4).map(l =>
+                            `<span class="inline-flex px-2 py-0.5 rounded text-xs bg-warning/10 text-warning">${l.matiere_nom || ""}</span>`
+                        ).join("")
+                        : '<span class="text-xs text-muted">Aucune</span>';
+
+    localStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile));
+    try { sessionStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile)); } catch (_) {}
+}
+
+            async function loadDashboard() {
+
+                // Cache multi-couche pour un affichage instantané
+                const cached = localStorage.getItem("mentorlink_profile_cache")
+                    || sessionStorage.getItem("mentorlink_profile_cache")
+                    || (() => { const ud = getUserData(); return ud ? JSON.stringify(ud) : null; })();
+                if (cached) {
+                    try { renderProfileCard(JSON.parse(cached)); } catch (_) {}
+                }
+                // Rafraîchissement depuis l'API en arrière-plan
+                try {
+                    const data = await API.profile.getMe();
+                    const profile = data.profile || data;
+                    renderProfileCard(profile);
+                    try {
+                        localStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile));
+                        sessionStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile));
+                    } catch (_) {}
+                } catch (_) {
+                    if (!cached) {
+                        const userData = getUserData();
+                        if (userData && userData.firstName) {
+                            document.getElementById("user-name").textContent =
+                                `${userData.firstName} ${userData.lastName}`;
+                            const initials = `${(userData.firstName || "").charAt(0)}${(userData.lastName || "").charAt(0)}`.toUpperCase() || "?";
+                            const ini = document.getElementById("topbar-avatar-initials");
+                            if (ini) ini.textContent = initials;
+                        }
+                    }
+                }
+
+                // ── Métriques réelles ─────────────────────────────────────────────────
+                try {
+                    const [received, sent, offers] = await Promise.all([
+                        API.matching.getReceived().catch(() => {
+                            showToast("Erreur chargement matchs", "error");
+                            return [];
+                        }),
+                        API.matching.getSent().catch(() => {
+                            showToast("Erreur chargement matchs", "error");
+                            return [];
+                        }),
+                        API.offers.getAll().catch(() => {
+                            showToast("Erreur chargement offres", "error");
+                            return [];
+                        }),
+                    ]);
+                    const rArr = Array.isArray(received)
+                        ? received
+                        : received.matches || received.data || [];
+                    const sArr = Array.isArray(sent)
+                        ? sent
+                        : sent.matches || sent.data || [];
+                    const oArr = Array.isArray(offers)
+                        ? offers
+                        : offers.offers || offers.data || [];
+                    const acceptedCount = [...rArr, ...sArr].filter(
+                        (m) => m.status === "accepted",
+                    ).length;
+                    document.getElementById("metric-matches").textContent =
+                        acceptedCount;
+                    document.getElementById("metric-hours").textContent =
+                        acceptedCount > 0 ? `${acceptedCount * 2}h` : "0h";
+
+                    const ratingEl = document.getElementById("metric-rating");
+                    if (ratingEl) ratingEl.textContent = "—";
+                } catch (err) {
+                    console.warn("Metrics error", err);
+                    showToast(
+                        "Erreur lors du chargement des métriques",
+                        "error",
+                    );
+                }
+
+                // ── Chargement offres & demandes ────────────────────────────────────────
+                try {
+                    const [offersData, demandsData, matieresData] =
+                        await Promise.all([
+                            API.offers.getAll().catch(() => []),
+                            API.demands.getAll().catch(() => []),
+                            API.matieres.getAll().catch(() => []),
+                        ]);
+
+                    window._allOffers = Array.isArray(offersData)
+                        ? offersData
+                        : offersData.offers || offersData.data || [];
+                    window._allDemands = Array.isArray(demandsData)
+                        ? demandsData
+                        : demandsData.demands || demandsData.data || [];
+                    window._matieres = Array.isArray(matieresData)
+                        ? matieresData
+                        : [];
+
+                    // Remplir le dropdown des matières
+                    const selMat = document.getElementById("filter-matiere");
+                    window._matieres.forEach((m) => {
+                        const opt = document.createElement("option");
+                        opt.value = m.id;
+                        opt.textContent = m.nom;
+                        selMat.appendChild(opt);
+                    });
+
+                    // Par défaut les offres
+                    window._currentTab = "offers";
+                    applyFilters();
+                } catch (err) {
+                    console.warn("Offers/demands error", err);
+                    showToast(
+                        "Erreur lors du chargement des offres et demandes",
+                        "error",
+                    );
+                }
+            }
+
+            loadDashboard();
+        </script>
+    </body>
 </html>

@@ -5,12 +5,68 @@
  */
 
 const API_BASE_URL = (window.API_BASE_URL || (
-    window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+    window.location.protocol === 'file:' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'localhost'
         ? 'http://127.0.0.1:5000/api'
         : 'https://ifri-mentorlink.onrender.com/api'
 ));
 
 console.log('[API] Using base URL:', API_BASE_URL);
+
+async function uploadFileAPI(endpoint, method = 'POST', formData = null) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const token = localStorage.getItem('mentorlink_token');
+
+    const headers = { 'Accept': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const config = { method, headers, body: formData };
+
+    function getLoginRedirectPath() {
+        const path = window.location.pathname;
+        if (path.includes('/pages/')) {
+            return 'signin.html';
+        }
+        return 'pages/signin.html';
+    }
+
+    try {
+        const response = await fetch(url, config);
+
+        if (response.status === 401) {
+            const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            if (pub) {
+                throw new Error('Non authentifié');
+            }
+            console.warn('Session expirée. Redirection vers login.');
+            localStorage.removeItem('mentorlink_token');
+            localStorage.removeItem('mentorlink_user');
+            window.location.href = getLoginRedirectPath();
+            throw new Error('Session expirée. Veuillez vous reconnecter.');
+        }
+
+        let data;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
+
+        if (!response.ok) {
+            throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
+        }
+
+        return data;
+    } catch (error) {
+        console.error(`[API Upload Error] ${endpoint}:`, error);
+        throw error;
+    }
+}
 
 async function fetchAPI(endpoint, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -43,17 +99,26 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
         const response = await fetch(url, config);
 
         if (response.status === 401) {
+            const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname);
+            if (pub) {
+                throw new Error('Non authentifié');
+            }
             console.warn('Session expirée. Redirection vers login.');
             localStorage.removeItem('mentorlink_token');
             localStorage.removeItem('mentorlink_user');
-            const isAuthPage = /signin\.html|signup\.html/.test(window.location.pathname);
-            if (!isAuthPage) {
-                window.location.href = getLoginRedirectPath();
-            }
+            window.location.href = getLoginRedirectPath();
             throw new Error('Session expirée. Veuillez vous reconnecter.');
         }
 
-        const data = await response.json();
+        // Tente de parser le JSON ; si la réponse n'est pas du JSON, on utilise le texte
+        let data;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
 
         if (!response.ok) {
             throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
@@ -91,7 +156,9 @@ const API = {
         addDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'POST', data),
         removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
         activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
-        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT')
+        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT'),
+        updateAvatar: (data) => fetchAPI('/profile/avatar', 'PUT', data),
+        uploadAvatar: (formData) => uploadFileAPI('/profile/avatar/upload', 'POST', formData)
     },
 
     matching: {
@@ -102,6 +169,7 @@ const API = {
         requestMatch: (studentId, body) => fetchAPI(`/matches/${studentId}/request`, 'POST', body),
         accept: (matchId) => fetchAPI(`/matches/${matchId}/accept`, 'POST'),
         reject: (matchId) => fetchAPI(`/matches/${matchId}/reject`, 'POST'),
+        skipMatch: (studentId, body) => fetchAPI(`/matches/${studentId}/skip`, 'POST', body),
         getReceived: () => fetchAPI('/matches/received', 'GET'),
         getSent: () => fetchAPI('/matches/sent', 'GET')
     },
@@ -136,10 +204,6 @@ const API = {
         offerHelp: (id) => fetchAPI(`/demands/${id}/offer-help`, 'POST')
     },
 
-    feedback: {
-        create: (data) => fetchAPI('/feedback', 'POST', data),
-        getUser: (userId) => fetchAPI(`/feedback/${userId}`, 'GET')
-    },
 
     matieres: {
         getAll: () => fetchAPI('/matieres', 'GET')

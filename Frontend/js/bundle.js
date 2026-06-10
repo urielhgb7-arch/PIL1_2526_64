@@ -1,359 +1,413 @@
 /**
- * MentorLink — Configuration & Client API Centralisé
- * Rôle : Gérer l'URL du serveur, joindre automatiquement le token JWT,
- * et intercepter les erreurs globales.
+ * MentorLink — Bundle JS unique
+ * Regroupe : api.js / script.js / matieres-loader.js / notifications-badge.js / logger.js
  */
+// ============================================================
+// LOGGER
+// ============================================================
+const Logger = {
+    _injectToastStyles() {
+        if (document.getElementById("mentorlink-toast-styles")) return;
+        const s = document.createElement("style");
+        s.id = "mentorlink-toast-styles";
+        s.textContent = `.mentorlink-toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;padding:.75rem 1.25rem;border-radius:.5rem;color:#fff;font-size:.875rem;font-weight:500;max-width:24rem;box-shadow:0 10px 25px rgba(0,0,0,.3);transform:translateY(1rem);opacity:0;transition:transform .25s ease,opacity .25s ease;pointer-events:none}.mentorlink-toast.show{transform:translateY(0);opacity:1}.mentorlink-toast.success{background:#10b981}.mentorlink-toast.error{background:#ef4444}.mentorlink-toast.info{background:#6366f1}.mentorlink-toast.warning{background:#f59e0b}`;
+        document.head.appendChild(s);
+    },
+    _toast(m, t) {
+        this._injectToastStyles();
+        const old = document.querySelector(".mentorlink-toast");
+        if (old) old.remove();
+        const d = document.createElement("div");
+        d.className = "mentorlink-toast " + t;
+        d.textContent = m;
+        document.body.appendChild(d);
+        requestAnimationFrame(() => d.classList.add("show"));
+        setTimeout(() => { d.classList.remove("show"); setTimeout(() => d.remove(), 300); }, 4000);
+    },
+    info(m) { this._toast(m, "info"); },
+    warn(m) { this._toast(m, "warning"); console.warn(m); },
+    error(m) { this._toast(m, "error"); console.error(m); },
+    success(m) { this._toast(m, "success"); }
+};
 
+// ============================================================
+// API
+// ============================================================
 const API_BASE_URL = (window.API_BASE_URL || (
-    window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+    window.location.protocol === 'file:' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'localhost'
         ? 'http://127.0.0.1:5000/api'
         : 'https://ifri-mentorlink.onrender.com/api'
 ));
 
-console.log('[API] Using base URL:', API_BASE_URL);
-
-async function fetchAPI(endpoint, method = 'GET', body = null) {
-    const url = `${API_BASE_URL}${endpoint}`;
+async function uploadFileAPI(endpoint, method, formData) {
+    const url = API_BASE_URL + endpoint;
     const token = localStorage.getItem('mentorlink_token');
-
-    const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const config = { method, headers };
-
-    if (body && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
-        config.body = JSON.stringify(body);
-    }
-
-    function getLoginRedirectPath() {
-        const path = window.location.pathname;
-        if (path.includes('/pages/')) {
-            return 'signin.html';
-        }
-        return 'pages/signin.html';
-    }
-
+    const headers = { 'Accept': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const loginPath = () => window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
     try {
-        const response = await fetch(url, config);
-
-        if (response.status === 401) {
-            console.warn('Session expirée. Redirection vers login.');
+        const res = await fetch(url, { method, headers, body: formData });
+        if (res.status === 401) {
+            if (/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname))
+                throw new Error('Non authentifi\u00e9');
             localStorage.removeItem('mentorlink_token');
             localStorage.removeItem('mentorlink_user');
-            const isAuthPage = /signin\.html|signup\.html/.test(window.location.pathname);
-            if (!isAuthPage) {
-                window.location.href = getLoginRedirectPath();
-            }
-            throw new Error('Session expirée. Veuillez vous reconnecter.');
+            window.location.href = loginPath();
+            throw new Error('Session expir\u00e9e');
         }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || `Erreur Serveur (Code ${response.status})`);
+        const isJson = (res.headers.get('content-type') || '').includes('application/json');
+        let data;
+        if (isJson) data = await res.json();
+        else {
+            const text = await res.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
         }
-
+        if (!res.ok) throw new Error((data.message || ('Erreur (' + res.status + ')')) + (data.error ? ': ' + data.error : ''));
         return data;
-    } catch (error) {
-        console.error(`[API Error] ${endpoint}:`, error);
-        throw error;
+    } catch (e) {
+        console.error('[API Upload] ' + endpoint + ':', e);
+        throw e;
+    }
+}
+
+async function fetchAPI(endpoint, method, body) {
+    const url = API_BASE_URL + endpoint;
+    const token = localStorage.getItem('mentorlink_token');
+    const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const config = { method, headers };
+    if (body && (method === 'POST' || method === 'PUT' || method === 'DELETE'))
+        config.body = JSON.stringify(body);
+    const loginPath = () => window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
+    try {
+        const res = await fetch(url, config);
+        if (res.status === 401) {
+            if (/^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/.test(window.location.pathname))
+                throw new Error('Non authentifi\u00e9');
+            localStorage.removeItem('mentorlink_token');
+            localStorage.removeItem('mentorlink_user');
+            window.location.href = loginPath();
+            throw new Error('Session expir\u00e9e');
+        }
+        const isJson = (res.headers.get('content-type') || '').includes('application/json');
+        let data;
+        if (isJson) data = await res.json();
+        else {
+            const text = await res.text();
+            try { data = JSON.parse(text); } catch (_) { data = { message: text }; }
+        }
+        if (!res.ok) throw new Error((data.message || ('Erreur (' + res.status + ')')) + (data.error ? ': ' + data.error : ''));
+        return data;
+    } catch (e) {
+        console.error('[API Error] ' + endpoint + ':', e);
+        throw e;
     }
 }
 
 const API = {
     auth: {
-        register: (userData) => fetchAPI('/auth/register', 'POST', userData),
-        login: (credentials) => fetchAPI('/auth/login', 'POST', credentials),
-        forgotPassword: (data) => fetchAPI('/auth/forgot-password', 'POST', data),
-        resetPassword: (data) => fetchAPI('/auth/reset-password', 'POST', data),
-        changePassword: (data) => {
-            const payload = {
-                old_password: data.old_password || data.ancien_mot_de_passe || data.oldPassword,
-                new_password: data.new_password || data.nouveau_mot_de_passe || data.newPassword
+        register: (d) => fetchAPI('/auth/register', 'POST', d),
+        login: (d) => fetchAPI('/auth/login', 'POST', d),
+        forgotPassword: (d) => fetchAPI('/auth/forgot-password', 'POST', d),
+        resetPassword: (d) => fetchAPI('/auth/reset-password', 'POST', d),
+        changePassword: (d) => {
+            const p = {
+                old_password: d.old_password || d.ancien_mot_de_passe || d.oldPassword,
+                new_password: d.new_password || d.nouveau_mot_de_passe || d.newPassword
             };
-            return fetchAPI('/auth/change-password', 'PUT', payload);
+            return fetchAPI('/auth/change-password', 'PUT', p);
+        },
+        deleteAccount: (d) => {
+            const password = typeof d === 'string' ? d : d.password;
+            return fetchAPI('/auth/delete-account', 'DELETE', { password });
         }
     },
-
     profile: {
         getMe: () => fetchAPI('/profile/me', 'GET'),
-        updateMe: (data) => fetchAPI('/profile/me', 'PUT', data),
-        addCompetence: (data) => fetchAPI('/profile/competences', 'POST', data),
-        removeCompetence: (data) => fetchAPI('/profile/competences', 'DELETE', data),
-        addLacune: (data) => fetchAPI('/profile/lacunes', 'POST', data),
-        removeLacune: (data) => fetchAPI('/profile/lacunes', 'DELETE', data),
-        addDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'POST', data),
-        removeDisponibilite: (data) => fetchAPI('/profile/disponibilites', 'DELETE', data),
-        activateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/activate`, 'PUT'),
-        deactivateCompetence: (matiereId) => fetchAPI(`/profile/competences/${matiereId}/deactivate`, 'PUT')
+        updateMe: (d) => fetchAPI('/profile/me', 'PUT', d),
+        addCompetence: (d) => fetchAPI('/profile/competences', 'POST', d),
+        removeCompetence: (d) => fetchAPI('/profile/competences', 'DELETE', d),
+        addLacune: (d) => fetchAPI('/profile/lacunes', 'POST', d),
+        removeLacune: (d) => fetchAPI('/profile/lacunes', 'DELETE', d),
+        addDisponibilite: (d) => fetchAPI('/profile/disponibilites', 'POST', d),
+        removeDisponibilite: (d) => fetchAPI('/profile/disponibilites', 'DELETE', d),
+        activateCompetence: (id) => fetchAPI('/profile/competences/' + id + '/activate', 'PUT'),
+        deactivateCompetence: (id) => fetchAPI('/profile/competences/' + id + '/deactivate', 'PUT'),
+        updateAvatar: (d) => fetchAPI('/profile/avatar', 'PUT', d),
+        uploadAvatar: (fd) => uploadFileAPI('/profile/avatar/upload', 'POST', fd)
     },
-
     matching: {
-        getSuggestions: (filters = {}) => {
+        getSuggestions: (filters) => {
+            filters = filters || {};
             const params = new URLSearchParams(filters).toString();
-            return fetchAPI(`/matches/suggestions${params ? '?' + params : ''}`, 'GET');
+            return fetchAPI('/matches/suggestions' + (params ? '?' + params : ''), 'GET');
         },
-        requestMatch: (studentId, body) => fetchAPI(`/matches/${studentId}/request`, 'POST', body),
-        accept: (matchId) => fetchAPI(`/matches/${matchId}/accept`, 'POST'),
-        reject: (matchId) => fetchAPI(`/matches/${matchId}/reject`, 'POST'),
+        requestMatch: (id, body) => fetchAPI('/matches/' + id + '/request', 'POST', body),
+        accept: (id) => fetchAPI('/matches/' + id + '/accept', 'POST'),
+        reject: (id) => fetchAPI('/matches/' + id + '/reject', 'POST'),
+        skipMatch: (id, body) => fetchAPI('/matches/' + id + '/skip', 'POST', body),
         getReceived: () => fetchAPI('/matches/received', 'GET'),
         getSent: () => fetchAPI('/matches/sent', 'GET')
     },
-
     messages: {
         getConversations: () => fetchAPI('/conversations', 'GET'),
-        create: (userId) => fetchAPI('/conversations', 'POST', { user_id: userId }),
-        getHistory: (convId) => fetchAPI(`/conversations/${convId}/messages`, 'GET'),
-        send: (convId, text) => fetchAPI(`/conversations/${convId}/messages`, 'POST', { contenu: text })
+        create: (id) => fetchAPI('/conversations', 'POST', { user_id: id }),
+        getHistory: (id) => fetchAPI('/conversations/' + id + '/messages', 'GET'),
+        send: (id, text) => fetchAPI('/conversations/' + id + '/messages', 'POST', { contenu: text })
     },
-
     notifications: {
-        getAll: (unreadOnly = false) => fetchAPI(`/notifications${unreadOnly ? '?unread_only=true' : ''}`, 'GET'),
-        markRead: (id) => fetchAPI(`/notifications/${id}/read`, 'PUT'),
+        getAll: (unreadOnly) => fetchAPI('/notifications' + (unreadOnly ? '?unread_only=true' : ''), 'GET'),
+        markRead: (id) => fetchAPI('/notifications/' + id + '/read', 'PUT'),
         markAllRead: () => fetchAPI('/notifications/read-all', 'PUT'),
-        delete: (id) => fetchAPI(`/notifications/${id}`, 'DELETE')
+        delete: (id) => fetchAPI('/notifications/' + id, 'DELETE')
     },
-
     offers: {
         getAll: () => fetchAPI('/offers', 'GET'),
         getMine: () => fetchAPI('/offers/mine', 'GET'),
-        create: (data) => fetchAPI('/offers', 'POST', data),
-        delete: (id) => fetchAPI(`/offers/${id}`, 'DELETE'),
-        respond: (id) => fetchAPI(`/offers/${id}/respond`, 'POST')
+        create: (d) => fetchAPI('/offers', 'POST', d),
+        delete: (id) => fetchAPI('/offers/' + id, 'DELETE'),
+        respond: (id) => fetchAPI('/offers/' + id + '/respond', 'POST')
     },
-
     demands: {
         getAll: () => fetchAPI('/demands', 'GET'),
         getMine: () => fetchAPI('/demands/mine', 'GET'),
-        create: (data) => fetchAPI('/demands', 'POST', data),
-        delete: (id) => fetchAPI(`/demands/${id}`, 'DELETE'),
-        offerHelp: (id) => fetchAPI(`/demands/${id}/offer-help`, 'POST')
+        create: (d) => fetchAPI('/demands', 'POST', d),
+        delete: (id) => fetchAPI('/demands/' + id, 'DELETE'),
+        offerHelp: (id) => fetchAPI('/demands/' + id + '/offer-help', 'POST')
     },
-
-    feedback: {
-        create: (data) => fetchAPI('/feedback', 'POST', data),
-        getUser: (userId) => fetchAPI(`/feedback/${userId}`, 'GET')
-    },
-
     matieres: {
         getAll: () => fetchAPI('/matieres', 'GET')
     }
 };
 
-window.API = API;
-// Check authentication
-function checkAuth(redirectTo = 'signin.html') {
-  const isAuthenticated = localStorage.getItem('isAuthenticated');
-  if (!isAuthenticated && window.location.pathname.includes('dashboard')) {
-    window.location.href = redirectTo;
-  }
+// ============================================================
+// SCRIPT.JS — Utilitaires partagés
+// ============================================================
+const API_BASE = API_BASE_URL;
+
+function checkAuth(redirectTo) {
+    if (!redirectTo)
+        redirectTo = window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
+    const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/;
+    if (!pub.test(window.location.pathname) && !localStorage.getItem('mentorlink_token'))
+        window.location.replace(redirectTo);
 }
 
-// Navigate to page
-function navigateTo(page) {
-  window.location.href = page;
-}
+function navigateTo(page) { window.location.href = page; }
 
-// Logout
 function logout() {
-  localStorage.removeItem('isAuthenticated');
-  localStorage.removeItem('userEmail');
-  localStorage.removeItem('userData');
-  localStorage.removeItem('onboardingCompleted');
-  const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
-  window.location.href = redirectPath;
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('onboardingCompleted');
+    localStorage.removeItem('mentorlink_token');
+    localStorage.removeItem('mentorlink_user');
+    localStorage.removeItem('mentorlink_profile_cache');
+    const p = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
+    window.location.href = p;
 }
 
-// Get user data
 function getUserData() {
-  const userData = localStorage.getItem('userData');
-  return userData ? JSON.parse(userData) : null;
+    const d = localStorage.getItem('userData');
+    return d ? JSON.parse(d) : null;
 }
 
-// Save user data
-function saveUserData(data) {
-  localStorage.setItem('userData', JSON.stringify(data));
+function saveUserData(d) { localStorage.setItem('userData', JSON.stringify(d)); }
+
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    const hide = document.getElementById(id + '-icon-hide');
+    const show = document.getElementById(id + '-icon-show');
+    if (input.type === 'password') {
+        input.type = 'text';
+        hide.classList.add('hidden');
+        show.classList.remove('hidden');
+    } else {
+        input.type = 'password';
+        hide.classList.remove('hidden');
+        show.classList.add('hidden');
+    }
 }
 
-// Toggle password visibility
-function togglePassword(inputId) {
-  const input = document.getElementById(inputId);
-  const iconHide = document.getElementById(`${inputId}-icon-hide`);
-  const iconShow = document.getElementById(`${inputId}-icon-show`);
-  
-  if (input.type === 'password') {
-    input.type = 'text';
-    iconHide.classList.add('hidden');
-    iconShow.classList.remove('hidden');
-  } else {
-    input.type = 'password';
-    iconHide.classList.remove('hidden');
-    iconShow.classList.add('hidden');
-  }
-}
+function formatDate(date) { return new Date(date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }); }
+function formatTime(date) { return new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
 
-// Format date
-function formatDate(date) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(date).toLocaleDateString('fr-FR', options);
-}
+(function guardRoute() {
+    const pub = /^\/(pages\/)?($|index\.html|signin\.html|signup\.html|reset-password\.html)/;
+    if (!pub.test(window.location.pathname) && !localStorage.getItem('mentorlink_token')) {
+        const p = window.location.pathname.includes('/pages/') ? 'signin.html' : 'pages/signin.html';
+        window.location.replace(p);
+    }
+})();
 
-// Format time
-function formatTime(date) {
-  const options = { hour: '2-digit', minute: '2-digit' };
-  return new Date(date).toLocaleTimeString('fr-FR', options);
-}
-// Load matieres from API and cache locally with filiere + niveau filtering
-let _matieresCache = null;
+function showToast(message, type) { Logger._toast(message, type); }
 
-const DEFAULT_MATIERES = [
+// ============================================================
+// MATIERES-LOADER
+// ============================================================
+var _matieresCache = null;
+
+var DEFAULT_MATIERES = [
   { id: 1, nom: 'Algorithmique', filiere: 'GL', annee: 'L1' },
-  { id: 2, nom: 'Structures de données', filiere: 'GL', annee: 'L2' },
-  { id: 3, nom: 'Base de données SQL', filiere: 'GL', annee: 'L1' },
-  { id: 4, nom: 'Programmation Orientée Objet', filiere: 'GL', annee: 'L2' },
-  { id: 5, nom: 'Génie logiciel', filiere: 'GL', annee: 'L3' },
+  { id: 2, nom: 'Structures de donn\u00e9es', filiere: 'GL', annee: 'L2' },
+  { id: 3, nom: 'Base de donn\u00e9es SQL', filiere: 'GL', annee: 'L1' },
+  { id: 4, nom: 'Programmation Orient\u00e9e Objet', filiere: 'GL', annee: 'L2' },
+  { id: 5, nom: 'G\u00e9nie logiciel', filiere: 'GL', annee: 'L3' },
   { id: 6, nom: 'Architecture des ordinateurs', filiere: 'GL', annee: 'L1' },
-  { id: 7, nom: 'Systèmes d\'exploitation', filiere: 'GL', annee: 'L2' },
+  { id: 7, nom: "Syst\u00e8mes d'exploitation", filiere: 'GL', annee: 'L2' },
   { id: 8, nom: 'Web Development', filiere: 'GL', annee: 'L2' },
-  { id: 9, nom: 'Réseaux informatiques', filiere: 'RSI', annee: 'L1' },
-  { id: 10, nom: 'Sécurité des réseaux', filiere: 'RSI', annee: 'L2' },
-  { id: 11, nom: 'Télécommunications', filiere: 'RSI', annee: 'L2' },
-  { id: 12, nom: 'Administration système', filiere: 'RSI', annee: 'L3' },
-  { id: 13, nom: 'Cyberdéfense', filiere: 'Sécurité', annee: 'L3' },
-  { id: 14, nom: 'Cryptographie', filiere: 'Sécurité', annee: 'L2' },
-  { id: 15, nom: 'Sécurité des applications', filiere: 'Sécurité', annee: 'L3' },
-  { id: 16, nom: 'Audit de sécurité', filiere: 'Sécurité', annee: 'L3' },
+  { id: 9, nom: 'R\u00e9seaux informatiques', filiere: 'RSI', annee: 'L1' },
+  { id: 10, nom: 'S\u00e9curit\u00e9 des r\u00e9seaux', filiere: 'RSI', annee: 'L2' },
+  { id: 11, nom: 'T\u00e9l\u00e9communications', filiere: 'RSI', annee: 'L2' },
+  { id: 12, nom: 'Administration syst\u00e8me', filiere: 'RSI', annee: 'L3' },
+  { id: 13, nom: 'Cyberd\u00e9fense', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 14, nom: 'Cryptographie', filiere: 'S\u00e9curit\u00e9', annee: 'L2' },
+  { id: 15, nom: 'S\u00e9curit\u00e9 des applications', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 16, nom: 'Audit de s\u00e9curit\u00e9', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
   { id: 17, nom: 'Intelligence artificielle', filiere: 'GL', annee: 'L3' },
   { id: 18, nom: 'Machine Learning', filiere: 'GL', annee: 'M1' },
   { id: 19, nom: 'Big Data', filiere: 'RSI', annee: 'M1' },
   { id: 20, nom: 'Cloud Computing', filiere: 'GL', annee: 'M1' },
-  { id: 21, nom: 'Développement mobile', filiere: 'GL', annee: 'L3' },
+  { id: 21, nom: 'D\u00e9veloppement mobile', filiere: 'GL', annee: 'L3' },
   { id: 22, nom: 'Gestion de projet informatique', filiere: 'GL', annee: 'M2' },
-  { id: 23, nom: 'Langage SQL avancé', filiere: 'RSI', annee: 'L3' },
-  { id: 24, nom: 'Administration de bases de données', filiere: 'RSI', annee: 'M1' },
-  { id: 25, nom: 'Sécurité web', filiere: 'Sécurité', annee: 'L3' },
-  { id: 26, nom: 'Ethical Hacking', filiere: 'Sécurité', annee: 'M1' }
+  { id: 23, nom: 'Langage SQL avanc\u00e9', filiere: 'RSI', annee: 'L3' },
+  { id: 24, nom: 'Administration de bases de donn\u00e9es', filiere: 'RSI', annee: 'M1' },
+  { id: 25, nom: 'S\u00e9curit\u00e9 web', filiere: 'S\u00e9curit\u00e9', annee: 'L3' },
+  { id: 26, nom: 'Ethical Hacking', filiere: 'S\u00e9curit\u00e9', annee: 'M1' }
 ];
 
 async function loadMatieresFromAPI() {
   if (_matieresCache) return _matieresCache;
   try {
-    const data = await API.matieres.getAll();
-    const matieres = data.matieres || data;
+    var data = await API.matieres.getAll();
+    var matieres = data.matieres || data;
     if (Array.isArray(matieres) && matieres.length > 0) {
       _matieresCache = matieres;
+      window._matieresList = matieres;
       localStorage.setItem('matieres_cache', JSON.stringify(matieres));
       return matieres;
     }
   } catch (e) {
     console.warn('Failed to load matieres from API:', e);
   }
-
-  const cached = localStorage.getItem('matieres_cache');
+  var cached = localStorage.getItem('matieres_cache');
   if (cached) {
     try {
       _matieresCache = JSON.parse(cached);
+      window._matieresList = _matieresCache;
       return _matieresCache;
     } catch (e) {
       console.warn('Invalid matieres cache:', e);
     }
   }
-
   _matieresCache = DEFAULT_MATIERES;
+  window._matieresList = DEFAULT_MATIERES;
   return _matieresCache;
 }
 
-function getMatiersByFiliere(filiere = null) {
+function getMatiersByFiliere(filiere) {
   if (!_matieresCache) return [];
   if (!filiere) return _matieresCache;
-  return _matieresCache.filter(m => {
-    const mFiliere = m.filiere || m.filiere_nom || m.departement || '';
+  return _matieresCache.filter(function(m) {
+    var mFiliere = m.filiere || m.filiere_nom || m.departement || '';
     return mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
            filiere.toLowerCase().includes(mFiliere.toLowerCase());
   });
 }
 
-function getMatieresByFiliereAndNiveau(filiere = null, niveau = null) {
+function getMatieresByFiliereAndNiveau(filiere, niveau) {
   if (!_matieresCache) return [];
-  return _matieresCache.filter(m => {
+  return _matieresCache.filter(function(m) {
     if (filiere) {
-      const mFiliere = m.filiere || m.filiere_nom || m.departement || '';
-      const matchFiliere = mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
-                           filiere.toLowerCase().includes(mFiliere.toLowerCase());
+      var mFiliere = m.filiere || m.filiere_nom || m.departement || '';
+      var matchFiliere = mFiliere.toLowerCase().includes(filiere.toLowerCase()) ||
+                         filiere.toLowerCase().includes(mFiliere.toLowerCase());
       if (!matchFiliere) return false;
     }
     if (niveau) {
-      const mNiveau = m.annee || m.niveau || m.annee_scolaire || '';
+      var mNiveau = m.annee || m.niveau || m.annee_scolaire || '';
       if (mNiveau.toLowerCase() !== niveau.toLowerCase()) return false;
     }
     return true;
   });
 }
 
-async function initMatieresLoader() {
-  const authPages = /signin\.html|signup\.html|reset-password\.html/.test(window.location.pathname);
-  if (authPages) return;
-  await loadMatieresFromAPI();
+// Keep existing helpers for backward compat
+function getMatieresList() { return window._matieresList || []; }
+function getMatiereLabel(id) {
+    if (!window._matieresList) return id;
+    var found = window._matieresList.find(function(m) { return String(m.id) === String(id); });
+    return found ? found.nom : id;
+}
+function renderMatiereOptions(sel, selectedId) {
+    if (!window._matieresList) return;
+    sel.innerHTML = '<option value="">S\u00e9lectionnez une mati\u00e8re</option>';
+    window._matieresList.forEach(function(m) {
+        var opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.nom;
+        if (String(m.id) === String(selectedId)) opt.selected = true;
+        sel.appendChild(opt);
+    });
 }
 
-// Initialize on DOM ready
-if (typeof window !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', initMatieresLoader);
+// Auto-load matieres on page load if authenticated
+(async function initMatieres() {
+    if (!localStorage.getItem('mentorlink_token')) return;
+    try { await loadMatieresFromAPI(); } catch (_) {}
+})();
+
+// ============================================================
+// NIVEAU / FILIERE LABELS
+// ============================================================
+var _NIVEAU_LABELS = {
+    L1: "Licence 1",
+    L2: "Licence 2",
+    L3: "Licence 3",
+    M1: "Master 1",
+    M2: "Master 2",
+};
+var _FILIERE_LABELS = {
+    GL: "G\u00e9nie Logiciel",
+    RSI: "R\u00e9seaux et Syst\u00e8mes d'Information",
+    SI: "Syst\u00e8mes d'Information",
+    IA: "Intelligence Artificielle",
+    IM: "Ing\u00e9nierie Math\u00e9matique",
+    SIRI: "S\u00e9curit\u00e9 Informatique",
+    SEoIT: "Software Engineering",
+};
+function niveauLabel(val) {
+    return _NIVEAU_LABELS[val] || val || "\u2014";
+}
+function filiereLabel(val, short) {
+    if (!val) return "\u2014";
+    if (short) return val;
+    return _FILIERE_LABELS[val] ? _FILIERE_LABELS[val] + " (" + val + ")" : val;
 }
 
-window.loadMatieresFromAPI = loadMatieresFromAPI;
-window.getMatiersByFiliere = getMatiersByFiliere;
-window.getMatieresByFiliereAndNiveau = getMatieresByFiliereAndNiveau;
-window.initMatieresLoader = initMatieresLoader;
-// Centralized notifications badge updater
-async function fetchUnreadCount() {
-  try {
-    const d = await API.notifications.getAll(true);
-    const unread = d.unread_count ?? ((d.notifications || []).filter(n => !n.is_read && !n.lu).length);
-    return unread;
-  } catch (e) {
-    console.warn('fetchUnreadCount', e);
-    return 0;
-  }
+// ============================================================
+// NOTIFICATIONS-BADGE — petit point jaune sur la cloche
+// ============================================================
+function toggleBellDot(show) {
+    document.querySelectorAll('.site-bell').forEach(el => {
+        el.classList.toggle('has-unread', show);
+    });
 }
 
 async function updateNotificationsBadge() {
-  const unread = await fetchUnreadCount();
-  const has = unread > 0;
-  // find all bell elements we added
-  const selectors = ['.site-bell', '.notif-bell', '.notification-btn'];
-  selectors.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      if (has) el.classList.add('has-unread'); else el.classList.remove('has-unread');
-      // update accessible label if present
-      const label = el.getAttribute('aria-label') || '';
-      el.setAttribute('aria-label', has ? `${label} — ${unread} non lue(s)` : label.replace(/ ?—.*$/, ''));
-    });
-  });
+    if (!localStorage.getItem('mentorlink_token')) return;
+    try {
+        const data = await API.notifications.getAll(true);
+        const count = (data && data.notifications) ? data.notifications.length : 0;
+        toggleBellDot(count > 0);
+    } catch (_) {}
 }
 
-// Polling option to keep badge updated
-let _notifInterval = null;
-function startNotificationsBadgePoll(intervalMs = 30000) {
-  updateNotificationsBadge();
-  if (_notifInterval) clearInterval(_notifInterval);
-  _notifInterval = setInterval(updateNotificationsBadge, intervalMs);
-}
-
-// Init on DOM ready
-if (typeof window !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', () => {
-    const authPages = /signin\.html|signup\.html|reset-password\.html/.test(window.location.pathname);
-    if (!authPages) startNotificationsBadgePoll();
-  });
-}
-
-// expose for manual control
-window.updateNotificationsBadge = updateNotificationsBadge;
-window.startNotificationsBadgePoll = startNotificationsBadgePoll;
+(async function initNotificationsBadge() {
+    await updateNotificationsBadge();
+    if (localStorage.getItem('mentorlink_token')) {
+        setInterval(updateNotificationsBadge, 30000);
+    }
+})();
