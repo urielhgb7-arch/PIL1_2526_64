@@ -129,10 +129,20 @@
     }
 
     let noMatchesFound = false;
+    let autoDemandId = null;
 
     async function loadSuggestions() {
-      const demandId = getDemandId();
+      let demandId = getDemandId();
       try {
+        if (!demandId) {
+          const resp = await API.demands.getMine();
+          const myDemands = resp.demands || [];
+          if (myDemands.length > 0) {
+            const latest = myDemands.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+            demandId = latest.id;
+            autoDemandId = demandId;
+          }
+        }
         const filters = {};
         if (demandId) filters.demand_id = demandId;
         const data = await API.matching.getSuggestions(filters);
@@ -353,7 +363,7 @@
       // Swipe droit = envoi d'une demande de match
       if (profile && profile.id && direction === 'right') {
         const body = { score: profile.compatibility };
-        const demandId = getDemandId();
+        const demandId = getDemandId() || autoDemandId;
         if (demandId) body.demand_id = parseInt(demandId);
         API.matching.requestMatch(profile.id, body)
           .then(() => {
