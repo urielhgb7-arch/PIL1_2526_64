@@ -5,7 +5,7 @@
  */
 
 const API_BASE_URL = window.API_BASE_URL || (
-    window.location.protocol === 'file:'
+    window.location.protocol === 'file:' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
         ? 'http://127.0.0.1:5000/api'
         : window.location.origin + '/api'
 );

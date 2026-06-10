@@ -150,7 +150,7 @@ def register():
 
         # Génération token de vérification email
         verif_token_str = None
-        if new_user.email.endswith('@test.ifri.edu'):
+        if new_user.email.endswith('@test.ifri.edu') or (new_user.email.endswith('@gmail.com') and os.getenv('FLASK_ENV') != 'production'):
             new_user.email_verified = True
             db.session.commit()
             logger.info(f"Email auto-vérifié pour user test user_id={new_user.id}")
