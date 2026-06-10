@@ -38,7 +38,7 @@ CREATE TABLE profiles (
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     filiere VARCHAR(50) NOT NULL CHECK (filiere IN ('GL', 'SIRI', 'IM')),
-    niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3', 'M1', 'M2')),
+    niveau VARCHAR(10) NOT NULL CHECK (niveau IN ('L1', 'L2', 'L3')),
     format_preference VARCHAR(20) NOT NULL DEFAULT 'hybride' CHECK (format_preference IN ('presentiel', 'en_ligne', 'hybride')),
     bio TEXT,
     telephone VARCHAR(20) UNIQUE NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE matieres (
     id SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     filiere VARCHAR(50) NOT NULL CHECK (filiere IN ('GL', 'SIRI', 'IM')),
-    annee VARCHAR(10) NOT NULL CHECK (annee IN ('L1', 'L2', 'L3', 'M1', 'M2'))
+    annee VARCHAR(10) NOT NULL CHECK (annee IN ('L1', 'L2', 'L3'))
 );
 -- ----------------------------------------------------------------------------
 -- 5. PROFILING & CRITÈRES DE MATCHING (Compétences vs Lacunes)

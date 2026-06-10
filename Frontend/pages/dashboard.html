@@ -311,31 +311,52 @@
                 <div class="bg-card border border-border rounded-xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-semibold">Mon profil</h2>
-                        <a
-                            href="settings.html"
-                            class="text-sm text-primary hover:underline flex items-center gap-1"
-                        >
-                            <svg
-                                class="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                        <div class="flex items-center gap-2">
+                            <button
+                                onclick="openProfileModal()"
+                                class="p-2 rounded-lg bg-popover text-muted hover:text-white hover:bg-popover/80 transition-colors"
+                                title="Voir mon profil"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                                />
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                            </svg>
-                            Modifier
-                        </a>
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                </svg>
+                            </button>
+                            <a
+                                href="settings.html"
+                                class="p-2 rounded-lg bg-popover text-muted hover:text-white hover:bg-popover/80 transition-colors"
+                                title="Modifier le profil"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                    />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                     <div
                         id="profile-preview-loading"
@@ -378,10 +399,6 @@
                                         id="profile-niveau-badge"
                                         >—</span
                                     >
-                                    <span
-                                        id="profile-telephone-badge"
-                                        class="hidden inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-popover text-muted"
-                                    ></span>
                                 </div>
                             </div>
                         </div>
@@ -479,6 +496,173 @@
                             Chargement...
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Profil Complet -->
+        <div
+            id="modal-profile-view"
+            class="hidden fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card border border-border rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            >
+                <!-- Header avec gradient -->
+                <div
+                    class="relative h-28 bg-gradient-to-br from-primary/30 via-primary/10 to-background rounded-t-2xl"
+                >
+                    <button
+                        onclick="
+                            document
+                                .getElementById('modal-profile-view')
+                                .classList.add('hidden')
+                        "
+                        class="absolute top-4 right-4 p-1.5 rounded-lg bg-background/50 text-muted hover:text-white transition-colors"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Avatar -->
+                <div class="flex justify-center -mt-10 mb-4 px-6">
+                    <div class="relative">
+                        <div
+                            id="pv-avatar-container"
+                            class="w-20 h-20 rounded-full border-4 border-card bg-primary/20 flex items-center justify-center overflow-hidden shadow-lg"
+                        >
+                            <span
+                                id="pv-initials"
+                                class="text-2xl font-bold text-primary"
+                                >?</span
+                            >
+                            <img
+                                id="pv-avatar-img"
+                                src=""
+                                alt="avatar"
+                                class="hidden w-full h-full object-cover absolute inset-0"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <!-- Infos -->
+                <div class="px-6 pb-6 space-y-5">
+                    <div class="text-center">
+                        <h3 id="pv-name" class="text-2xl font-bold">—</h3>
+                        <p id="pv-email" class="text-sm text-muted mt-1">—</p>
+                    </div>
+                    <!-- Badges -->
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span
+                            id="pv-filiere"
+                            class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
+                            >—</span
+                        >
+                        <span
+                            id="pv-niveau"
+                            class="px-3 py-1 bg-success/10 text-success rounded-full text-sm font-medium"
+                            >—</span
+                        >
+                        <span
+                            id="pv-format"
+                            class="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm"
+                            >—</span
+                        >
+                    </div>
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-popover rounded-xl p-3 text-center">
+                            <p
+                                id="pv-comps-count"
+                                class="text-2xl font-bold text-primary"
+                            >
+                                0
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">Compétences</p>
+                        </div>
+                        <div class="bg-popover rounded-xl p-3 text-center">
+                            <p
+                                id="pv-lacs-count"
+                                class="text-2xl font-bold text-warning"
+                            >
+                                0
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">Lacunes</p>
+                        </div>
+                    </div>
+                    <!-- Compétences -->
+                    <div>
+                        <h4
+                            class="text-sm font-semibold mb-2 flex items-center gap-2"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-success inline-block"
+                            ></span>
+                            Compétences
+                        </h4>
+                        <div id="pv-comps" class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-muted">Aucune</span>
+                        </div>
+                    </div>
+                    <!-- Lacunes -->
+                    <div>
+                        <h4
+                            class="text-sm font-semibold mb-2 flex items-center gap-2"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-warning inline-block"
+                            ></span>
+                            Lacunes
+                        </h4>
+                        <div id="pv-lacs" class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-muted">Aucune</span>
+                        </div>
+                    </div>
+                    <!-- Disponibilités -->
+                    <div>
+                        <h4
+                            class="text-sm font-semibold mb-2 flex items-center gap-2"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-primary inline-block"
+                            ></span>
+                            Disponibilités
+                        </h4>
+                        <div id="pv-dispos" class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-muted">Aucune</span>
+                        </div>
+                    </div>
+                    <!-- Bouton settings -->
+                    <a
+                        href="settings.html"
+                        class="flex items-center justify-center gap-2 w-full py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                        </svg>
+                        Modifier mon profil
+                    </a>
                 </div>
             </div>
         </div>
@@ -722,6 +906,113 @@
                 }
             }
 
+            function openProfileModal() {
+                const modal = document.getElementById("modal-profile-view");
+                modal.classList.remove("hidden");
+
+                // Fermer en cliquant en dehors
+                modal.onclick = (e) => {
+                    if (e.target === modal) modal.classList.add("hidden");
+                };
+
+                // Alimenter avec les données déjà chargées dans le DOM
+                const name =
+                    document.getElementById("profile-fullname-dash")
+                        ?.textContent || "—";
+                const email =
+                    document.getElementById("profile-email-dash")
+                        ?.textContent || "—";
+                const filiere =
+                    document.getElementById("profile-filiere-badge")
+                        ?.textContent || "—";
+                const niveau =
+                    document.getElementById("profile-niveau-badge")
+                        ?.textContent || "—";
+
+                document.getElementById("pv-name").textContent = name;
+                document.getElementById("pv-email").textContent = email;
+                document.getElementById("pv-filiere").textContent = filiere;
+                document.getElementById("pv-niveau").textContent = niveau;
+
+                // Initiales et avatar
+                const initials =
+                    name
+                        .split(" ")
+                        .map((w) => w.charAt(0))
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2) || "?";
+                document.getElementById("pv-initials").textContent = initials;
+
+                // Avatar photo si disponible
+                const avatarUrl = window._profileAvatarUrl;
+                const img = document.getElementById("pv-avatar-img");
+                const ini = document.getElementById("pv-initials");
+                if (
+                    avatarUrl &&
+                    avatarUrl !== "https://via.placeholder.com/150"
+                ) {
+                    img.src = avatarUrl;
+                    img.classList.remove("hidden");
+                    ini.classList.add("hidden");
+                } else {
+                    img.classList.add("hidden");
+                    ini.classList.remove("hidden");
+                }
+
+                // Compétences et lacunes
+                const comps = window._profileComps || [];
+                const lacs = window._profileLacs || [];
+                document.getElementById("pv-comps-count").textContent =
+                    comps.length;
+                document.getElementById("pv-lacs-count").textContent =
+                    lacs.length;
+
+                document.getElementById("pv-comps").innerHTML =
+                    comps.length > 0
+                        ? comps
+                              .map(
+                                  (c) =>
+                                      `<span class="px-2 py-0.5 bg-success/10 text-success rounded-full text-xs">${c.matiere_nom || c.nom || ""}</span>`,
+                              )
+                              .join("")
+                        : '<span class="text-xs text-muted">Aucune compétence</span>';
+
+                document.getElementById("pv-lacs").innerHTML =
+                    lacs.length > 0
+                        ? lacs
+                              .map(
+                                  (l) =>
+                                      `<span class="px-2 py-0.5 bg-warning/10 text-warning rounded-full text-xs">${l.matiere_nom || l.nom || ""}</span>`,
+                              )
+                              .join("")
+                        : '<span class="text-xs text-muted">Aucune lacune</span>';
+
+                // Format
+                const profile = window._profileData || {};
+                const fmt = {
+                    presentiel: "Présentiel",
+                    en_ligne: "En ligne",
+                    hybride: "Hybride",
+                };
+                document.getElementById("pv-format").textContent =
+                    fmt[profile.format_preference] ||
+                    profile.format_preference ||
+                    "—";
+
+                // Disponibilités
+                const dispos = profile.disponibilites || [];
+                document.getElementById("pv-dispos").innerHTML =
+                    dispos.length > 0
+                        ? dispos
+                              .map(
+                                  (d) =>
+                                      `<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs">${d.jour} ${d.creneau}</span>`,
+                              )
+                              .join("")
+                        : '<span class="text-xs text-muted">Aucune disponibilité</span>';
+            }
+
             async function loadDashboard() {
                 try {
                     const data = await API.profile.getMe();
@@ -747,6 +1038,12 @@
                         department: profile.filiere,
                         level: profile.niveau,
                     });
+
+                    // Stocker pour le modal profil
+                    window._profileData = profile;
+                    window._profileComps = profile.competences || [];
+                    window._profileLacs = profile.lacunes || [];
+                    window._profileAvatarUrl = profile.avatar_url || "";
 
                     // Afficher la section profil
                     const initials =

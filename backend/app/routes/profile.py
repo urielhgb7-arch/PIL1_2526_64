@@ -209,6 +209,8 @@ def update_my_profile(current_user):
         profile.niveau = data["niveau"]
     if "bio" in data:
         profile.bio = data["bio"]
+    if "avatar_url" in data:
+        profile.avatar_url = data["avatar_url"]
     if "telephone" in data:
         profile.telephone = data["telephone"]
     if "disponible" in data:
