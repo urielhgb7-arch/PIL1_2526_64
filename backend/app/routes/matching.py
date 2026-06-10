@@ -142,6 +142,7 @@ def request_match(student_id):
     )
     db.session.add(notif)
     db.session.commit()
+    logger.info(f"Match request commit OK: user_one={current_user_id}, user_two={student_id}, matching_id={new_match.id}, demand_id={demand_id}")
 
     try:
         from app.services.email_service import send_match_notification_email
