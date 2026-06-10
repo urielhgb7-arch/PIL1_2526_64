@@ -1117,50 +1117,54 @@
 
             // ── Chargement du profil depuis l'API ──────────────────────────────────────
             async function loadProfile() {
+                // Cache instant
+                const cached = localStorage.getItem("mentorlink_profile_cache");
+                if (cached) {
+                    try { renderSettingsProfile(JSON.parse(cached)); } catch (_) {}
+                }
+                // Rafraîchissement depuis l'API
                 try {
                     const data = await API.profile.getMe();
                     const profile = data.profile || data;
-                    document.getElementById("display-name").textContent =
-                        `${profile.prenom || ""} ${profile.nom || ""}`.trim() ||
-                        "Profil";
-                    // Avatar
-                    const initials =
-                        `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
-                        "?";
-                    document.getElementById(
-                        "settings-avatar-initials",
-                    ).textContent = initials;
-                    displayAvatar(profile.avatar_url || "", initials);
-                    document.getElementById("display-department").textContent =
-                        filiereLabel(profile.filiere);
-                    document.getElementById("display-level").textContent =
-                        niveauLabel(profile.niveau);
-                    // Bio
-                    const bioEl = document.getElementById("display-bio");
-                    if (profile.bio && profile.bio.trim()) {
-                        bioEl.textContent = profile.bio;
-                        bioEl.classList.remove("text-muted");
-                    } else {
-                        bioEl.innerHTML =
-                            '<span class="text-muted">Non renseignée</span>';
-                    }
-                    // Sauvegarder localement pour les autres pages
-                    saveUserData({
-                        firstName: profile.prenom,
-                        lastName: profile.nom,
-                        department: profile.filiere,
-                        level: profile.niveau,
-                    });
-                    // Afficher les disponibilités
-                    const dispos = profile.disponibilites || [];
-                    const tagsEl = document.getElementById("dispo-tags");
-                    tagsEl.innerHTML = "";
-                    if (dispos.length === 0) {
-                        tagsEl.innerHTML =
-                            '<span class="text-xs text-muted">Aucun créneau défini</span>';
-                    } else {
-                        dispos.forEach((d) => {
-                            const tag = document.createElement("span");
+                    renderSettingsProfile(profile);
+                    try { localStorage.setItem("mentorlink_profile_cache", JSON.stringify(profile)); } catch (_) {}
+                } catch (err) {
+                    if (!cached) console.warn("Profil non disponible", err);
+                }
+            }
+
+            function renderSettingsProfile(profile) {
+                if (!profile) return;
+                document.getElementById("display-name").textContent =
+                    `${profile.prenom || ""} ${profile.nom || ""}`.trim() || "Profil";
+                const initials =
+                    `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() || "?";
+                document.getElementById("settings-avatar-initials").textContent = initials;
+                displayAvatar(profile.avatar_url || "", initials);
+                document.getElementById("display-department").textContent = filiereLabel(profile.filiere);
+                document.getElementById("display-level").textContent = niveauLabel(profile.niveau);
+                const bioEl = document.getElementById("display-bio");
+                if (profile.bio && profile.bio.trim()) {
+                    bioEl.textContent = profile.bio;
+                    bioEl.classList.remove("text-muted");
+                } else {
+                    bioEl.innerHTML = '<span class="text-muted">Non renseignée</span>';
+                }
+                saveUserData({
+                    firstName: profile.prenom,
+                    lastName: profile.nom,
+                    department: profile.filiere,
+                    level: profile.niveau,
+                });
+                // Afficher les disponibilités
+                const dispos = profile.disponibilites || [];
+                const tagsEl = document.getElementById("dispo-tags");
+                tagsEl.innerHTML = "";
+                if (dispos.length === 0) {
+                    tagsEl.innerHTML = '<span class="text-xs text-muted">Aucun créneau défini</span>';
+                } else {
+                    dispos.forEach((d) => {
+                        const tag = document.createElement("span");
                             tag.className =
                                 "inline-block px-2.5 py-1 bg-primary/10 text-primary rounded-md text-xs";
                             tag.textContent = `${d.jour} ${d.creneau}`;
