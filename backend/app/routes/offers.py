@@ -188,6 +188,7 @@ def get_offers():
             "jour": o.jour,
             "creneau": o.creneau,
             "format_preference": o.format_preference,
+            "disponibilites": o.disponibilites,
             "created_at": o.created_at.isoformat() if o.created_at else None,
             "publicateur": publicateur
         })
@@ -220,6 +221,7 @@ def get_my_offers(current_user):
             "jour": o.jour,
             "creneau": o.creneau,
             "format_preference": o.format_preference,
+            "disponibilites": o.disponibilites,
             "created_at": o.created_at.isoformat() if o.created_at else None
         })
     return jsonify({
@@ -251,6 +253,7 @@ def get_my_demands(current_user):
             "creneau": d.creneau,
             "description": d.description,
             "urgence": d.urgence or 'Moyenne',
+            "disponibilites": d.disponibilites,
             "created_at": d.created_at.isoformat() if d.created_at else None
         })
     return jsonify({
@@ -380,6 +383,7 @@ def get_demands():
             "creneau": d.creneau,
             "description": d.description,
             "urgence": d.urgence or 'Moyenne',
+            "disponibilites": d.disponibilites,
             "created_at": d.created_at.isoformat(),
             "publicateur": publicateur
         })

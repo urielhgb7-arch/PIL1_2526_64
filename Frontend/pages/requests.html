@@ -1524,7 +1524,7 @@
                     const data = await API.demands.getAll();
                     let items = Array.isArray(data)
                         ? data
-                        : data.demandes || data.data || [];
+                        : data.demands || data.demandes || data.data || [];
                     // Filter by user's competences
                     if (userCompetenceIds.length > 0) {
                         items = items.filter((d) =>
