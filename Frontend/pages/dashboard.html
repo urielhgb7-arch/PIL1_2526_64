@@ -404,6 +404,11 @@
                                 >
                                     —
                                 </p>
+                                <p
+                                    id="profile-bio-dash"
+                                    class="text-xs text-muted mt-1 line-clamp-2"
+                                >
+                                </p>
                                 <div class="flex flex-wrap gap-2 mt-2">
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
@@ -876,6 +881,8 @@
                     if (pfNiveau) pfNiveau.textContent = data.niveau || '—';
                     var pfEmail = document.getElementById('profile-email-dash');
                     if (pfEmail && data.email) pfEmail.textContent = data.email;
+                    var pfBio = document.getElementById('profile-bio-dash');
+                    if (pfBio) { if (data.bio && data.bio.trim()) { pfBio.textContent = data.bio; pfBio.classList.remove('text-muted'); } else { pfBio.innerHTML = '<span class="text-muted">Aucune bio</span>'; } }
                 } catch(e) {}
             })();
         </script>
@@ -1275,6 +1282,15 @@
                 ).textContent = fullName || "—";
                 document.getElementById("profile-email-dash").textContent =
                     profile.email || "—";
+                const bioEl = document.getElementById("profile-bio-dash");
+                if (bioEl) {
+                    if (profile.bio && profile.bio.trim()) {
+                        bioEl.textContent = profile.bio;
+                        bioEl.classList.remove("text-muted");
+                    } else {
+                        bioEl.innerHTML = '<span class="text-muted">Aucune bio</span>';
+                    }
+                }
                 document.getElementById(
                     "profile-filiere-badge",
                 ).textContent = filiereLabel(profile.filiere);
