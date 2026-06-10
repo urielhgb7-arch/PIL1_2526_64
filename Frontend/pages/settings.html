@@ -84,23 +84,81 @@
                         Modifier
                     </button>
                 </div>
-                <div class="space-y-3">
-                    <div>
-                        <label class="text-sm text-muted">Nom complet</label>
-                        <p id="display-name" class="font-medium">Jean Dupont</p>
+                <div class="flex items-start gap-5">
+                    <!-- Avatar avec bouton crayon -->
+                    <div class="relative flex-shrink-0">
+                        <div
+                            id="settings-avatar-container"
+                            class="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-border"
+                        >
+                            <span
+                                id="settings-avatar-initials"
+                                class="text-2xl font-bold text-primary"
+                                >?</span
+                            >
+                            <img
+                                id="settings-avatar-img"
+                                src=""
+                                alt="avatar"
+                                class="hidden w-full h-full object-cover absolute inset-0 rounded-full"
+                            />
+                        </div>
+                        <button
+                            onclick="
+                                document
+                                    .getElementById('avatar-file-input')
+                                    .click()
+                            "
+                            class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg"
+                            title="Changer la photo"
+                        >
+                            <svg
+                                class="w-3.5 h-3.5 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                />
+                            </svg>
+                        </button>
+                        <input
+                            type="file"
+                            id="avatar-file-input"
+                            accept="image/*"
+                            class="hidden"
+                            onchange="handleAvatarChange(event)"
+                        />
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <!-- Infos texte -->
+                    <div class="flex-1 space-y-3">
                         <div>
-                            <label class="text-sm text-muted">Filière</label>
-                            <p id="display-department" class="font-medium">
-                                Génie Logiciel
+                            <label class="text-sm text-muted"
+                                >Nom complet</label
+                            >
+                            <p id="display-name" class="font-medium">
+                                Jean Dupont
                             </p>
                         </div>
-                        <div>
-                            <label class="text-sm text-muted">Niveau</label>
-                            <p id="display-level" class="font-medium">
-                                Licence 3
-                            </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm text-muted"
+                                    >Filière</label
+                                >
+                                <p id="display-department" class="font-medium">
+                                    Génie Logiciel
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-sm text-muted">Niveau</label>
+                                <p id="display-level" class="font-medium">
+                                    Licence 3
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -741,6 +799,50 @@
                     : val;
             }
 
+            // ── Avatar ────────────────────────────────────────────────────────────────
+            function displayAvatar(url, initials) {
+                const img = document.getElementById("settings-avatar-img");
+                const ini = document.getElementById("settings-avatar-initials");
+                if (
+                    url &&
+                    url !== "https://via.placeholder.com/150" &&
+                    !url.startsWith("http")
+                ) {
+                    // data URL
+                    img.src = url;
+                    img.classList.remove("hidden");
+                    ini.classList.add("hidden");
+                } else if (url && url !== "https://via.placeholder.com/150") {
+                    img.src = url;
+                    img.classList.remove("hidden");
+                    ini.classList.add("hidden");
+                } else {
+                    img.classList.add("hidden");
+                    ini.classList.remove("hidden");
+                    ini.textContent = initials || "?";
+                }
+            }
+
+            async function handleAvatarChange(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) {
+                    alert("Image trop grande. Maximum 2 Mo.");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const dataUrl = e.target.result;
+                    displayAvatar(dataUrl, "");
+                    try {
+                        await API.profile.updateMe({ avatar_url: dataUrl });
+                    } catch (err) {
+                        console.warn("Erreur sauvegarde avatar:", err);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
             function openModal(name) {
                 document
                     .getElementById(`modal-${name}`)
@@ -938,6 +1040,14 @@
                     document.getElementById("display-name").textContent =
                         `${profile.prenom || ""} ${profile.nom || ""}`.trim() ||
                         "Profil";
+                    // Avatar
+                    const initials =
+                        `${(profile.prenom || "").charAt(0)}${(profile.nom || "").charAt(0)}`.toUpperCase() ||
+                        "?";
+                    document.getElementById(
+                        "settings-avatar-initials",
+                    ).textContent = initials;
+                    displayAvatar(profile.avatar_url || "", initials);
                     document.getElementById("display-department").textContent =
                         filiereLabel(profile.filiere);
                     document.getElementById("display-level").textContent =

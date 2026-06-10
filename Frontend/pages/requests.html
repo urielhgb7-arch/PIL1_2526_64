@@ -1656,6 +1656,50 @@
                 return `${parseInt(p[0])}h-${parseInt(p[1])}h`;
             }
 
+            function populateMatieresDropdown(type) {
+                const sel = document.getElementById("pub-matiere");
+                sel.innerHTML =
+                    '<option value="">Sélectionnez une matière…</option>';
+
+                if (type === "offer") {
+                    // Offre : montrer les compétences de l'utilisateur
+                    const comps =
+                        userProfile && userProfile.competences
+                            ? userProfile.competences
+                            : [];
+                    if (comps.length === 0) {
+                        sel.innerHTML +=
+                            "<option disabled>Aucune compétence enregistrée</option>";
+                        return;
+                    }
+                    comps.forEach((c) => {
+                        const opt = document.createElement("option");
+                        opt.value = c.matiere_id;
+                        opt.textContent =
+                            c.matiere_nom || `Matière #${c.matiere_id}`;
+                        sel.appendChild(opt);
+                    });
+                } else {
+                    // Demande : montrer les lacunes de l'utilisateur
+                    const lacs =
+                        userProfile && userProfile.lacunes
+                            ? userProfile.lacunes
+                            : [];
+                    if (lacs.length === 0) {
+                        sel.innerHTML +=
+                            "<option disabled>Aucune lacune enregistrée</option>";
+                        return;
+                    }
+                    lacs.forEach((l) => {
+                        const opt = document.createElement("option");
+                        opt.value = l.matiere_id;
+                        opt.textContent =
+                            l.matiere_nom || `Matière #${l.matiere_id}`;
+                        sel.appendChild(opt);
+                    });
+                }
+            }
+
             function openNewPublicationModal() {
                 document
                     .getElementById("modal-new-publication")
@@ -1668,21 +1712,11 @@
                 // Set default type description
                 updateTypeDesc();
 
-                // Load matieres into select, filtered by filiere
-                const sel = document.getElementById("pub-matiere");
-                sel.innerHTML =
-                    '<option value="">Sélectionnez une matière…</option>';
-                let filtered = matieresCache;
-                const userData = getUserData();
-                if (userData && userData.department) {
-                    filtered = getMatiersByFiliere(userData.department);
-                }
-                filtered.forEach((m) => {
-                    const opt = document.createElement("option");
-                    opt.value = m.id;
-                    opt.textContent = m.nom || m.name || m.libelle;
-                    sel.appendChild(opt);
-                });
+                // Déterminer le type sélectionné
+                const selectedType =
+                    document.querySelector('input[name="pub-type"]:checked')
+                        ?.value || "offer";
+                populateMatieresDropdown(selectedType);
 
                 // Render availability grid with user's saved slots pre-selected
                 renderAvailabilityGrid();
@@ -1696,7 +1730,10 @@
 
             // Type toggle description
             document.querySelectorAll('input[name="pub-type"]').forEach((r) => {
-                r.addEventListener("change", updateTypeDesc);
+                r.addEventListener("change", () => {
+                    updateTypeDesc();
+                    populateMatieresDropdown(r.value);
+                });
             });
 
             function updateTypeDesc() {
