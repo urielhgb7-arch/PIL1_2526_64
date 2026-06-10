@@ -163,14 +163,9 @@
           }));
         }
       } catch (err) {
-        console.warn('API non disponible, utilisation des données de démo.', err);
-        profiles = [
-          { name: 'Sarah Mensah', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Passionnée par le développement web et mobile.', matched_subjects: [{nom:'React',niveau:'Avancé'},{nom:'Node.js',niveau:'Intermédiaire'}], skills: [{nom:'React',niveau:'Avancé'},{nom:'Node.js',niveau:'Intermédiaire'},{nom:'MongoDB',niveau:'Débutant'},{nom:'Docker',niveau:'Intermédiaire'}], compatibility: 92 },
-          { name: 'Karim Diallo', level: 'M1 RSI', department: 'Réseaux et SI', bio: 'Expert en cybersécurité et architecture réseau.', matched_subjects: [{nom:'Cybersécurité',niveau:'Expert'}], skills: [{nom:'Cybersécurité',niveau:'Expert'},{nom:'Cisco',niveau:'Avancé'},{nom:'Linux',niveau:'Intermédiaire'},{nom:'Python',niveau:'Débutant'}], compatibility: 88 },
-          { name: 'Aminata Traoré', level: 'L3 IA', department: 'Intelligence Artificielle', bio: 'Machine Learning et Data Science.', matched_subjects: [{nom:'Python',niveau:'Avancé'}], skills: [{nom:'Python',niveau:'Avancé'},{nom:'TensorFlow',niveau:'Intermédiaire'},{nom:'Scikit-learn',niveau:'Débutant'},{nom:'Pandas',niveau:'Intermédiaire'}], compatibility: 85 },
-          { name: 'Youssouf Koné', level: 'M2 GL', department: 'Génie Logiciel', bio: 'Full-stack developer freelance.', matched_subjects: [{nom:'Vue.js',niveau:'Avancé'},{nom:'PostgreSQL',niveau:'Intermédiaire'}], skills: [{nom:'Vue.js',niveau:'Avancé'},{nom:'Laravel',niveau:'Avancé'},{nom:'PostgreSQL',niveau:'Intermédiaire'},{nom:'AWS',niveau:'Intermédiaire'}], compatibility: 90 }
-        ];
-        noMatchesFound = false;
+        console.warn('API non disponible, aucun profil à afficher.', err);
+        profiles = [];
+        noMatchesFound = true;
       }
       initCards();
     }
